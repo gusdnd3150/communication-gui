@@ -20,11 +20,19 @@ class InitClass():
 
         loader = QUiLoader()
         app = QtWidgets.QApplication(sys.argv)
+
+        #메인창 화면 띄우기
         window = loader.load(resource_path('test.ui'), None)
         window.setWindowTitle('test')
+        window.btnInt.clicked.connect(self.addInt)
+
         window.show()
         app.exec()
 
 
     def runProccess(self):
+        print('test')
+
+
+    def addInt(self):
         print('test')
