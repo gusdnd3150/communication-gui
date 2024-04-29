@@ -14,19 +14,22 @@ def resource_path(relative_path):
 #
 class InitClass():
 
+    mainLayOut = None
+    popup = None
+    qLoader = None
+
     def __init__(self):
         print('init UI start')
         # super().__init__()
 
-        loader = QUiLoader()
+        self.qLoader = QUiLoader()
         app = QtWidgets.QApplication(sys.argv)
 
         #메인창 화면 띄우기
-        window = loader.load(resource_path('test.ui'), None)
-        window.setWindowTitle('test')
-        window.btnInt.clicked.connect(self.addInt)
-
-        window.show()
+        self.mainLayOut = self.qLoader.load(resource_path('test.ui'), None)
+        self.mainLayOut.setWindowTitle('test')
+        self.mainLayOut.btnInt.clicked.connect(self.addInt)
+        self.mainLayOut.show()
         app.exec()
 
 
@@ -36,3 +39,7 @@ class InitClass():
 
     def addInt(self):
         print('test')
+        self.popup = self.qLoader.load(resource_path('test.ui'), None)
+        self.popup.setWindowTitle('test')
+        # self.popup.btnInt.clicked.connect(self.addInt)
+        self.popup.show()
