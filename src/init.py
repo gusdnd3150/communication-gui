@@ -11,7 +11,11 @@ def resource_path(relative_path):
 
 # print(resource_path('test.ui'))
 # form = resource_path('test.ui')
-#
+
+
+# 네이밍
+# 1. btn_?, popup_?, input_?,
+
 class InitClass():
 
     mainLayOut = None
@@ -26,10 +30,15 @@ class InitClass():
         app = QtWidgets.QApplication(sys.argv)
 
         #메인창 화면 띄우기
-        self.mainLayOut = self.qLoader.load(resource_path('test.ui'), None)
-        self.mainLayOut.setWindowTitle('test')
-        self.mainLayOut.btnInt.clicked.connect(self.addInt)
+        self.mainLayOut = self.qLoader.load(resource_path('views/main.ui'), None)
+        self.mainLayOut.setWindowTitle('통신테스터')
+        self.mainLayOut.btn_settings.clicked.connect(self.addInt)
         self.mainLayOut.show()
+
+        #팝업1
+        self.popup = self.qLoader.load(resource_path('views/test.ui'), None)
+        self.popup.setWindowTitle('설정')
+
         app.exec()
 
 
@@ -39,7 +48,8 @@ class InitClass():
 
     def addInt(self):
         print('test')
-        self.popup = self.qLoader.load(resource_path('test.ui'), None)
-        self.popup.setWindowTitle('test')
-        # self.popup.btnInt.clicked.connect(self.addInt)
-        self.popup.show()
+        if self.popup.isVisible():
+            self.popup.hide()
+        else:
+            self.popup.show()
+
