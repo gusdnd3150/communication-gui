@@ -4,6 +4,8 @@ import os
 from PySide6 import QtWidgets
 from PySide6.QtUiTools import QUiLoader
 
+from src.component.settings.Settings import Settings
+
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
@@ -19,37 +21,46 @@ def resource_path(relative_path):
 class InitClass():
 
     mainLayOut = None
-    popup = None
+    popup = None # 설정 팝업
+    saveSkWindow = None
     qLoader = None
+    list_table = None
 
     def __init__(self):
         print('init UI start')
-        # super().__init__()
 
         self.qLoader = QUiLoader()
         app = QtWidgets.QApplication(sys.argv)
 
-        #메인창 화면 띄우기
-        self.mainLayOut = self.qLoader.load(resource_path('views/main.ui'), None)
-        self.mainLayOut.setWindowTitle('통신테스터')
-        self.mainLayOut.btn_settings.clicked.connect(self.addInt)
+        #메인창
+        self.mainLayOut = self.qLoader.load(resource_path('main.ui'), None)
+        self.mainLayOut.setWindowTitle('application')
+        self.mainLayOut.btn_settings.clicked.connect(self.settings)
         self.mainLayOut.show()
 
-        #팝업1
-        self.popup = self.qLoader.load(resource_path('views/test.ui'), None)
-        self.popup.setWindowTitle('설정')
+        # 설정팝업
+        self.popup = Settings()
 
+        # 설정팝업-인풋폼
+
+        self.setEvent()
         app.exec()
 
+    def setEvent(self):
+        # self.popup
+        # self.mainLayOut
+        print('tset')
 
-    def runProccess(self):
-        print('test')
+        # list_table =
 
 
-    def addInt(self):
-        print('test')
-        if self.popup.isVisible():
-            self.popup.hide()
+    def settings(self):
+        print('tesst')
+        if self.popup.instance.isVisible():
+            self.popup.instance.hide()
         else:
-            self.popup.show()
+            self.popup.instance.show()
 
+
+    def addTableRow(self, items):
+        print('test')
