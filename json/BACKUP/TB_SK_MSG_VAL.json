@@ -1,0 +1,2742 @@
+[
+	{
+		"VAL_ID" : "SPACE_1",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CAR_TY",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "USER_ID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_FLAG",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 15,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PROC_SIGN",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TARGET_NO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 15,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "ALLRANGE",
+		"VAL_TYPE" : "JSON_ARRAY",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "ANGLE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "ANGLE_MAX",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "ANGLE_MIN",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "ANGLE_STATUS",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "ATLAS_COUNT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "ATL_MID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "BATCH_COUNTER",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "BATCH_SIZE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "BATCH_STATUS",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "BODY_COLOR",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 3,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "BODY_NO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 10,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "BODY_NO_25",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 25,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "BODY_NO_6",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "BOLT_NAME",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 20,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "BOLT_NUMBER",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "BOOLEAN",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CAR_ANGLE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CAR_CD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "CAR_STAT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 3,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CELL_ID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CHANNEL_ID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CODE_219",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 219,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "COMMAND",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 20,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_ID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_NM",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 25,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_PROC_CD_01",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_PROC_CD_01_G",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_PROC_CD_01_R",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_PROC_CD_01_Y",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_PROC_CD_02",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_PROC_CD_02_G",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_PROC_CD_02_R",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_PROC_CD_02_Y",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_PROC_CD_03",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_PROC_CD_03_G",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_PROC_CD_03_R",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_PROC_CD_03_Y",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CTRL_RETURN_MID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CUSTOMER_ERROR_CODE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "DATAS",
+		"VAL_TYPE" : "JSON_ARRAY",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "DATA_LIST",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 200,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "DATA_NO_SYSTEM",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 10,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "DATE_19",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 19,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "DONE_BTN_MAC_01",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 8,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "DONE_BTN_MAC_02",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 8,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "DONE_BTN_MAC_03",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 8,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "DP_CMT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "DT_OF_LAST_CHANGE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 19,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "ECO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "EMP_IDX",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "ERRORS",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 50,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "ERROR_CODE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "EXECUTE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 200,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "FINAL_ANGLE_TARGET",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "INNER_COLOR",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 3,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "JOB_BAT_CNTE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "JOB_BAT_MODE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 3,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "JOB_BAT_SIZE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "JOB_ID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "JOB_ID_04",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "JOB_STAT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 3,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LEAVE_DIV",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 10,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LENGTH",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LINE_CD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LINE_DIV",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "LINE_SIGN",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LINE_SPD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_CYCT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_FCCD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 7,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_FCGR",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_FCNO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_FCSQ",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_KEEP",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_MDEV",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 7,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_MFID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 10,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_MODB",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_MODG",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_OK",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_PLNT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 3,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_R001",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_R002",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_R003",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_R004",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_R005",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_TRST",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_V001",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 30,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_V002",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 30,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_V003",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 30,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LIQ_V004",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 30,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LS_NO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "LS_SIG",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "LS_SIG_DTM",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 14,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "MESSAGE_NUMBER",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "MES_BODY_NO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_CAR_CD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 3,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_CAR_CD_ERR",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_EQMENT_CD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_ETX",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_FORMAT_ERR",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_PACKET_DIV",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_PLANT_CD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_PROD_SEQ",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 17,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "MES_RELT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_RSLT_DT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 19,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_RSLT_ERR",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_SEND_DIV",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_STAT_ERR",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_STX",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_TOOL_NO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_UNKOWN_CAR",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_UNKOWN_CD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MES_UNKOWN_ERR",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "2023-07-05",
+		"UPD_DT" : "2023-07-05",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "MI_BLANK",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "MODE_NAME",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 20,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "MODE_NO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "NUMBER_OF_BOLTS",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "NUMBER_OF_BOLT_RESULTS",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "OCCR_DTM",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 14,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "ONE_ZERO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "ONE_ZLIQ_V005ERO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 30,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "ORDER_NO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 15,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PACK_MONTH",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PARAMETER_SET_ID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 3,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PATH_INDEX",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PBS_DIV",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PBS_TYPE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PLC",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PLCALIAS",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PLC_LINE_IN_OUT_FLAG",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "PLNT_CD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PM_STATUS",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "POS",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "POS_X",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "POS_Y",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "POS_Z",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PRD_DT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 14,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PROC_CD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PROC_NM",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 20,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PROD_DATE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 8,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "PROGRAM_NAME",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 20,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "RANGEALIAS",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "READARRAY",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "REGION_NAME",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 60,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "REG_DT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 14,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "RESULT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "RESULT_SYS_DT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 14,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "SIG_DIV",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "SIMPLE_STATUS",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "STATION_NAME",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 20,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "STATION_NO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "STATUS",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "STN_CD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TAG_ID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 14,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TAG_LIST",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 742,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TERM_ID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 7,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TEST_DOUBLE",
+		"VAL_TYPE" : "DOUBLE",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TEST_FLOAT",
+		"VAL_TYPE" : "FLOAT",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TEST_INT",
+		"VAL_TYPE" : "INT",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TEST_KEY",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 3,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TEST_SHORT",
+		"VAL_TYPE" : "SHORT",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TEST_STR",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TEST_VALUE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TIGHTENING_ID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 10,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TIGHTENING_STATUS",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TIME_STAMP",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 19,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TOOL_ID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TORQUE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TORQUE_CONTROLLER_NAME",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 25,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TORQUE_FINAL_TARGET",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TORQUE_MAX_LIMIT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TORQUE_MIN_LIMIT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TORQUE_STATUS",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TOTAL_NO_OF_MESSAGES",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TR01_SIGN",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TR01_SPD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TR02_SIGN",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TR02_SPD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TR03_SIGN",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TR03_SPD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TRIM_LEVEL",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 10,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TWOTON_CODE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "VARIABLE_STR",
+		"VAL_TYPE" : "VARIABLE_LENGTH",
+		"VAL_LEN" : "",
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "VIN_CODE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 17,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "VIN_NO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 25,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "WORK_VALUE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 200,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "WP_ID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 40,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "WRITEARRAY",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "YOCOTA_BAR",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "YOCOTA_ID_NO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "YOCOTA_PULSE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "YOCOTA_QUANTITY_LEFT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "YOCOTA_REPAIR",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "YOCOTA_SP",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "YOCOTA_STATUS",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "YOCOTA_TIME",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 15,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "YOCOTA_TOOL_NO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "YOCOTA_TORQUE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "YOCOTA_WORK_CNT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "YOCOTA_WORK_NAME",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "SYSTEM",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "IF_BODY_NO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 10,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TRIM_LEVL",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 10,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TWO_TONE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "MON_PACK",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "U1_PART",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 800,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "C1_PART",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 204,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "P1_PART",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4000,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "Q1_PART",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1600,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "B1_PART",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 800,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "START_MSG",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "DATA_TY",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PROGRESS_ID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "RESERVE_30",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 30,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "GMES_PROC",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "2024-01-11",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "KEEP_RES",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TIRE_CODE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 10,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TIRE_PORT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 5,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "FNSH_RES",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "MES_COM_STAT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "FNSH_RESULT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TIRE_MODE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TIRE_TORQUE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 100,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TIRE_TORQUE_RSLT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 10,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TIRE_ANGLE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 100,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TIRE_ANGLE_RSLT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 10,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TIRE_LOCATION",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TIRE_TOTAL_RSLT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 10,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TIRE_TIGHTEN_CNT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TIRE_TIGHTEN_RSLT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "RSLT_RES",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "ALC_CD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 20,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "FCTM",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 14,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "FCSQ",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "FCNO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "MFID",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 10,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "MDEV",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 7,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "MODG",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "MODB",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "TRST",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "CYCT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 6,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "R001",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "V001",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 30,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "R002",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "V002",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 30,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "R003",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "V003",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 30,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "R004",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "V004",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 30,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "R005",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "V005",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 30,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "R006",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "V006",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 30,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "R007",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "V007",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 30,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "R008",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "V008",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 30,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "RGDT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 14,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PRDT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 14,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PW_ROOM_NO",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 12,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "PW_ROOM_CD",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "SPEC_STAT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "ALC_PROC",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 2,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "0",
+		"UPD_ID" : "0"
+	},
+	{
+		"VAL_ID" : "W_ORDER",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 15,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "DRIVE_TY",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 1,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "SPARE_4",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "FN_CMT",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 4,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "REPORT_DATE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 14,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	},
+	{
+		"VAL_ID" : "RESERVE",
+		"VAL_TYPE" : "STRING",
+		"VAL_LEN" : 100,
+		"VAL_DESC" : "",
+		"REG_DT" : "",
+		"UPD_DT" : "",
+		"REG_ID" : "",
+		"UPD_ID" : ""
+	}
+]

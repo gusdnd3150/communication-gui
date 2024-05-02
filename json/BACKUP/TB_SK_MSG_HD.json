@@ -1,0 +1,158 @@
+[
+	{
+		"HD_ID" : "ATLAS_REV_ID",
+		"HD_TYPE" : "LENGTH",
+		"HD_NAME" : "아틀라스 REV까지 묶은 ID구분",
+		"HD_DESC" : "0",
+		"REG_ID" : "0",
+		"UPD_ID" : "0",
+		"MSG_CLASS" : "0",
+		"MAX_LENGTH" : 1024,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "HD_DEFAULT",
+		"HD_TYPE" : "LENGTH",
+		"HD_NAME" : "기본길이형",
+		"REG_ID" : "SYSTEM",
+		"MAX_LENGTH" : 1024,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "HD_FREE",
+		"HD_TYPE" : "FREE",
+		"HD_NAME" : "자유형",
+		"MAX_LENGTH" : 1024,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "HD_FREE_LIQ",
+		"HD_TYPE" : "FREE",
+		"HD_NAME" : "액주입 처리",
+		"MAX_LENGTH" : 1024,
+		"MIN_LENGTH" : 9
+	},
+	{
+		"HD_ID" : "HD_FREE_MES",
+		"HD_TYPE" : "FREE",
+		"HD_NAME" : "max 252 자리 자유형",
+		"HD_DESC" : "패킷의 길이로 저치하는 헤드없는형  max 252 자리형",
+		"REG_ID" : "SYSTEM",
+		"MAX_LENGTH" : 7777,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "HD_FREE_PBS",
+		"HD_TYPE" : "FREE",
+		"HD_NAME" : "패킷의 길이로 저치하는 헤드없는형",
+		"HD_DESC" : "보편적인 자유형",
+		"REG_ID" : "SYSTEM",
+		"MAX_LENGTH" : 1024,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "HD_FREE_PLC",
+		"HD_TYPE" : "FREE",
+		"HD_NAME" : "패킷의 길이로 저치하는 헤드없는형",
+		"HD_DESC" : "보편적인 자유형",
+		"REG_ID" : "SYSTEM",
+		"MAX_LENGTH" : 1024,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "HD_FREE_TIRE",
+		"HD_TYPE" : "FREE",
+		"HD_NAME" : "패킷의 길이로 저치하는 헤드없는형",
+		"HD_DESC" : "타이어러트러너PC",
+		"REG_ID" : "SYSTEM",
+		"MAX_LENGTH" : 7777,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "HD_HS",
+		"HD_TYPE" : "LENGTH",
+		"HD_NAME" : "화성방식",
+		"HD_DESC" : "화성방식",
+		"REG_ID" : "0",
+		"UPD_ID" : "0",
+		"MAX_LENGTH" : 1024,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "HD_JSON",
+		"HD_TYPE" : "JSON",
+		"HD_NAME" : "JSON",
+		"REG_ID" : "0",
+		"UPD_ID" : "0",
+		"MSG_CLASS" : "0",
+		"MAX_LENGTH" : 1024,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "HD_MES_PROD",
+		"HD_TYPE" : "FREE",
+		"HD_NAME" : "MES PROD IF 정보",
+		"HD_DESC" : "MES PROD 정보",
+		"REG_ID" : "SYSTEM",
+		"MAX_LENGTH" : 1000,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "HD_MES_RSLT_ACK",
+		"HD_TYPE" : "PACKET",
+		"HD_NAME" : "MES 채결결과 응답",
+		"HD_DESC" : "0",
+		"REG_ID" : "0",
+		"UPD_ID" : "0",
+		"MSG_CLASS" : "0",
+		"MAX_LENGTH" : 46,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "HD_PACKET",
+		"HD_TYPE" : "PACKET",
+		"HD_NAME" : "MAX LENGTH값 기준 파싱",
+		"HD_DESC" : "0",
+		"REG_ID" : "0",
+		"UPD_ID" : "0",
+		"MSG_CLASS" : "0",
+		"MAX_LENGTH" : 7777,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "HD_TOOL_DEFAULT",
+		"HD_TYPE" : "LENGTH",
+		"HD_NAME" : "4-4-3-9 기본형",
+		"HD_DESC" : "4:길이 ,4:mid , 3:rev , 9:spare",
+		"REG_ID" : "SYSTEM",
+		"MAX_LENGTH" : 1024,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "TCPS_TOOL_TO_CORE",
+		"HD_TYPE" : "FREE",
+		"HD_NAME" : "패킷의 길이로 저치하는 헤드없는형",
+		"HD_DESC" : "타이어러트러너PC",
+		"MAX_LENGTH" : 1024,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "WEBSET_JSON",
+		"HD_TYPE" : "JSON",
+		"HD_NAME" : "websocket set",
+		"HD_DESC" : "websocket head",
+		"REG_ID" : "SYSTEM",
+		"MAX_LENGTH" : 1024,
+		"MIN_LENGTH" : 4
+	},
+	{
+		"HD_ID" : "YOCOTA_PACKET",
+		"HD_TYPE" : "FREE",
+		"HD_NAME" : "요코타 공구 패킷타입",
+		"REG_ID" : "0",
+		"UPD_ID" : "0",
+		"MSG_CLASS" : "0",
+		"MAX_LENGTH" : 1024,
+		"MIN_LENGTH" : 4
+	}
+]

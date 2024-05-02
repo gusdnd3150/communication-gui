@@ -1,0 +1,50 @@
+[
+	{
+		"PKG_ID" : "CORE",
+		"SK_IN_SEQ" : 1,
+		"SK_OUT_SEQ" : 1,
+		"SEQ_ORD" : 1
+	},
+	{
+		"PKG_ID" : "CORE",
+		"SK_IN_SEQ" : 2,
+		"SK_OUT_SEQ" : 2,
+		"SEQ_ORD" : 1
+	},
+	{
+		"PKG_ID" : "CORE",
+		"SK_IN_SEQ" : 6,
+		"SK_OUT_SEQ" : 3,
+		"SEQ_ORD" : 1
+	},
+	{
+		"PKG_ID" : "MES",
+		"SK_IN_SEQ" : 1,
+		"SK_OUT_SEQ" : 1,
+		"SEQ_ORD" : 1
+	},
+	{
+		"PKG_ID" : "MES",
+		"SK_IN_SEQ" : 2,
+		"SK_OUT_SEQ" : 2,
+		"SEQ_ORD" : 1
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_IN_SEQ" : 1,
+		"SK_OUT_SEQ" : 1,
+		"SEQ_ORD" : 1
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_IN_SEQ" : 98,
+		"SK_OUT_SEQ" : 98,
+		"SEQ_ORD" : 1
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_IN_SEQ" : 99,
+		"SK_OUT_SEQ" : 99,
+		"SEQ_ORD" : 1
+	}
+]

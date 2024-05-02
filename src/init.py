@@ -1,17 +1,26 @@
 import sys
 import os
 
+program_path = sys.argv[0]
+program_directory = os.path.dirname(program_path)
+
+
 from PySide6 import QtWidgets
 from PySide6.QtUiTools import QUiLoader
 
 from src.component.settings.Settings import Settings
+from conf.logconfig import logger
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
 
-# print(resource_path('test.ui'))
+program_path = sys.argv[0]
+program_directory = os.path.dirname(program_path)
+
+
+# logger.info(resource_path('test.ui'))
 # form = resource_path('test.ui')
 
 
@@ -27,7 +36,7 @@ class InitClass():
     list_table = None
 
     def __init__(self):
-        print('init UI start')
+        logger.info('init UI start')
 
         self.qLoader = QUiLoader()
         app = QtWidgets.QApplication(sys.argv)
@@ -37,25 +46,27 @@ class InitClass():
         self.mainLayOut.setWindowTitle('application')
         self.mainLayOut.btn_settings.clicked.connect(self.settings)
         self.mainLayOut.show()
-
         # 설정팝업
         self.popup = Settings()
-
-        # 설정팝업-인풋폼
-
         self.setEvent()
+        self.setInitData()
         app.exec()
 
     def setEvent(self):
         # self.popup
         # self.mainLayOut
-        print('tset')
+        logger.info('tset')
 
         # list_table =
 
+    def setInitData(self):
+        logger.info('load Init Data')
+        program_directory+'\json\*.json'
+
+
 
     def settings(self):
-        print('tesst')
+        logger.info('tesst')
         if self.popup.instance.isVisible():
             self.popup.instance.hide()
         else:
@@ -63,4 +74,4 @@ class InitClass():
 
 
     def addTableRow(self, items):
-        print('test')
+        logger.info('test')

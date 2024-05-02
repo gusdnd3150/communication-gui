@@ -1,0 +1,141 @@
+[
+	{
+		"PKG_ID" : "CORE",
+		"SK_GROUP" : "TCPS_CS_TO_CORE",
+		"BZ_TYPE" : "ACTIVE",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "CsController.activeCs"
+	},
+	{
+		"PKG_ID" : "CORE",
+		"SK_GROUP" : "SYSTEM_WEBSK",
+		"BZ_TYPE" : "ACTIVE",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "WebSkController.webChannelAvtive"
+	},
+	{
+		"PKG_ID" : "CORE",
+		"SK_GROUP" : "TCPS_CS_TO_CORE",
+		"BZ_TYPE" : "KEEP",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "CsController.keepAlive",
+		"SEC" : 10
+	},
+	{
+		"PKG_ID" : "CORE",
+		"SK_GROUP" : "TCPS_VCC_TO_CORE",
+		"BZ_TYPE" : "ACTIVE",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "VccController.activeSendLineSig"
+	},
+	{
+		"PKG_ID" : "MES",
+		"SK_GROUP" : "MESIF_TO_MES",
+		"BZ_TYPE" : "ACK",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "MesController.mesProdInfoAck"
+	},
+	{
+		"PKG_ID" : "MES",
+		"SK_GROUP" : "TCPC_MES_TOOL_RSLT",
+		"BZ_TYPE" : "IDLE_READ",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "MesController.mesIdleRead",
+		"SEC" : 2
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_GROUP" : "GROUP_ATLAS",
+		"BZ_TYPE" : "ACTIVE",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "ToolController.activeAtlasTool"
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_GROUP" : "GROUP_ATLAS",
+		"BZ_TYPE" : "IDLE_ALL",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "ToolController.idleAllAtlasTool",
+		"SEC" : 60
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_GROUP" : "GROUP_ATLAS",
+		"BZ_TYPE" : "IDLE_READ",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "ToolController.idleReadAtlasTool",
+		"SEC" : 60
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_GROUP" : "GROUP_ATLAS",
+		"BZ_TYPE" : "IDLE_WRITE",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "ToolController.idleWriteAtlasTool",
+		"SEC" : 60
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_GROUP" : "GROUP_ATLAS",
+		"BZ_TYPE" : "KEEP",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "ToolController.keepAtlasTool",
+		"SEC" : 10
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_GROUP" : "GROUP_INSPECTION",
+		"BZ_TYPE" : "IDLE_READ",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "ToolController.idleReadInspection",
+		"SEC" : 30
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_GROUP" : "GROUP_LIQ",
+		"BZ_TYPE" : "KEEP",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "LiqController.sendLiqKeepAlive",
+		"SEC" : 5
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_GROUP" : "GROUP_LIQ_RSLT",
+		"BZ_TYPE" : "KEEP",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "LiqController.sendRequest",
+		"SEC" : 10
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_GROUP" : "GROUP_TIRE",
+		"BZ_TYPE" : "IDLE_READ",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "ToolController.idleReadTireTool",
+		"SEC" : 30
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_GROUP" : "GROUP_YOCOTA",
+		"BZ_TYPE" : "IDLE_ALL",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "ToolController.idleAllAtlasTool",
+		"SEC" : 600
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_GROUP" : "GROUP_YOCOTA",
+		"BZ_TYPE" : "IDLE_READ",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "ToolController.idleReadAtlasTool",
+		"SEC" : 600
+	},
+	{
+		"PKG_ID" : "TOOL",
+		"SK_GROUP" : "GROUP_YOCOTA",
+		"BZ_TYPE" : "IDLE_WRITE",
+		"USE_YN" : "Y",
+		"BZ_METHOD" : "ToolController.idleWriteAtlasTool",
+		"SEC" : 600
+	}
+]
