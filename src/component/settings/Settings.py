@@ -1,6 +1,6 @@
 
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem
+from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QTabWidget
 import json
 
 from src.component.settings.SaveSocketPopup import SaveSocketPopup
@@ -39,7 +39,23 @@ class Settings():
         self.loadData()
 
     def setEvent(self):
-        print()
+        self.instance.btn_addData.clicked.connect(self.addData)
+
+
+    def addData(self):
+        try:
+            logger.info("addData")
+            if self.saveSkWindow.instance.isVisible():
+                self.saveSkWindow.instance.hide()
+                self.saveSkWindow.clearForm()
+
+            else:
+                # 0: sk, 1: sk_in
+                tapIndex =self.instance.tap_info.currentIndex()
+                self.saveSkWindow.setForm(tapIndex)
+                self.saveSkWindow.instance.show()
+        except:
+            print('s')
 
 
     def loadJsonFile(self, fileNm):
