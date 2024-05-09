@@ -5,7 +5,6 @@ from PySide6.QtUiTools import QUiLoader
 from conf.logconfig import logger
 
 class SaveSocketPopup():
-
     instance = None  # 위젯
 
     def __init__(self,filePath, parent=None):
@@ -14,12 +13,14 @@ class SaveSocketPopup():
         # self.instance.show()
 
 
-    def setForm(self, formIndex):
+    def setForm(self, formIndex, jsonKey):
         try:
             logger.info('setForm')
-            if(formIndex == 0):
+            if(formIndex == 0): # 소켓테이블
                 logger.info('Form SK table')
-            elif(formIndex == 1):
+                logger.info(str(jsonKey))
+
+            elif(formIndex == 1): # 소켓 in
                 logger.info('Form SK_MSG table')
             else:
                 logger.info('None condition')

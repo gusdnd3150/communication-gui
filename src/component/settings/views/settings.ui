@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>570</width>
-    <height>486</height>
+    <width>786</width>
+    <height>623</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -43,11 +43,11 @@
     <item row="1" column="0">
      <widget class="QTabWidget" name="tap_info">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>소켓</string>
+        <string>SOCKET</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="2" column="0">
@@ -68,23 +68,104 @@
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
-        <string>소켓 IN</string>
+        <string>HEADER</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_4">
+        <item row="3" column="0">
+         <widget class="QTableWidget" name="list_hd_dt"/>
+        </item>
         <item row="0" column="0">
-         <widget class="QTableWidget" name="tableWidget"/>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>해더</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QTableWidget" name="list_hd"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>해더 상세</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_5">
+       <attribute name="title">
+        <string>IN</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="0" column="0">
+         <widget class="QTableWidget" name="list_in"/>
         </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
-        <string>해더</string>
+        <string>MSG</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="3" column="0">
+         <widget class="QTableWidget" name="list_msg_dt"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>메시지 상세</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QTableWidget" name="list_msg"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>메시지</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
-        <string>쪽</string>
+        <string>SCHEDULE</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="3" column="0">
+         <widget class="QTableWidget" name="list_sch"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QTableView" name="list_bz"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>SCH 스케줄</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>BZ 스케줄</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_6">
+       <attribute name="title">
+        <string>DT_VAL</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_8">
+        <item row="0" column="0">
+         <widget class="QTableWidget" name="list_dt_val"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -95,7 +176,7 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
+    <item row="2" column="0">
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="1">
        <widget class="QToolButton" name="toolButton_5">
@@ -127,8 +208,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>570</width>
-     <height>21</height>
+     <width>786</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>
