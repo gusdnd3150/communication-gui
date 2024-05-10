@@ -1,6 +1,6 @@
 
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QTabWidget, QPushButton
+from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QTabWidget, QPushButton, QCheckBox
 import json
 
 from src.component.settings.SaveSocketPopup import SaveSocketPopup
@@ -26,6 +26,16 @@ class Settings():
     saveSkWindow = None
     sokcetList = []
     socketHd = []
+    socketHdDt = []
+    socketBody = []
+    socketBodyDt = []
+    socketVal = []
+    sokcetBz = []
+    sokcetIn = []
+    sokcetInToOut = []
+    sokcetOut = []
+    sokcetSub = []
+    sokcetSch = []
 
     def __init__(self):
         self.instance = QUiLoader().load(resource_path('views/settings.ui'), None)
@@ -73,8 +83,20 @@ class Settings():
         self.setTableData('list_sk')
 
         self.socketHd = self.loadJsonFile('TB_SK_MSG_HD')
-        logger.info(self.socketHd)
         self.setTableData('list_hd')
+        self.socketHdDt = self.loadJsonFile('TB_SK_MSG_HD_DT')
+
+        self.socketBody = self.loadJsonFile('TB_SK_MSG_BODY')
+        self.socketBodyDt = self.loadJsonFile('TB_SK_MSG_BODY_DT')
+        self.socketVal = self.loadJsonFile('TB_SK_MSG_VAL')
+        self.sokcetBz = self.loadJsonFile('TB_SK_PKG_SK_BZ')
+        self.sokcetIn = self.loadJsonFile('TB_SK_PKG_SK_IN')
+        self.sokcetInToOut = self.loadJsonFile('TB_SK_PKG_SK_IN_TO_OUT')
+        self.sokcetOut = self.loadJsonFile('TB_SK_PKG_SK_OUT')
+        self.sokcetSub = self.loadJsonFile('TB_SK_PKG_SK_SUB')
+        self.sokcetSch = self.loadJsonFile('TB_SK_PKG_SCH')
+
+
 
 
     def save_clicked(self):
@@ -96,7 +118,24 @@ class Settings():
 
         logger.info(self.sokcetList[row])
 
+    def delete_clicked(self):
+        # button = self.sender()
+        button = self.instance.focusWidget()
+        table = button.parentWidget().parentWidget() #버튼의 상위 위젯을 찾는다
+        index = table.indexAt(button.pos())
+        jsonData = {}
+        if index.isValid():
+            row = index.row()   # column = index.column()
+            tableNm = table.objectName()
+            if(tableNm == 'list_sk'):
+                # self.sokcetList[0].keys()
+                idx = 0
+                for key in self.sokcetList[0].keys():
+                    jsonData[key] = table.item(row,idx).text()
+                    idx = idx+1
+                self.sokcetList[row] = jsonData
 
+        logger.info(self.sokcetList[row])
 
     def setTableData(self, target):
         try:
@@ -113,11 +152,9 @@ class Settings():
                     for j, item in enumerate(row):
                         last = last+1
                         self.instance.list_sk.setItem(i, j, QTableWidgetItem(row[item]))
-                    button = QPushButton('저장')
+                    button = QPushButton('삭제')
                     button.clicked.connect(self.save_clicked)
                     self.instance.list_sk.setCellWidget(i, last, button)
-
-
 
             elif(target == 'list_hd'):
                 # 데이터의 행과 열 수를 얻습니다.
