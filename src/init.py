@@ -34,8 +34,10 @@ class InitClass():
     saveSkWindow = None
     qLoader = None
     list_table = None
+    initData = None # 초기데이터 초기화 클래스
 
     def __init__(self):
+
         logger.info('init UI start')
 
         self.qLoader = QUiLoader()
@@ -46,6 +48,7 @@ class InitClass():
         self.mainLayOut.setWindowTitle('application')
         self.mainLayOut.btn_settings.clicked.connect(self.settings)
         self.mainLayOut.show()
+
         # 설정팝업
         self.popup = Settings()
         self.setEvent()
