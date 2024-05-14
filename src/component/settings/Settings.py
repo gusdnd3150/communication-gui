@@ -43,24 +43,37 @@ class Settings():
         self.loadData()
 
     def setEvent(self):
-        self.instance.btn_addData.clicked.connect(self.addData)
+        self.instance.btn_addSk.clicked.connect(self.addSk)
+        self.instance.btn_delSk.clicked.connect(self.delSk)
 
 
-    def addData(self):
+
+    def addControll(self, target):
+        logger.info('addControll :'+ target)
         try:
-            logger.info("addData")
-            if self.saveSkWindow.instance.isVisible():
-                self.saveSkWindow.instance.hide()
-                self.saveSkWindow.clearForm()
-            else:
-                # 0: sk, 1: sk_in
-                tapIndex =self.instance.tap_info.currentIndex()
-                self.saveSkWindow.setForm(tapIndex,self.sokcetList[0].keys())
-                self.saveSkWindow.instance.show()
+
+            if(target == 'list_sk'): # sk add 버튼
+                logger.info('add')
+
+
+            # logger.info("addData")
+            # if self.saveSkWindow.instance.isVisible():
+            #     self.saveSkWindow.instance.hide()
+            #     self.saveSkWindow.clearForm()
+            # else:
+            #     # 0: sk, 1: sk_in
+            #     tapIndex = self.instance.tap_info.currentIndex()
+            #     self.saveSkWindow.setForm(tapIndex, self.sokcetList[0].keys())
+            #     self.saveSkWindow.instance.show()
         except:
             print('s')
 
 
+    def addSk(self):
+        self.addControll('list_sk')
+
+    def delSk(self):
+        self.addControll('list_sk')
 
 
     def loadData(self):

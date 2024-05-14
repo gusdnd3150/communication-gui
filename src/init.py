@@ -46,7 +46,7 @@ class InitClass():
         #메인창
         self.mainLayOut = self.qLoader.load(resource_path('main.ui'), None)
         self.mainLayOut.setWindowTitle('application')
-        self.mainLayOut.btn_settings.clicked.connect(self.settings)
+        self.mainLayOut.btn_settings.clicked.connect(self.open_settings)
         self.mainLayOut.show()
 
         # 설정팝업
@@ -68,7 +68,7 @@ class InitClass():
 
 
 
-    def settings(self):
+    def open_settings(self):
         logger.info('tesst')
         if self.popup.instance.isVisible():
             self.popup.instance.hide()
