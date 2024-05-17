@@ -22,11 +22,13 @@ class InitData():
     sokcetOut = []
     sokcetSub = []
     sokcetSch = []
-
+    initYn = False
 
     def __init__(self):
         logger.info('InitData created')
-        self.loadData()
+        if(self.initYn == False):
+            self.loadData()
+            self.initYn = True
 
     def loadData(self):
         self.sokcetList = self.loadJsonFile('TB_SK_PKG_SK')

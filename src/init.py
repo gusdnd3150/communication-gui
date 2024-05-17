@@ -1,10 +1,16 @@
 import sys
+import traceback
+
 import os
+
+from src.protocols.tcp.SocketServer import SocketServer
+from src.protocols.tcp.SocketClient import SocketClient
 
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
 
-
+# from src.utils.Container import Container
+from src.utils.InitData import InitData
 from PySide6 import QtWidgets
 from PySide6.QtUiTools import QUiLoader
 
@@ -35,11 +41,15 @@ class InitClass():
     qLoader = None
     list_table = None
     initData = None # 초기데이터 초기화 클래스
+    
+    runSkList= [] #구동중인 소켓
 
     def __init__(self):
+        # container = Container()
+        # initData = container.InitData_bean
+        self.initData =InitData()
 
         logger.info('init UI start')
-
         self.qLoader = QUiLoader()
         app = QtWidgets.QApplication(sys.argv)
 
@@ -47,13 +57,51 @@ class InitClass():
         self.mainLayOut = self.qLoader.load(resource_path('main.ui'), None)
         self.mainLayOut.setWindowTitle('application')
         self.mainLayOut.btn_settings.clicked.connect(self.open_settings)
+        self.mainLayOut.btn_start.clicked.connect(self.start_sk)
         self.mainLayOut.show()
 
         # 설정팝업
-        self.popup = Settings()
+        self.popup = Settings(self.initData)
         self.setEvent()
         self.setInitData()
         app.exec()
+
+    def start_sk(self):
+        try:
+            logger.info('socket List start')
+            skList = self.initData.sokcetList
+            for i , item in enumerate(skList):
+                useYn = item['USE_YN']
+                if(useYn =='Y'):
+                    threadInfo = None
+
+                    skTy = item['SK_TYPE']
+                    skConTy = item['SK_CONN_TYPE']
+                    skId = item['SK_ID']
+
+                    if(skTy == 'TCP'):
+                        if(skConTy=='SERVER'):
+                            threadInfo = SocketServer(item)
+                        elif (skConTy == 'CLIENT'):
+                            threadInfo = SocketClient(item)
+                        threadInfo.daemon = True
+                        threadInfo.start()
+
+
+                    elif(skTy == 'UDP'):
+                        if (skConTy == 'SERVER'):
+                            threadInfo = SocketServer(item)
+                        elif (skConTy == 'CLIENT'):
+                            threadInfo = SocketClient(item)
+                        threadInfo.daemon = True
+                        threadInfo.start()
+
+                    else:
+                        logger.info('None Condition')
+
+        except:
+            traceback.print_stack()
+
 
     def setEvent(self):
         # self.popup

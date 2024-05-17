@@ -2,7 +2,6 @@
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QTabWidget, QPushButton, QCheckBox
 import json
-from src.utils.Container import Container
 from src.component.settings.SaveSocketPopup import SaveSocketPopup
 import sys
 import os
@@ -27,9 +26,8 @@ class Settings():
     saveSkWindow = None
     initData = None
 
-    def __init__(self):
-        container = Container()
-        self.initData = container.InitData_bean
+    def __init__(self, initData):
+        self.initData = initData
 
         self.instance = QUiLoader().load(resource_path('views/settings.ui'), None)
         self.instance.setWindowTitle('설정')
@@ -53,8 +51,15 @@ class Settings():
         try:
 
             if(target == 'list_sk'): # sk add 버튼
-                logger.info('add')
+                logger.info('add row : list_sk')
+                addIndex = self.instance.list_sk.rowCount()
 
+                # self.instance.list_sk.setItem(QTableWidgetItem())
+                # self.instance.list_sk.insertRow(addIndex)
+
+                for index, item in enumerate(self.initData.sokcetList[0]):
+                    logger.info(str(addIndex))
+                    self.instance.list_sk.setItem(addIndex, index, QTableWidgetItem(''))
 
             # logger.info("addData")
             # if self.saveSkWindow.instance.isVisible():
@@ -66,7 +71,7 @@ class Settings():
             #     self.saveSkWindow.setForm(tapIndex, self.sokcetList[0].keys())
             #     self.saveSkWindow.instance.show()
         except:
-            print('s')
+            traceback.print_exception()
 
 
     def addSk(self):
@@ -79,6 +84,12 @@ class Settings():
     def loadData(self):
         self.setTableData('list_sk')
         self.setTableData('list_hd')
+        self.setTableData('list_hd_dt')
+        self.setTableData('list_in')
+        self.setTableData('list_msg')
+        self.setTableData('list_msg_dt')
+        self.setTableData('list_dt_val')
+        self.setTableData('list_sch')
 
 
 
@@ -126,11 +137,11 @@ class Settings():
         try:
             if(target == 'list_sk'):
                 # 데이터의 행과 열 수를 얻습니다.
-                list = self.initData().sokcetList
+                list = self.initData.sokcetList
                 rows = len(list)
                 cols = len(list[0]) if rows > 0 else 0
                 self.instance.list_sk.setRowCount(rows)  # Table의 행을 설정, list의 길이
-                self.instance.list_sk.setColumnCount(cols+1)
+                self.instance.list_sk.setColumnCount(cols)
                 self.instance.list_sk.setHorizontalHeaderLabels(list[0].keys())
                 # 데이터를 테이블에 삽입
                 for i, row in enumerate(list):
@@ -138,22 +149,100 @@ class Settings():
                     for j, item in enumerate(row):
                         last = last+1
                         self.instance.list_sk.setItem(i, j, QTableWidgetItem(row[item]))
-                    button = QPushButton('삭제')
-                    button.clicked.connect(self.save_clicked)
-                    self.instance.list_sk.setCellWidget(i, last, button)
+                    # button = QPushButton('삭제')
+                    # button.clicked.connect(self.save_clicked)
+                    # self.instance.list_sk.setCellWidget(i, last, button)
 
             elif(target == 'list_hd'):
                 # 데이터의 행과 열 수를 얻습니다.
-                list = self.initData().socketHd
+                list = self.initData.socketHd
                 rows = len(list)
                 cols = len(list[0]) if rows > 0 else 0
                 self.instance.list_hd.setRowCount(rows)  # Table의 행을 설정, list의 길이
-                self.instance.list_hd.setColumnCount(cols+1)
+                self.instance.list_hd.setColumnCount(cols)
                 self.instance.list_hd.setHorizontalHeaderLabels(list[0].keys())
                 # 데이터를 테이블에 삽입
                 for i, row in enumerate(list):
                     for j, item in enumerate(row):
                         self.instance.list_hd.setItem(i, j, QTableWidgetItem(row[item]))
+            elif (target == 'list_hd_dt'):
+                # 데이터의 행과 열 수를 얻습니다.
+                list = self.initData.socketHdDt
+                rows = len(list)
+                cols = len(list[0]) if rows > 0 else 0
+                self.instance.list_hd_dt.setRowCount(rows)  # Table의 행을 설정, list의 길이
+                self.instance.list_hd_dt.setColumnCount(cols)
+                self.instance.list_hd_dt.setHorizontalHeaderLabels(list[0].keys())
+                # 데이터를 테이블에 삽입
+                for i, row in enumerate(list):
+                    for j, item in enumerate(row):
+                        self.instance.list_hd_dt.setItem(i, j, QTableWidgetItem(row[item]))
+            elif (target == 'list_in'):
+                # 데이터의 행과 열 수를 얻습니다.
+                list = self.initData.sokcetIn
+                rows = len(list)
+                cols = len(list[0]) if rows > 0 else 0
+                self.instance.list_in.setRowCount(rows)  # Table의 행을 설정, list의 길이
+                self.instance.list_in.setColumnCount(cols)
+                self.instance.list_in.setHorizontalHeaderLabels(list[0].keys())
+                # 데이터를 테이블에 삽입
+                for i, row in enumerate(list):
+                    for j, item in enumerate(row):
+                        self.instance.list_in.setItem(i, j, QTableWidgetItem(row[item]))
+
+
+            elif (target == 'list_msg'):
+                # 데이터의 행과 열 수를 얻습니다.
+                list = self.initData.socketBody
+                rows = len(list)
+                cols = len(list[0]) if rows > 0 else 0
+                self.instance.list_msg.setRowCount(rows)  # Table의 행을 설정, list의 길이
+                self.instance.list_msg.setColumnCount(cols)
+                self.instance.list_msg.setHorizontalHeaderLabels(list[0].keys())
+                # 데이터를 테이블에 삽입
+                for i, row in enumerate(list):
+                    for j, item in enumerate(row):
+                        self.instance.list_msg.setItem(i, j, QTableWidgetItem(row[item]))
+
+            elif (target == 'list_msg_dt'):
+                # 데이터의 행과 열 수를 얻습니다.
+                list = self.initData.socketBodyDt
+                rows = len(list)
+                cols = len(list[0]) if rows > 0 else 0
+                self.instance.list_msg_dt.setRowCount(rows)  # Table의 행을 설정, list의 길이
+                self.instance.list_msg_dt.setColumnCount(cols)
+                self.instance.list_msg_dt.setHorizontalHeaderLabels(list[0].keys())
+                # 데이터를 테이블에 삽입
+                for i, row in enumerate(list):
+                    for j, item in enumerate(row):
+                        self.instance.list_msg_dt.setItem(i, j, QTableWidgetItem(row[item]))
+
+            elif (target == 'list_dt_val'):
+                # 데이터의 행과 열 수를 얻습니다.
+                list = self.initData.socketVal
+                rows = len(list)
+                cols = len(list[0]) if rows > 0 else 0
+                self.instance.list_dt_val.setRowCount(rows)  # Table의 행을 설정, list의 길이
+                self.instance.list_dt_val.setColumnCount(cols)
+                self.instance.list_dt_val.setHorizontalHeaderLabels(list[0].keys())
+                # 데이터를 테이블에 삽입
+                for i, row in enumerate(list):
+                    for j, item in enumerate(row):
+                        self.instance.list_dt_val.setItem(i, j, QTableWidgetItem(row[item]))
+
+            elif (target == 'list_sch'):
+                # 데이터의 행과 열 수를 얻습니다.
+                list = self.initData.sokcetSch
+                rows = len(list)
+                cols = len(list[0]) if rows > 0 else 0
+                self.instance.list_sch.setRowCount(rows)  # Table의 행을 설정, list의 길이
+                self.instance.list_sch.setColumnCount(cols)
+                self.instance.list_sch.setHorizontalHeaderLabels(list[0].keys())
+                # 데이터를 테이블에 삽입
+                for i, row in enumerate(list):
+                    for j, item in enumerate(row):
+                        self.instance.list_sch.setItem(i, j, QTableWidgetItem(row[item]))
+
         except:
             traceback.print_stack()
 
