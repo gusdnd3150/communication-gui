@@ -99,8 +99,13 @@ class InitClass():
                     else:
                         logger.info('None Condition')
 
-        except:
-            traceback.print_stack()
+                    # 구동 소켓 리스트 메모리 저장
+                    self.runSkList.append(threadInfo)
+
+        except :
+            logger.info('exception')
+            traceback.print_exception()
+            # traceback.print_stack()
 
 
     def setEvent(self):

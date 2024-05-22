@@ -43,11 +43,11 @@ class SocketClient(threading.Thread):
         self.name = data['SK_ID']+'-thread'  # 스레드 이름 설정
         self.skIp =  data['SK_IP']
         self.skPort = int(data['SK_PORT'])
-        threading.Thread.__init__(self)
+        super().__init__()
 
     def initClient(self):
+        logger.info('TCP Client Start : ' + self.skId + ' ::' + ' IP :' + self.skIp + ':' + str(self.skPort) + ' -- ' + threading.currentThread().getName())
         try:
-            logger.info('TCP Client Start : ' + self.skId + ' ::' + threading.currentThread().getName())
             self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.client_socket.connect((self.skIp, int(self.skPort)))
             self.tryCount = 0
@@ -59,6 +59,7 @@ class SocketClient(threading.Thread):
                 if not data:
                     break
                 byte_array = bytearray(data)
+                logger.info('recive Data : '+str(byte_array))
                 # self.mainInstance.reciveSocketData(byte_array)
 
         except:
@@ -69,7 +70,7 @@ class SocketClient(threading.Thread):
             # logger.info('client connect try count :: ' + str(self.tryCount))
             time.sleep(5)
             self.initClient()
-            traceback.print_exc()
+
 
     def run(self):
         self.initClient()
