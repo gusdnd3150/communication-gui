@@ -14,9 +14,9 @@ class SocketServer(threading.Thread):
     skPort = 0
     isRun = False
     tryCount = 0
-    client_list = []
     delimiter = b''
     server = None
+    client_list = []
     error_list= []
 
     def __init__(self, data):
@@ -29,8 +29,7 @@ class SocketServer(threading.Thread):
 
 
     def initServer(self):
-        logger.info('TCP SERVER Start : ' + self.skId + ' ::' + ' IP :' + self.skIp + ':' + str(
-            self.skPort) + ' -- ' + threading.currentThread().getName())
+        logger.info('TCP SERVER Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
         try:
             self.isRun = True
             server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -51,6 +50,7 @@ class SocketServer(threading.Thread):
                 for error in excpetions:
                     print(error)
         except:
+            logger.info('TCP SERVER Bind exception : SK_ID={}'.format(self.skId))
             self.isRun = False
             traceback.print_stack()
 
@@ -60,7 +60,6 @@ class SocketServer(threading.Thread):
         dataBuf = bytearray()  # 대기 버퍼
         try:
             while self.isRun:
-
                 data = newClient.recv(70000)
                 if not data:
                     break
