@@ -29,6 +29,7 @@ class SocketClient(threading.Thread):
     # REG_DT
     # UPD_DT
     # SK_LOG
+    # 조인+ HD
 
     initData = {}
     skId = ''
@@ -67,7 +68,6 @@ class SocketClient(threading.Thread):
             self.client_socket = None
             self.isRun = False
             self.tryCount = self.tryCount + 1
-            # logger.info('client connect try count :: ' + str(self.tryCount))
             time.sleep(5)
             logger.info('Retry connection SK_ID={} IP={} PORT={} '.format(self.skId, self.skIp, self.skPort))
             self.initClient()

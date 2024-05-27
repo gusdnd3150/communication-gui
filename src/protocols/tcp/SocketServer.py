@@ -5,6 +5,8 @@ from conf.logconfig import logger
 import threading
 import socket
 import select
+import io
+from src.protocols.tcp.msg.msg.FreeCodec import FreeCodec
 
 class SocketServer(threading.Thread):
 
@@ -14,17 +16,26 @@ class SocketServer(threading.Thread):
     skPort = 0
     isRun = False
     tryCount = 0
+
     delimiter = b''
     server = None
     client_list = []
     error_list= []
+    maxLen = 0
+    minLen = 0
+    hdType= ''
+
 
     def __init__(self, data):
+        logger.info(data)
         self.initData = data
         self.skId = data['SK_ID']
         self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
         self.skIp = data['SK_IP']
+        self.hdType = data['HD_TYPE']
         self.skPort = int(data['SK_PORT'])
+        self.maxLen = int(data['MAX_LENGTH'])
+        self.minLen = int(data['MIN_LENGTH'])
         super().__init__()
 
 
@@ -57,30 +68,59 @@ class SocketServer(threading.Thread):
 
     def recive_handler(self,newClient, addr ):
         logger.info('[Client Connected]::')
-        dataBuf = bytearray()  # 대기 버퍼
+        # dataStream = io.BytesIO()
+        dataStream = bytearray()
         try:
             while self.isRun:
-                data = newClient.recv(70000)
+                data = newClient.recv(self.maxLen)
                 if not data:
                     break
 
-                if self.delimiter != b'':
-                    dataBuf.extend(data)  # 버퍼에 쌓아둠
-                    # messages = dataBuf.split(b"\x00")
-                    messages = dataBuf.split(self.delimiter)
-                    if len(messages) > 1:
-                        for bytes in messages:
-                            if len(bytes) > 0:
-                                # self.serverReviceMsgMethod(bytes, '{}:{}'.format(addr[0], str(addr[1])))
-                                logger.info('revice Data : ' + str(bytes))
-                            del dataBuf[0:len(bytes) + 1]
-                else:
-                    logger.info('revice Data : '+ str(data))
+                dataStream.extend(data)
+                totalByte = len(dataStream)
+                msgCodec = None
+                if(totalByte > self.minLen):
+
+                    if(self.hdType == 'FREE'):
+                        msgCodec = FreeCodec(self.initData)
+                    else:
+                        break
+
+                    passYn = msgCodec.concyctencyCheck(dataStream.copy())
+                    if(passYn == False):
+                        logger.info('concyctencyCheck :: False')
+                        continue
+
+                    readData = dataStream.read(5)
+                    logger.info('read totalByte:' + str(totalByte))
+                    logger.info('read :' + str(readData))
+
+                    # 읽은 데이터만큼 버퍼를 자름
+                    # remainingData = dataStream.read()
+                    # logger.info('remainingData :' + str(remainingData))
+                    # dataStream.truncate(0)
+                    # dataStream = io.BytesIO(remainingData)
+
+                        # if self.delimiter != b'':
+                #     dataBuf.extend(data)  # 버퍼에 쌓아둠
+                #     # messages = dataBuf.split(b"\x00")
+                #     messages = dataBuf.split(self.delimiter)
+                #     if len(messages) > 1:
+                #         for bytes in messages:
+                #             if len(bytes) > 0:
+                #                 # self.serverReviceMsgMethod(bytes, '{}:{}'.format(addr[0], str(addr[1])))
+                #                 logger.info('revice Data : ' + str(bytes))
+                #             del dataBuf[0:len(bytes) + 1]
+                # else:
+                #     logger.info('revice Data : '+ str(data))
         except:
             traceback.print_exc()
-            dataBuf = None
+            dataStream.close()
+
         finally:
             newClient.close()
 
     def run(self):
         self.initServer()
+
+

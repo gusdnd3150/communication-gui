@@ -61,7 +61,7 @@ class InitClass():
         self.mainLayOut.show()
 
         # 설정팝업
-        self.popup = Settings(self.initData)
+        # self.popup = Settings(self.initData)
         self.setEvent()
         self.setInitData()
         app.exec()
