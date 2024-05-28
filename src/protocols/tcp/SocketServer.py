@@ -62,7 +62,7 @@ class SocketServer(threading.Thread):
                     print(error)
         except:
             logger.info('TCP SERVER Bind exception : SK_ID={}'.format(self.skId))
-            self.isRun = False
+            # self.isRun = False 서버는 살아있어야함
             traceback.print_stack()
 
 
@@ -90,17 +90,11 @@ class SocketServer(threading.Thread):
                     if(passYn == False):
                         logger.info('concyctencyCheck :: False')
                         continue
+                    logger.info('concyctencyCheck :: True')
 
-                    readData = dataStream.read(5)
-                    logger.info('read totalByte:' + str(totalByte))
-                    logger.info('read :' + str(readData))
+                    msgCodec.setReviceBtyes(dataStream)
 
-                    # 읽은 데이터만큼 버퍼를 자름
-                    # remainingData = dataStream.read()
-                    # logger.info('remainingData :' + str(remainingData))
-                    # dataStream.truncate(0)
-                    # dataStream = io.BytesIO(remainingData)
-
+                    msgCodec.test()
                         # if self.delimiter != b'':
                 #     dataBuf.extend(data)  # 버퍼에 쌓아둠
                 #     # messages = dataBuf.split(b"\x00")
@@ -115,10 +109,9 @@ class SocketServer(threading.Thread):
                 #     logger.info('revice Data : '+ str(data))
         except:
             traceback.print_exc()
-            dataStream.close()
-
-        finally:
             newClient.close()
+        finally:
+            logger.info('Client Close')
 
     def run(self):
         self.initServer()
