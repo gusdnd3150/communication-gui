@@ -15,17 +15,7 @@ class SocketServer(threading.Thread):
     skId = ''
     skIp = ''
     skPort = 0
-    isRun = False
-    tryCount = 0
-
-    delimiter = b''
     server = None
-    client_list = []
-    error_list= []
-    maxLen = 0
-    minLen = 0
-    hdType= ''
-
 
     def __init__(self, data):
         logger.info(data)
@@ -33,10 +23,7 @@ class SocketServer(threading.Thread):
         self.skId = data['SK_ID']
         self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
         self.skIp = data['SK_IP']
-        self.hdType = data['HD_TYPE']
         self.skPort = int(data['SK_PORT'])
-        self.maxLen = int(data['MAX_LENGTH'])
-        self.minLen = int(data['MIN_LENGTH'])
         super().__init__()
 
     def run(self):

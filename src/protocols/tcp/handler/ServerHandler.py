@@ -4,27 +4,60 @@ import traceback
 from conf.logconfig import logger
 import threading
 import queue
+from src.protocols.tcp.msg.msg.FreeCodec import FreeCodec
 
 class ServerHandler(socketserver.StreamRequestHandler):
 
     initData = None
+    delimiter = b''
+
+
+    #############
     skId = ''
     pipeBytes = queue.Queue()
     client_list= []
 
     def handle(self):
         try:
+
+
+            if (self.initData['SK_DELIMIT_TYPE'] != ''):
+                self.delimiter = int(self.initData['SK_DELIMIT_TYPE'], 16).to_bytes(1, byteorder='big')
+            buffer = bytearray()
             while True:
                 cur_thread = threading.current_thread()
-                data = self.request.recv(self.initData['MAX_LENGTH']).decode('utf-8')
-                if not data:
+                reciveBytes = self.request.recv(self.initData['MAX_LENGTH'])
+                if not reciveBytes:
                     break
+                buffer.extend(reciveBytes)
 
-                response = bytes("{}: {}".format(cur_thread.name, data), 'ascii')
-                print(f'데이터:{data}')
-                # self.request.sendall(response)
+                # 최소길이 확보
+                if (self.initData['MIN_LENGTH'] > len(buffer)):
+                    continue
 
-                self.sendAllClient(response)
+                codec = None
+                if (self.initData['HD_TYPE'] == 'FREE'):
+                    codec = FreeCodec(self.initData)
+
+                elif (self.initData['HD_TYPE'] == 'LENGTH'):
+                    codec = FreeCodec(self.initData)
+
+
+                reableLengthArr = codec.concyctencyCheck(buffer)
+
+                if(len(reableLengthArr) == 0):
+                    logger.info('consystency False')
+                    continue
+                logger.info('consystency True')
+
+                for index, readLegnth in enumerate(reableLengthArr):
+                    logger.info(f' readLegnth : {readLegnth}')
+                    readByte = buffer[:readLegnth]
+                    reciveThread = threading.Thread(target=self.onReciveData, args=(readByte,))
+                    reciveThread.daemon = True
+                    reciveThread.start()
+                    del buffer[0:readLegnth]
+
         except TimeoutError:
             logger.info(f"SK_ID:{self.initData['SK_ID']} Client IDLE READ: {self.client_address[0]}:{self.client_address[1]}")
             self.handle()
@@ -40,7 +73,7 @@ class ServerHandler(socketserver.StreamRequestHandler):
 
     def finish(self):
         self.client_list.remove(self.request)
-        logger.info(f" SK_ID:{self.initData['SK_ID']} Close Client : {self.client_address[0]}:{self.client_address[1]}")
+        logger.info(f" SK_ID:{self.initData['SK_ID']} Close Client : {self.client_address[0]}:{self.client_address[1]} and client_list size : {len(self.client_list)}")
 
 
 
@@ -57,3 +90,13 @@ class ServerHandler(socketserver.StreamRequestHandler):
                     logger.error(f"Error sending message to {sock.getpeername()}: {e}")
         except:
             traceback.print_exc()
+
+
+
+    def onReciveData(self, msgBytes):
+        try:
+            logger.info(f'onReciveData bytes :{str(msgBytes)}')
+
+            self.sendAllClient(msgBytes)
+        except Exception as e:
+            logger.info(f' onReciveData Exception :{e}')

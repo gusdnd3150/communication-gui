@@ -50,6 +50,7 @@ class InitClass():
         # container = Container()
         # initData = container.InitData_bean
         self.initData =InitData()
+        self.initData.loadDb()
 
         logger.info('init UI start')
         self.qLoader = QUiLoader()

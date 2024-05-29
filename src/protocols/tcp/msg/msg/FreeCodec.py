@@ -27,15 +27,17 @@ class FreeCodec(Decoder):
 
 
     def concyctencyCheck(self,copyBytes):
-        result = False
+        result = []
+        # 구분자를 통해 패킷을 나누고 패킷별로 읽어들일 개수를 배열로 반환
         try:
             if(self.delimiter != b''):
-                # if(copyBytes.find(self.delimiter) != -1):
-                #     result = True
                 messages = copyBytes.split(self.delimiter)
                 if len(messages) > 1:
-                    result = True
-
+                    for index, msg in enumerate(messages):
+                        if(len(msg)>0):
+                            result.append(len(msg)+1)
+            else:
+                result.append(len(copyBytes))
         except:
             traceback.print_exc()
 

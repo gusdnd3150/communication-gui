@@ -30,7 +30,9 @@ class InitData():
     def __init__(self):
         logger.info('InitData created')
         # self.loadData()
-        self.loadDb()
+        # self.loadDb()
+
+
 
     def loadData(self):
         print()
