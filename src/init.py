@@ -6,6 +6,8 @@ import os
 from src.protocols.tcp.SocketServer import SocketServer
 from src.protocols.tcp.SocketClient import SocketClient
 
+
+
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
 
@@ -84,8 +86,7 @@ class InitClass():
                             threadInfo = SocketServer(item)
                         elif (skConTy == 'CLIENT'):
                             threadInfo = SocketClient(item)
-                        threadInfo.daemon = True
-                        threadInfo.start()
+
 
 
                     elif(skTy == 'UDP'):
@@ -93,11 +94,15 @@ class InitClass():
                             threadInfo = SocketServer(item)
                         elif (skConTy == 'CLIENT'):
                             threadInfo = SocketClient(item)
-                        threadInfo.daemon = True
-                        threadInfo.start()
+                        # threadInfo.daemon = True
+                        # threadInfo.start()
 
                     else:
                         logger.info('None Condition')
+
+                    threadInfo.daemon = True
+                    threadInfo.start()
+                    # threadInfo.run()
 
                     # 구동 소켓 리스트 메모리 저장
                     self.runSkList.append(threadInfo)

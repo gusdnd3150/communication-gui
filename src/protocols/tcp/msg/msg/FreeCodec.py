@@ -28,9 +28,7 @@ class FreeCodec(Decoder):
 
     def concyctencyCheck(self,copyBytes):
         result = False
-
         try:
-
             if(self.delimiter != b''):
                 # if(copyBytes.find(self.delimiter) != -1):
                 #     result = True
@@ -45,7 +43,6 @@ class FreeCodec(Decoder):
 
 
     def test(self):
-
         logger.info('pasing data : '+ str(self.bodyBytes))
 
     def setReviceBtyes(self, reciveBytes):
