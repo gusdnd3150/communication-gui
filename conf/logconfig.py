@@ -27,7 +27,7 @@ def setup_global_logger():
     file_handler.setFormatter(log_format)
     # 로거에 파일 핸들러 추가
     logger.addHandler(file_handler)
-
+    print('test')
     return logger
 
 # 전역 로거 설정

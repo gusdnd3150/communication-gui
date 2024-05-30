@@ -7,6 +7,9 @@ from src.utils.InitData import InitData
 
 # Bean 설정 클래스
 class Container(containers.DeclarativeContainer):
-    logger.info('')
-    # InitData_bean = providers.Factory(InitData)
-    # car_factory = providers.Factory(Car,tier=common_tier_factory)
+
+    logger.info('Container start')
+    # InitData_bean = providers.Singleton(InitData)
+
+
+

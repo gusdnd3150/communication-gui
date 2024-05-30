@@ -5,10 +5,12 @@ import traceback
 import json
 from conf.logconfig import logger
 import sqlite3
-from src.utils.QueryString import *
+from conf.QueryString import *
 
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
+
+testBody =[]
 
 class InitData():
 
@@ -90,6 +92,7 @@ class InitData():
 
             self.sokcetList = skList
             self.socketBody = msgList
+            testBody = msgList
             self.sokcetIn = inlist
             self.sokcetOut = outlist
             self.sokcetSch = schlist

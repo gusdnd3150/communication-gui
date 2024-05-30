@@ -9,6 +9,5 @@ class ReciveHandler():
         logger.info('test')
 
 
-
     def onReciveData(self):
         print()

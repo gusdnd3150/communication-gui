@@ -3,6 +3,9 @@ import io
 from src.protocols.tcp.msg.Decoder import Decoder
 import traceback
 from conf.logconfig import logger
+
+from src.utils.Container import Container
+from src.utils.InitData import testBody
 class FreeCodec(Decoder):
 
     initData = None
@@ -10,15 +13,16 @@ class FreeCodec(Decoder):
     bodyList = []
     hdId = ''
     delimiter = b''
-
     hdBytes= bytearray()
     bodyBytes = bytearray()
-
+    
     def __init__(self, initData):
-        logger.info(initData)
+
         self.initData=initData
         self.hdId = initData['HD_ID']
-
+        # InitData()
+        logger.info(' 메시지 '+ str(testBody))
+        
         if initData.get(self.hdId) is not None:
             self.hdList = initData[self.hdId]
 
@@ -38,8 +42,8 @@ class FreeCodec(Decoder):
                             result.append(len(msg)+1)
             else:
                 result.append(len(copyBytes))
-        except:
-            traceback.print_exc()
+        except Exception as e:
+            logger.info(f'concyctencyCheck Exception : {e}')
 
         return result
 

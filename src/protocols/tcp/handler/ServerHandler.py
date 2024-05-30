@@ -11,7 +11,6 @@ class ServerHandler(socketserver.StreamRequestHandler):
     initData = None
     delimiter = b''
 
-
     #############
     skId = ''
     pipeBytes = queue.Queue()
@@ -19,7 +18,6 @@ class ServerHandler(socketserver.StreamRequestHandler):
 
     def handle(self):
         try:
-
 
             if (self.initData['SK_DELIMIT_TYPE'] != ''):
                 self.delimiter = int(self.initData['SK_DELIMIT_TYPE'], 16).to_bytes(1, byteorder='big')
@@ -41,7 +39,6 @@ class ServerHandler(socketserver.StreamRequestHandler):
 
                 elif (self.initData['HD_TYPE'] == 'LENGTH'):
                     codec = FreeCodec(self.initData)
-
 
                 reableLengthArr = codec.concyctencyCheck(buffer)
 
