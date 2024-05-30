@@ -48,16 +48,23 @@ class ServerHandler(socketserver.StreamRequestHandler):
                 logger.info('consystency True')
 
                 for index, readLegnth in enumerate(reableLengthArr):
-                    logger.info(f' readLegnth : {readLegnth}')
                     readByte = buffer[:readLegnth]
-                    totlaBytes = readByte.copy()
-                    data = codec.convertRecieData(readByte)
-                    data['TOTAL_BYTES'] = totlaBytes
+                    try:
+                        logger.info(f' readLegnth : {readLegnth}')
 
-                    reciveThread = threading.Thread(target=self.onReciveData, args=(data,))
-                    reciveThread.daemon = True
-                    reciveThread.start()
-                    del buffer[0:readLegnth]
+                        totlaBytes = readByte.copy()
+                        data = codec.convertRecieData(readByte)
+                        data['TOTAL_BYTES'] = totlaBytes
+
+                        reciveThread = threading.Thread(target=self.onReciveData, args=(data,))
+                        reciveThread.daemon = True
+                        reciveThread.start()
+
+                    except Exception as e:
+                        logger.info(f' Msg convert Exception : {e}')
+                    finally:
+                        del buffer[0:readLegnth]
+
 
         except TimeoutError:
             logger.info(f"SK_ID:{self.initData['SK_ID']} Client IDLE READ: {self.client_address[0]}:{self.client_address[1]}")

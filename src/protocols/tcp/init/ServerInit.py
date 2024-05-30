@@ -12,7 +12,7 @@ class ServerInit(socketserver.ThreadingMixIn, socketserver.TCPServer):
     def __init__(self, iniData):
         self.initData = iniData
         self.daemon_threads = True
-        ServerHandler.timeout = 5 #idle
+        # ServerHandler.timeout = 5 #idle
         ServerHandler.initData = iniData
         self.handler = ServerHandler
         super().__init__((iniData['SK_IP'], int(iniData['SK_PORT'])), self.handler)

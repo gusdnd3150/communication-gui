@@ -9,7 +9,6 @@ class FreeCodec(Decoder):
 
     initData = None
     hdList = []
-    bodyList = socketBody
     hdId = ''
     hdLen = 0
 
@@ -40,22 +39,6 @@ class FreeCodec(Decoder):
                         if(len(msg)>0):
                             result.append(len(msg)+1)
             else:
-                # msgLen = len(copyBytes)
-                # hdLen = self.initData['HD_LEN']
-                # bodyLen = 0
-                #
-                # logger.info(f'해더 길이 : {hdLen}')
-                # logger.info(f'메시지 길이 : {msgLen}')
-                # for index, indata in enumerate(sokcetIn):
-                #     if indata.get('IN_SK_ID') == self.initData.get('SK_ID'):
-                #         # logger.info(indata.get('IN_MSG_ID'))
-                #         for index, item in enumerate(socketBody):
-                #             if indata.get('IN_MSG_ID') == item.get('MSG_ID'):
-                #                 logger.info(item)
-                #                 bodyLen = item.get('MSG_LEN')
-                #
-                # packetLen = hdLen+bodyLen
-                # if()
                 result.append(len(copyBytes))
 
         except Exception as e:
@@ -65,35 +48,33 @@ class FreeCodec(Decoder):
 
 
     def convertRecieData(self, msgBytes):
-        try:
-            logger.info('convertRecieData')
-            returnData = {}
-            hdLen = self.hdLen
-            bodyLen = 0
 
-            logger.info(self.hdList)
+        returnData = {}
+        mid = None
+        msgbody = None
 
-            for index, hd in enumerate(self.hdList):
-                read = msgBytes[:hd['DT_LEN']]
-                if hd['DT_TYPE'] == 'STRING':
-                    returnData[hd['DT_ID']] = read.decode('utf-8-sig').strip()
-                elif hd['DT_TYPE'] == 'INT':
-                    returnData[hd['DT_ID']]  = int.from_bytes(read, byteorder='big')
-                elif hd['DT_TYPE'] == 'SHORT':
-                    returnData[hd['DT_ID']]  = int.from_bytes(read, byteorder='big', signed=True)
-                elif hd['DT_TYPE'] == 'BYTE' or hd['DT_TYPE'] == 'BYTES':
-                    returnData[hd['DT_ID']] = read
+        for index, hd in enumerate(self.hdList):
+            read = msgBytes[:hd['DT_LEN']]
+            if hd['DT_TYPE'] == 'STRING':
+                returnData[hd['DT_ID']] = read.decode('utf-8-sig').strip()
+            elif hd['DT_TYPE'] == 'INT':
+                returnData[hd['DT_ID']]  = int.from_bytes(read, byteorder='big')
+            elif hd['DT_TYPE'] == 'SHORT':
+                returnData[hd['DT_ID']]  = int.from_bytes(read, byteorder='big', signed=True)
+            elif hd['DT_TYPE'] == 'BYTE' or hd['DT_TYPE'] == 'BYTES':
+                returnData[hd['DT_ID']] = read
 
-                del msgBytes[0:hd['DT_LEN']]
+            del msgBytes[0:hd['DT_LEN']]
 
+        for index, body in enumerate(socketBody):
+            if mid == None:
+                if (body['MSG_KEY_TYPE'] == 'LENGTH' and body['MSG_LEN'] == len(msgBytes)):
+                    msgbody = body
+            else:
+                if (body['MSG_ID'] == mid):
+                    msgbody = body
 
-            #
-            # for body in enumerate(self.bodyList):
-            #     logger.info()
-
-
-        except Exception as e:
-            logger.info(f'convertRecieData Exception : {e}')
+        logger.info(f'msg body : {str(msgbody)}')
 
 
         return returnData
