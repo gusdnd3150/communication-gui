@@ -15,6 +15,9 @@ def getsokcetList():
             sk[sk['HD_ID']] = hdList
             hdlen = selectQuery(selectHdLen().format(sk.get('HD_ID')))
             sk['HD_LEN'] = hdlen[0].get('HD_LEN')
+        else:
+            sk['HD_LEN'] = 0
+
     return skList
 
 
@@ -71,6 +74,7 @@ sokcetInToOut = []
 sokcetOut = []
 sokcetSub = []
 sokcetSch = getsokcetSch()
+
 
 
 logger.info(f'sokcetList size : {len(sokcetList)}')

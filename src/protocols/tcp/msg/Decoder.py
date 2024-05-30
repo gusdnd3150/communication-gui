@@ -8,3 +8,8 @@ class Decoder(ABC):
     @abstractmethod
     def concyctencyCheck(self, msgBytes):
         pass
+
+
+    @abstractmethod
+    def convertRecieData(self, msgBytes):
+        pass

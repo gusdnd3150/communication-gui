@@ -50,7 +50,11 @@ class ServerHandler(socketserver.StreamRequestHandler):
                 for index, readLegnth in enumerate(reableLengthArr):
                     logger.info(f' readLegnth : {readLegnth}')
                     readByte = buffer[:readLegnth]
-                    reciveThread = threading.Thread(target=self.onReciveData, args=(readByte,))
+                    totlaBytes = readByte.copy()
+                    data = codec.convertRecieData(readByte)
+                    data['TOTAL_BYTES'] = totlaBytes
+
+                    reciveThread = threading.Thread(target=self.onReciveData, args=(data,))
                     reciveThread.daemon = True
                     reciveThread.start()
                     del buffer[0:readLegnth]
@@ -90,10 +94,10 @@ class ServerHandler(socketserver.StreamRequestHandler):
 
 
 
-    def onReciveData(self, msgBytes):
+    def onReciveData(self, data):
         try:
-            logger.info(f'onReciveData bytes :{str(msgBytes)}')
+            logger.info(f'onReciveData bytes :{str(data)}')
 
-            self.sendAllClient(msgBytes)
+            self.sendAllClient(str(data).encode())
         except Exception as e:
             logger.info(f' onReciveData Exception :{e}')
