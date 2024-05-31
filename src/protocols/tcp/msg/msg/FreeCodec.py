@@ -4,6 +4,8 @@ from src.protocols.tcp.msg.Decoder import Decoder
 import traceback
 from conf.logconfig import logger
 from conf.InitData_n import socketBody, sokcetIn
+from src.utils.Utilitys import *
+
 
 class FreeCodec(Decoder):
 
@@ -42,40 +44,62 @@ class FreeCodec(Decoder):
                 result.append(len(copyBytes))
 
         except Exception as e:
-            logger.info(f'concyctencyCheck Exception : {e}')
+            logger.info(f'FreeCodec concyctencyCheck Exception : {e}')
 
         return result
 
 
     def convertRecieData(self, msgBytes):
-
         returnData = {}
-        mid = None
-        msgbody = None
+        msgInfo = None
+
+        msgRelYn = None
+        lenRelYn = None
 
         for index, hd in enumerate(self.hdList):
+            if (len(msgBytes) < hd['DT_LEN']):
+                raise Exception('FreeCodec convertRecieData : 해더 전문 파싱 오류')
             read = msgBytes[:hd['DT_LEN']]
-            if hd['DT_TYPE'] == 'STRING':
-                returnData[hd['DT_ID']] = read.decode('utf-8-sig').strip()
-            elif hd['DT_TYPE'] == 'INT':
-                returnData[hd['DT_ID']]  = int.from_bytes(read, byteorder='big')
-            elif hd['DT_TYPE'] == 'SHORT':
-                returnData[hd['DT_ID']]  = int.from_bytes(read, byteorder='big', signed=True)
-            elif hd['DT_TYPE'] == 'BYTE' or hd['DT_TYPE'] == 'BYTES':
-                returnData[hd['DT_ID']] = read
-
+            returnData[hd['DT_ID']] = decodeBytes(read, hd['DT_TYPE'])
+            if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
+                lenRelYn = returnData[hd['DT_ID']]
+            if hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
+                msgRelYn = returnData[hd['DT_ID']]
             del msgBytes[0:hd['DT_LEN']]
 
-        for index, body in enumerate(socketBody):
-            if mid == None:
-                if (body['MSG_KEY_TYPE'] == 'LENGTH' and body['MSG_LEN'] == len(msgBytes)):
-                    msgbody = body
-            else:
-                if (body['MSG_ID'] == mid):
-                    msgbody = body
+        # mid or length 로 메시지를 검색
+        for index, inData in enumerate(sokcetIn):
+            if self.initData['SK_ID'] == inData['IN_SK_ID']:
+                # 메시지값(mid)을 우선순위로 검색
+                msgKeyVal = encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE'])
+                logger.info(f'메시지 키값 : {msgKeyVal}')
+                if msgRelYn is not None:
+                    if inData['MSG_KEY_VAL'] == msgKeyVal:
+                        msgInfo = inData
+                        break
+                elif lenRelYn is not None:
+                    if (inData['MSG_KEY_TYPE'] == 'LENGTH' and msgKeyVal == lenRelYn):
+                        msgInfo = inData
+                        break
 
-        logger.info(f'msg body : {str(msgbody)}')
+        returnData['IN_MSG_INFO'] = msgInfo
+
+        for index , body in enumerate(msgInfo):
+            if (len(msgBytes) < hd['DT_LEN']):
+                raise Exception('FreeCodec convertRecieData : 해더 전문 파싱 오류')
+            read = msgBytes[:hd['DT_LEN']]
+            returnData[hd['DT_ID']] = decodeBytes(read, hd['DT_TYPE'])
+            if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
+                lenRelYn = returnData[hd['DT_ID']]
+            if hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
+                msgRelYn = returnData[hd['DT_ID']]
+            del msgBytes[0:hd['DT_LEN']]
+
+        logger.info(f'msg body : {str(msgInfo)}')
 
 
         return returnData
+
+
+
 

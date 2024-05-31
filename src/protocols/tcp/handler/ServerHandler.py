@@ -61,7 +61,7 @@ class ServerHandler(socketserver.StreamRequestHandler):
                         reciveThread.start()
 
                     except Exception as e:
-                        logger.info(f' Msg convert Exception : {e}')
+                        logger.info(f' Msg convert Exception : {e}  {str(buffer)}')
                     finally:
                         del buffer[0:readLegnth]
 
