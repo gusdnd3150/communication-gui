@@ -107,4 +107,4 @@ class ServerHandler(socketserver.StreamRequestHandler):
 
             self.sendAllClient(str(data).encode())
         except Exception as e:
-            logger.info(f' onReciveData Exception :{e}')
+            logger.info(f'onReciveData Exception :{e}')

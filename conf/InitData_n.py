@@ -24,7 +24,6 @@ def getsokcetList():
 def getsocketBody():
     msgList = selectQuery(selectMsgBodyList())
     for index, msg in enumerate(msgList):
-
         dtvalList = selectQuery(selectTbSkMsgBodyDtAndVal().format(msg.get('MSG_ID')))
         msg[msg['MSG_ID']] = dtvalList
         dtLen = selectQuery(selectMsgLen().format(msg.get('MSG_ID')))
