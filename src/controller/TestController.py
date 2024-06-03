@@ -1,13 +1,11 @@
 
-import traceback
 from conf.logconfig import logger
 
-
-class BzController():
+class TestController():
     d = None
 
     def __init__(self):
-        print('AppController')
+        pass
 
     def recive_plc_data(self):
         try:

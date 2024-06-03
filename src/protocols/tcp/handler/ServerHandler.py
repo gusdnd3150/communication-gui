@@ -7,7 +7,8 @@ import queue
 from src.protocols.tcp.msg.msg.FreeCodec import FreeCodec
 
 from src.protocols.SendHandler import sendSkId
-from conf.InitData_n import ctrList
+
+
 
 class ServerHandler(socketserver.StreamRequestHandler):
 
@@ -108,9 +109,34 @@ class ServerHandler(socketserver.StreamRequestHandler):
         try:
             logger.info(f'onReciveData bytes :{str(data)}')
             # self.sendAllClient(str(data).encode())
-            test =data['BZ_METHOD'].split('.')
-            logger.info(f'BZ 정보 : {test}')
+            if(data.get('IN_MSG_INFO') is not None):
+                if(data.get('IN_MSG_INFO').get('BZ_METHOD') is not None):
+                    bzClass = data.get('IN_MSG_INFO').get('BZ_METHOD')
+                    classNm = bzClass.split('.')[0]
+                    methdNm = bzClass.split('.')[1]
+
+                    if classNm in globals():
+                        my_class = globals()[classNm]
+                        # 클래스 인스턴스 생성 및 메서드 호출
+                        instance = my_class()
+                        method_name = 'test'
+                        method = getattr(instance, method_name)
+                        if callable(method):
+                            method()
+                        else:
+                            print(f"{method_name} is not callable.")
+                    else:
+                        print(f"Class {classNm} not found.")
+
+                else:
+                    logger.info(f'BZ_METHOD INFO is Null :')
+                    return
+            else:
+                logger.info(f'IN_MSG_INFO INFO is Null :')
+                return
+
             # ctrList
-            sendSkId('TCPS_TEST','TEST',data)
+            sendSkId('TCPS_TEST', 'TEST', data)
         except Exception as e:
+            traceback.print_exc()
             logger.info(f'onReciveData Exception :{e}')
