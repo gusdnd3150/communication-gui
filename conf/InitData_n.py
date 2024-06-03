@@ -1,11 +1,20 @@
 from conf.logconfig import logger
 import sqlite3
 from conf.QueryString import *
+from src.controller.BzController import BzController
 
-
+ctrList = []
 
 logger.info('DB connectiom with SqlLite')
 dbInstance = sqlite3.connect('core.db')
+
+
+logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
+# 비즈니스로직 처리 컨트롤러 지정
+bzController = BzController()
+ctrList.append(bzController)
+logger.info(f'{ctrList}')
+logger.info(f'---------------------------------------')
 
 def getsokcetList():
     skList = selectQuery(selectSocketList())

@@ -67,42 +67,35 @@ class InitClass():
     def start_sk(self):
         try:
             logger.info('socket List start')
-            skList = sokcetList
-            for i , item in enumerate(skList):
-                useYn = item['USE_YN']
-                if(useYn =='Y'):
-                    threadInfo = None
+            for i , item in enumerate(sokcetList):
+                threadInfo = None
 
-                    skTy = item['SK_TYPE']
-                    skConTy = item['SK_CONN_TYPE']
-                    skId = item['SK_ID']
+                skTy = item['SK_TYPE']
+                skConTy = item['SK_CONN_TYPE']
+                skId = item['SK_ID']
 
-                    if(skTy == 'TCP'):
-                        if(skConTy=='SERVER'):
-                            threadInfo = SocketServer(item)
-                        elif (skConTy == 'CLIENT'):
-                            threadInfo = SocketClient(item)
+                if(skTy == 'TCP'):
+                    if(skConTy=='SERVER'):
+                        threadInfo = SocketServer(item)
+                    elif (skConTy == 'CLIENT'):
+                        threadInfo = SocketClient(item)
 
+                elif(skTy == 'UDP'):
+                    if (skConTy == 'SERVER'):
+                        threadInfo = SocketServer(item)
+                    elif (skConTy == 'CLIENT'):
+                        threadInfo = SocketClient(item)
+                    # threadInfo.daemon = True
+                    # threadInfo.start()
 
+                else:
+                    logger.info('None Condition')
 
-                    elif(skTy == 'UDP'):
-                        if (skConTy == 'SERVER'):
-                            threadInfo = SocketServer(item)
-                        elif (skConTy == 'CLIENT'):
-                            threadInfo = SocketClient(item)
-                        # threadInfo.daemon = True
-                        # threadInfo.start()
+                threadInfo.daemon = True
+                threadInfo.start()
+                item['SK_THREAD'] = threadInfo
 
-                    else:
-                        logger.info('None Condition')
-
-                    threadInfo.daemon = True
-                    threadInfo.start()
-                    # threadInfo.run()
-
-                    # 구동 소켓 리스트 메모리 저장
-                    self.runSkList.append(threadInfo)
-
+            # logger.info(sokcetList)
         except :
             logger.info('exception')
             traceback.print_exception()

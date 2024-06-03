@@ -53,8 +53,10 @@ class FreeCodec(Decoder):
         returnData = {}
         msgInfo = None
 
-        inMsgId = None
         inMsgVal = None
+        msgLen = len(msgBytes)
+
+        inMsgId = None
         bodyList = None
 
         for index, hd in enumerate(self.hdList):
@@ -67,16 +69,29 @@ class FreeCodec(Decoder):
             #     lenRelYn = returnData[hd['DT_ID']]
             if hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
                 inMsgVal = returnData[hd['DT_ID']]
+
             del msgBytes[0:hd['DT_LEN']]
 
+        # if inMsgType == 'LENGTH':
+        #     inMsgVal = len(msgBytes)
 
         # mid or length 로 소켓 IN 정보 검색
         for index, inData in enumerate(sokcetIn):
             if self.initData['SK_ID'] == inData['IN_SK_ID']:
-                # 메시지값(mid)을 우선순위로 검색
+                inMid = None
+                # 인 메시지가 없을 경우 바이트 길이와 길이형 메시지의 길이를 비교
+                if inMsgVal == None and inData['MSG_KEY_TYPE'] == 'LENGTH':
+                    inMid = msgLen
+                else:
+                    inMid = inMsgVal
+
                 msgKeyVal = encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE'])
-                if inMsgVal is not None:
-                    if inMsgVal == msgKeyVal:
+                logger.info(f'dddddddddddd : {msgKeyVal}')
+                # logger.info(f'ddddddddddddf : {inMsgVal}')
+                logger.info(f'ddddddddddddf : {inMid}')
+
+                if inMid is not None:
+                    if inMid == msgKeyVal:
                         inMsgId = inData['IN_MSG_ID']
                         msgInfo = inData
                         break

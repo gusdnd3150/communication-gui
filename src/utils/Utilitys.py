@@ -22,7 +22,7 @@ def encodeToBytes(data, type):
     try:
         if type == 'STRING':
             return data
-        elif type == 'INT' or  type == 'SHORT' :
+        elif type == 'INT' or  type == 'SHORT' or type == 'LENGTH' :
             int_data = int(data)
             return int_data
         elif type == 'BYTE':

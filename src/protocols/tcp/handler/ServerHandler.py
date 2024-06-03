@@ -6,6 +6,9 @@ import threading
 import queue
 from src.protocols.tcp.msg.msg.FreeCodec import FreeCodec
 
+from src.protocols.SendHandler import sendSkId
+from conf.InitData_n import ctrList
+
 class ServerHandler(socketserver.StreamRequestHandler):
 
     initData = None
@@ -14,7 +17,7 @@ class ServerHandler(socketserver.StreamRequestHandler):
     #############
     skId = ''
     pipeBytes = queue.Queue()
-    client_list= []
+    client_list = []
 
     def handle(self):
         try:
@@ -104,7 +107,10 @@ class ServerHandler(socketserver.StreamRequestHandler):
     def onReciveData(self, data):
         try:
             logger.info(f'onReciveData bytes :{str(data)}')
-
-            self.sendAllClient(str(data).encode())
+            # self.sendAllClient(str(data).encode())
+            test =data['BZ_METHOD'].split('.')
+            logger.info(f'BZ 정보 : {test}')
+            # ctrList
+            sendSkId('TCPS_TEST','TEST',data)
         except Exception as e:
             logger.info(f'onReciveData Exception :{e}')

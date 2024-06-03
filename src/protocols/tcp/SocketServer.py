@@ -5,9 +5,9 @@ import socket
 import socketserver
 from src.protocols.tcp.init.ServerInit import ServerInit
 from src.utils.Container import Container
+from src.protocols.tcp.handler import ServerHandler
 
-class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
-    pass
+
 
 class SocketServer(threading.Thread):
 
@@ -15,7 +15,7 @@ class SocketServer(threading.Thread):
     skId = ''
     skIp = ''
     skPort = 0
-    server = None
+    socket = None
 
     def __init__(self, data):
         # logger.info(data)
@@ -31,22 +31,17 @@ class SocketServer(threading.Thread):
 
     def initServer(self):
         try:
-            self.server = ServerInit(self.initData)
-            ip, port = self.server.server_address
-            server_thread = threading.Thread(target=self.server.serve_forever)
+            self.socket = ServerInit(self.initData)
+            ip, port = self.socket.server_address
+            server_thread = threading.Thread(target=self.socket.serve_forever)
             server_thread.daemon = True
             server_thread.start()
             logger.info('TCP SERVER Start : SK_ID= {}, IP= {}:{} :: Thread -{}'.format(self.skId, ip, port,server_thread.name))
+
         except Exception as e:
-            self.server.server_close()
+            # self.server.server_close()
             logger.info(f'TCP SERVER Bind exception : SK_ID={self.skId}  : {e}' )
             traceback.print_exc()
-
-
-
-    def sendAllClient(self):
-        self.server.handler.sendAllClient(b'test')
-
 
 
 
