@@ -77,9 +77,16 @@ class ServerHandler(socketserver.StreamRequestHandler):
 
     def setup(self):
         super().setup()
-
         # 클라이언트 접속 감지
         self.client_list.append(self.request)
+        bzList = self.initData['BZ_EVENT_INFO']
+        for index, bzData in enumerate(bzList):
+            reciveThread = threading.Thread(target=self.onReciveData, args=(bzData,))
+            reciveThread.daemon = True
+            reciveThread.start()
+            # if bzData['BZ_TYPE'] == 'ACTIVE':
+
+
         logger.info(f" SK_ID:{self.initData['SK_ID']} Client connected: {self.client_address[0]}:{self.client_address[1]}")
 
 

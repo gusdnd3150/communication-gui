@@ -18,6 +18,7 @@ class SocketServer(threading.Thread):
     socket = None
 
     def __init__(self, data):
+        logger.info(data)
         self.initData = data
         self.skId = data['SK_ID']
         self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정

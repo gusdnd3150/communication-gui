@@ -200,7 +200,7 @@ def selectListTbSkSch():
             'AND USE_YN = "Y"      '
 
 def selectListTbSkBz ():
-    return '	SELECT            '  \
+    return 'SELECT            '  \
             '	PKG_ID            '  \
             '	, SK_GROUP        '  \
             '	, BZ_TYPE         '  \
@@ -209,5 +209,6 @@ def selectListTbSkBz ():
             '	, SEC             '  \
             '	, BZ_DESC         '  \
             'FROM TB_SK_PKG_SK_BZ  '  \
-            'WHERE PKG_ID = "CORE" '  \
+            'WHERE PKG_ID = "CORE" ' \
+            'AND SK_GROUP = "{}"	' \
             'AND USE_YN = "Y"	'

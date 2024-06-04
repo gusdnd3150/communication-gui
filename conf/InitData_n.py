@@ -18,6 +18,7 @@ dbInstance = sqlite3.connect('core.db')
 def getsokcetList():
     skList = selectQuery(selectSocketList())
     for index, sk in enumerate(skList):
+        # 해더정보 처리
         hdList = selectQuery(selectTbSkMsgHdDt().format(sk.get('HD_ID')))
         if (len(hdList) > 0):
             sk[sk['HD_ID']] = hdList
@@ -25,6 +26,9 @@ def getsokcetList():
             sk['HD_LEN'] = hdlen[0].get('HD_LEN')
         else:
             sk['HD_LEN'] = 0
+
+        if sk['SK_GROUP'] is not None:
+            sk['BZ_EVENT_INFO'] = selectQuery(selectListTbSkBz().format(sk.get('SK_GROUP')))
 
     return skList
 
@@ -53,8 +57,8 @@ def getsokcetSch():
     return selectQuery(selectListTbSkSch())
 
 
-def getsokcetBz():
-    return selectQuery(selectListTbSkBz())
+# def getsokcetBz():
+#     return selectQuery(selectListTbSkBz())
 
 def selectQuery(queryString):
     c = dbInstance.cursor()
@@ -75,7 +79,8 @@ socketHdDt = []
 socketBody = getsocketBody()
 socketBodyDt = []
 socketVal = []
-sokcetBz = getsokcetBz()
+# sokcetBz = getsokcetBz()
+sokcetBz= []
 sokcetIn = getsokcetIn()
 sokcetInToOut = []
 sokcetOut = []
