@@ -12,8 +12,12 @@ class TestController():
         logger.info('init testcontroller')
 
     def test(self, reciveObj):
+        logger.info(f'TestController.test() IN_DATA : {reciveObj}')
+        returnJson = {}
         try:
-            logger.info(f'TestController.test() IN_DATA : {reciveObj}')
-            self.sendHandler.sendSkId('TCPS_TEST','','None')
+            returnJson['LINE_CD']   = '1'
+            returnJson['LINE_SIGN'] = '2'
+
+            self.sendHandler.sendSkId('TCPS_TEST','LINE_SIGNAL',returnJson)
         except Exception as e:
             logger.info(f'TestController.test() Exception :: {e}')

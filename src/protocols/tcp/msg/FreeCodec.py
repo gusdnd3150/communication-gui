@@ -1,6 +1,5 @@
 import io
 
-from src.protocols.tcp.msg.Decoder import Decoder
 import traceback
 from conf.logconfig import logger
 from conf.InitData_n import systemGlobals
@@ -9,7 +8,7 @@ from conf.InitData_n import systemGlobals
 from src.utils.Utilitys import *
 
 
-class FreeCodec(Decoder):
+class FreeCodec():
 
     initData = None
     hdList = []
@@ -51,7 +50,7 @@ class FreeCodec(Decoder):
         return result
 
 
-    def convertRecieData(self, msgBytes):
+    def decodeRecieData(self, msgBytes):
         returnData = {}
         msgInfo = None
 
@@ -74,8 +73,6 @@ class FreeCodec(Decoder):
 
             del msgBytes[0:hd['DT_LEN']]
 
-        # if inMsgType == 'LENGTH':
-        #     inMsgVal = len(msgBytes)
 
         # mid or length 로 소켓 IN 정보 검색
         for index, inData in enumerate(systemGlobals['sokcetIn']):
@@ -88,10 +85,6 @@ class FreeCodec(Decoder):
                     inMid = inMsgVal
 
                 msgKeyVal = encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE'])
-                logger.info(f'dddddddddddd : {msgKeyVal}')
-                # logger.info(f'ddddddddddddf : {inMsgVal}')
-                logger.info(f'ddddddddddddf : {inMid}')
-
                 if inMid is not None:
                     if inMid == msgKeyVal:
                         inMsgId = inData['IN_MSG_ID']
@@ -121,5 +114,48 @@ class FreeCodec(Decoder):
         return returnData
 
 
+
+
+    def encodeSendData(self, msgObj):
+        returnBytes = bytearray()
+        try:
+            # logger.info(f'FreeCodec encodeSendData()    {self.initData}')
+
+            msgId = msgObj['MSG_ID']
+            bodyLen = 0
+
+            msgBody = None
+            for index, body in enumerate(systemGlobals['socketBody']):
+                if (body['MSG_ID'] == msgObj['MSG_ID']):
+                    msgBody = body[body['MSG_ID']]
+                    bodyLen = body['MSG_LEN']
+                    break
+
+            if msgBody is None:
+                raise Exception(f'FreeCodec encodeSendData() MSG_ID:{msgId} is None')
+
+            totalLen = bodyLen + self.hdLen
+
+            # for index, hd in enumerate(self.hdList):
+            #     hd['DT_ID']
+            #     hd['DT_TYPE']
+            #     if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
+            #         returnBytes.extend()
+            #     elif hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
+            #         returnBytes.extend()
+            #     else:
+            #         returnBytes.extend()
+
+            for index, body in enumerate(msgBody):
+                logger.info(body)
+                data = msgObj[body['VAL_ID']]
+                returnBytes.extend(encodeDataToBytes(data, body['VAL_TYPE'], body['VAL_LEN']))
+
+            if (self.delimiter != b''):
+                returnBytes.extend(self.delimiter)
+
+            return returnBytes
+        except Exception as e:
+            logger.info(f'FreeCodec encodeSendData() Exception :: {e}')
 
 

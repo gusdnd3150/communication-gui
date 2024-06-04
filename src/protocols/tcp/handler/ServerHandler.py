@@ -4,7 +4,7 @@ import traceback
 from conf.logconfig import logger
 import threading
 import queue
-from src.protocols.tcp.msg.msg.FreeCodec import FreeCodec
+from src.protocols.tcp.msg.FreeCodec import FreeCodec
 
 from conf.InitData_n import systemGlobals
 
@@ -57,7 +57,7 @@ class ServerHandler(socketserver.StreamRequestHandler):
                         logger.info(f' readLegnth : {readLegnth}')
 
                         totlaBytes = readByte.copy()
-                        data = codec.convertRecieData(readByte)
+                        data = codec.decodeRecieData(readByte)
                         data['TOTAL_BYTES'] = totlaBytes
 
                         reciveThread = threading.Thread(target=self.onReciveData, args=(data,))
@@ -103,7 +103,15 @@ class ServerHandler(socketserver.StreamRequestHandler):
         except:
             traceback.print_exc()
 
+    def sendAllObjectDataClient(self, objData):
+        try:
+            codec = None
+            if (self.initData['HD_TYPE'] == 'FREE'):
+                codec = FreeCodec(self.initData)
 
+            self.sendAllBytes(self, codec.encodeSendData(objData))
+        except Exception as e:
+            logger.info(f'ServerHandler sendAllObjectDataClient() Exception :: {e}')
 
     def onReciveData(self, data):
         try:
@@ -115,9 +123,7 @@ class ServerHandler(socketserver.StreamRequestHandler):
                     classNm = bzClass.split('.')[0]
                     methdNm = bzClass.split('.')[1]
                     if classNm in systemGlobals:
-                        logger.info(classNm)
                         my_class = systemGlobals[classNm]
-
                         method = getattr(my_class, methdNm)
                         if callable(method):
                             method(data)
@@ -125,7 +131,6 @@ class ServerHandler(socketserver.StreamRequestHandler):
                             print(f"{methdNm} is not callable.")
                     else:
                         print(f"Class {classNm} not found.")
-
                 else:
                     logger.info(f'BZ_METHOD INFO is Null :')
                     return
@@ -135,4 +140,14 @@ class ServerHandler(socketserver.StreamRequestHandler):
 
         except Exception as e:
             traceback.print_exc()
-            logger.info(f'onReciveData Exception :{e}')
+            logger.info(f'ServerHandler onReciveData() Exception :{e}')
+
+
+
+
+    def sendAllBytes(self, msgBytes):
+        for sock in self.client_list:
+            try:
+                sock.sendall(msgBytes)
+            except Exception as e:
+                logger.error(f"ServerHandler sendAllBytes() Exception :: {sock.getpeername()}: {e}")

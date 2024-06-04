@@ -14,18 +14,17 @@ class SendHandler():
         self.socketBody = socketBody
         self.sokcetBz = sokcetBz
         self.sokcetIn = sokcetIn
-        logger.info('ddddddd')
 
     def sendSkId(self, skId, msgId, data):
         try:
+            data['MSG_ID'] = msgId
             for i, sk in enumerate(self.socketList):
-                # logger.info(sk)
                 if sk['SK_ID'] == skId:
-
                     if sk['SK_CONN_TYPE'] == 'SERVER':
                         skThread = sk['SK_THREAD']
                         handler = skThread.socket.handler
-                        handler.sendAllClient(handler,str('TEST').encode())
+                        handler.sendAllObjectDataClient(handler, data)
+
                     elif sk['SK_CONN_TYPE'] == 'CLIENT':
                         skThread = sk['SK_THREAD']
                         handler = skThread.socket.handler
