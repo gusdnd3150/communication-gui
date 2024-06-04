@@ -6,7 +6,7 @@ import os
 from src.protocols.tcp.SocketServer import SocketServer
 from src.protocols.tcp.SocketClient import SocketClient
 
-from conf.InitData_n import sokcetList,socketBody,sokcetBz,sokcetIn,sokcetSch
+from conf.InitData_n import systemGlobals
 
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
@@ -67,7 +67,8 @@ class InitClass():
     def start_sk(self):
         try:
             logger.info('socket List start')
-            for i , item in enumerate(sokcetList):
+
+            for i , item in enumerate(systemGlobals['sokcetList']):
                 threadInfo = None
 
                 skTy = item['SK_TYPE']
@@ -95,7 +96,7 @@ class InitClass():
                 threadInfo.start()
                 item['SK_THREAD'] = threadInfo
 
-            # logger.info(sokcetList)
+
         except :
             logger.info('exception')
             traceback.print_exception()

@@ -6,8 +6,7 @@ import threading
 import queue
 from src.protocols.tcp.msg.msg.FreeCodec import FreeCodec
 
-from src.protocols.SendHandler import sendSkId
-from conf.InitData_n import bzGlobals
+from conf.InitData_n import systemGlobals
 
 
 
@@ -115,9 +114,9 @@ class ServerHandler(socketserver.StreamRequestHandler):
                     bzClass = data.get('IN_MSG_INFO').get('BZ_METHOD')
                     classNm = bzClass.split('.')[0]
                     methdNm = bzClass.split('.')[1]
-                    if classNm in bzGlobals:
+                    if classNm in systemGlobals:
                         logger.info(classNm)
-                        my_class = bzGlobals[classNm]
+                        my_class = systemGlobals[classNm]
 
                         method = getattr(my_class, methdNm)
                         if callable(method):
@@ -134,8 +133,6 @@ class ServerHandler(socketserver.StreamRequestHandler):
                 logger.info(f'IN_MSG_INFO INFO is Null :')
                 return
 
-            # ctrList
-            # sendSkId('TCPS_TEST', 'TEST', data)
         except Exception as e:
             traceback.print_exc()
             logger.info(f'onReciveData Exception :{e}')

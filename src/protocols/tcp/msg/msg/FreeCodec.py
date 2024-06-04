@@ -3,7 +3,9 @@ import io
 from src.protocols.tcp.msg.Decoder import Decoder
 import traceback
 from conf.logconfig import logger
-from conf.InitData_n import socketBody, sokcetIn
+from conf.InitData_n import systemGlobals
+
+
 from src.utils.Utilitys import *
 
 
@@ -76,7 +78,7 @@ class FreeCodec(Decoder):
         #     inMsgVal = len(msgBytes)
 
         # mid or length 로 소켓 IN 정보 검색
-        for index, inData in enumerate(sokcetIn):
+        for index, inData in enumerate(systemGlobals['sokcetIn']):
             if self.initData['SK_ID'] == inData['IN_SK_ID']:
                 inMid = None
                 # 인 메시지가 없을 경우 바이트 길이와 길이형 메시지의 길이를 비교
@@ -101,7 +103,7 @@ class FreeCodec(Decoder):
                         break
 
         # 소켓 메시지 BODY 검색
-        for index, body in enumerate(socketBody):
+        for index, body in enumerate(systemGlobals['socketBody']):
             if(body['MSG_ID'] == inMsgId):
                 bodyList = body[body['MSG_ID']]
                 break

@@ -2,6 +2,7 @@ from conf.logconfig import logger
 import sqlite3
 from conf.QueryString import *
 from src.controller.TestController import TestController
+from src.protocols.SendHandler import SendHandler
 
 ctrList = []
 
@@ -9,14 +10,7 @@ logger.info('DB connectiom with SqlLite')
 dbInstance = sqlite3.connect('core.db')
 
 
-logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
-# 비즈니스로직 처리 컨트롤러 지정
-# globals()['TestController'] = TestController()
-bzGlobals = globals()
-bzGlobals['TestController'] = TestController()
-# ctrList.append(testController)
-# logger.info(f'{test}')
-logger.info(f'---------------------------------------')
+
 
 
 
@@ -97,3 +91,14 @@ logger.info(f'sokcetBz size : {len(sokcetBz)}')
 logger.info(f'sokcetIn size : {len(sokcetIn)}')
 logger.info(f'sokcetSch size : {len(sokcetSch)}')
 
+
+logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
+# 비즈니스로직 처리 컨트롤러 지정
+systemGlobals = globals()
+handler = SendHandler(sokcetList,socketBody,sokcetBz,sokcetIn)
+systemGlobals['TestController'] = TestController(handler)
+systemGlobals['sokcetList'] = sokcetList
+systemGlobals['socketBody'] = socketBody
+systemGlobals['sokcetBz'] = sokcetBz
+systemGlobals['sokcetIn'] = sokcetIn
+logger.info(f'---------------------------------------')
