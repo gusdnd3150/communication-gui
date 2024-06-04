@@ -66,8 +66,6 @@ class InitClass():
 
     def start_sk(self):
         try:
-            logger.info('socket List start')
-
             for i , item in enumerate(systemGlobals['sokcetList']):
                 threadInfo = None
 
@@ -80,28 +78,18 @@ class InitClass():
                         threadInfo = SocketServer(item)
                     elif (skConTy == 'CLIENT'):
                         threadInfo = SocketClient(item)
-
-                elif(skTy == 'UDP'):
-                    if (skConTy == 'SERVER'):
-                        threadInfo = SocketServer(item)
-                    elif (skConTy == 'CLIENT'):
-                        threadInfo = SocketClient(item)
-                    # threadInfo.daemon = True
-                    # threadInfo.start()
-
                 else:
                     logger.info('None Condition')
+                    continue
 
                 threadInfo.daemon = True
                 threadInfo.start()
                 item['SK_THREAD'] = threadInfo
 
 
-        except :
-            logger.info('exception')
-            traceback.print_exception()
-            # traceback.print_stack()
-
+        except Exception as e:
+            logger.info(f'Init.start_sk() Exception :: {e}')
+            traceback.print_exc()
 
     def setEvent(self):
         # self.popup

@@ -26,9 +26,7 @@ class SendHandler():
                         handler.sendAllObjectDataClient(handler, data)
 
                     elif sk['SK_CONN_TYPE'] == 'CLIENT':
-                        skThread = sk['SK_THREAD']
-                        handler = skThread.socket.handler
-                        handler.sendAllClient(handler, str('TEST').encode())
+                        print('TODO')
 
         except Exception as e:
             logger.info(f'sendSkId() Exception SK_ID:{skId} , MSG_ID:{msgId}, DATA:{data} -- {e}')

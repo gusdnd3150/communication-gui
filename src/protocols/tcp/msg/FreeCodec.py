@@ -119,12 +119,10 @@ class FreeCodec():
     def encodeSendData(self, msgObj):
         returnBytes = bytearray()
         try:
-            # logger.info(f'FreeCodec encodeSendData()    {self.initData}')
-
             msgId = msgObj['MSG_ID']
             bodyLen = 0
-
             msgBody = None
+
             for index, body in enumerate(systemGlobals['socketBody']):
                 if (body['MSG_ID'] == msgObj['MSG_ID']):
                     msgBody = body[body['MSG_ID']]

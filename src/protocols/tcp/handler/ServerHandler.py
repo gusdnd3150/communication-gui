@@ -54,11 +54,10 @@ class ServerHandler(socketserver.StreamRequestHandler):
                 for index, readLegnth in enumerate(reableLengthArr):
                     readByte = buffer[:readLegnth]
                     try:
-                        logger.info(f' readLegnth : {readLegnth}')
-
                         totlaBytes = readByte.copy()
                         data = codec.decodeRecieData(readByte)
                         data['TOTAL_BYTES'] = totlaBytes
+                        data['CHANNEL'] = self.client_list
 
                         reciveThread = threading.Thread(target=self.onReciveData, args=(data,))
                         reciveThread.daemon = True
@@ -78,6 +77,7 @@ class ServerHandler(socketserver.StreamRequestHandler):
 
     def setup(self):
         super().setup()
+
         # 클라이언트 접속 감지
         self.client_list.append(self.request)
         logger.info(f" SK_ID:{self.initData['SK_ID']} Client connected: {self.client_address[0]}:{self.client_address[1]}")
@@ -115,8 +115,7 @@ class ServerHandler(socketserver.StreamRequestHandler):
 
     def onReciveData(self, data):
         try:
-            # logger.info(f'onReciveData bytes :{str(data)}')
-            # self.sendAllClient(str(data).encode())
+
             if(data.get('IN_MSG_INFO') is not None):
                 if(data.get('IN_MSG_INFO').get('BZ_METHOD') is not None):
                     bzClass = data.get('IN_MSG_INFO').get('BZ_METHOD')

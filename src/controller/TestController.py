@@ -12,10 +12,13 @@ class TestController():
         logger.info('init testcontroller')
 
     def test(self, reciveObj):
-        logger.info(f'TestController.test() IN_DATA : {reciveObj}')
         returnJson = {}
+        # logger.info(f'TestController.test() IN_DATA : {reciveObj}')
+        Channels = reciveObj['CHANNEL']
+        logger.info(type(Channels))
+
         try:
-            returnJson['LINE_CD']   = '1'
+            returnJson['LINE_CD'] = '1'
             returnJson['LINE_SIGN'] = '2'
 
             self.sendHandler.sendSkId('TCPS_TEST','LINE_SIGNAL',returnJson)

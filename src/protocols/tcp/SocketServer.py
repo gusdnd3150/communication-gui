@@ -11,14 +11,13 @@ from src.protocols.tcp.handler import ServerHandler
 
 class SocketServer(threading.Thread):
 
-    initData = {}
+    initData = None
     skId = ''
     skIp = ''
     skPort = 0
     socket = None
 
     def __init__(self, data):
-        # logger.info(data)
         self.initData = data
         self.skId = data['SK_ID']
         self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
@@ -37,9 +36,7 @@ class SocketServer(threading.Thread):
             server_thread.daemon = True
             server_thread.start()
             logger.info('TCP SERVER Start : SK_ID= {}, IP= {}:{} :: Thread -{}'.format(self.skId, ip, port,server_thread.name))
-
         except Exception as e:
-            # self.server.server_close()
             logger.info(f'TCP SERVER Bind exception : SK_ID={self.skId}  : {e}' )
             traceback.print_exc()
 
