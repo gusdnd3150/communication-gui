@@ -7,6 +7,7 @@ import queue
 from src.protocols.tcp.msg.msg.FreeCodec import FreeCodec
 
 from src.protocols.SendHandler import sendSkId
+from conf.InitData_n import bzGlobals
 
 
 
@@ -107,24 +108,22 @@ class ServerHandler(socketserver.StreamRequestHandler):
 
     def onReciveData(self, data):
         try:
-            logger.info(f'onReciveData bytes :{str(data)}')
+            # logger.info(f'onReciveData bytes :{str(data)}')
             # self.sendAllClient(str(data).encode())
             if(data.get('IN_MSG_INFO') is not None):
                 if(data.get('IN_MSG_INFO').get('BZ_METHOD') is not None):
                     bzClass = data.get('IN_MSG_INFO').get('BZ_METHOD')
                     classNm = bzClass.split('.')[0]
                     methdNm = bzClass.split('.')[1]
+                    if classNm in bzGlobals:
+                        logger.info(classNm)
+                        my_class = bzGlobals[classNm]
 
-                    if classNm in globals():
-                        my_class = globals()[classNm]
-                        # 클래스 인스턴스 생성 및 메서드 호출
-                        instance = my_class()
-                        method_name = 'test'
-                        method = getattr(instance, method_name)
+                        method = getattr(my_class, methdNm)
                         if callable(method):
-                            method()
+                            method(data)
                         else:
-                            print(f"{method_name} is not callable.")
+                            print(f"{methdNm} is not callable.")
                     else:
                         print(f"Class {classNm} not found.")
 
@@ -136,7 +135,7 @@ class ServerHandler(socketserver.StreamRequestHandler):
                 return
 
             # ctrList
-            sendSkId('TCPS_TEST', 'TEST', data)
+            # sendSkId('TCPS_TEST', 'TEST', data)
         except Exception as e:
             traceback.print_exc()
             logger.info(f'onReciveData Exception :{e}')

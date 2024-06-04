@@ -11,10 +11,11 @@ dbInstance = sqlite3.connect('core.db')
 
 logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
 # 비즈니스로직 처리 컨트롤러 지정
-testController = TestController()
-testController = globals()
+# globals()['TestController'] = TestController()
+bzGlobals = globals()
+bzGlobals['TestController'] = TestController()
 # ctrList.append(testController)
-logger.info(f'{ctrList}')
+# logger.info(f'{test}')
 logger.info(f'---------------------------------------')
 
 

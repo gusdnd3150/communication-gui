@@ -2,10 +2,7 @@
 from conf.logconfig import logger
 
 class TestController():
-    d = None
 
-    def __init__(self):
-        pass
 
     def recive_plc_data(self):
         try:
@@ -14,6 +11,12 @@ class TestController():
             logger.info(f'recive_plc_data exception :: {e}')
 
 
+    def test(self, reciveObj):
+        try:
+            logger.info(f'TestController.test() IN_DATA : {reciveObj}')
+
+        except Exception as e:
+            logger.info(f'TestController.test() Exception :: {e}')
 
     def reciveTest(self, param):
         try:
