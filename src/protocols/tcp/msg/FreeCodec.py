@@ -15,7 +15,6 @@ class FreeCodec():
     delimiter = b''
     
     def __init__(self, initData):
-        logger.info(initData)
         self.initData= initData
         self.hdId = initData['HD_ID']
         self.hdLen = initData['HD_LEN']
@@ -23,7 +22,7 @@ class FreeCodec():
         if initData.get(self.hdId) is not None:
             self.hdList = initData[self.hdId]
         if (initData['SK_DELIMIT_TYPE'] != ''):
-            self.delimiter = int(initData['SK_DELIMIT_TYPE'], 16).to_bytes(1, byteorder='big')
+            self.delimiter = bytes.fromhex(initData['SK_DELIMIT_TYPE'][2:])
 
 
     def concyctencyCheck(self,copyBytes):
@@ -119,9 +118,12 @@ class FreeCodec():
             msgKeyType = None
             msgKeyLen = 0
             msgKeyVal = None
-            bodyLen = 0
             msgBody = None
 
+            bodyBytes = bytearray()
+            headerBytes = bytearray()
+
+            #  메시지 바디 검색
             for index, body in enumerate(systemGlobals['socketBody']):
                 if (body['MSG_ID'] == msgObj['MSG_ID']):
                     # {'MSG_ID': 'LINE_SIGNAL', 'MSG_KEY_TYPE': 'STRING', 'MSG_KEY_VAL': 'LNSN', 'MSG_DB_LOG_YN': 'Y',
@@ -130,7 +132,6 @@ class FreeCodec():
                     # 'VAL_TYPE': 'STRING', 'VAL_LEN': 4, 'VAL_DESC': ''}, {'MSG_ID': 'LINE_SIGNAL', 'MSG_DT_ORD': '2',
                     # 'MSG_DT_DESC': 'VCC', 'VAL_ID': 'LINE_SIGN', 'VAL_TYPE': 'STRING', 'VAL_LEN': 1, 'VAL_DESC': ''}], 'MSG_LEN': 5}
                     msgBody = body[body['MSG_ID']]
-                    bodyLen = body['MSG_LEN']
                     msgKeyType = body['MSG_KEY_TYPE']
                     msgKeyLen =  body['MSG_KEY_LENGTH']
                     msgKeyVal = body['MSG_KEY_VAL']
@@ -139,23 +140,38 @@ class FreeCodec():
             if msgBody is None:
                 raise Exception(f'FreeCodec encodeSendData() MSG_ID:{msgId} is None')
 
-            totalLen = bodyLen + self.hdLen
 
+            # 메시지 바디 세팅
+            for index, body in enumerate(msgBody):
+                value = None
+                logger.info(body)
+                if msgObj.get(body['VAL_ID']) is not None:
+                    value = msgObj[body['VAL_ID']]
+                logger.info(f'body  : {body["VAL_ID"]}: {value}')
+                bodyBytes.extend(encodeDataToBytes(value, body['VAL_TYPE'], body['VAL_LEN']))
+
+            totalLen = len(bodyBytes) + self.hdLen
+
+            # 해더 세팅
             for index, hd in enumerate(self.hdList):
                 # {'HD_ID': 'HD_HS', 'DT_ORD': 1, 'DT_ID': 'TOTAL_LENGTH', 'DT_TYPE': 'INT', 'DT_LEN': 4, 'DT_NAME': '', 'DT_DESC': '',
                 # 'MSG_LEN_REL_YN': 'Y', 'MSG_ID_REL_YN': '', 'DEFAULT_VALUE': ''}
-
                 if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
-                    returnBytes.extend(encodeDataToBytes(msgKeyVal, msgKeyType, msgKeyLen))
+                    headerBytes.extend(encodeDataToBytes(totalLen, hd['DT_TYPE'], hd['DT_LEN']))
                 elif hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
-                    returnBytes.extend(encodeDataToBytes(msgKeyVal, msgKeyType, msgKeyLen))
-                # else:
-                    # returnBytes.extend()
+                    headerBytes.extend(encodeDataToBytes(msgKeyVal, msgKeyType, msgKeyLen))
+                else:
+                    value = None
+                    if msgObj.get(hd['DT_ID']) is not None and msgObj.get(hd['DT_ID']) != '':
+                        value = msgObj.get(hd['DT_ID'])
+                    elif hd['DEFAULT_VALUE'] is not None and hd['DEFAULT_VALUE'] != '':
+                        value = hd['DEFAULT_VALUE']
+                    headerBytes.extend(encodeDataToBytes(value, hd['DT_TYPE'], hd['DT_LEN']))
 
-            for index, body in enumerate(msgBody):
-                data = msgObj[body['VAL_ID']]
-                returnBytes.extend(encodeDataToBytes(data, body['VAL_TYPE'], body['VAL_LEN']))
 
+            returnBytes = headerBytes+bodyBytes
+
+            # 딜리미터 세팅
             if (self.delimiter != b''):
                 returnBytes.extend(self.delimiter)
 

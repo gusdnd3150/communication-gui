@@ -18,7 +18,7 @@ class TestController():
         Channel.sendall('test'.encode('utf-8'))
 
         try:
-            returnJson['LINE_CD'] = '1'
+            # returnJson['LINE_CD'] = '1'
             returnJson['LINE_SIGN'] = '2'
 
             self.sendHandler.sendSkId('TCPS_TEST','LINE_SIGNAL',returnJson)

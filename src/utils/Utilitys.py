@@ -38,35 +38,31 @@ def encodeToBytes(data, type):
         return None
 
 
-def encodeDataToBytes(data, type, length):
+def encodeDataToBytes(data, type, length, pad=' '):
     try:
+        if data is None:
+            if type == 'STRING':
+                data = ''
+            elif type == 'INT' or type == 'SHORT' or type == 'DOUBLE':
+                data = 1
+            elif type == 'BYTE':
+                data = bytearray([0x20] * length)
+            elif type == 'BYTES': # 공백으로 초기화
+                data = bytearray([0x20] * length)
+
         if type == 'STRING':
-            padded_string = data.ljust(length, ' ')
+            padded_string = data.ljust(length, pad)
             return padded_string.encode('utf-8')
 
         elif type == 'INT':
-            value = 0
-            if type(data) == str:
-                value = int(data)
-            else:
-                value = data
-            return value.to_bytes(4, byteorder='big')
+            return data.to_bytes(4, byteorder='big')
 
         elif type == 'SHORT':
-            if type(data) == str:
-                value = int(data)
-            else:
-                value = data
-            shortValue = value & 0xffff
+            shortValue = data & 0xffff
             return shortValue.to_bytes(2, byteorder='big', signed=True)
 
-        elif type == 'BYTE':
-            if type(data) == int:
-                decimal_value = data
-                byte_array = decimal_value.to_bytes(1, byteorder='big')
-                return byte_array
-            else:  # 입력값이 문자열인 경우
-                return data.encode('utf-8')
+        elif type == 'BYTE' or type == 'VARIABLE_LENGTH' or type == 'BYTES':
+           return data
 
         elif type == 'DOUBLE':
             try:
@@ -76,5 +72,14 @@ def encodeDataToBytes(data, type, length):
                 return struct.pack('!d', data)
 
     except Exception as e:
-        logger.info(f'FreeCodec encodeDataToBytes Exception : {e}')
+        logger.info(f'Utilitys encodeDataToBytes Exception : {data}:{type}:{length}  {e}')
         return None
+
+
+def castingValue(data, type):
+    try:
+        logger.info()
+
+
+    except Exception as e:
+        logger.info(f'castingValue Exception :: {e}')
