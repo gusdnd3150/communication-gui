@@ -1,6 +1,6 @@
 
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QTabWidget, QPushButton, QCheckBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QTabWidget, QPushButton, QCheckBox, QMainWindow
 import json
 from src.component.settings.SaveSocketPopup import SaveSocketPopup
 import sys
@@ -20,7 +20,7 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
-class Settings():
+class Settings(QMainWindow):
 
     instance = None
     saveSkWindow = None
@@ -28,9 +28,10 @@ class Settings():
 
     def __init__(self, initData):
         self.initData = initData
-
-        self.instance = QUiLoader().load(resource_path('views/settings.ui'), None)
-        self.instance.setWindowTitle('설정')
+        self.ui = QUiLoader().load(resource_path('views/settings.ui'), None)
+        super().__init__()
+        self.setCentralWidget(self.ui)
+        self.setWindowTitle('설정')
 
         # 메시지 저장 팝업
         self.saveSkWindow = SaveSocketPopup(resource_path('views/settings-saveSocket.ui'))
@@ -38,11 +39,10 @@ class Settings():
         # self.saveSkWindow.instance.show()
 
         self.setEvent()
-        self.loadData()
 
     def setEvent(self):
-        self.instance.btn_addSk.clicked.connect(self.addSk)
-        self.instance.btn_delSk.clicked.connect(self.delSk)
+        self.ui.btn_addSk.clicked.connect(self.addSk)
+        self.ui.btn_delSk.clicked.connect(self.delSk)
 
 
 

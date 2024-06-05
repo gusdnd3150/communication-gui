@@ -59,7 +59,7 @@ class InitClass():
         self.mainLayOut.show()
 
         # 설정팝업
-        # self.popup = Settings(self.initData)
+        self.popup = Settings(self.initData)
         self.setEvent()
         self.setInitData()
         app.exec()
@@ -106,10 +106,12 @@ class InitClass():
 
     def open_settings(self):
         logger.info('tesst')
-        if self.popup.instance.isVisible():
-            self.popup.instance.hide()
+        if self.popup.isVisible():
+            # self.popup.instance.hide()
+            self.popup.hide()
         else:
-            self.popup.instance.show()
+            # self.popup.instance.show()
+            self.popup.show()
 
 
     def addTableRow(self, items):

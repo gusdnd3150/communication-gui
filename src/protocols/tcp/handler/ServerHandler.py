@@ -8,7 +8,7 @@ from src.protocols.tcp.msg.FreeCodec import FreeCodec
 from src.protocols.tcp.msg.LengthCodec import LengthCodec
 
 from conf.InitData_n import systemGlobals
-
+from src.protocols.sch.BzSchedule import BzSchedule
 
 
 class ServerHandler(socketserver.StreamRequestHandler):
@@ -16,10 +16,10 @@ class ServerHandler(socketserver.StreamRequestHandler):
     initData = None
     delimiter = b''
 
-    #############
     skId = ''
-    pipeBytes = queue.Queue()
-    client_list = []
+    pipeBytes = queue.Queue()  # 사용대기
+    client_list = [] # 연결 클라이언트
+    schedList = [] # bz 혹은 스케줄러 스레드 정보
 
     def handle(self):
         try:
@@ -69,7 +69,6 @@ class ServerHandler(socketserver.StreamRequestHandler):
                     finally:
                         del buffer[0:readLegnth]
 
-
         except TimeoutError:
             logger.info(f"SK_ID:{self.initData['SK_ID']} Client IDLE READ: {self.client_address[0]}:{self.client_address[1]}")
             self.handle()
@@ -83,18 +82,23 @@ class ServerHandler(socketserver.StreamRequestHandler):
         bzList = self.initData['BZ_EVENT_INFO']
         logger.info('setup 클라이언트 접속 이벤트')
         for index, bzData in enumerate(bzList):
-            if bzData['BZ_TYPE'] is not None:
+            if bzData['BZ_TYPE'] is not None and (bzData['BZ_TYPE'] == 'ACTIVE' or bzData['BZ_TYPE'] == 'KEEP'):
                 bzData['CHANNEL'] = self.request
                 bzEventThread = threading.Thread(target=self.setBzEvent, args=(bzData,))
                 bzEventThread.daemon = True
                 bzEventThread.start()
-
-
         logger.info(f" SK_ID:{self.initData['SK_ID']} Client connected: {self.client_address[0]}:{self.client_address[1]}")
 
 
     def finish(self):
         self.client_list.remove(self.request)
+        bzList = self.initData['BZ_EVENT_INFO']
+        for index, bzData in enumerate(bzList):
+            if bzData['BZ_TYPE'] is not None and bzData['BZ_TYPE'] == 'INACTIVE':
+                bzData['CHANNEL'] = self.request
+                bzEventThread = threading.Thread(target=self.setBzEvent, args=(bzData,))
+                bzEventThread.daemon = True
+                bzEventThread.start()
         logger.info(f" SK_ID:{self.initData['SK_ID']} Close Client : {self.client_address[0]}:{self.client_address[1]} and client_list size : {len(self.client_list)}")
 
 
@@ -159,18 +163,25 @@ class ServerHandler(socketserver.StreamRequestHandler):
             bzType = data['BZ_TYPE']
             # {'PKG_ID': 'CORE', 'SK_GROUP': 'TEST', 'BZ_TYPE': 'ACTIVE', 'USE_YN': 'Y', 'BZ_METHOD': 'TestController.test', 'SEC': None, 'BZ_DESC': None, 'CHANNEL':''}
             if(data.get('BZ_METHOD') is not None):
-                bzClass = data.get('BZ_METHOD')
-                classNm = bzClass.split('.')[0]
-                methdNm = bzClass.split('.')[1]
-                if classNm in systemGlobals:
-                    my_class = systemGlobals[classNm]
-                    method = getattr(my_class, methdNm)
-                    if callable(method):
-                        method(data)
+
+                if bzType == 'ACTIVE' or bzType == 'INACTIVE':
+                    bzClass = data.get('BZ_METHOD')
+                    classNm = bzClass.split('.')[0]
+                    methdNm = bzClass.split('.')[1]
+                    if classNm in systemGlobals:
+                        my_class = systemGlobals[classNm]
+                        method = getattr(my_class, methdNm)
+                        if callable(method):
+                            method(data)
+                        else:
+                            raise Exception(f"setBzEvent :{methdNm} is not callable.")
                     else:
-                        raise Exception(f"setBzEvent :{methdNm} is not callable.")
-                else:
-                    raise Exception(f"Class {classNm} not found.")
+                        raise Exception(f"Class {classNm} not found.")
+                elif bzType == 'KEEP':
+                    bzThread = BzSchedule(data)
+                    bzThread.daemon = True
+                    bzThread.start()
+
             else:
                 raise Exception(f'BZ_METHOD is Null :')
 
