@@ -30,3 +30,10 @@ class SendHandler():
 
         except Exception as e:
             logger.info(f'sendSkId() Exception SK_ID:{skId} , MSG_ID:{msgId}, DATA:{data} -- {e}')
+
+
+    def sendChannelBytes(self, channel, bytes):
+        try:
+            channel.sendall(bytes)
+        except Exception as e:
+            logger.info(f'sendChannelBytes() Exception :: {e}')

@@ -13,9 +13,9 @@ class TestController():
 
     def test(self, reciveObj):
         returnJson = {}
-        # logger.info(f'TestController.test() IN_DATA : {reciveObj}')
-        Channels = reciveObj['CHANNEL']
-        logger.info(type(Channels))
+        logger.info(f'TestController.test() IN_DATA : {reciveObj}')
+        Channel = reciveObj['CHANNEL']
+        Channel.sendall('test'.encode('utf-8'))
 
         try:
             returnJson['LINE_CD'] = '1'

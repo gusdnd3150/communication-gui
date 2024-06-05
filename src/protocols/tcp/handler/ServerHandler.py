@@ -5,6 +5,7 @@ from conf.logconfig import logger
 import threading
 import queue
 from src.protocols.tcp.msg.FreeCodec import FreeCodec
+from src.protocols.tcp.msg.LengthCodec import LengthCodec
 
 from conf.InitData_n import systemGlobals
 
@@ -42,7 +43,7 @@ class ServerHandler(socketserver.StreamRequestHandler):
                     codec = FreeCodec(self.initData)
 
                 elif (self.initData['HD_TYPE'] == 'LENGTH'):
-                    codec = FreeCodec(self.initData)
+                    codec = LengthCodec(self.initData)
 
                 reableLengthArr = codec.concyctencyCheck(buffer)
 
@@ -57,7 +58,7 @@ class ServerHandler(socketserver.StreamRequestHandler):
                         totlaBytes = readByte.copy()
                         data = codec.decodeRecieData(readByte)
                         data['TOTAL_BYTES'] = totlaBytes
-                        data['CHANNEL'] = self.client_list
+                        data['CHANNEL'] = self.request
 
                         reciveThread = threading.Thread(target=self.onReciveData, args=(data,))
                         reciveThread.daemon = True
@@ -80,11 +81,13 @@ class ServerHandler(socketserver.StreamRequestHandler):
         # 클라이언트 접속 감지
         self.client_list.append(self.request)
         bzList = self.initData['BZ_EVENT_INFO']
+        logger.info('setup 클라이언트 접속 이벤트')
         for index, bzData in enumerate(bzList):
-            reciveThread = threading.Thread(target=self.onReciveData, args=(bzData,))
-            reciveThread.daemon = True
-            reciveThread.start()
-            # if bzData['BZ_TYPE'] == 'ACTIVE':
+            if bzData['BZ_TYPE'] is not None:
+                bzData['CHANNEL'] = self.request
+                bzEventThread = threading.Thread(target=self.setBzEvent, args=(bzData,))
+                bzEventThread.daemon = True
+                bzEventThread.start()
 
 
         logger.info(f" SK_ID:{self.initData['SK_ID']} Client connected: {self.client_address[0]}:{self.client_address[1]}")
@@ -108,7 +111,7 @@ class ServerHandler(socketserver.StreamRequestHandler):
                 except Exception as e:
                     logger.error(f"Error sending message to {sock.getpeername()}: {e}")
         except:
-            traceback.print_exc()
+            traceback.logger.info_exc()
 
     def sendAllObjectDataClient(self, objData):
         try:
@@ -122,7 +125,8 @@ class ServerHandler(socketserver.StreamRequestHandler):
 
     def onReciveData(self, data):
         try:
-
+            logger.info('onReciveData')
+            logger.info(data)
             if(data.get('IN_MSG_INFO') is not None):
                 if(data.get('IN_MSG_INFO').get('BZ_METHOD') is not None):
                     bzClass = data.get('IN_MSG_INFO').get('BZ_METHOD')
@@ -134,9 +138,9 @@ class ServerHandler(socketserver.StreamRequestHandler):
                         if callable(method):
                             method(data)
                         else:
-                            print(f"{methdNm} is not callable.")
+                            logger.info(f"{methdNm} is not callable.")
                     else:
-                        print(f"Class {classNm} not found.")
+                        logger.info(f"Class {classNm} not found.")
                 else:
                     logger.info(f'BZ_METHOD INFO is Null :')
                     return
@@ -145,9 +149,34 @@ class ServerHandler(socketserver.StreamRequestHandler):
                 return
 
         except Exception as e:
-            traceback.print_exc()
+            traceback.logger.info_exc()
             logger.info(f'ServerHandler onReciveData() Exception :{e}')
 
+
+    def setBzEvent(self, data):
+        try:
+            # ACTIVE, INAVTIVE, KEEP
+            bzType = data['BZ_TYPE']
+            # {'PKG_ID': 'CORE', 'SK_GROUP': 'TEST', 'BZ_TYPE': 'ACTIVE', 'USE_YN': 'Y', 'BZ_METHOD': 'TestController.test', 'SEC': None, 'BZ_DESC': None, 'CHANNEL':''}
+            if(data.get('BZ_METHOD') is not None):
+                bzClass = data.get('BZ_METHOD')
+                classNm = bzClass.split('.')[0]
+                methdNm = bzClass.split('.')[1]
+                if classNm in systemGlobals:
+                    my_class = systemGlobals[classNm]
+                    method = getattr(my_class, methdNm)
+                    if callable(method):
+                        method(data)
+                    else:
+                        raise Exception(f"setBzEvent :{methdNm} is not callable.")
+                else:
+                    raise Exception(f"Class {classNm} not found.")
+            else:
+                raise Exception(f'BZ_METHOD is Null :')
+
+        except Exception as e:
+            # traceback.logger.info_exc()
+            logger.info(f'ServerHandler setBzEvent() Exception :{e}')
 
 
 
