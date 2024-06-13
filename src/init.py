@@ -4,7 +4,7 @@ import traceback
 import os
 
 from src.protocols.tcp.ServerThread import ServerThread
-from src.protocols.tcp.SocketClient import SocketClient
+from src.protocols.tcp.ClientThread import ClientThread
 
 from conf.InitData_n import systemGlobals
 
@@ -81,7 +81,7 @@ class InitClass():
                     if(skConTy=='SERVER'):
                         threadInfo = ServerThread(item)
                     elif (skConTy == 'CLIENT'):
-                        threadInfo = SocketClient(item)
+                        threadInfo = ClientThread(item)
                 else:
                     logger.info('None Condition')
                     continue

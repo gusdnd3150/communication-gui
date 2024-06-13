@@ -96,8 +96,6 @@ logger.info(f'socketBody size : {len(socketBody)}')
 logger.info(f'sokcetBz size : {len(sokcetBz)}')
 logger.info(f'sokcetIn size : {len(sokcetIn)}')
 logger.info(f'sokcetSch size : {len(sokcetSch)}')
-logger.info(f'sample sokcetList : {sokcetList[0]}')
-logger.info(f'sample socketBody : {socketBody[0]}')
 
 logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
 # 비즈니스로직 처리 컨트롤러 지정

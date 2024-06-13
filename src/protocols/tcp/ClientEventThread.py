@@ -5,46 +5,47 @@ import threading
 import time
 import traceback
 import socket
+from src.protocols.tcp.msg.FreeCodec import FreeCodec
 
-class SocketClient(threading.Thread):
-    # PKG_ID
-    # SK_ID
-    # SK_GROUP
-    # USE_YN
-    # SK_CONN_TYPE
-    # SK_TYPE
-    # SK_CLIENT_TYPE
-    # HD_ID
-    # SK_PORT
-    # SK_IP
-    # SK_DELIMIT_TYPE
-    # RELATION_VAL
-    # WATCH_MSG_ID
-    # SK_LAST_RECEIVE_DT
-    # SK_LAST_SEND_DT
-    # SK_DESC
-    # SK_STAT
-    # REG_ID
-    # UPD_ID
-    # REG_DT
-    # UPD_DT
-    # SK_LOG
-    # 조인+ HD
+class ClientThread(threading.Thread):
 
-    initData = {}
+    initData = None
     skId = ''
     skIp = ''
     skPort = 0
+    socket = None
+    reactor = None
     isRun = False
-    tryCount= 0
+    skLogYn = False
+    codec = None
+    delimiter = b''
+
 
     def __init__(self, data):
+        # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
+        #  'SK_TYPE': 'TCP', 'SK_CLIENT_TYPE': 'KEEP', 'HD_ID': 'HD_FREE', 'SK_PORT': 5556, 'SK_IP': '0.0.0.0',
+        #  'SK_DELIMIT_TYPE': '0x00', 'RELATION_VAL': None, 'SK_LOG': 'Y', 'HD_TYPE': 'FREE', 'MSG_CLASS': '',
+        #  'MAX_LENGTH': 1024, 'MIN_LENGTH': 4, 'HD_LEN': 0}
+        logger.info(f' ClientThread initData : {data}')
         self.initData = data
         self.skId = data['SK_ID']
-        self.name = data['SK_ID']+'-thread'  # 스레드 이름 설정
+        self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
         self.skIp = data['SK_IP']
         self.skPort = int(data['SK_PORT'])
+
+        if (self.initData['HD_TYPE'] == 'FREE'):
+            self.codec = FreeCodec(self.initData)
+
+        if (data.get('SK_LOG') is not None and data.get('SK_LOG') == 'Y'):
+            self.skLogYn = True
+
+        if (self.initData['SK_DELIMIT_TYPE'] != ''):
+            self.delimiter = int(self.initData['SK_DELIMIT_TYPE'], 16).to_bytes(1, byteorder='big')
         super().__init__()
+
+
+    def run(self):
+        self.initClient()
 
     def initClient(self):
         logger.info('TCP Client Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
@@ -56,7 +57,7 @@ class SocketClient(threading.Thread):
             logger.info('Connection Success :: SK_ID={} IP={}, PORT={}'.format(self.skId,self.skId, self.skPort))
             # 서버로 부터 메세지 받기
             while self.isRun:
-                data = self.client_socket.recv(1024)
+                data = self.client_socket.recv(self.initData.get('MAX_LENGTH'))
                 if not data:
                     break
                 byte_array = bytearray(data)
@@ -72,5 +73,3 @@ class SocketClient(threading.Thread):
             logger.info('Retry connection SK_ID={} IP={} PORT={} '.format(self.skId, self.skIp, self.skPort))
             self.initClient()
 
-    def run(self):
-        self.initClient()

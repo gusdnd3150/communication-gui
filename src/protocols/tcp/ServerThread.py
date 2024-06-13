@@ -138,8 +138,6 @@ class ServerThread(threading.Thread):
             if len(self.client_list) == 0:
                 logger.info(f'sendToAllChannels -{self.skIp} has no Clients')
                 return
-
-
             for skId, client in self.client_list:
                 if skId == self.skId:
                     client.sendall(bytes)
@@ -149,7 +147,6 @@ class ServerThread(threading.Thread):
     def onReciveData(self, data):
         try:
             logger.info('onReciveData')
-            logger.info(data)
             if (data.get('IN_MSG_INFO') is not None):
                 if (data.get('IN_MSG_INFO').get('BZ_METHOD') is not None):
                     bzClass = data.get('IN_MSG_INFO').get('BZ_METHOD')
@@ -159,6 +156,7 @@ class ServerThread(threading.Thread):
                         my_class = systemGlobals[classNm]
                         method = getattr(my_class, methdNm)
                         if callable(method):
+                            logger.info(f"onReciveData : {classNm}.{methdNm} call.")
                             method(data)
                         else:
                             logger.info(f"{methdNm} is not callable.")

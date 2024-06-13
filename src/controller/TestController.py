@@ -18,9 +18,9 @@ class TestController():
         Channel.sendall('test'.encode('utf-8'))
 
         try:
-            # returnJson['LINE_CD'] = '1'
+            returnJson['LINE_CD'] = '1'
             returnJson['LINE_SIGN'] = '2'
 
-            self.sendHandler.sendSkId('TCPS_TEST','LINE_SIGNAL',returnJson)
+            self.sendHandler.sendSkId('SERVER1','LINE_SIGNAL',returnJson)
         except Exception as e:
             logger.info(f'TestController.test() Exception :: {e}')

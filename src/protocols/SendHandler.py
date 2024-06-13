@@ -20,7 +20,7 @@ class SendHandler():
             data['MSG_ID'] = msgId
             for i, sk in enumerate(self.socketList):
                 if sk['SK_ID'] == skId:
-                    logger.info(f'sendSkId SK_DI : {sk}')
+                    # logger.info(f'sendSkId SK_DI : {sk}')
                     skThread = sk['SK_THREAD']
                     returnBytes = skThread.codec.encodeSendData(data)
                     skThread.sendToAllChannels(returnBytes)
