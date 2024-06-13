@@ -25,7 +25,7 @@ class LengthCodec():
         result = []
         # 구분자를 통해 패킷을 나누고 패킷별로 읽어들일 개수를 배열로 반환
         try:
-            logger.info(self.initData)
+            # logger.info(self.initData)
             if (self.delimiter != b''):
                 messages = copyBytes.split(self.delimiter)
                 if len(messages) > 1:
@@ -46,8 +46,6 @@ class LengthCodec():
         msgInfo = None
 
         inMsgVal = None
-        msgLen = len(msgBytes)
-
         inMsgId = None
         bodyList = None
 
@@ -64,19 +62,26 @@ class LengthCodec():
 
             del msgBytes[0:hd['DT_LEN']]
 
+
+        if inMsgVal is None:
+            inMsgVal = len(msgBytes)
+
+        logger.info('dsadasdasdsadaasda222')
         # mid or length 로 소켓 IN 정보 검색
         for index, inData in enumerate(systemGlobals['sokcetIn']):
             if self.initData['SK_ID'] == inData['IN_SK_ID']:
+                print('dsadasdasdsadaasd')
+                print(inData)
                 inMid = None
                 # 인 메시지가 없을 경우 바이트 길이와 길이형 메시지의 길이를 비교
-                if inMsgVal == None and inData['MSG_KEY_TYPE'] == 'LENGTH':
-                    inMid = msgLen
-                else:
-                    inMid = inMsgVal
+                # if inData['MSG_KEY_TYPE'] == 'LENGTH':
+                #     inMid = msgLen
+                # else:
+                #     inMid = inMsgVal
 
                 msgKeyVal = encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE'])
-                if inMid is not None:
-                    if inMid == msgKeyVal:
+                if inMsgVal is not None:
+                    if inMsgVal == msgKeyVal:
                         inMsgId = inData['IN_MSG_ID']
                         msgInfo = inData
                         break

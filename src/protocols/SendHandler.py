@@ -20,14 +20,11 @@ class SendHandler():
             data['MSG_ID'] = msgId
             for i, sk in enumerate(self.socketList):
                 if sk['SK_ID'] == skId:
-                    if sk['SK_CONN_TYPE'] == 'SERVER':
-                        skThread = sk['SK_THREAD']
-                        handler = skThread.socket.handler
-                        handler.sendAllObjectDataClient(handler, data)
-
-                    elif sk['SK_CONN_TYPE'] == 'CLIENT':
-                        print('TODO')
-
+                    logger.info(f'sendSkId SK_DI : {sk}')
+                    skThread = sk['SK_THREAD']
+                    returnBytes = skThread.codec.encodeSendData(data)
+                    skThread.sendToAllChannels(returnBytes)
+                    break
         except Exception as e:
             logger.info(f'sendSkId() Exception SK_ID:{skId} , MSG_ID:{msgId}, DATA:{data} -- {e}')
 

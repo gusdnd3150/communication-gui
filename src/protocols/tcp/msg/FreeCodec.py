@@ -11,13 +11,20 @@ class FreeCodec():
     hdList = []
     hdId = ''
     hdLen = 0
-
+    skId = ''
     delimiter = b''
     
     def __init__(self, initData):
+        # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
+        #  'SK_TYPE': 'TCP', 'SK_CLIENT_TYPE': 'KEEP', 'HD_ID': 'HD_FREE', 'SK_PORT': 5556, 'SK_IP': '0.0.0.0',
+        #  'SK_DELIMIT_TYPE': '0x00', 'RELATION_VAL': None, 'SK_LOG': 'Y', 'HD_TYPE': 'FREE', 'MSG_CLASS': '',
+        #  'MAX_LENGTH': 1024, 'MIN_LENGTH': 4, 'HD_LEN': 0, 'SK_THREAD': < SocketServer(Thread - 2, stopped
+        # daemon
+        # 34804) >}
         self.initData= initData
         self.hdId = initData['HD_ID']
         self.hdLen = initData['HD_LEN']
+        self.skId = initData['SK_ID']
 
         if initData.get(self.hdId) is not None:
             self.hdList = initData[self.hdId]
@@ -29,7 +36,6 @@ class FreeCodec():
         result = []
         # 구분자를 통해 패킷을 나누고 패킷별로 읽어들일 개수를 배열로 반환
         try:
-            logger.info(self.initData)
             if(self.delimiter != b''):
                 messages = copyBytes.split(self.delimiter)
                 if len(messages) > 1:
@@ -50,7 +56,6 @@ class FreeCodec():
         msgInfo = None
 
         inMsgVal = None
-        msgLen = len(msgBytes)
 
         inMsgId = None
         bodyList = None
@@ -68,16 +73,23 @@ class FreeCodec():
 
             del msgBytes[0:hd['DT_LEN']]
 
+        if inMsgVal is None:
+            if self.delimiter != b'':
+                inMsgVal = len(msgBytes)-1
+            else:
+                inMsgVal = len(msgBytes)
 
         # mid or length 로 소켓 IN 정보 검색
         for index, inData in enumerate(systemGlobals['sokcetIn']):
-            if self.initData['SK_ID'] == inData['IN_SK_ID']:
+            if self.skId == inData['IN_SK_ID']:
+                # {'PKG_ID': 'CORE', 'SK_IN_SEQ': 100, 'IN_SK_ID': 'SERVER2', 'IN_MSG_ID': 'IF_BODY',
+                #  'MSG_KEY_TYPE': 'STRING', 'MSG_KEY_VAL': 'MC05', 'BZ_METHOD': 'TestController.test', 'IN_DESC': None,
+                #  'USE_YN': 'Y'}
                 inMid = None
                 # 인 메시지가 없을 경우 바이트 길이와 길이형 메시지의 길이를 비교
-                if inMsgVal == None and inData['MSG_KEY_TYPE'] == 'LENGTH':
-                    inMid = msgLen
-                else:
-                    inMid = inMsgVal
+                if inData['MSG_KEY_TYPE'] == 'LENGTH':
+                    if inMsgVal == encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE']):
+                        inMid = inMsgVal
 
                 msgKeyVal = encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE'])
                 if inMid is not None:
@@ -144,10 +156,8 @@ class FreeCodec():
             # 메시지 바디 세팅
             for index, body in enumerate(msgBody):
                 value = None
-                logger.info(body)
                 if msgObj.get(body['VAL_ID']) is not None:
                     value = msgObj[body['VAL_ID']]
-                logger.info(f'body  : {body["VAL_ID"]}: {value}')
                 bodyBytes.extend(encodeDataToBytes(value, body['VAL_TYPE'], body['VAL_LEN']))
 
             totalLen = len(bodyBytes) + self.hdLen

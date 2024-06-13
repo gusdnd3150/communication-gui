@@ -3,7 +3,7 @@ import traceback
 
 import os
 
-from src.protocols.tcp.SocketServer import SocketServer
+from src.protocols.tcp.ServerThread import ServerThread
 from src.protocols.tcp.SocketClient import SocketClient
 
 from conf.InitData_n import systemGlobals
@@ -18,6 +18,8 @@ from PySide6.QtUiTools import QUiLoader
 
 from src.component.settings.Settings import Settings
 from conf.logconfig import logger
+from twisted.internet import reactor, protocol, threads
+from twisted.internet.protocol import Factory, Protocol
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -45,11 +47,13 @@ class InitClass():
     initData = None # 초기데이터 초기화 클래스
     
     runSkList= [] #구동중인 소켓
-
+    reactor = None
     def __init__(self):
         logger.info('init UI start')
         self.qLoader = QUiLoader()
         app = QtWidgets.QApplication(sys.argv)
+
+        self.reactor = reactor
 
         #메인창
         self.mainLayOut = self.qLoader.load(resource_path('main.ui'), None)
@@ -75,21 +79,20 @@ class InitClass():
 
                 if(skTy == 'TCP'):
                     if(skConTy=='SERVER'):
-                        threadInfo = SocketServer(item)
+                        threadInfo = ServerThread(item)
                     elif (skConTy == 'CLIENT'):
                         threadInfo = SocketClient(item)
                 else:
                     logger.info('None Condition')
                     continue
 
+                item['SK_THREAD'] = threadInfo
                 threadInfo.daemon = True
                 threadInfo.start()
-                item['SK_THREAD'] = threadInfo
-
 
         except Exception as e:
             logger.info(f'Init.start_sk() Exception :: {e}')
-            traceback.print_exc()
+            # traceback.print_exc()
 
     def setEvent(self):
         # self.popup
