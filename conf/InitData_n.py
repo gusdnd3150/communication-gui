@@ -82,7 +82,7 @@ sokcetOut = []
 sokcetSub = []
 sokcetSch = getsokcetSch()
 
-
+mainLayout = None
 
 logger.info(f'sokcetList size : {len(sokcetList)}')
 logger.info(f'sokcetSch size : {len(sokcetSch)}')
@@ -100,4 +100,5 @@ systemGlobals['sokcetList'] = sokcetList
 systemGlobals['socketBody'] = socketBody
 systemGlobals['sokcetBz'] = sokcetBz
 systemGlobals['sokcetIn'] = sokcetIn
+systemGlobals['mainLayout'] = None
 logger.info(f'---------------------------------------')

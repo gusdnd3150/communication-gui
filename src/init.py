@@ -6,8 +6,8 @@ import os
 from src.protocols.tcp.ServerThread import ServerThread
 from src.protocols.tcp.ClientThread import ClientThread
 from src.protocols.tcp.ClientEventThread import ClientEventThread
-
-
+import psutil
+import time
 from conf.InitData_n import systemGlobals
 
 program_path = sys.argv[0]
@@ -20,8 +20,10 @@ from PySide6.QtUiTools import QUiLoader
 
 from src.component.settings.Settings import Settings
 from conf.logconfig import logger
-from twisted.internet import reactor, protocol, threads
-from twisted.internet.protocol import Factory, Protocol
+from src.utils.SystemMonitor import SystemMonitor
+from conf.InitData_n import systemGlobals
+
+import threading
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -35,6 +37,12 @@ program_directory = os.path.dirname(program_path)
 # logger.info(resource_path('test.ui'))
 # form = resource_path('test.ui')
 
+
+pkgCombo = [
+    'CORE'
+    ,'TOOL'
+    ,'MES'
+]
 
 # 네이밍
 # 1. btn_?, popup_?, input_?,
@@ -55,7 +63,6 @@ class InitClass():
         self.qLoader = QUiLoader()
         app = QtWidgets.QApplication(sys.argv)
 
-        self.reactor = reactor
 
         #메인창
         self.mainLayOut = self.qLoader.load(resource_path('main.ui'), None)
@@ -63,6 +70,9 @@ class InitClass():
         self.mainLayOut.btn_settings.clicked.connect(self.open_settings)
         self.mainLayOut.btn_start.clicked.connect(self.start_sk)
         self.mainLayOut.show()
+        systemGlobals['mainLayout'] = self.mainLayOut
+
+        self.bindData()
 
         # 설정팝업
         self.popup = Settings(self.initData)
@@ -70,8 +80,23 @@ class InitClass():
         self.setInitData()
         app.exec()
 
+
+    def bindData(self):
+        for i in range(0, len(pkgCombo)):
+            self.mainLayOut.combo_pkg.addItem(pkgCombo[i])
+
+
     def start_sk(self):
+
+
+
+
+        pkg = self.mainLayOut.combo_pkg.currentText()
+
         try:
+
+
+
             for i , item in enumerate(systemGlobals['sokcetList']):
                 threadInfo = None
                 skTy = item['SK_TYPE']
@@ -97,9 +122,17 @@ class InitClass():
                     threadInfo.daemon = True
                     threadInfo.start()
 
+            sysThread = SystemMonitor(self.mainLayOut)
+            sysThread.daemon = True
+            sysThread.start()
         except Exception as e:
             logger.info(f'Init.start_sk() Exception :: {e}')
             # traceback.print_exc()
+
+
+
+
+
 
     def setEvent(self):
         # self.popup

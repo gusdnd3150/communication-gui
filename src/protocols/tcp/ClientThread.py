@@ -27,7 +27,7 @@ class ClientThread(threading.Thread):
         #  'SK_TYPE': 'TCP', 'SK_CLIENT_TYPE': 'KEEP', 'HD_ID': 'HD_FREE', 'SK_PORT': 5556, 'SK_IP': '0.0.0.0',
         #  'SK_DELIMIT_TYPE': '0x00', 'RELATION_VAL': None, 'SK_LOG': 'Y', 'HD_TYPE': 'FREE', 'MSG_CLASS': '',
         #  'MAX_LENGTH': 1024, 'MIN_LENGTH': 4, 'HD_LEN': 0}
-        logger.info(f' ClientThread initData : {data}')
+        # logger.info(f' ClientThread initData : {data}')
         self.initData = data
         self.skId = data['SK_ID']
         self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정

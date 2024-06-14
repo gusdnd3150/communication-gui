@@ -6,6 +6,8 @@ import socket
 from src.protocols.tcp.msg.FreeCodec import FreeCodec
 from conf.InitData_n import systemGlobals
 
+systemGlobals['mainLayout']
+
 class ServerThread(threading.Thread):
 
     initData = None
@@ -26,7 +28,7 @@ class ServerThread(threading.Thread):
         #  'SK_DELIMIT_TYPE': '0x00', 'RELATION_VAL': None, 'SK_LOG': 'Y', 'HD_TYPE': 'FREE', 'MSG_CLASS': '',
         #  'MAX_LENGTH': 1024, 'MIN_LENGTH': 4, 'HD_LEN': 0}
 
-        logger.info(f' ServerThread initData : {data}')
+        # logger.info(f' ServerThread initData : {data}')
         self.initData = data
         self.skId = data['SK_ID']
         self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
