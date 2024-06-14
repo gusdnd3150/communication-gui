@@ -6,8 +6,9 @@ import time
 import traceback
 import socket
 from src.protocols.tcp.msg.FreeCodec import FreeCodec
+from conf.InitData_n import systemGlobals
 
-class ClientThread(threading.Thread):
+class ClientEventThread(threading.Thread):
 
     initData = None
     skId = ''
@@ -48,28 +49,116 @@ class ClientThread(threading.Thread):
         self.initClient()
 
     def initClient(self):
+        buffer = bytearray()
         logger.info('TCP Client Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
+
         try:
-            self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.client_socket.connect((self.skIp, int(self.skPort)))
-            self.tryCount = 0
+            # 서버에 연결합니다.
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.connect((self.skIp, int(self.skPort)))
+
+            #1. IDLE 타임아웃 설정 (예: 5초)
+            # self.socket.settimeout(5)
+
+            #2. 여기에 active 이벤트 처리
+            logger.info('ACTIVE')
+
             self.isRun = True
-            logger.info('Connection Success :: SK_ID={} IP={}, PORT={}'.format(self.skId,self.skId, self.skPort))
-            # 서버로 부터 메세지 받기
             while self.isRun:
-                data = self.client_socket.recv(self.initData.get('MAX_LENGTH'))
-                if not data:
+                try:
+                    reciveBytes = self.socket.recv(self.initData.get('MAX_LENGTH'))
+                    if not reciveBytes:
+                        break
+                    buffer.extend(reciveBytes)
+
+
+                    if (self.initData['MIN_LENGTH'] > len(buffer)):
+                        continue
+
+                    reableLengthArr = self.codec.concyctencyCheck(buffer)
+
+                    if (len(reableLengthArr) == 0):
+                        logger.info(f'SK_ID: {self.skId} consystency False {str(buffer)}')
+                        continue
+                    logger.info(f'SK_ID: {self.skId} consystency True ')
+
+                    for index, readLegnth in enumerate(reableLengthArr):
+                        readByte = buffer[:readLegnth]
+                        try:
+                            totlaBytes = readByte.copy()
+                            data = self.codec.decodeRecieData(readByte)
+                            data['TOTAL_BYTES'] = totlaBytes
+                            data['CHANNEL'] = self.socket
+
+                            reciveThread = threading.Thread(target=self.onReciveData, args=(data,))
+                            reciveThread.daemon = True
+                            reciveThread.start()
+                        except Exception as e:
+                            logger.info(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
+                        finally:
+                            del buffer[0:readLegnth]
+
+
+                except socket.timeout:
+                    logger.info(f'SK_ID:{self.skId} - IDLE READ exception')
+                    continue
+                except Exception as e:
+                    self.isRun = False
+                    if self.socket:
+                        self.socket.close()
+                        self.socket = None
+                    logger.info(f'Exception :: {e}')
                     break
-                byte_array = bytearray(data)
-                logger.info('recive Data :'+str(byte_array))
-                # self.mainInstance.reciveSocketData(byte_array)
 
-        except:
-            logger.info('Connection Fail SK_ID={} IP={} PORT={} '.format(self.skId, self.skIp, self.skPort))
-            self.client_socket = None
+
+            if self.isRun == False:
+                self.initClient()
+
+        except ConnectionRefusedError as e:
+            logger.info(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
             self.isRun = False
-            self.tryCount = self.tryCount + 1
-            time.sleep(5)
-            logger.info('Retry connection SK_ID={} IP={} PORT={} '.format(self.skId, self.skIp, self.skPort))
-            self.initClient()
 
+        except Exception as e:
+            self.isRun = False
+            logger.info(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
+
+        finally:
+            buffer.clear()
+            if self.isRun == False:
+                # 연결이 실패한 경우 잠시 대기 후 재시도
+                if self.socket:
+                    self.socket.close()
+                    self.socket = None
+                time.sleep(5)  # 5초 대기 후 재시도
+                self.initClient()
+
+
+
+    def onReciveData(self, data):
+        try:
+            # logger.info('onReciveData')
+            if (data.get('IN_MSG_INFO') is not None):
+                if (data.get('IN_MSG_INFO').get('BZ_METHOD') is not None):
+                    bzClass = data.get('IN_MSG_INFO').get('BZ_METHOD')
+                    classNm = bzClass.split('.')[0]
+                    methdNm = bzClass.split('.')[1]
+                    if classNm in systemGlobals:
+                        my_class = systemGlobals[classNm]
+                        method = getattr(my_class, methdNm)
+                        if callable(method):
+                            logger.info(f"onReciveData : {classNm}.{methdNm} call.")
+                            method(data)
+                        else:
+                            logger.info(f"{methdNm} is not callable.")
+                    else:
+                        logger.info(f"Class {classNm} not found.")
+                else:
+                    logger.info(f'BZ_METHOD INFO is Null :')
+                    return
+            else:
+                logger.info(f'IN_MSG_INFO INFO is Null :')
+                return
+
+        except Exception as e:
+            traceback.logger.info_exc()
+            logger.info(f'ClientHandler onReciveData() Exception :{e}')

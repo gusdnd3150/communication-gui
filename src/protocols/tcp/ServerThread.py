@@ -88,9 +88,10 @@ class ServerThread(threading.Thread):
                 reableLengthArr = self.codec.concyctencyCheck(buffer)
 
                 if (len(reableLengthArr) == 0):
-                    logger.info('consystency False')
+                    logger.info(f'SK_ID: {self.skId} consystency False {str(buffer)}')
                     continue
-                logger.info('consystency True')
+                logger.info(f'SK_ID: {self.skId} consystency True ')
+
 
                 for index, readLegnth in enumerate(reableLengthArr):
                     readByte = buffer[:readLegnth]
@@ -104,7 +105,7 @@ class ServerThread(threading.Thread):
                         reciveThread.daemon = True
                         reciveThread.start()
                     except Exception as e:
-                        logger.info(f' Msg convert Exception : {e}  {str(buffer)}')
+                        logger.info(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
                     finally:
                         del buffer[0:readLegnth]
 
@@ -146,7 +147,7 @@ class ServerThread(threading.Thread):
 
     def onReciveData(self, data):
         try:
-            logger.info('onReciveData')
+            # logger.info('onReciveData')
             if (data.get('IN_MSG_INFO') is not None):
                 if (data.get('IN_MSG_INFO').get('BZ_METHOD') is not None):
                     bzClass = data.get('IN_MSG_INFO').get('BZ_METHOD')

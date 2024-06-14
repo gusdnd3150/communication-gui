@@ -5,6 +5,8 @@ import os
 
 from src.protocols.tcp.ServerThread import ServerThread
 from src.protocols.tcp.ClientThread import ClientThread
+from src.protocols.tcp.ClientEventThread import ClientEventThread
+
 
 from conf.InitData_n import systemGlobals
 
@@ -72,23 +74,27 @@ class InitClass():
         try:
             for i , item in enumerate(systemGlobals['sokcetList']):
                 threadInfo = None
-
                 skTy = item['SK_TYPE']
                 skConTy = item['SK_CONN_TYPE']
-                skId = item['SK_ID']
 
                 if(skTy == 'TCP'):
                     if(skConTy=='SERVER'):
                         threadInfo = ServerThread(item)
                     elif (skConTy == 'CLIENT'):
-                        threadInfo = ClientThread(item)
+                        if skConTy == 'KEEP':
+                            threadInfo = ClientThread(item)
+                        elif skConTy == 'EVENT':
+                            threadInfo = ClientEventThread(item)
                 else:
                     logger.info('None Condition')
                     continue
 
                 item['SK_THREAD'] = threadInfo
-                threadInfo.daemon = True
-                threadInfo.start()
+
+                # KEEP일때만 실행 EVENT 방식일땐 상황에 맞춰 실행
+                if skConTy == 'KEEP':
+                    threadInfo.daemon = True
+                    threadInfo.start()
 
         except Exception as e:
             logger.info(f'Init.start_sk() Exception :: {e}')
