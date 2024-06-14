@@ -22,5 +22,6 @@ class TestController():
             returnJson['LINE_SIGN'] = '2'
 
             self.sendHandler.sendSkId('SERVER1','LINE_SIGNAL',returnJson)
+            self.sendHandler.sendSkId('TCPC_TEST', 'LINE_SIGNAL', returnJson)
         except Exception as e:
             logger.info(f'TestController.test() Exception :: {e}')

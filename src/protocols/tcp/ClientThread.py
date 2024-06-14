@@ -71,7 +71,6 @@ class ClientThread(threading.Thread):
                         break
                     buffer.extend(reciveBytes)
 
-
                     if (self.initData['MIN_LENGTH'] > len(buffer)):
                         continue
 
@@ -133,6 +132,15 @@ class ClientThread(threading.Thread):
                 self.initClient()
 
 
+    def sendToAllChannels(self, msgBytes):
+        try:
+            if self.socket is not None:
+                self.socket.sendall(msgBytes)
+            else:
+                logger.info(f'SK_ID:{self.skId}- can"t send  sendToAllChannels  SERVER is None')
+
+        except Exception as e:
+            logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
     def onReciveData(self, data):
         try:

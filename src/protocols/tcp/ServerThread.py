@@ -80,7 +80,7 @@ class ServerThread(threading.Thread):
                 if not reciveBytes:
                     break
                 buffer.extend(reciveBytes)
-                logger.info(f'{self.skId} recieved data: {reciveBytes}')
+                logger.info(f'SK_ID:{self.skId} recieved data: {reciveBytes}')
 
                 if (self.initData['MIN_LENGTH'] > len(buffer)):
                     continue
@@ -143,7 +143,7 @@ class ServerThread(threading.Thread):
                 if skId == self.skId:
                     client.sendall(bytes)
         except Exception as e:
-            logger.info(f'{self.skIp}- sendToAllChannels Exception : data STR [{str(bytes)}]  error [{e}]')
+            logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
     def onReciveData(self, data):
         try:
