@@ -76,14 +76,15 @@ class InitClass():
                 threadInfo = None
                 skTy = item['SK_TYPE']
                 skConTy = item['SK_CONN_TYPE']
+                skClientTy = item['SK_CLIENT_TYPE']
 
                 if(skTy == 'TCP'):
                     if(skConTy=='SERVER'):
                         threadInfo = ServerThread(item)
                     elif (skConTy == 'CLIENT'):
-                        if skConTy == 'KEEP':
+                        if skClientTy == 'KEEP':
                             threadInfo = ClientThread(item)
-                        elif skConTy == 'EVENT':
+                        elif skClientTy == 'EVENT':
                             threadInfo = ClientEventThread(item)
                 else:
                     logger.info('None Condition')
@@ -92,7 +93,7 @@ class InitClass():
                 item['SK_THREAD'] = threadInfo
 
                 # KEEP일때만 실행 EVENT 방식일땐 상황에 맞춰 실행
-                if skConTy == 'KEEP':
+                if skClientTy == 'KEEP':
                     threadInfo.daemon = True
                     threadInfo.start()
 

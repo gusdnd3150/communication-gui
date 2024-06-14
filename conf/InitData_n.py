@@ -10,11 +10,6 @@ logger.info('DB connectiom with SqlLite')
 dbInstance = sqlite3.connect('core.db')
 
 
-
-
-
-
-
 def getsokcetList():
     skList = selectQuery(selectSocketList())
     for index, sk in enumerate(skList):
@@ -86,7 +81,6 @@ sokcetInToOut = []
 sokcetOut = []
 sokcetSub = []
 sokcetSch = getsokcetSch()
-
 
 
 

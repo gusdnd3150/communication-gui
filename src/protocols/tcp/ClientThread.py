@@ -50,7 +50,7 @@ class ClientThread(threading.Thread):
 
     def initClient(self):
         buffer = bytearray()
-        logger.info('TCP Client Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
+        logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
 
         try:
             # 서버에 연결합니다.

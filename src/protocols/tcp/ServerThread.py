@@ -67,7 +67,7 @@ class ServerThread(threading.Thread):
     def client_handler(self,clientsocket,  address):
         buffer = bytearray()
         # avtive 이벤트처리
-        logger.info(f' {self.skId} - Client connected  IP/PORT : {address}')
+        logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
 
         # idle 처리
         # clientsocket.settimeout(5)
@@ -126,7 +126,7 @@ class ServerThread(threading.Thread):
         buffer.clear()
         
         # inactive 처리
-        logger.info(f' {self.skId} - Client disConnected  IP/PORT : {address}')
+        logger.info(f' {self.skId} - CLIENT disConnected  IP/PORT : {address}')
 
         self.client_list.remove(client_info)
         logger.info(f' {len(self.client_list)}')

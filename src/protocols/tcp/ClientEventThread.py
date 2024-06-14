@@ -27,7 +27,7 @@ class ClientEventThread(threading.Thread):
         #  'SK_TYPE': 'TCP', 'SK_CLIENT_TYPE': 'KEEP', 'HD_ID': 'HD_FREE', 'SK_PORT': 5556, 'SK_IP': '0.0.0.0',
         #  'SK_DELIMIT_TYPE': '0x00', 'RELATION_VAL': None, 'SK_LOG': 'Y', 'HD_TYPE': 'FREE', 'MSG_CLASS': '',
         #  'MAX_LENGTH': 1024, 'MIN_LENGTH': 4, 'HD_LEN': 0}
-        logger.info(f' ClientThread initData : {data}')
+        logger.info(f' EVENT ClientThread initData : {data}')
         self.initData = data
         self.skId = data['SK_ID']
         self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
@@ -50,7 +50,7 @@ class ClientEventThread(threading.Thread):
 
     def initClient(self):
         buffer = bytearray()
-        logger.info('TCP Client Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
+        logger.info('TCP EVENT CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
 
         try:
             # 서버에 연결합니다.
@@ -70,7 +70,6 @@ class ClientEventThread(threading.Thread):
                     if not reciveBytes:
                         break
                     buffer.extend(reciveBytes)
-
 
                     if (self.initData['MIN_LENGTH'] > len(buffer)):
                         continue
@@ -115,12 +114,12 @@ class ClientEventThread(threading.Thread):
                 self.initClient()
 
         except ConnectionRefusedError as e:
-            logger.info(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
+            logger.info(f'TCP EVENT CLIENT SK_ID={self.skId}  exception : {e}')
             self.isRun = False
 
         except Exception as e:
             self.isRun = False
-            logger.info(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
+            logger.info(f'TCP EVENT CLIENT SK_ID={self.skId}  exception : {e}')
 
         finally:
             buffer.clear()
@@ -161,4 +160,4 @@ class ClientEventThread(threading.Thread):
 
         except Exception as e:
             traceback.logger.info_exc()
-            logger.info(f'ClientHandler onReciveData() Exception :{e}')
+            logger.info(f'Event ClientHandler onReciveData() Exception :{e}')
