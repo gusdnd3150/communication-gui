@@ -154,19 +154,19 @@ class ClientThread(threading.Thread):
                         my_class = systemGlobals[classNm]
                         method = getattr(my_class, methdNm)
                         if callable(method):
-                            logger.info(f"onReciveData : {classNm}.{methdNm} call.")
+                            logger.info(f"SK_ID:{self.skId} onReciveData : {classNm}.{methdNm} call.")
                             method(data)
                         else:
-                            logger.info(f"{methdNm} is not callable.")
+                            logger.info(f"SK_ID:{self.skId} {methdNm} is not callable.")
                     else:
-                        logger.info(f"Class {classNm} not found.")
+                        logger.info(f"SK_ID:{self.skId} Class {classNm} not found.")
                 else:
-                    logger.info(f'BZ_METHOD INFO is Null :')
+                    logger.info(f'SK_ID:{self.skId} BZ_METHOD INFO is Null :')
                     return
             else:
-                logger.info(f'IN_MSG_INFO INFO is Null :')
+                logger.info(f'SK_ID:{self.skId} IN_MSG_INFO INFO is Null :')
                 return
 
         except Exception as e:
             traceback.logger.info_exc()
-            logger.info(f'ClientHandler onReciveData() Exception :{e}')
+            logger.info(f'SK_ID:{self.skId} ClientHandler onReciveData() Exception :{e}')
