@@ -93,20 +93,20 @@ class ClientThread(threading.Thread):
                             reciveThread.daemon = True
                             reciveThread.start()
                         except Exception as e:
-                            logger.info(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
+                            logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
                         finally:
                             del buffer[0:readLegnth]
 
 
                 except socket.timeout:
-                    logger.info(f'SK_ID:{self.skId} - IDLE READ exception')
+                    logger.error(f'SK_ID:{self.skId} - IDLE READ exception')
                     continue
                 except Exception as e:
                     self.isRun = False
                     if self.socket:
                         self.socket.close()
                         self.socket = None
-                    logger.info(f'Exception :: {e}')
+                    logger.error(f'Exception :: {e}')
                     break
 
 
@@ -114,12 +114,12 @@ class ClientThread(threading.Thread):
                 self.initClient()
 
         except ConnectionRefusedError as e:
-            logger.info(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
+            logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
             self.isRun = False
 
         except Exception as e:
             self.isRun = False
-            logger.info(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
+            logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
 
         finally:
             buffer.clear()
@@ -140,7 +140,7 @@ class ClientThread(threading.Thread):
                 logger.info(f'SK_ID:{self.skId}- can"t send  sendToAllChannels  SERVER is None')
 
         except Exception as e:
-            logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+            logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
     def onReciveData(self, data):
         try:
@@ -157,16 +157,16 @@ class ClientThread(threading.Thread):
                             logger.info(f"SK_ID:{self.skId} onReciveData : {classNm}.{methdNm} call.")
                             method(data)
                         else:
-                            logger.info(f"SK_ID:{self.skId} {methdNm} is not callable.")
+                            logger.error(f"SK_ID:{self.skId} {methdNm} is not callable.")
                     else:
-                        logger.info(f"SK_ID:{self.skId} Class {classNm} not found.")
+                        logger.error(f"SK_ID:{self.skId} Class {classNm} not found.")
                 else:
-                    logger.info(f'SK_ID:{self.skId} BZ_METHOD INFO is Null :')
+                    logger.error(f'SK_ID:{self.skId} BZ_METHOD INFO is Null :')
                     return
             else:
-                logger.info(f'SK_ID:{self.skId} IN_MSG_INFO INFO is Null :')
+                logger.error(f'SK_ID:{self.skId} IN_MSG_INFO INFO is Null :')
                 return
 
         except Exception as e:
             traceback.logger.info_exc()
-            logger.info(f'SK_ID:{self.skId} ClientHandler onReciveData() Exception :{e}')
+            logger.error(f'SK_ID:{self.skId} ClientHandler onReciveData() Exception :{e}')

@@ -122,9 +122,9 @@ class InitClass():
                     threadInfo.daemon = True
                     threadInfo.start()
 
-            sysThread = SystemMonitor(self.mainLayOut)
-            sysThread.daemon = True
-            sysThread.start()
+            # sysThread = SystemMonitor(self.mainLayOut)
+            # sysThread.daemon = True
+            # sysThread.start()
         except Exception as e:
             logger.info(f'Init.start_sk() Exception :: {e}')
             # traceback.print_exc()
