@@ -14,7 +14,6 @@ class BzActivator(threading.Thread):
         self.skGroup = bzInfo['SK_GROUP']
         super().__init__()
 
-
     def run(self):
         try:
             # logger.info(f'BzActivator run() parmas :: {self.bzInfo}')

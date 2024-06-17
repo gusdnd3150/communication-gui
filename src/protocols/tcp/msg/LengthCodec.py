@@ -44,7 +44,7 @@ class LengthCodec():
                 result.append(len(copyBytes))
 
         except Exception as e:
-            logger.info(f'LengthCodec concyctencyCheck Exception : {e}')
+            logger.info(f'FreeCodec concyctencyCheck Exception : {e}')
 
         return result
 
@@ -59,7 +59,7 @@ class LengthCodec():
 
         for index, hd in enumerate(self.hdList):
             if (len(msgBytes) < hd['DT_LEN']):
-                raise Exception('LengthCodec convertRecieData : 해더 전문 파싱 오류')
+                raise Exception('FreeCodec convertRecieData : 해더 전문 파싱 오류')
             read = msgBytes[:hd['DT_LEN']]
             returnData[hd['DT_ID']] = decodeBytesToType(read, hd['DT_TYPE'])
             # FREE형은 길이로 나누지 않음
@@ -107,12 +107,12 @@ class LengthCodec():
 
         for index, body in enumerate(bodyList):
             if (len(msgBytes) < body['VAL_LEN']):
-                raise Exception('LengthCodec convertRecieData : 바디 전문 파싱 오류')
+                raise Exception('FreeCodec convertRecieData : 바디 전문 파싱 오류')
             read = msgBytes[:body['VAL_LEN']]
             returnData[body['VAL_ID']] = decodeBytesToType(read, body['VAL_TYPE'])
             del msgBytes[0:body['VAL_LEN']]
 
-        returnData['IN_MSG_INFO'] = msgInfo
+        returnData['BZ_INFO'] = msgInfo
 
         return returnData
 
@@ -143,7 +143,7 @@ class LengthCodec():
                     break
 
             if msgBody is None:
-                raise Exception(f'LengthCodec encodeSendData() MSG_ID:{msgId} is None')
+                raise Exception(f'FreeCodec encodeSendData() MSG_ID:{msgId} is None')
 
             # 메시지 바디 세팅
             for index, body in enumerate(msgBody):
@@ -159,7 +159,7 @@ class LengthCodec():
                 # {'HD_ID': 'HD_HS', 'DT_ORD': 1, 'DT_ID': 'TOTAL_LENGTH', 'DT_TYPE': 'INT', 'DT_LEN': 4, 'DT_NAME': '', 'DT_DESC': '',
                 # 'MSG_LEN_REL_YN': 'Y', 'MSG_ID_REL_YN': '', 'DEFAULT_VALUE': ''}
                 if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
-                    headerBytes.extend(encodeDataToBytes(totalLen, hd['DT_TYPE'], hd['DT_LEN']))
+                    headerBytes.extend(encodeDataToBytes(totalLen, hd['DT_TYPE'], hd['DT_LEN'], '0'))
                 elif hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
                     headerBytes.extend(encodeDataToBytes(msgKeyVal, msgKeyType, msgKeyLen))
                 else:
@@ -178,6 +178,6 @@ class LengthCodec():
 
             return returnBytes
         except Exception as e:
-            logger.info(f'LengthCodec encodeSendData() Exception :: {e}')
+            logger.info(f'FreeCodec encodeSendData() Exception :: {e}')
 
 

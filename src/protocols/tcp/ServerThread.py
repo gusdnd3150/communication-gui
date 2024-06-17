@@ -4,6 +4,7 @@ import threading
 
 import socket
 from src.protocols.tcp.msg.FreeCodec import FreeCodec
+from src.protocols.tcp.msg.LengthCodec import LengthCodec
 from conf.InitData_n import systemGlobals
 
 from src.protocols.sch.BzSchedule import BzSchedule
@@ -45,7 +46,7 @@ class ServerThread(threading.Thread):
         if (self.initData['HD_TYPE'] == 'FREE'):
             self.codec = FreeCodec(self.initData)
         elif (self.initData['HD_TYPE'] == 'LENGTH'):
-            self.codec = FreeCodec(self.initData)
+            self.codec = LengthCodec(self.initData)
 
         if (data.get('SK_LOG') is not None and data.get('SK_LOG') == 'Y'):
             self.skLogYn = True
@@ -126,7 +127,12 @@ class ServerThread(threading.Thread):
                 if (self.initData['MIN_LENGTH'] > len(buffer)):
                     continue
 
-                reableLengthArr = self.codec.concyctencyCheck(buffer)
+                reableLengthArr = self.codec.concyctencyCheck(buffer.copy())
+
+                if (self.initData['MIN_LENGTH'] > len(buffer)):
+                    continue
+
+                reableLengthArr = self.codec.concyctencyCheck(buffer.copy())
 
                 if (len(reableLengthArr) == 0):
                     logger.info(f'SK_ID: {self.skId} consystency False {str(buffer)}')
@@ -137,9 +143,8 @@ class ServerThread(threading.Thread):
                 for index, readLegnth in enumerate(reableLengthArr):
                     readByte = buffer[:readLegnth]
                     try:
-                        totlaBytes = readByte.copy()
                         data = self.codec.decodeRecieData(readByte)
-                        data['TOTAL_BYTES'] = totlaBytes
+                        data['TOTAL_BYTES'] = readByte.copy()
                         data['CHANNEL'] = clientsocket
                         data['SK_ID'] = self.skId
                         bz = BzActivator(data)

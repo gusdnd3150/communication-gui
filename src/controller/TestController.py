@@ -40,11 +40,10 @@ class TestController():
         try:
             Channel = reciveObj['CHANNEL']
             Channel.sendall('idle'.encode('utf-8'))
-            Channel.close()
-            # returnJson['LINE_CD'] = '1'
-            # returnJson['LINE_SIGN'] = '2'
+            returnJson['LINE_CD'] = 'CS01'
+            returnJson['LINE_SIGN'] = '2'
             #
-            # self.sendHandler.sendSkId('SERVER1','LINE_SIGNAL',returnJson)
+            self.sendHandler.sendSkId('SERVER1','LINE_SIGNAL',returnJson)
             # self.sendHandler.sendSkId('TCPC_TEST', 'LINE_SIGNAL', returnJson)
         except Exception as e:
             logger.info(f'TestController.idle() Exception :: {e}')
