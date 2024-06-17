@@ -34,3 +34,17 @@ class SendHandler():
             channel.sendall(bytes)
         except Exception as e:
             logger.info(f'sendChannelBytes() Exception :: {e}')
+
+
+    def sendChannelMsg(self, channel, msgId, data):
+        try:
+            data['MSG_ID'] = msgId
+            for i, sk in enumerate(self.socketList):
+                if sk['SK_ID'] == data['SK_ID']:
+                    # logger.info(f'sendSkId SK_DI : {sk}')
+                    skThread = sk['SK_THREAD']
+                    returnBytes = skThread.codec.encodeSendData(data)
+                    channel.sendall(returnBytes)
+                    break
+        except Exception as e:
+            logger.info(f'sendChannelMsg() Exception :: {e}')

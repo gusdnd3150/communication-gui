@@ -25,6 +25,14 @@ class TestController():
             logger.info(f'TestController.test() Exception :: {e}')
 
 
+    def keep(self, reciveObj):
+        returnJson = {}
+        try:
+            logger.info(f'TestController.keep() IN_DATA : {reciveObj}')
+
+        except Exception as e:
+            logger.info(f'TestController.test() Exception :: {e}')
+
     def idle(self, reciveObj):
         returnJson = {}
         logger.info(f'TestController.idle() IN_DATA : {reciveObj}')
@@ -32,6 +40,7 @@ class TestController():
         try:
             Channel = reciveObj['CHANNEL']
             Channel.sendall('idle'.encode('utf-8'))
+            Channel.close()
             # returnJson['LINE_CD'] = '1'
             # returnJson['LINE_SIGN'] = '2'
             #

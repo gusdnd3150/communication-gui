@@ -116,7 +116,7 @@ class FreeCodec():
             returnData[body['VAL_ID']] = decodeBytesToType(read, body['VAL_TYPE'])
             del msgBytes[0:body['VAL_LEN']]
 
-        returnData['IN_MSG_INFO'] = msgInfo
+        returnData['BZ_INFO'] = msgInfo
 
         return returnData
 
@@ -167,7 +167,7 @@ class FreeCodec():
                 # {'HD_ID': 'HD_HS', 'DT_ORD': 1, 'DT_ID': 'TOTAL_LENGTH', 'DT_TYPE': 'INT', 'DT_LEN': 4, 'DT_NAME': '', 'DT_DESC': '',
                 # 'MSG_LEN_REL_YN': 'Y', 'MSG_ID_REL_YN': '', 'DEFAULT_VALUE': ''}
                 if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
-                    headerBytes.extend(encodeDataToBytes(totalLen, hd['DT_TYPE'], hd['DT_LEN']))
+                    headerBytes.extend(encodeDataToBytes(totalLen, hd['DT_TYPE'], hd['DT_LEN'],'0'))
                 elif hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
                     headerBytes.extend(encodeDataToBytes(msgKeyVal, msgKeyType, msgKeyLen))
                 else:

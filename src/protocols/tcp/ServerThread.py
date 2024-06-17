@@ -6,6 +6,8 @@ import socket
 from src.protocols.tcp.msg.FreeCodec import FreeCodec
 from conf.InitData_n import systemGlobals
 
+from src.protocols.sch.BzSchedule import BzSchedule
+from src.protocols.BzActivator import BzActivator
 systemGlobals['mainLayout']
 
 class ServerThread(threading.Thread):
@@ -25,6 +27,7 @@ class ServerThread(threading.Thread):
     bzActive = None
     bzInActive = None
     bzIdleRead = None
+    bzSch = None
 
     def __init__(self, data):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
@@ -40,6 +43,8 @@ class ServerThread(threading.Thread):
         self.skPort = int(data['SK_PORT'])
 
         if (self.initData['HD_TYPE'] == 'FREE'):
+            self.codec = FreeCodec(self.initData)
+        elif (self.initData['HD_TYPE'] == 'LENGTH'):
             self.codec = FreeCodec(self.initData)
 
         if (data.get('SK_LOG') is not None and data.get('SK_LOG') == 'Y'):
@@ -90,12 +95,19 @@ class ServerThread(threading.Thread):
         # ACTIVE 이벤트처리
         if self.bzActive is not None:
             logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
-            activeObj = {}
-            activeObj['CHANNEL'] = clientsocket
-            activeObj['IN_MSG_INFO'] = self.bzActive
-            reciveThread = threading.Thread(target=self.onReciveData, args=(activeObj,))
-            reciveThread.daemon = True
-            reciveThread.start()
+            self.bzActive['SK_ID'] = self.skId
+            self.bzActive['CHANNEL'] = clientsocket
+            self.bzActive['BZ_INFO'] = self.bzActive
+            bz = BzActivator(self.bzActive)
+            bz.daemon = True
+            bz.start()
+
+        # KEEP 처리
+        if self.bzKeep is not None:
+            self.bzSch = BzSchedule(self.bzKeep)
+            self.bzSch.daemon = True
+            self.bzSch.start()
+
 
         # IDLE_READ 처리
         if self.bzIdleRead is not None:
@@ -130,11 +142,9 @@ class ServerThread(threading.Thread):
                         data['TOTAL_BYTES'] = totlaBytes
                         data['CHANNEL'] = clientsocket
                         data['SK_ID'] = self.skId
-                        data['SK_ID'] = self.skId
-
-                        reciveThread = threading.Thread(target=self.onReciveData, args=(data,))
-                        reciveThread.daemon = True
-                        reciveThread.start()
+                        bz = BzActivator(data)
+                        bz.daemon = True
+                        bz.start()
                     except Exception as e:
                         logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
                     finally:
@@ -143,12 +153,12 @@ class ServerThread(threading.Thread):
             except socket.timeout as e:
                 logger.error(f'{self.skId}- Timeout IDLE read : {e}')
                 if self.bzIdleRead is not None:
-                    idleObj = {}
-                    idleObj['CHANNEL'] = clientsocket
-                    idleObj['IN_MSG_INFO'] = self.bzIdleRead
-                    reciveThread = threading.Thread(target=self.onReciveData, args=(idleObj,))
-                    reciveThread.daemon = True
-                    reciveThread.start()
+                    self.bzIdleRead['SK_ID'] = self.skId
+                    self.bzIdleRead['CHANNEL'] = clientsocket
+                    self.bzIdleRead['BZ_INFO'] = self.bzIdleRead
+                    bz = BzActivator(self.bzIdleRead)
+                    bz.daemon = True
+                    bz.start()
 
             # 클라가 연결을 종료할 경우
             except ConnectionResetError as e:
@@ -166,12 +176,16 @@ class ServerThread(threading.Thread):
         # inactive 처리
         logger.info(f'SK_ID:{self.skId}- CLIENT disConnected  IP/PORT : {address}')
         if self.bzInActive is not None:
-            inactiveObj = {}
-            inactiveObj['CHANNEL'] = clientsocket
-            inactiveObj['IN_MSG_INFO'] = self.bzInActive
-            reciveThread = threading.Thread(target=self.onReciveData, args=(inactiveObj,))
-            reciveThread.daemon = True
-            reciveThread.start()
+            self.bzInActive['SK_ID'] = self.skId
+            self.bzInActive['CHANNEL'] = clientsocket
+            self.bzInActive['BZ_INFO'] = self.bzInActive
+            bz = BzActivator(self.bzInActive)
+            bz.daemon = True
+            bz.start()
+
+
+        if self.bzSch is not None:
+            self.bzSch = None
 
         self.client_list.remove(client_info)
         logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
@@ -180,7 +194,6 @@ class ServerThread(threading.Thread):
 
     def sendToAllChannels(self, bytes):
         try:
-
             if len(self.client_list) == 0:
                 logger.info(f'sendToAllChannels -{self.skIp} has no Clients')
                 return
@@ -190,31 +203,3 @@ class ServerThread(threading.Thread):
         except Exception as e:
             logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
-    def onReciveData(self, data):
-        try:
-            # logger.info('onReciveData')
-            if (data.get('IN_MSG_INFO') is not None):
-                if (data.get('IN_MSG_INFO').get('BZ_METHOD') is not None):
-                    bzClass = data.get('IN_MSG_INFO').get('BZ_METHOD')
-                    classNm = bzClass.split('.')[0]
-                    methdNm = bzClass.split('.')[1]
-                    if classNm in systemGlobals:
-                        my_class = systemGlobals[classNm]
-                        method = getattr(my_class, methdNm)
-                        if callable(method):
-                            logger.info(f"SK_ID:{self.skId} onReciveData : {classNm}.{methdNm} call.")
-                            method(data)
-                        else:
-                            logger.error(f"SK_ID:{self.skId} {methdNm} is not callable.")
-                    else:
-                        logger.error(f"SK_ID:{self.skId} Class {classNm} not found.")
-                else:
-                    logger.error(f'SK_ID:{self.skId} BZ_METHOD INFO is Null :')
-                    return
-            else:
-                logger.error(f'SK_ID:{self.skId} IN_MSG_INFO INFO is Null :')
-                return
-
-        except Exception as e:
-            logger.error(f'SK_ID:{self.skId} ServerHandler onReciveData() Exception :{e}')
-            traceback.logger.info_exc()

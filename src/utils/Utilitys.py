@@ -51,7 +51,7 @@ def encodeDataToBytes(data, type, length, pad=' '):
                 data = bytearray([0x20] * length)
 
         if type == 'STRING':
-            padded_string = data.ljust(length, pad)
+            padded_string = str(data).rjust(length, pad)
             return padded_string.encode('utf-8')
 
         elif type == 'INT':
