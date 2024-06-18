@@ -122,26 +122,14 @@ class ServerThread(threading.Thread):
                 if not reciveBytes:
                     break
                 buffer.extend(reciveBytes)
-                logger.info(f'SK_ID:{self.skId} recieved data: {reciveBytes}')
+                # logger.info(f'SK_ID:{self.skId} recieved data: {reciveBytes}')
 
                 if (self.initData['MIN_LENGTH'] > len(buffer)):
                     continue
 
-                reableLengthArr = self.codec.concyctencyCheck(buffer.copy())
-
-                if (self.initData['MIN_LENGTH'] > len(buffer)):
-                    continue
-
-                reableLengthArr = self.codec.concyctencyCheck(buffer.copy())
-
-                if (len(reableLengthArr) == 0):
-                    logger.info(f'SK_ID: {self.skId} consystency False {str(buffer)}')
-                    continue
-                logger.info(f'SK_ID: {self.skId} consystency True ')
-
-
-                for index, readLegnth in enumerate(reableLengthArr):
-                    readByte = buffer[:readLegnth]
+                readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
+                while 0 != readBytesCnt and len(buffer) >= readBytesCnt:
+                    readByte = buffer[:readBytesCnt]
                     try:
                         data = self.codec.decodeRecieData(readByte)
                         data['TOTAL_BYTES'] = readByte.copy()
@@ -153,7 +141,7 @@ class ServerThread(threading.Thread):
                     except Exception as e:
                         logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
                     finally:
-                        del buffer[0:readLegnth]
+                        del buffer[0:readBytesCnt]
 
             except socket.timeout as e:
                 logger.error(f'{self.skId}- Timeout IDLE read : {e}')

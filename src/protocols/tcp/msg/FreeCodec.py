@@ -36,14 +36,12 @@ class FreeCodec():
         result = []
         # 구분자를 통해 패킷을 나누고 패킷별로 읽어들일 개수를 배열로 반환
         try:
-            if(self.delimiter != b''):
-                messages = copyBytes.split(self.delimiter)
-                if len(messages) > 1:
-                    for index, msg in enumerate(messages):
-                        if(len(msg)>0):
-                            result.append(len(msg)+1)
+            if (self.delimiter != b''):
+                index = copyBytes.find(self.delimiter, 0)
+                if index != -1:
+                    result = index + 1
             else:
-                result.append(len(copyBytes))
+                result = len(copyBytes)
 
         except Exception as e:
             logger.info(f'FreeCodec concyctencyCheck Exception : {e}')

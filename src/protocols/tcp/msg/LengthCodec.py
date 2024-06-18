@@ -31,40 +31,46 @@ class LengthCodec():
             self.delimiter = bytes.fromhex(initData['SK_DELIMIT_TYPE'][2:])
 
     def concyctencyCheck(self, copyBytes):
-        result = []
-        # 구분자를 통해 패킷을 나누고 패킷별로 읽어들일 개수를 배열로 반환
+        result = 0
         try:
             if (self.delimiter != b''):
-                messages = copyBytes.split(self.delimiter)
-                if len(messages) > 1:
-                    for index, msg in enumerate(messages):
-                        if (len(msg) > 0):
-                            result.append(len(msg) + 1)
+                index = copyBytes.find(self.delimiter, 0)
+                if index != -1:
+                    result = index+1
             else:
-                result.append(len(copyBytes))
+                for index, hd in enumerate(self.hdList):
+                    if (len(copyBytes) < hd['DT_LEN']):
+                        raise Exception('LengthCodec convertRecieData : 해더 전문 파싱 오류')
+                    read = copyBytes[:hd['DT_LEN']]
+                    if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
+                        result = int(decodeBytesToType(read, hd['DT_TYPE']))
+                    del copyBytes[0:hd['DT_LEN']]
 
         except Exception as e:
-            logger.info(f'FreeCodec concyctencyCheck Exception : {e}')
+            logger.info(f'LengthCodec concyctencyCheck Exception : {e}')
 
+        logger.info(f'dddddddddddd :: {result}')
         return result
+
+
+
 
     def decodeRecieData(self, msgBytes):
         returnData = {}
         msgInfo = None
 
         inMsgVal = None
-
+        lenRelYn = 0
         inMsgId = None
         bodyList = None
 
         for index, hd in enumerate(self.hdList):
             if (len(msgBytes) < hd['DT_LEN']):
-                raise Exception('FreeCodec convertRecieData : 해더 전문 파싱 오류')
+                raise Exception('LengthCodec convertRecieData : 해더 전문 파싱 오류')
             read = msgBytes[:hd['DT_LEN']]
             returnData[hd['DT_ID']] = decodeBytesToType(read, hd['DT_TYPE'])
-            # FREE형은 길이로 나누지 않음
-            # if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
-            #     lenRelYn = returnData[hd['DT_ID']]
+            if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
+                lenRelYn = returnData[hd['DT_ID']]
             if hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
                 inMsgVal = returnData[hd['DT_ID']]
 
@@ -87,8 +93,11 @@ class LengthCodec():
                 if inData['MSG_KEY_TYPE'] == 'LENGTH':
                     if inMsgVal == encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE']):
                         inMid = inMsgVal
+                else:
+                   inMid = inMsgVal
 
                 msgKeyVal = encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE'])
+                logger.info(f'inMid:{inMid}  msgKeyVal:{msgKeyVal}')
                 if inMid is not None:
                     if inMid == msgKeyVal:
                         inMsgId = inData['IN_MSG_ID']
@@ -107,7 +116,7 @@ class LengthCodec():
 
         for index, body in enumerate(bodyList):
             if (len(msgBytes) < body['VAL_LEN']):
-                raise Exception('FreeCodec convertRecieData : 바디 전문 파싱 오류')
+                raise Exception('LengthCodec convertRecieData : 바디 전문 파싱 오류')
             read = msgBytes[:body['VAL_LEN']]
             returnData[body['VAL_ID']] = decodeBytesToType(read, body['VAL_TYPE'])
             del msgBytes[0:body['VAL_LEN']]
@@ -143,7 +152,7 @@ class LengthCodec():
                     break
 
             if msgBody is None:
-                raise Exception(f'FreeCodec encodeSendData() MSG_ID:{msgId} is None')
+                raise Exception(f'LengthCodec encodeSendData() MSG_ID:{msgId} is None')
 
             # 메시지 바디 세팅
             for index, body in enumerate(msgBody):
@@ -178,6 +187,6 @@ class LengthCodec():
 
             return returnBytes
         except Exception as e:
-            logger.info(f'FreeCodec encodeSendData() Exception :: {e}')
+            logger.info(f'LengthCodec encodeSendData() Exception :: {e}')
 
 
