@@ -139,6 +139,7 @@ class ServerThread(threading.Thread):
                         bz.daemon = True
                         bz.start()
                     except Exception as e:
+                        traceback.print_exc()
                         logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
                     finally:
                         del buffer[0:readBytesCnt]

@@ -11,7 +11,8 @@ class BzActivator(threading.Thread):
 
     def __init__(self, bzInfo):
         self.bzInfo = bzInfo
-        self.skGroup = bzInfo['SK_GROUP']
+        if bzInfo.get('SK_GROUP') is not None:
+            self.skGroup = bzInfo['SK_GROUP']
         super().__init__()
 
     def run(self):
