@@ -63,19 +63,9 @@ class FreeCodec():
                 raise Exception('FreeCodec convertRecieData : 해더 전문 파싱 오류')
             read = msgBytes[:hd['DT_LEN']]
             returnData[hd['DT_ID']] = decodeBytesToType(read, hd['DT_TYPE'])
-            # FREE형은 길이로 나누지 않음
-            # if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
-            #     lenRelYn = returnData[hd['DT_ID']]
             if hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
                 inMsgVal = returnData[hd['DT_ID']]
-
             del msgBytes[0:hd['DT_LEN']]
-
-        if inMsgVal is None:
-            if self.delimiter != b'':
-                inMsgVal = len(msgBytes)-1
-            else:
-                inMsgVal = len(msgBytes)
 
         # mid or length 로 소켓 IN 정보 검색
         for index, inData in enumerate(systemGlobals['sokcetIn']):
@@ -86,8 +76,12 @@ class FreeCodec():
                 inMid = None
                 # 인 메시지가 없을 경우 바이트 길이와 길이형 메시지의 길이를 비교
                 if inData['MSG_KEY_TYPE'] == 'LENGTH':
-                    if inMsgVal == encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE']):
-                        inMid = inMsgVal
+                    if self.delimiter != b'':
+                        inMid = len(msgBytes) - 1
+                    else:
+                        inMid = len(msgBytes)
+                else:
+                    inMid = inMsgVal
 
                 msgKeyVal = encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE'])
                 if inMid is not None:

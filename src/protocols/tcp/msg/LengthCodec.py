@@ -40,7 +40,7 @@ class LengthCodec():
             else:
                 for index, hd in enumerate(self.hdList):
                     if (len(copyBytes) < hd['DT_LEN']):
-                        raise Exception('LengthCodec convertRecieData : 해더 전문 파싱 오류')
+                        return 0
                     read = copyBytes[:hd['DT_LEN']]
                     if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
                         result = int(decodeBytesToType(read, hd['DT_TYPE']))
@@ -49,7 +49,6 @@ class LengthCodec():
         except Exception as e:
             logger.info(f'LengthCodec concyctencyCheck Exception : {e}')
 
-        logger.info(f'dddddddddddd :: {result}')
         return result
 
 
@@ -76,11 +75,6 @@ class LengthCodec():
 
             del msgBytes[0:hd['DT_LEN']]
 
-        if inMsgVal is None:
-            if self.delimiter != b'':
-                inMsgVal = len(msgBytes) - 1
-            else:
-                inMsgVal = len(msgBytes)
 
         # mid or length 로 소켓 IN 정보 검색
         for index, inData in enumerate(systemGlobals['sokcetIn']):
@@ -91,13 +85,15 @@ class LengthCodec():
                 inMid = None
                 # 인 메시지가 없을 경우 바이트 길이와 길이형 메시지의 길이를 비교
                 if inData['MSG_KEY_TYPE'] == 'LENGTH':
-                    if inMsgVal == encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE']):
-                        inMid = inMsgVal
+                    if self.delimiter != b'':
+                        inMid = len(msgBytes) - 1
+                    else:
+                        inMid = len(msgBytes)
                 else:
                    inMid = inMsgVal
 
                 msgKeyVal = encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE'])
-                logger.info(f'inMid:{inMid}  msgKeyVal:{msgKeyVal}')
+                # logger.info(f'inMid:{inMid}  msgKeyVal:{msgKeyVal}')
                 if inMid is not None:
                     if inMid == msgKeyVal:
                         inMsgId = inData['IN_MSG_ID']

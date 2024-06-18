@@ -114,7 +114,6 @@ class ServerThread(threading.Thread):
         if self.bzIdleRead is not None:
             clientsocket.settimeout(self.bzIdleRead.get('SEC'))
 
-
         self.client_list.append(client_info)
         while self.isRun:
             try:
@@ -127,10 +126,15 @@ class ServerThread(threading.Thread):
                 if (self.initData['MIN_LENGTH'] > len(buffer)):
                     continue
 
-                readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
-                while 0 != readBytesCnt and len(buffer) >= readBytesCnt:
+                # readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
+                while 0 != self.codec.concyctencyCheck(buffer.copy()) and len(buffer) >= self.codec.concyctencyCheck(buffer.copy()):
+                    readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
                     readByte = buffer[:readBytesCnt]
                     try:
+                        if self.skLogYn:
+                            decimal_string = ' '.join(str(byte) for byte in readByte)
+                            logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+
                         data = self.codec.decodeRecieData(readByte)
                         data['TOTAL_BYTES'] = readByte.copy()
                         data['CHANNEL'] = clientsocket
@@ -145,7 +149,7 @@ class ServerThread(threading.Thread):
                         del buffer[0:readBytesCnt]
 
             except socket.timeout as e:
-                logger.error(f'{self.skId}- Timeout IDLE read : {e}')
+                logger.error(f'SK_ID:{self.skId}- IDLE READ exception : {e}')
                 if self.bzIdleRead is not None:
                     self.bzIdleRead['SK_ID'] = self.skId
                     self.bzIdleRead['CHANNEL'] = clientsocket

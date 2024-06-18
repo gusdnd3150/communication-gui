@@ -6,6 +6,8 @@ import time
 import traceback
 import socket
 from src.protocols.tcp.msg.FreeCodec import FreeCodec
+from src.protocols.tcp.msg.LengthCodec import LengthCodec
+from src.protocols.BzActivator import BzActivator
 from conf.InitData_n import systemGlobals
 
 class ClientThread(threading.Thread):
@@ -20,7 +22,11 @@ class ClientThread(threading.Thread):
     skLogYn = False
     codec = None
     delimiter = b''
-
+    bzKeep = None
+    bzActive = None
+    bzInActive = None
+    bzIdleRead = None
+    bzSch = None
 
     def __init__(self, data):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
@@ -36,12 +42,26 @@ class ClientThread(threading.Thread):
 
         if (self.initData['HD_TYPE'] == 'FREE'):
             self.codec = FreeCodec(self.initData)
+        elif (self.initData['HD_TYPE'] == 'LENGTH'):
+            self.codec = LengthCodec(self.initData)
 
         if (data.get('SK_LOG') is not None and data.get('SK_LOG') == 'Y'):
             self.skLogYn = True
 
         if (self.initData['SK_DELIMIT_TYPE'] != ''):
             self.delimiter = int(self.initData['SK_DELIMIT_TYPE'], 16).to_bytes(1, byteorder='big')
+
+
+        if data.get('BZ_EVENT_INFO') is not None:
+            for index, bz in enumerate(data.get('BZ_EVENT_INFO')):
+                if bz.get('BZ_TYPE') == 'KEEP':
+                    self.bzKeep = bz
+                elif bz.get('BZ_TYPE') == 'ACTIVE':
+                    self.bzActive = bz
+                elif bz.get('BZ_TYPE') == 'IDLE_READ':
+                    self.bzIdleRead = bz
+                elif bz.get('BZ_TYPE') == 'INACTIVE':
+                    self.bzInActive = bz
         super().__init__()
 
 
@@ -57,11 +77,28 @@ class ClientThread(threading.Thread):
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.connect((self.skIp, int(self.skPort)))
 
-            #1. IDLE 타임아웃 설정 (예: 5초)
-            # self.socket.settimeout(5)
+
 
             #2. 여기에 active 이벤트 처리
-            logger.info('ACTIVE')
+            if self.bzActive is not None:
+                logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
+                self.bzActive['SK_ID'] = self.skId
+                self.bzActive['CHANNEL'] = self.socket
+                self.bzActive['BZ_INFO'] = self.bzActive
+                bz = BzActivator(self.bzActive)
+                bz.daemon = True
+                bz.start()
+
+                # KEEP 처리
+            # if self.bzKeep is not None:
+                # self.bzSch = BzSchedule(self.bzKeep)
+                # self.bzSch.daemon = True
+                # self.bzSch.start()
+
+
+            # 1. IDLE 타임아웃 설정 (예: 5초)
+            if self.bzIdleRead is not None:
+                self.socket.settimeout(self.bzIdleRead.get('SEC'))
 
             self.isRun = True
             while self.isRun:
@@ -74,32 +111,38 @@ class ClientThread(threading.Thread):
                     if (self.initData['MIN_LENGTH'] > len(buffer)):
                         continue
 
-                    reableLengthArr = self.codec.concyctencyCheck(buffer)
-
-                    if (len(reableLengthArr) == 0):
-                        logger.info(f'SK_ID: {self.skId} consystency False {str(buffer)}')
-                        continue
-                    logger.info(f'SK_ID: {self.skId} consystency True ')
-
-                    for index, readLegnth in enumerate(reableLengthArr):
-                        readByte = buffer[:readLegnth]
+                    readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
+                    while 0 != readBytesCnt and len(buffer) >= readBytesCnt:
+                        readByte = buffer[:readBytesCnt]
                         try:
-                            totlaBytes = readByte.copy()
-                            data = self.codec.decodeRecieData(readByte)
-                            data['TOTAL_BYTES'] = totlaBytes
-                            data['CHANNEL'] = self.socket
+                            if self.skLogYn:
+                                decimal_string = ' '.join(str(byte) for byte in readByte)
+                                logger.info(
+                                    f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
 
-                            reciveThread = threading.Thread(target=self.onReciveData, args=(data,))
-                            reciveThread.daemon = True
-                            reciveThread.start()
+                            data = self.codec.decodeRecieData(readByte)
+                            data['TOTAL_BYTES'] = readByte.copy()
+                            data['CHANNEL'] = self.socket
+                            data['SK_ID'] = self.skId
+                            bz = BzActivator(data)
+                            bz.daemon = True
+                            bz.start()
                         except Exception as e:
+                            traceback.print_exc()
                             logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
                         finally:
-                            del buffer[0:readLegnth]
-
+                            del buffer[0:readBytesCnt]
 
                 except socket.timeout:
                     logger.error(f'SK_ID:{self.skId} - IDLE READ exception')
+                    if self.bzIdleRead is not None:
+                        self.bzIdleRead['SK_ID'] = self.skId
+                        self.bzIdleRead['CHANNEL'] = self.socket
+                        self.bzIdleRead['BZ_INFO'] = self.bzIdleRead
+                        bz = BzActivator(self.bzIdleRead)
+                        bz.daemon = True
+                        bz.start()
+
                     continue
                 except Exception as e:
                     self.isRun = False
