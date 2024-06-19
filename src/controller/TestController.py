@@ -6,6 +6,9 @@ from conf.logconfig import logger
 class TestController():
 
     sendHandler = None
+    # guide
+    # 1. logger 는 전역 로그, reciveObj['LOGGER'] 는 해당 소켓의 로그를 출력한다
+    # 2. 각 reciveObj에는 ['CHANNEL'] 이 포함되어있다
 
     def __init__(self, sendHandler):
         self.sendHandler = sendHandler
@@ -13,17 +16,16 @@ class TestController():
 
     def test(self, reciveObj):
         returnJson = {}
-        logger.info(f'TestController.test() IN_DATA : {reciveObj}')
+        skLogger = reciveObj['LOGGER']
+        skLogger.info(f'TestController.test() IN_DATA : {reciveObj}')
         try:
             Channel = reciveObj['CHANNEL']
             Channel.sendall('active'.encode('utf-8'))
             returnJson['LINE_CD'] = '1'
             returnJson['LINE_SIGN'] = '2'
-            #
             self.sendHandler.sendSkId('SERVER1','LINE_SIGNAL',returnJson)
         except Exception as e:
-            logger.info(f'TestController.test() Exception :: {e}')
-
+            skLogger.info(f'TestController.test() Exception :: {e}')
 
     def keep(self, reciveObj):
         returnJson = {}

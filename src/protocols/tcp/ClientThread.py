@@ -1,6 +1,6 @@
 
 
-from conf.logconfig import logger
+from conf.logconfig import *
 import threading
 import time
 import traceback
@@ -27,6 +27,7 @@ class ClientThread(threading.Thread):
     bzInActive = None
     bzIdleRead = None
     bzSch = None
+    logger = None
 
     def __init__(self, data):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
@@ -39,6 +40,9 @@ class ClientThread(threading.Thread):
         self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
         self.skIp = data['SK_IP']
         self.skPort = int(data['SK_PORT'])
+
+        self.logger = setup_sk_logger(self.skId)
+        self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
 
         if (self.initData['HD_TYPE'] == 'FREE'):
             self.codec = FreeCodec(self.initData)
@@ -70,7 +74,7 @@ class ClientThread(threading.Thread):
 
     def initClient(self):
         buffer = bytearray()
-        logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
+        self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
 
         try:
             # 서버에 연결합니다.
@@ -81,7 +85,7 @@ class ClientThread(threading.Thread):
 
             #2. 여기에 active 이벤트 처리
             if self.bzActive is not None:
-                logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
+                self.logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
                 self.bzActive['SK_ID'] = self.skId
                 self.bzActive['CHANNEL'] = self.socket
                 self.bzActive['BZ_INFO'] = self.bzActive
@@ -111,13 +115,18 @@ class ClientThread(threading.Thread):
                     if (self.initData['MIN_LENGTH'] > len(buffer)):
                         continue
 
-                    readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
-                    while 0 != readBytesCnt and len(buffer) >= readBytesCnt:
+                    while self.isRun:
+                        readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
+                        if readBytesCnt == 0:
+                            break
+                        elif readBytesCnt > len(buffer):
+                            break
                         readByte = buffer[:readBytesCnt]
+
                         try:
                             if self.skLogYn:
                                 decimal_string = ' '.join(str(byte) for byte in readByte)
-                                logger.info(
+                                self.logger.info(
                                     f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
 
                             data = self.codec.decodeRecieData(readByte)
@@ -129,12 +138,12 @@ class ClientThread(threading.Thread):
                             bz.start()
                         except Exception as e:
                             traceback.print_exc()
-                            logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
+                            self.logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
                         finally:
                             del buffer[0:readBytesCnt]
 
                 except socket.timeout:
-                    logger.error(f'SK_ID:{self.skId} - IDLE READ exception')
+                    self.logger.error(f'SK_ID:{self.skId} - IDLE READ exception')
                     if self.bzIdleRead is not None:
                         self.bzIdleRead['SK_ID'] = self.skId
                         self.bzIdleRead['CHANNEL'] = self.socket
@@ -149,7 +158,7 @@ class ClientThread(threading.Thread):
                     if self.socket:
                         self.socket.close()
                         self.socket = None
-                    logger.error(f'Exception :: {e}')
+                    self.logger.error(f'Exception :: {e}')
                     break
 
 
@@ -157,12 +166,12 @@ class ClientThread(threading.Thread):
                 self.initClient()
 
         except ConnectionRefusedError as e:
-            logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
+            self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
             self.isRun = False
 
         except Exception as e:
             self.isRun = False
-            logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
+            self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
 
         finally:
             buffer.clear()
@@ -180,10 +189,10 @@ class ClientThread(threading.Thread):
             if self.socket is not None:
                 self.socket.sendall(msgBytes)
             else:
-                logger.info(f'SK_ID:{self.skId}- can"t send  sendToAllChannels  SERVER is None')
+                self.logger.info(f'SK_ID:{self.skId}- can"t send  sendToAllChannels  SERVER is None')
 
         except Exception as e:
-            logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+            self.logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
     def onReciveData(self, data):
         try:
@@ -197,19 +206,18 @@ class ClientThread(threading.Thread):
                         my_class = systemGlobals[classNm]
                         method = getattr(my_class, methdNm)
                         if callable(method):
-                            logger.info(f"SK_ID:{self.skId} onReciveData : {classNm}.{methdNm} call.")
+                            self.logger.info(f"SK_ID:{self.skId} onReciveData : {classNm}.{methdNm} call.")
                             method(data)
                         else:
-                            logger.error(f"SK_ID:{self.skId} {methdNm} is not callable.")
+                            self.logger.error(f"SK_ID:{self.skId} {methdNm} is not callable.")
                     else:
-                        logger.error(f"SK_ID:{self.skId} Class {classNm} not found.")
+                        self.logger.error(f"SK_ID:{self.skId} Class {classNm} not found.")
                 else:
-                    logger.error(f'SK_ID:{self.skId} BZ_METHOD INFO is Null :')
+                    self.logger.error(f'SK_ID:{self.skId} BZ_METHOD INFO is Null :')
                     return
             else:
-                logger.error(f'SK_ID:{self.skId} IN_MSG_INFO INFO is Null :')
+                self.logger.error(f'SK_ID:{self.skId} IN_MSG_INFO INFO is Null :')
                 return
 
         except Exception as e:
-            traceback.logger.info_exc()
-            logger.error(f'SK_ID:{self.skId} ClientHandler onReciveData() Exception :{e}')
+            self.logger.error(f'SK_ID:{self.skId} ClientHandler onReciveData() Exception :{e}')

@@ -71,6 +71,7 @@ class InitClass():
         self.mainLayOut.btn_start.clicked.connect(self.start_sk)
         self.mainLayOut.show()
         systemGlobals['mainLayout'] = self.mainLayOut
+        systemGlobals['mainInstance'] = self
 
         self.bindData()
 
@@ -88,14 +89,9 @@ class InitClass():
 
     def start_sk(self):
 
-
-
-
         pkg = self.mainLayOut.combo_pkg.currentText()
 
         try:
-
-
 
             for i , item in enumerate(systemGlobals['sokcetList']):
                 threadInfo = None

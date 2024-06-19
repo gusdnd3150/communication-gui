@@ -32,22 +32,18 @@ class LengthCodec():
 
     def concyctencyCheck(self, copyBytes):
         result = 0
-        try:
-            if (self.delimiter != b''):
-                index = copyBytes.find(self.delimiter, 0)
-                if index != -1:
-                    result = index+1
-            else:
-                for index, hd in enumerate(self.hdList):
-                    if (len(copyBytes) < hd['DT_LEN']):
-                        return 0
-                    read = copyBytes[:hd['DT_LEN']]
-                    if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
-                        result = int(decodeBytesToType(read, hd['DT_TYPE']))
-                    del copyBytes[0:hd['DT_LEN']]
-
-        except Exception as e:
-            logger.info(f'LengthCodec concyctencyCheck Exception : {e}')
+        if (self.delimiter != b''):
+            index = copyBytes.find(self.delimiter, 0)
+            if index != -1:
+                result = index+1
+        else:
+            for index, hd in enumerate(self.hdList):
+                if (len(copyBytes) < hd['DT_LEN']):
+                    return 0
+                read = copyBytes[:hd['DT_LEN']]
+                if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
+                    result = int(decodeBytesToType(read, hd['DT_TYPE']))
+                del copyBytes[0:hd['DT_LEN']]
 
         return result
 
@@ -123,66 +119,64 @@ class LengthCodec():
 
     def encodeSendData(self, msgObj):
         returnBytes = bytearray()
-        try:
-            msgId = msgObj['MSG_ID']
-            msgKeyType = None
-            msgKeyLen = 0
-            msgKeyVal = None
-            msgBody = None
+        msgId = msgObj['MSG_ID']
+        msgKeyType = None
+        msgKeyLen = 0
+        msgKeyVal = None
+        msgBody = None
 
-            bodyBytes = bytearray()
-            headerBytes = bytearray()
+        bodyBytes = bytearray()
+        headerBytes = bytearray()
 
-            #  메시지 바디 검색
-            for index, body in enumerate(systemGlobals['socketBody']):
-                if (body['MSG_ID'] == msgObj['MSG_ID']):
-                    # {'MSG_ID': 'LINE_SIGNAL', 'MSG_KEY_TYPE': 'STRING', 'MSG_KEY_VAL': 'LNSN', 'MSG_DB_LOG_YN': 'Y',
-                    # 'MSG_DESC': 'VCC', 'MSG_KEY_VAL_DESC': '', 'MSG_KEY_LENGTH': 4, 'MAX_WORK_SEC': 5,
-                    # 'LINE_SIGNAL': [{'MSG_ID': 'LINE_SIGNAL', 'MSG_DT_ORD': '1', 'MSG_DT_DESC': 'VCC', 'VAL_ID': 'LINE_CD',
-                    # 'VAL_TYPE': 'STRING', 'VAL_LEN': 4, 'VAL_DESC': ''}, {'MSG_ID': 'LINE_SIGNAL', 'MSG_DT_ORD': '2',
-                    # 'MSG_DT_DESC': 'VCC', 'VAL_ID': 'LINE_SIGN', 'VAL_TYPE': 'STRING', 'VAL_LEN': 1, 'VAL_DESC': ''}], 'MSG_LEN': 5}
-                    msgBody = body[body['MSG_ID']]
-                    msgKeyType = body['MSG_KEY_TYPE']
-                    msgKeyLen = body['MSG_KEY_LENGTH']
-                    msgKeyVal = body['MSG_KEY_VAL']
-                    break
+        #  메시지 바디 검색
+        for index, body in enumerate(systemGlobals['socketBody']):
+            if (body['MSG_ID'] == msgObj['MSG_ID']):
+                # {'MSG_ID': 'LINE_SIGNAL', 'MSG_KEY_TYPE': 'STRING', 'MSG_KEY_VAL': 'LNSN', 'MSG_DB_LOG_YN': 'Y',
+                # 'MSG_DESC': 'VCC', 'MSG_KEY_VAL_DESC': '', 'MSG_KEY_LENGTH': 4, 'MAX_WORK_SEC': 5,
+                # 'LINE_SIGNAL': [{'MSG_ID': 'LINE_SIGNAL', 'MSG_DT_ORD': '1', 'MSG_DT_DESC': 'VCC', 'VAL_ID': 'LINE_CD',
+                # 'VAL_TYPE': 'STRING', 'VAL_LEN': 4, 'VAL_DESC': ''}, {'MSG_ID': 'LINE_SIGNAL', 'MSG_DT_ORD': '2',
+                # 'MSG_DT_DESC': 'VCC', 'VAL_ID': 'LINE_SIGN', 'VAL_TYPE': 'STRING', 'VAL_LEN': 1, 'VAL_DESC': ''}], 'MSG_LEN': 5}
+                msgBody = body[body['MSG_ID']]
+                msgKeyType = body['MSG_KEY_TYPE']
+                msgKeyLen = body['MSG_KEY_LENGTH']
+                msgKeyVal = body['MSG_KEY_VAL']
+                break
 
-            if msgBody is None:
-                raise Exception(f'LengthCodec encodeSendData() MSG_ID:{msgId} is None')
+        if msgBody is None:
+            raise Exception(f'LengthCodec encodeSendData() MSG_ID:{msgId} is None')
 
-            # 메시지 바디 세팅
-            for index, body in enumerate(msgBody):
+        # 메시지 바디 세팅
+        for index, body in enumerate(msgBody):
+            value = None
+            if msgObj.get(body['VAL_ID']) is not None:
+                value = msgObj[body['VAL_ID']]
+            bodyBytes.extend(encodeDataToBytes(value, body['VAL_TYPE'], body['VAL_LEN']))
+
+        totalLen = len(bodyBytes) + self.hdLen
+
+        # 해더 세팅
+        for index, hd in enumerate(self.hdList):
+            # {'HD_ID': 'HD_HS', 'DT_ORD': 1, 'DT_ID': 'TOTAL_LENGTH', 'DT_TYPE': 'INT', 'DT_LEN': 4, 'DT_NAME': '', 'DT_DESC': '',
+            # 'MSG_LEN_REL_YN': 'Y', 'MSG_ID_REL_YN': '', 'DEFAULT_VALUE': ''}
+            if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
+                headerBytes.extend(encodeDataToBytes(totalLen, hd['DT_TYPE'], hd['DT_LEN'], '0'))
+            elif hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
+                headerBytes.extend(encodeDataToBytes(msgKeyVal, msgKeyType, msgKeyLen))
+            else:
                 value = None
-                if msgObj.get(body['VAL_ID']) is not None:
-                    value = msgObj[body['VAL_ID']]
-                bodyBytes.extend(encodeDataToBytes(value, body['VAL_TYPE'], body['VAL_LEN']))
+                if msgObj.get(hd['DT_ID']) is not None and msgObj.get(hd['DT_ID']) != '':
+                    value = msgObj.get(hd['DT_ID'])
+                elif hd['DEFAULT_VALUE'] is not None and hd['DEFAULT_VALUE'] != '':
+                    value = hd['DEFAULT_VALUE']
+                headerBytes.extend(encodeDataToBytes(value, hd['DT_TYPE'], hd['DT_LEN']))
 
-            totalLen = len(bodyBytes) + self.hdLen
+        returnBytes = headerBytes + bodyBytes
 
-            # 해더 세팅
-            for index, hd in enumerate(self.hdList):
-                # {'HD_ID': 'HD_HS', 'DT_ORD': 1, 'DT_ID': 'TOTAL_LENGTH', 'DT_TYPE': 'INT', 'DT_LEN': 4, 'DT_NAME': '', 'DT_DESC': '',
-                # 'MSG_LEN_REL_YN': 'Y', 'MSG_ID_REL_YN': '', 'DEFAULT_VALUE': ''}
-                if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
-                    headerBytes.extend(encodeDataToBytes(totalLen, hd['DT_TYPE'], hd['DT_LEN'], '0'))
-                elif hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
-                    headerBytes.extend(encodeDataToBytes(msgKeyVal, msgKeyType, msgKeyLen))
-                else:
-                    value = None
-                    if msgObj.get(hd['DT_ID']) is not None and msgObj.get(hd['DT_ID']) != '':
-                        value = msgObj.get(hd['DT_ID'])
-                    elif hd['DEFAULT_VALUE'] is not None and hd['DEFAULT_VALUE'] != '':
-                        value = hd['DEFAULT_VALUE']
-                    headerBytes.extend(encodeDataToBytes(value, hd['DT_TYPE'], hd['DT_LEN']))
+        # 딜리미터 세팅
+        if (self.delimiter != b''):
+            returnBytes.extend(self.delimiter)
 
-            returnBytes = headerBytes + bodyBytes
+        return returnBytes
 
-            # 딜리미터 세팅
-            if (self.delimiter != b''):
-                returnBytes.extend(self.delimiter)
-
-            return returnBytes
-        except Exception as e:
-            logger.info(f'LengthCodec encodeSendData() Exception :: {e}')
 
 

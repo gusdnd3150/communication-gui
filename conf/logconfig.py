@@ -8,6 +8,26 @@ log_file = './logs/appslog.log'
 # 로그 파일 크기 제한 (6 메가바이트)
 max_log_size = 6 * 1024 * 1024
 
+def setup_sk_logger(skId):
+    loggingLevl = logging.INFO
+
+    # 로거 생성
+    logger = logging.getLogger(skId)
+    logger.setLevel(loggingLevl)
+
+    # 로그 포맷 설정
+    log_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(loggingLevl)
+    logger.addHandler(console_handler)
+
+    # 파일 핸들러 생성
+    file_handler = logging.handlers.RotatingFileHandler(f'./logs/{skId}', maxBytes=max_log_size, backupCount=1)
+    file_handler.setFormatter(log_format)
+    # 로거에 파일 핸들러 추가
+    logger.addHandler(file_handler)
+    return logger
+
 
 def setup_global_logger():
     loggingLevl = logging.INFO
@@ -27,7 +47,6 @@ def setup_global_logger():
     file_handler.setFormatter(log_format)
     # 로거에 파일 핸들러 추가
     logger.addHandler(file_handler)
-    print('test')
     return logger
 
 # 전역 로거 설정

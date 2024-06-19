@@ -1,5 +1,5 @@
 import traceback
-from conf.logconfig import logger
+from conf.logconfig import *
 import threading
 
 import socket
@@ -9,7 +9,7 @@ from conf.InitData_n import systemGlobals
 
 from src.protocols.sch.BzSchedule import BzSchedule
 from src.protocols.BzActivator import BzActivator
-systemGlobals['mainLayout']
+
 
 class ServerThread(threading.Thread):
 
@@ -29,6 +29,7 @@ class ServerThread(threading.Thread):
     bzInActive = None
     bzIdleRead = None
     bzSch = None
+    logger = None
 
     def __init__(self, data):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
@@ -42,6 +43,9 @@ class ServerThread(threading.Thread):
         self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
         self.skIp = data['SK_IP']
         self.skPort = int(data['SK_PORT'])
+
+        self.logger = setup_sk_logger(self.skId)
+        self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
 
         if (self.initData['HD_TYPE'] == 'FREE'):
             self.codec = FreeCodec(self.initData)
@@ -76,7 +80,7 @@ class ServerThread(threading.Thread):
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.bind((self.skIp, self.skPort))
             self.socket.listen(10) #연결수 설정
-            logger.info('TCP SERVER Start : SK_ID= {}, IP= {}:{} :: Thread '.format(self.skId, self.skIp, self.skPort))
+            self.logger.info(f'TCP SERVER Start : SK_ID= {self.skId}, IP= {self.skIp}:{self.skPort} :: Thread ')
             self.isRun = True
             while self.isRun:
                 # accept connections from outside
@@ -84,27 +88,29 @@ class ServerThread(threading.Thread):
                 t = threading.Thread(target=self.client_handler, args=(clientsocket, address))
                 t.start()
         except Exception as e:
-            logger.error(f'TCP SERVER Bind exception : SK_ID={self.skId}  : {e}' )
+            self.logger.error(f'TCP SERVER Bind exception : SK_ID={self.skId}  : {e}')
 
 
 
     def client_handler(self,clientsocket,  address):
         buffer = bytearray()
         client_info = (self.skId, clientsocket)
-        logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
+        self.logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
 
         # ACTIVE 이벤트처리
         if self.bzActive is not None:
-            logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
+            self.logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
             self.bzActive['SK_ID'] = self.skId
             self.bzActive['CHANNEL'] = clientsocket
             self.bzActive['BZ_INFO'] = self.bzActive
+            self.bzActive['LOGGER'] = self.logger
             bz = BzActivator(self.bzActive)
             bz.daemon = True
             bz.start()
 
         # KEEP 처리
         if self.bzKeep is not None:
+            self.bzKeep['LOGGER'] = self.logger
             self.bzSch = BzSchedule(self.bzKeep)
             self.bzSch.daemon = True
             self.bzSch.start()
@@ -121,83 +127,86 @@ class ServerThread(threading.Thread):
                 if not reciveBytes:
                     break
                 buffer.extend(reciveBytes)
-                # logger.info(f'SK_ID:{self.skId} recieved data: {reciveBytes}')
 
                 if (self.initData['MIN_LENGTH'] > len(buffer)):
                     continue
 
-                # readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
-                while 0 != self.codec.concyctencyCheck(buffer.copy()) and len(buffer) >= self.codec.concyctencyCheck(buffer.copy()):
+                while self.isRun:
                     readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
+                    if readBytesCnt == 0:
+                        break
+                    elif readBytesCnt > len(buffer):
+                        break
                     readByte = buffer[:readBytesCnt]
                     try:
                         if self.skLogYn:
                             decimal_string = ' '.join(str(byte) for byte in readByte)
-                            logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+                            self.logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
 
                         data = self.codec.decodeRecieData(readByte)
                         data['TOTAL_BYTES'] = readByte.copy()
                         data['CHANNEL'] = clientsocket
                         data['SK_ID'] = self.skId
+                        data['LOGGER'] = self.logger
                         bz = BzActivator(data)
                         bz.daemon = True
                         bz.start()
                     except Exception as e:
                         traceback.print_exc()
-                        logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
+                        self.logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
                     finally:
                         del buffer[0:readBytesCnt]
 
             except socket.timeout as e:
-                logger.error(f'SK_ID:{self.skId}- IDLE READ exception : {e}')
+                self.logger.error(f'SK_ID:{self.skId}- IDLE READ exception : {e}')
                 if self.bzIdleRead is not None:
                     self.bzIdleRead['SK_ID'] = self.skId
                     self.bzIdleRead['CHANNEL'] = clientsocket
                     self.bzIdleRead['BZ_INFO'] = self.bzIdleRead
+                    self.bzIdleRead['LOGGER'] = self.logger
                     bz = BzActivator(self.bzIdleRead)
                     bz.daemon = True
                     bz.start()
 
             # 클라가 연결을 종료할 경우
             except ConnectionResetError as e:
-                logger.error(f'SK_ID:{self.skId} ConnectionResetError : {e}')
+                self.logger.error(f'SK_ID:{self.skId} ConnectionResetError : {e}')
                 break
 
             except Exception as e:
-                logger.error(f'SK_ID:{self.skId} handler Exception : {e}')
+                self.logger.error(f'SK_ID:{self.skId} handler Exception : {e}')
                 break
-
 
         # 버퍼 클리어
         buffer.clear()
         
         # inactive 처리
-        logger.info(f'SK_ID:{self.skId}- CLIENT disConnected  IP/PORT : {address}')
+        self.logger.info(f'SK_ID:{self.skId}- CLIENT disConnected  IP/PORT : {address}')
         if self.bzInActive is not None:
             self.bzInActive['SK_ID'] = self.skId
             self.bzInActive['CHANNEL'] = clientsocket
             self.bzInActive['BZ_INFO'] = self.bzInActive
+            self.bzInActive['LOGGER'] = self.logger
             bz = BzActivator(self.bzInActive)
             bz.daemon = True
             bz.start()
-
 
         if self.bzSch is not None:
             self.bzSch = None
 
         self.client_list.remove(client_info)
-        logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
+        self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
         clientsocket.close()
 
 
     def sendToAllChannels(self, bytes):
         try:
             if len(self.client_list) == 0:
-                logger.info(f'sendToAllChannels -{self.skIp} has no Clients')
+                self.logger.info(f'sendToAllChannels -{self.skIp} has no Clients')
                 return
             for skId, client in self.client_list:
                 if skId == self.skId:
                     client.sendall(bytes)
         except Exception as e:
-            logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+            self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
