@@ -1,6 +1,7 @@
 
 from conf.logconfig import logger
 import threading
+import traceback
 import schedule
 import time
 from src.protocols.BzActivator import BzActivator
@@ -11,7 +12,7 @@ class BzSchedule(threading.Thread):
     interval = None # 시간 간격 (초단위)
     logger = None
     isRun = False
-    schedule = schedule
+    times = time
 
     def __init__(self, bzInfo):
         # {'PKG_ID': 'CORE', 'SK_GROUP': 'TEST', 'BZ_TYPE': 'KEEP', 'USE_YN': 'Y', 'BZ_METHOD': 'TestController.test', 'SEC': None, 'BZ_DESC': None, 'CHANNEL':''}
@@ -30,12 +31,14 @@ class BzSchedule(threading.Thread):
             self.logger.info(f'BzSchedule start : SK_GROUP = {self.bzInfo["SK_GROUP"]} ')
             # self.schedule.every(self.interval).seconds.do(self.task)
             while self.isRun:
-                time.sleep(self.interval)
-                self.task()
+                self.times.sleep(self.interval)
+                if self.isRun:
+                    self.task()
 
         except Exception as e:
             self.isRun = False
-            self.logger.error(f'BzSchedule Exception :: {e}')
+            # self.logger.error(f'BzSchedule Exception :: {e}')
+            self.logger.error(f'BzSchedule Exception :: {traceback.format_exc()}')
 
     def task(self):
         try:
@@ -47,4 +50,4 @@ class BzSchedule(threading.Thread):
 
     def stop(self):
         self.isRun = False
-        self.schedule.clear()
+

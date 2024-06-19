@@ -172,10 +172,11 @@ class ServerThread(threading.Thread):
             except ConnectionResetError as e:
                 self.logger.error(f'SK_ID:{self.skId} ConnectionResetError : {e}')
                 break
-
             except Exception as e:
-                self.logger.error(f'SK_ID:{self.skId} handler Exception : {e}')
-                break
+                decimal_string = ' '.join(str(byte) for byte in buffer)
+                self.logger.error(f'SK_ID:{self.skId} handler Exception read length : {len(buffer)} decimal_string : [{decimal_string}]')
+                self.logger.error(f'SK_ID:{self.skId} handler Exception : {traceback.format_exc()}')
+                buffer.clear()
 
         # 버퍼 클리어
         buffer.clear()
