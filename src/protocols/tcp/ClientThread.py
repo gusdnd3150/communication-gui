@@ -70,16 +70,21 @@ class ClientThread(threading.Thread):
 
 
     def run(self):
+        systemGlobals['mainInstance'].addClientRow(self.initData)
         self.initClient()
 
     def initClient(self):
+        systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '0')
         buffer = bytearray()
         try:
             # 서버에 연결합니다.
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.connect((self.skIp, int(self.skPort)))
-
             self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
+
+            if self.socket is not None:
+                systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '1')
+
 
             #2. 여기에 active 이벤트 처리
             if self.bzActive is not None:
@@ -153,6 +158,7 @@ class ClientThread(threading.Thread):
 
                     continue
                 except Exception as e:
+                    traceback.print_exc()
                     self.isRun = False
                     if self.socket:
                         self.socket.close()
@@ -162,6 +168,10 @@ class ClientThread(threading.Thread):
 
 
             if self.isRun == False:
+                if self.socket:
+                    self.socket.close()
+                    self.socket = None
+                time.sleep(5)  # 5초 대기 후 재시도
                 self.initClient()
 
         except ConnectionRefusedError as e:

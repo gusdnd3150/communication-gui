@@ -1,8 +1,8 @@
 import sys
 import traceback
-
 import os
-
+from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem
+from PySide6.QtCore import Qt
 from src.protocols.tcp.ServerThread import ServerThread
 from src.protocols.tcp.ClientThread import ClientThread
 from src.protocols.tcp.ClientEventThread import ClientEventThread
@@ -72,7 +72,7 @@ class InitClass():
 
         # 설정팝업
         self.popup = Settings(self.initData)
-        self.setEvent()
+        self.setGrid()
         self.setInitData()
         app.exec()
 
@@ -121,10 +121,41 @@ class InitClass():
             # traceback.print_exc()
 
 
-    def setEvent(self):
-        # self.popup
-        # self.mainLayOut
-        logger.info('tset')
+    def setGrid(self):
+        self.mainLayOut.list_run_server.setRowCount(0)  # Table의 행을 설정, list의 길이
+        self.mainLayOut.list_run_server.setColumnCount(10)
+        self.mainLayOut.list_run_server.setHorizontalHeaderLabels(
+            [
+            'SK_ID',
+            'SK_GROUP',
+            'SK_TYPE',
+            'SK_CLIENT_TYPE',
+            'HD_ID',
+            'SK_IP',
+            'SK_PORT',
+            'SK_DELIMIT_TYPE',
+            'MAX_LENGTH',
+            'CON_COUNT'
+             ]
+        )
+
+        self.mainLayOut.list_run_client.setRowCount(0)  # Table의 행을 설정, list의 길이
+        self.mainLayOut.list_run_client.setColumnCount(10)
+        self.mainLayOut.list_run_client.setHorizontalHeaderLabels(
+            [
+                'SK_ID',
+                'SK_GROUP',
+                'SK_TYPE',
+                'SK_CLIENT_TYPE',
+                'HD_ID',
+                'SK_IP',
+                'SK_PORT',
+                'SK_DELIMIT_TYPE',
+                'MAX_LENGTH',
+                'CON_COUNT'
+            ]
+        )
+
 
         # list_table =
 
@@ -133,12 +164,85 @@ class InitClass():
         program_directory+'\json\*.json'
 
 
-    def addTableRow(self, widgetNm, data):
+    def addServerRow(self, initData):
         try:
-            logger.info(f'addTableRow widgetNm:{widgetNm} / data:{data}')
+            # logger.info(f'addTableRow / initData: {initData}')
+            row_count = self.mainLayOut.list_run_server.rowCount()
+            self.mainLayOut.list_run_server.insertRow(row_count)
+            # 예제 데이터를 추가
+            self.mainLayOut.list_run_server.setItem(row_count, 0, QTableWidgetItem(initData['SK_ID']))
+            self.mainLayOut.list_run_server.setItem(row_count, 1, QTableWidgetItem(initData['SK_GROUP']))
+            self.mainLayOut.list_run_server.setItem(row_count, 2, QTableWidgetItem(initData['SK_TYPE']))
+            self.mainLayOut.list_run_server.setItem(row_count, 3, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
+            self.mainLayOut.list_run_server.setItem(row_count, 4, QTableWidgetItem(initData['HD_ID']))
+            self.mainLayOut.list_run_server.setItem(row_count, 5, QTableWidgetItem(str(initData['SK_IP'])))
+            self.mainLayOut.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_PORT'])))
+            self.mainLayOut.list_run_server.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
+            self.mainLayOut.list_run_server.setItem(row_count, 8, QTableWidgetItem(str(initData['MAX_LENGTH'])))
+            self.mainLayOut.list_run_server.setItem(row_count, 9, QTableWidgetItem('0'))
 
         except Exception as e:
             logger.info(f'addTableRow exception : {e}')
+
+    def addClientRow(self, initData):
+        try:
+            # logger.info(f'addTableRow / initData: {initData}')
+            row_count = self.mainLayOut.list_run_client.rowCount()
+            self.mainLayOut.list_run_client.insertRow(row_count)
+            # 예제 데이터를 추가
+            self.mainLayOut.list_run_client.setItem(row_count, 0, QTableWidgetItem(initData['SK_ID']))
+            self.mainLayOut.list_run_client.setItem(row_count, 1, QTableWidgetItem(initData['SK_GROUP']))
+            self.mainLayOut.list_run_client.setItem(row_count, 2, QTableWidgetItem(initData['SK_TYPE']))
+            self.mainLayOut.list_run_client.setItem(row_count, 3, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
+            self.mainLayOut.list_run_client.setItem(row_count, 4, QTableWidgetItem(initData['HD_ID']))
+            self.mainLayOut.list_run_client.setItem(row_count, 5, QTableWidgetItem(str(initData['SK_IP'])))
+            self.mainLayOut.list_run_client.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_PORT'])))
+            self.mainLayOut.list_run_client.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
+            self.mainLayOut.list_run_client.setItem(row_count, 8, QTableWidgetItem(str(initData['MAX_LENGTH'])))
+            self.mainLayOut.list_run_client.setItem(row_count, 9, QTableWidgetItem('0'))
+
+        except Exception as e:
+            logger.info(f'addTableRow exception : {e}')
+    def modServerRow(self,skId ,colunmNm, data):
+        try:
+            items = self.mainLayOut.list_run_server.findItems(skId, Qt.MatchExactly)
+            index = self.get_column_index_by_name('server',colunmNm)
+            if items:
+                for item in items:
+                    row = item.row()
+                    # 특정 열(예: 열 1)을 수정
+                    self.mainLayOut.list_run_server.setItem(row, index, QTableWidgetItem(data))
+                    # self.mainLayOut.list_run_server.scrollToItem(item)  # 수정된 행으로 스크롤
+                    # self.mainLayOut.list_run_server.setCurrentItem(item)  # 수정된 항목을 선택
+        except Exception:
+            logger.error(f'modServerRow exception : {traceback.format_exc()}')
+
+    def modClientRow(self,skId ,colunmNm, data):
+        try:
+            items = self.mainLayOut.list_run_client.findItems(skId, Qt.MatchExactly)
+            index = self.get_column_index_by_name('client',colunmNm)
+            if items:
+                for item in items:
+                    row = item.row()
+                    # 특정 열(예: 열 1)을 수정
+                    self.mainLayOut.list_run_client.setItem(row, index, QTableWidgetItem(data))
+                    # self.mainLayOut.list_run_server.scrollToItem(item)  # 수정된 행으로 스크롤
+                    # self.mainLayOut.list_run_server.setCurrentItem(item)  # 수정된 항목을 선택
+        except Exception:
+            logger.error(f'modClientRow exception : {traceback.format_exc()}')
+
+
+    def get_column_index_by_name(self,target, column_name):
+        headers = 0
+        if target == 'server':
+            headers = [self.mainLayOut.list_run_server.horizontalHeaderItem(i).text() for i in range(self.mainLayOut.list_run_server.columnCount())]
+        else :
+            headers = [self.mainLayOut.list_run_client.horizontalHeaderItem(i).text() for i in
+                       range(self.mainLayOut.list_run_client.columnCount())]
+        try:
+            return headers.index(column_name)
+        except ValueError:
+            return -1
 
 
     def open_settings(self):

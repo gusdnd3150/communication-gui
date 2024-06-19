@@ -112,7 +112,34 @@
        </widget>
       </item>
       <item>
-       <widget class="QTableView" name="list_run_server"/>
+       <widget class="QTableWidget" name="list_run_server">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QTableWidget {
+                background-color: #f0f0f0; /* 테이블 배경색 */
+                alternate-background-color: #ffffff; /* 짝수 줄 배경색 */
+                selection-background-color: #b8daff; /* 선택된 셀 배경색 */
+                selection-color: black; /* 선택된 셀 텍스트색 */
+                border: 1px solid #d3d3d3; /* 테두리 선 색상 및 굵기 */
+                border-radius: 5px; /* 테두리 모서리 둥글기 */
+                padding: 5px; /* 내부 여백 */
+            }</string>
+        </property>
+        <column>
+         <property name="text">
+          <string>AAAAA</string>
+         </property>
+        </column>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_3">
@@ -122,9 +149,22 @@
        </widget>
       </item>
       <item>
-       <widget class="QListView" name="list_run_client">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;sadsa&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <widget class="QTableWidget" name="list_run_client">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QTableWidget {
+                background-color: #f0f0f0; /* 테이블 배경색 */
+                alternate-background-color: #ffffff; /* 짝수 줄 배경색 */
+                selection-background-color: #b8daff; /* 선택된 셀 배경색 */
+                selection-color: black; /* 선택된 셀 텍스트색 */
+                border: 1px solid #d3d3d3; /* 테두리 선 색상 및 굵기 */
+                border-radius: 5px; /* 테두리 모서리 둥글기 */
+                padding: 5px; /* 내부 여백 */
+            }</string>
         </property>
        </widget>
       </item>

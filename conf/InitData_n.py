@@ -101,4 +101,5 @@ systemGlobals['socketBody'] = socketBody
 systemGlobals['sokcetBz'] = sokcetBz
 systemGlobals['sokcetIn'] = sokcetIn
 systemGlobals['mainLayout'] = None
+systemGlobals['mainInstance'] = None
 logger.info(f'---------------------------------------')

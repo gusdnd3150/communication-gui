@@ -33,7 +33,7 @@ class FreeCodec():
 
 
     def concyctencyCheck(self,copyBytes):
-        result = []
+        result = 0
         # 구분자를 통해 패킷을 나누고 패킷별로 읽어들일 개수를 배열로 반환
 
         if (self.delimiter != b''):

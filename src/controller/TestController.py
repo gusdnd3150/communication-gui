@@ -23,7 +23,7 @@ class TestController():
             Channel.sendall('active'.encode('utf-8'))
             returnJson['LINE_CD'] = '1'
             returnJson['LINE_SIGN'] = '2'
-            self.sendHandler.sendSkId('SERVER1','LINE_SIGNAL',returnJson)
+            self.sendHandler.sendSkId('SERVER2','LINE_SIGNAL',returnJson)
         except Exception as e:
             skLogger.error(f'TestController.test() Exception :: {e}')
 

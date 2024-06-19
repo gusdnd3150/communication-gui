@@ -82,6 +82,11 @@ class ServerThread(threading.Thread):
             self.socket.listen(10) #연결수 설정
             self.logger.info(f'TCP SERVER Start : SK_ID= {self.skId}, IP= {self.skIp}:{self.skPort} :: Thread ')
             self.isRun = True
+
+            # 서버 테이블 인설트
+            if systemGlobals['mainInstance'] is not None:
+                systemGlobals['mainInstance'].addServerRow(self.initData)
+
             while self.isRun:
                 # accept connections from outside
                 (clientsocket, address) = self.socket.accept()
@@ -96,6 +101,8 @@ class ServerThread(threading.Thread):
         buffer = bytearray()
         client_info = (self.skId, clientsocket)
         self.logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
+
+
 
         # ACTIVE 이벤트처리
         if self.bzActive is not None:
@@ -122,6 +129,9 @@ class ServerThread(threading.Thread):
             clientsocket.settimeout(self.bzIdleRead.get('SEC'))
 
         self.client_list.append(client_info)
+        systemGlobals['mainInstance'].modServerRow(self.skId,'CON_COUNT',str(len(self.client_list)))
+
+
         while self.isRun:
             try:
                 reciveBytes = clientsocket.recv(self.initData.get('MAX_LENGTH'))
@@ -196,6 +206,8 @@ class ServerThread(threading.Thread):
 
         self.client_list.remove(client_info)
         self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
+
+        systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', str(len(self.client_list)))
         clientsocket.close()
 
 
