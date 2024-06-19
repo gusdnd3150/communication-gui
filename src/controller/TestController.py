@@ -2,7 +2,9 @@
 from conf.logconfig import logger
 # from src.protocols.SendHandler import SendHandler
 
-# sendHandler = SendHandler()
+
+from conf.InitData_n import *
+
 class TestController():
 
     sendHandler = None
@@ -14,18 +16,16 @@ class TestController():
         self.sendHandler = sendHandler
         logger.info('init testcontroller')
 
-    def test(self, reciveObj):
-        returnJson = {}
-        skLogger = reciveObj['LOGGER']
-        skLogger.info(f'TestController.test() IN_DATA : {reciveObj}')
+    def recive(self, reciveObj):
         try:
-            Channel = reciveObj['CHANNEL']
-            Channel.sendall('active'.encode('utf-8'))
-            returnJson['LINE_CD'] = '1'
-            returnJson['LINE_SIGN'] = '2'
-            self.sendHandler.sendSkId('SERVER2','LINE_SIGNAL',returnJson)
+            skLogger = reciveObj['LOGGER']
+            skLogger.info(f'[RECIVE TOTAL_BYTES] : {str(reciveObj["TOTAL_BYTES"])}')
+            skLogger.info(f'[RECIVE OBJ] : {reciveObj}')
+            # Channel = reciveObj['CHANNEL']
+            # Channel.sendall('active'.encode('utf-8'))
+            # self.sendHandler.sendSkId('SERVER2','LINE_SIGNAL',returnJson)
         except Exception as e:
-            skLogger.error(f'TestController.test() Exception :: {e}')
+            skLogger.error(f'TestController.reciveObj() Exception :: {e}')
 
     def keep(self, reciveObj):
         returnJson = {}
