@@ -106,7 +106,10 @@ class FreeCodec():
             returnData[body['VAL_ID']] = decodeBytesToType(read, body['VAL_TYPE'])
             del msgBytes[0:body['VAL_LEN']]
 
-        returnData['BZ_INFO'] = msgInfo
+
+        if msgInfo is not None:
+            for key, value in msgInfo.items():
+                returnData[key] = value
 
         return returnData
 

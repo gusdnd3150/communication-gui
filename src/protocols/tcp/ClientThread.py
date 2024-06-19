@@ -74,21 +74,19 @@ class ClientThread(threading.Thread):
 
     def initClient(self):
         buffer = bytearray()
-        self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
-
         try:
             # 서버에 연결합니다.
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.connect((self.skIp, int(self.skPort)))
 
-
+            self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
 
             #2. 여기에 active 이벤트 처리
             if self.bzActive is not None:
                 self.logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
                 self.bzActive['SK_ID'] = self.skId
                 self.bzActive['CHANNEL'] = self.socket
-                self.bzActive['BZ_INFO'] = self.bzActive
+                self.bzActive['LOGGER'] = self.logger
                 bz = BzActivator(self.bzActive)
                 bz.daemon = True
                 bz.start()
@@ -133,6 +131,7 @@ class ClientThread(threading.Thread):
                             data['TOTAL_BYTES'] = readByte.copy()
                             data['CHANNEL'] = self.socket
                             data['SK_ID'] = self.skId
+                            data['LOGGER'] = self.logger
                             bz = BzActivator(data)
                             bz.daemon = True
                             bz.start()
@@ -147,7 +146,7 @@ class ClientThread(threading.Thread):
                     if self.bzIdleRead is not None:
                         self.bzIdleRead['SK_ID'] = self.skId
                         self.bzIdleRead['CHANNEL'] = self.socket
-                        self.bzIdleRead['BZ_INFO'] = self.bzIdleRead
+                        self.bzIdleRead['LOGGER'] = self.logger
                         bz = BzActivator(self.bzIdleRead)
                         bz.daemon = True
                         bz.start()
@@ -193,31 +192,3 @@ class ClientThread(threading.Thread):
 
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
-
-    def onReciveData(self, data):
-        try:
-            # logger.info('onReciveData')
-            if (data.get('IN_MSG_INFO') is not None):
-                if (data.get('IN_MSG_INFO').get('BZ_METHOD') is not None):
-                    bzClass = data.get('IN_MSG_INFO').get('BZ_METHOD')
-                    classNm = bzClass.split('.')[0]
-                    methdNm = bzClass.split('.')[1]
-                    if classNm in systemGlobals:
-                        my_class = systemGlobals[classNm]
-                        method = getattr(my_class, methdNm)
-                        if callable(method):
-                            self.logger.info(f"SK_ID:{self.skId} onReciveData : {classNm}.{methdNm} call.")
-                            method(data)
-                        else:
-                            self.logger.error(f"SK_ID:{self.skId} {methdNm} is not callable.")
-                    else:
-                        self.logger.error(f"SK_ID:{self.skId} Class {classNm} not found.")
-                else:
-                    self.logger.error(f'SK_ID:{self.skId} BZ_METHOD INFO is Null :')
-                    return
-            else:
-                self.logger.error(f'SK_ID:{self.skId} IN_MSG_INFO INFO is Null :')
-                return
-
-        except Exception as e:
-            self.logger.error(f'SK_ID:{self.skId} ClientHandler onReciveData() Exception :{e}')

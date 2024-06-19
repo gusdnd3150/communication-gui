@@ -13,8 +13,6 @@ from conf.InitData_n import systemGlobals
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
 
-from src.utils.Container import Container
-from src.utils.InitData import InitData
 from PySide6 import QtWidgets
 from PySide6.QtUiTools import QUiLoader
 
@@ -22,8 +20,6 @@ from src.component.settings.Settings import Settings
 from conf.logconfig import logger
 from src.utils.SystemMonitor import SystemMonitor
 from conf.InitData_n import systemGlobals
-
-import threading
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -55,9 +51,8 @@ class InitClass():
     qLoader = None
     list_table = None
     initData = None # 초기데이터 초기화 클래스
-    
-    runSkList= [] #구동중인 소켓
     reactor = None
+
     def __init__(self):
         logger.info('init UI start')
         self.qLoader = QUiLoader()
@@ -126,10 +121,6 @@ class InitClass():
             # traceback.print_exc()
 
 
-
-
-
-
     def setEvent(self):
         # self.popup
         # self.mainLayOut
@@ -142,6 +133,13 @@ class InitClass():
         program_directory+'\json\*.json'
 
 
+    def addTableRow(self, widgetNm, data):
+        try:
+            logger.info(f'addTableRow widgetNm:{widgetNm} / data:{data}')
+
+        except Exception as e:
+            logger.info(f'addTableRow exception : {e}')
+
 
     def open_settings(self):
         logger.info('tesst')
@@ -152,6 +150,3 @@ class InitClass():
             # self.popup.instance.show()
             self.popup.show()
 
-
-    def addTableRow(self, items):
-        logger.info('test')

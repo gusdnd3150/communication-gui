@@ -113,7 +113,10 @@ class LengthCodec():
             returnData[body['VAL_ID']] = decodeBytesToType(read, body['VAL_TYPE'])
             del msgBytes[0:body['VAL_LEN']]
 
-        returnData['BZ_INFO'] = msgInfo
+        # reurnData['BZ_METHOD'] = msgInfo['BZ_METHOD']
+        if msgInfo is not None:
+            for key, value in msgInfo.items():
+                returnData[key] = value
 
         return returnData
 

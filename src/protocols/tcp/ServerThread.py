@@ -102,7 +102,6 @@ class ServerThread(threading.Thread):
             self.logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
             self.bzActive['SK_ID'] = self.skId
             self.bzActive['CHANNEL'] = clientsocket
-            self.bzActive['BZ_INFO'] = self.bzActive
             self.bzActive['LOGGER'] = self.logger
             bz = BzActivator(self.bzActive)
             bz.daemon = True
@@ -110,6 +109,8 @@ class ServerThread(threading.Thread):
 
         # KEEP 처리
         if self.bzKeep is not None:
+            self.bzKeep['SK_ID'] = self.skId
+            self.bzKeep['CHANNEL'] = clientsocket
             self.bzKeep['LOGGER'] = self.logger
             self.bzSch = BzSchedule(self.bzKeep)
             self.bzSch.daemon = True
@@ -162,7 +163,6 @@ class ServerThread(threading.Thread):
                 if self.bzIdleRead is not None:
                     self.bzIdleRead['SK_ID'] = self.skId
                     self.bzIdleRead['CHANNEL'] = clientsocket
-                    self.bzIdleRead['BZ_INFO'] = self.bzIdleRead
                     self.bzIdleRead['LOGGER'] = self.logger
                     bz = BzActivator(self.bzIdleRead)
                     bz.daemon = True
@@ -185,14 +185,13 @@ class ServerThread(threading.Thread):
         if self.bzInActive is not None:
             self.bzInActive['SK_ID'] = self.skId
             self.bzInActive['CHANNEL'] = clientsocket
-            self.bzInActive['BZ_INFO'] = self.bzInActive
             self.bzInActive['LOGGER'] = self.logger
             bz = BzActivator(self.bzInActive)
             bz.daemon = True
             bz.start()
 
         if self.bzSch is not None:
-            self.bzSch = None
+            self.bzSch.stop()
 
         self.client_list.remove(client_info)
         self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
