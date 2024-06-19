@@ -126,6 +126,7 @@ class InitClass():
         self.mainLayOut.list_run_server.setColumnCount(10)
         self.mainLayOut.list_run_server.setHorizontalHeaderLabels(
             [
+            'CON_COUNT',
             'SK_ID',
             'SK_GROUP',
             'SK_TYPE',
@@ -134,8 +135,7 @@ class InitClass():
             'SK_IP',
             'SK_PORT',
             'SK_DELIMIT_TYPE',
-            'MAX_LENGTH',
-            'CON_COUNT'
+            'MAX_LENGTH'
              ]
         )
 
@@ -143,6 +143,7 @@ class InitClass():
         self.mainLayOut.list_run_client.setColumnCount(10)
         self.mainLayOut.list_run_client.setHorizontalHeaderLabels(
             [
+                'CON_COUNT',
                 'SK_ID',
                 'SK_GROUP',
                 'SK_TYPE',
@@ -151,8 +152,7 @@ class InitClass():
                 'SK_IP',
                 'SK_PORT',
                 'SK_DELIMIT_TYPE',
-                'MAX_LENGTH',
-                'CON_COUNT'
+                'MAX_LENGTH'
             ]
         )
 
@@ -170,16 +170,17 @@ class InitClass():
             row_count = self.mainLayOut.list_run_server.rowCount()
             self.mainLayOut.list_run_server.insertRow(row_count)
             # 예제 데이터를 추가
-            self.mainLayOut.list_run_server.setItem(row_count, 0, QTableWidgetItem(initData['SK_ID']))
-            self.mainLayOut.list_run_server.setItem(row_count, 1, QTableWidgetItem(initData['SK_GROUP']))
-            self.mainLayOut.list_run_server.setItem(row_count, 2, QTableWidgetItem(initData['SK_TYPE']))
-            self.mainLayOut.list_run_server.setItem(row_count, 3, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
-            self.mainLayOut.list_run_server.setItem(row_count, 4, QTableWidgetItem(initData['HD_ID']))
-            self.mainLayOut.list_run_server.setItem(row_count, 5, QTableWidgetItem(str(initData['SK_IP'])))
-            self.mainLayOut.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_PORT'])))
-            self.mainLayOut.list_run_server.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
-            self.mainLayOut.list_run_server.setItem(row_count, 8, QTableWidgetItem(str(initData['MAX_LENGTH'])))
-            self.mainLayOut.list_run_server.setItem(row_count, 9, QTableWidgetItem('0'))
+            self.mainLayOut.list_run_server.setItem(row_count, 0, QTableWidgetItem('0'))
+            self.mainLayOut.list_run_server.setItem(row_count, 1, QTableWidgetItem(initData['SK_ID']))
+            self.mainLayOut.list_run_server.setItem(row_count, 2, QTableWidgetItem(initData['SK_GROUP']))
+            self.mainLayOut.list_run_server.setItem(row_count, 3, QTableWidgetItem(initData['SK_TYPE']))
+            self.mainLayOut.list_run_server.setItem(row_count, 4, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
+            self.mainLayOut.list_run_server.setItem(row_count, 5, QTableWidgetItem(initData['HD_ID']))
+            self.mainLayOut.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
+            self.mainLayOut.list_run_server.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_PORT'])))
+            self.mainLayOut.list_run_server.setItem(row_count, 8, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
+            self.mainLayOut.list_run_server.setItem(row_count, 9, QTableWidgetItem(str(initData['MAX_LENGTH'])))
+
 
         except Exception as e:
             logger.info(f'addTableRow exception : {e}')
@@ -190,16 +191,17 @@ class InitClass():
             row_count = self.mainLayOut.list_run_client.rowCount()
             self.mainLayOut.list_run_client.insertRow(row_count)
             # 예제 데이터를 추가
-            self.mainLayOut.list_run_client.setItem(row_count, 0, QTableWidgetItem(initData['SK_ID']))
-            self.mainLayOut.list_run_client.setItem(row_count, 1, QTableWidgetItem(initData['SK_GROUP']))
-            self.mainLayOut.list_run_client.setItem(row_count, 2, QTableWidgetItem(initData['SK_TYPE']))
-            self.mainLayOut.list_run_client.setItem(row_count, 3, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
-            self.mainLayOut.list_run_client.setItem(row_count, 4, QTableWidgetItem(initData['HD_ID']))
-            self.mainLayOut.list_run_client.setItem(row_count, 5, QTableWidgetItem(str(initData['SK_IP'])))
-            self.mainLayOut.list_run_client.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_PORT'])))
-            self.mainLayOut.list_run_client.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
-            self.mainLayOut.list_run_client.setItem(row_count, 8, QTableWidgetItem(str(initData['MAX_LENGTH'])))
-            self.mainLayOut.list_run_client.setItem(row_count, 9, QTableWidgetItem('0'))
+            self.mainLayOut.list_run_client.setItem(row_count, 0, QTableWidgetItem('0'))
+            self.mainLayOut.list_run_client.setItem(row_count, 1, QTableWidgetItem(initData['SK_ID']))
+            self.mainLayOut.list_run_client.setItem(row_count, 2, QTableWidgetItem(initData['SK_GROUP']))
+            self.mainLayOut.list_run_client.setItem(row_count, 3, QTableWidgetItem(initData['SK_TYPE']))
+            self.mainLayOut.list_run_client.setItem(row_count, 4, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
+            self.mainLayOut.list_run_client.setItem(row_count, 5, QTableWidgetItem(initData['HD_ID']))
+            self.mainLayOut.list_run_client.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
+            self.mainLayOut.list_run_client.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_PORT'])))
+            self.mainLayOut.list_run_client.setItem(row_count, 8, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
+            self.mainLayOut.list_run_client.setItem(row_count, 9, QTableWidgetItem(str(initData['MAX_LENGTH'])))
+
 
         except Exception as e:
             logger.info(f'addTableRow exception : {e}')

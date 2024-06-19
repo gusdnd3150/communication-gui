@@ -10,6 +10,8 @@ from src.protocols.tcp.msg.LengthCodec import LengthCodec
 from src.protocols.BzActivator import BzActivator
 from conf.InitData_n import systemGlobals
 
+from src.protocols.sch.BzSchedule import BzSchedule
+
 class ClientThread(threading.Thread):
 
     initData = None
@@ -53,8 +55,10 @@ class ClientThread(threading.Thread):
             self.skLogYn = True
 
         if (self.initData['SK_DELIMIT_TYPE'] != ''):
-            self.delimiter = int(self.initData['SK_DELIMIT_TYPE'], 16).to_bytes(1, byteorder='big')
-
+            if (self.initData['SK_DELIMIT_TYPE'] == 'NULL'):
+                self.delimiter = int('0x00', 16).to_bytes(1, byteorder='big')
+            else:
+                self.delimiter = int(self.initData['SK_DELIMIT_TYPE'], 16).to_bytes(1, byteorder='big')
 
         if data.get('BZ_EVENT_INFO') is not None:
             for index, bz in enumerate(data.get('BZ_EVENT_INFO')):
@@ -97,10 +101,13 @@ class ClientThread(threading.Thread):
                 bz.start()
 
                 # KEEP 처리
-            # if self.bzKeep is not None:
-                # self.bzSch = BzSchedule(self.bzKeep)
-                # self.bzSch.daemon = True
-                # self.bzSch.start()
+            if self.bzKeep is not None:
+                self.bzKeep['SK_ID'] = self.skId
+                self.bzKeep['CHANNEL'] = self.socket
+                self.bzKeep['LOGGER'] = self.logger
+                self.bzSch = BzSchedule(self.bzKeep)
+                self.bzSch.daemon = True
+                self.bzSch.start()
 
 
             # 1. IDLE 타임아웃 설정 (예: 5초)

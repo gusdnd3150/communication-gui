@@ -56,7 +56,10 @@ class ServerThread(threading.Thread):
             self.skLogYn = True
 
         if (self.initData['SK_DELIMIT_TYPE'] != ''):
-            self.delimiter = int(self.initData['SK_DELIMIT_TYPE'], 16).to_bytes(1, byteorder='big')
+            if (self.initData['SK_DELIMIT_TYPE'] == 'NULL'):
+                self.delimiter = int('0x00', 16).to_bytes(1, byteorder='big')
+            else:
+                self.delimiter = int(self.initData['SK_DELIMIT_TYPE'], 16).to_bytes(1, byteorder='big')
 
         if data.get('BZ_EVENT_INFO') is not None:
             for index, bz in enumerate(data.get('BZ_EVENT_INFO')):
@@ -84,8 +87,7 @@ class ServerThread(threading.Thread):
             self.isRun = True
 
             # 서버 테이블 인설트
-            if systemGlobals['mainInstance'] is not None:
-                systemGlobals['mainInstance'].addServerRow(self.initData)
+            systemGlobals['mainInstance'].addServerRow(self.initData)
 
             while self.isRun:
                 # accept connections from outside
@@ -101,7 +103,6 @@ class ServerThread(threading.Thread):
         buffer = bytearray()
         client_info = (self.skId, clientsocket)
         self.logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
-
 
 
         # ACTIVE 이벤트처리
@@ -129,8 +130,7 @@ class ServerThread(threading.Thread):
             clientsocket.settimeout(self.bzIdleRead.get('SEC'))
 
         self.client_list.append(client_info)
-        systemGlobals['mainInstance'].modServerRow(self.skId,'CON_COUNT',str(len(self.client_list)))
-
+        systemGlobals['mainInstance'].modServerRow(self.skId,'CON_COUNT',str(self.countChannelBySkId(self.skId)))
 
         while self.isRun:
             try:
@@ -207,7 +207,7 @@ class ServerThread(threading.Thread):
         self.client_list.remove(client_info)
         self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
 
-        systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', str(len(self.client_list)))
+        systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
         clientsocket.close()
 
 
@@ -222,3 +222,9 @@ class ServerThread(threading.Thread):
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
+    def countChannelBySkId(self,skId):
+        count = 0
+        for skid, socket in self.client_list:
+            if skid == skId:
+                count += 1
+        return count
