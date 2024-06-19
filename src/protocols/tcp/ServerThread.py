@@ -187,6 +187,7 @@ class ServerThread(threading.Thread):
                 self.logger.error(f'SK_ID:{self.skId} handler Exception read length : {len(buffer)} decimal_string : [{decimal_string}]')
                 self.logger.error(f'SK_ID:{self.skId} handler Exception : {traceback.format_exc()}')
                 buffer.clear()
+                break
 
         # 버퍼 클리어
         buffer.clear()
@@ -219,6 +220,10 @@ class ServerThread(threading.Thread):
             for skId, client in self.client_list:
                 if skId == self.skId:
                     client.sendall(bytes)
+                    if self.skLogYn:
+                        decimal_string = ' '.join(str(byte) for byte in bytes)
+                        self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} decimal_string : [{decimal_string}]')
+
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 

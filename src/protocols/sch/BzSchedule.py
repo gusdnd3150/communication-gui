@@ -31,7 +31,13 @@ class BzSchedule(threading.Thread):
             self.logger.info(f'BzSchedule start : SK_GROUP = {self.bzInfo["SK_GROUP"]} ')
             # self.schedule.every(self.interval).seconds.do(self.task)
             while self.isRun:
-                self.times.sleep(self.interval)
+                # self.times.sleep(self.interval)
+                # if self.isRun:
+                #     self.task()
+                for _ in range(int(self.interval * 10)):  # 100ms 간격으로 체크
+                    if not self.isRun:
+                        return
+                    self.times.sleep(0.1)
                 if self.isRun:
                     self.task()
 
@@ -49,5 +55,6 @@ class BzSchedule(threading.Thread):
             self.logger.error(f'BzSchedule task exception : {e}')
 
     def stop(self):
+
         self.isRun = False
 
