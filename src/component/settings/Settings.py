@@ -26,6 +26,7 @@ class Settings(QMainWindow):
     instance = None
     saveSkWindow = None
     initData = None
+    skRow = None
 
     def __init__(self, initData):
         self.initData = initData
@@ -94,9 +95,11 @@ class Settings(QMainWindow):
                 header_item = self.ui.list_sk.horizontalHeaderItem(column)
                 item = self.ui.list_sk.item(row, column)
                 row_data[header_item.text()] = item.text() if item else ""
-
+            self.skRow = row
             self.ui.sk_PKG_ID.setText(row_data['PKG_ID'])
+            self.ui.sk_PKG_ID.setDisabled(True)
             self.ui.sk_SK_ID.setText(row_data['SK_ID'])
+            self.ui.sk_SK_ID.setDisabled(True)
             self.ui.sk_SK_GROUP.setText(row_data['SK_GROUP'])
             self.ui.sk_SK_IP.setText(row_data['SK_IP'])
             self.ui.sk_SK_PORT.setText(row_data['SK_PORT'])
@@ -114,10 +117,22 @@ class Settings(QMainWindow):
             logger.error(f'selectRow exception : {traceback.format_exc()} ')
 
     def addSk(self):
-        self.addControll('list_sk')
+        self.skRow = None
+        self.ui.sk_PKG_ID.setText('')
+        self.ui.sk_PKG_ID.setDisabled(False)
+        self.ui.sk_SK_ID.setText('')
+        self.ui.sk_SK_ID.setDisabled(False)
+        self.ui.sk_SK_GROUP.setText('')
+        self.ui.sk_SK_IP.setText('')
+        self.ui.sk_SK_PORT.setText('')
+        self.ui.sk_SK_DELIMIT_TYPE.setText('')
+        self.ui.sk_SK_DESC.setText('')
+
 
     def delSk(self):
-        self.addControll('list_sk')
+        logger.info(f'delete row : {self.skRow}')
 
     def saveSk(self):
-        self.addControll('list_sk')
+        row_data = {
+        }
+
