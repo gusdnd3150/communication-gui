@@ -10,6 +10,15 @@ logger.info('DB connectiom with SqlLite')
 dbInstance = sqlite3.connect('core.db')
 
 
+useYnCombo = ['Y','N']
+skTypeCombo = ['TCP','UDP','WEBSK']
+skConnCombo = ['SERVER','CLIENT']
+skClientCombo = ['KEEP','EVENT']
+hdCombo = ['LENGTH_STR_8B','LENGTH_STR_20B','LENGTH_20B','FREE','JSON']
+
+
+
+
 def getsokcetList():
     skList = selectQuery(selectSocketList(None,'Y','CORE'))
     for index, sk in enumerate(skList):

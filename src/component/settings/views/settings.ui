@@ -203,7 +203,7 @@
           <widget class="QLineEdit" name="sk_SK_GROUP"/>
          </item>
          <item row="8" column="1">
-          <widget class="QLineEdit" name="sk_SK_IP_2"/>
+          <widget class="QLineEdit" name="sk_SK_IP"/>
          </item>
          <item row="9" column="1">
           <widget class="QLineEdit" name="sk_SK_PORT"/>
