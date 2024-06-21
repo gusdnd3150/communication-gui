@@ -1,5 +1,6 @@
 
-
+import sys
+sys.path.append('.')
 # from src.utils.Container import Container
 from src.init import InitClass
 from conf.InitData_n import *
