@@ -1,55 +1,62 @@
 
 
 
-def selectSocketList():
-    string = 'SELECT					 '\
-                '	A.PKG_ID             '\
-                '	, A.SK_ID            '\
-                '	, A.SK_GROUP         '\
-                '	, A.USE_YN           '\
-                '	, A.SK_CONN_TYPE     '\
-                '	, A.SK_TYPE          '\
-                '	, A.SK_CLIENT_TYPE   '\
-                '	, A.HD_ID            '\
-                '	, A.SK_PORT          '\
-                '	, A.SK_IP            '\
-                '	, A.SK_DELIMIT_TYPE  '\
-                '	, A.RELATION_VAL     '\
-                '	, A.SK_LOG           '\
-                '	, B.HD_TYPE          '\
-                '	, B.MSG_CLASS        '\
-                '	, B.MAX_LENGTH       '\
-                '	, B.MIN_LENGTH       '\
-                'FROM (                   '\
-                '	SELECT               '\
-                '		PKG_ID           '\
-                '		, SK_ID          '\
-                '		, SK_GROUP       '\
-                '		, USE_YN         '\
-                '		, SK_CONN_TYPE   '\
-                '		, SK_TYPE        '\
-                '		, SK_CLIENT_TYPE '\
-                '		, HD_ID          '\
-                '		, SK_PORT        '\
-                '		, SK_IP          '\
-                '		, SK_DELIMIT_TYPE'\
-                '		, RELATION_VAL   '\
-                '		, SK_LOG         '\
-                '	FROM TB_SK_PKG_SK    '\
-                '	WHERE PKG_ID = "CORE"    '\
-                '	AND USE_YN = "Y"     '\
-                ')A LEFT OUTER JOIN (     '\
-                '	SELECT               '\
-                '		HD_ID            '\
-                '		, HD_TYPE        '\
-                '		, MSG_CLASS      '\
-                '		, MAX_LENGTH     '\
-                '		, MIN_LENGTH     '\
-                '	FROM TB_SK_MSG_HD    '\
-                ')B                       '\
-                'ON A.HD_ID = B.HD_ID     '\
+def selectSocketList(skId , useYn, pkgId='CORE'):
 
-    return string
+    query = []
+    query.append('SELECT				 ')
+    query.append('	A.PKG_ID             ')
+    query.append('	, A.SK_ID            ')
+    query.append('	, A.SK_GROUP         ')
+    query.append('	, A.USE_YN           ')
+    query.append('	, A.SK_CONN_TYPE     ')
+    query.append('	, A.SK_TYPE          ')
+    query.append('	, A.SK_CLIENT_TYPE   ')
+    query.append('	, A.HD_ID            ')
+    query.append('	, A.SK_PORT          ')
+    query.append('	, A.SK_IP            ')
+    query.append('	, A.SK_DELIMIT_TYPE  ')
+    query.append('	, A.RELATION_VAL     ')
+    query.append('	, A.SK_LOG           ')
+    query.append('	, B.HD_TYPE          ')
+    query.append('	, B.MSG_CLASS        ')
+    query.append('	, B.MAX_LENGTH       ')
+    query.append('	, B.MIN_LENGTH       ')
+    query.append('FROM (                 ')
+    query.append('	SELECT               ')
+    query.append('		PKG_ID           ')
+    query.append('		, SK_ID          ')
+    query.append('		, SK_GROUP       ')
+    query.append('		, USE_YN         ')
+    query.append('		, SK_CONN_TYPE   ')
+    query.append('		, SK_TYPE        ')
+    query.append('		, SK_CLIENT_TYPE ')
+    query.append('		, HD_ID          ')
+    query.append('		, SK_PORT        ')
+    query.append('		, SK_IP          ')
+    query.append('		, SK_DELIMIT_TYPE')
+    query.append('		, RELATION_VAL   ')
+    query.append('		, SK_LOG         ')
+    query.append('	FROM TB_SK_PKG_SK    ')
+    query.append('WHERE 1=1    ')
+    if(pkgId is not None):
+        query.append(f'AND PKG_ID = "{pkgId}"')
+    if(skId is not None):
+        query.append(f'AND SK_ID = "{skId}"')
+    if (useYn is not None):
+        query.append(f'AND USE_YN = "{useYn}"')
+    query.append(')A LEFT OUTER JOIN (   ')
+    query.append('	SELECT               ')
+    query.append('		HD_ID            ')
+    query.append('		, HD_TYPE        ')
+    query.append('		, MSG_CLASS      ')
+    query.append('		, MAX_LENGTH     ')
+    query.append('		, MIN_LENGTH     ')
+    query.append('	FROM TB_SK_MSG_HD    ')
+    query.append(')B                     ')
+    query.append('ON A.HD_ID = B.HD_ID   ')
+
+    return "".join(query)
 
 def selectTbSkMsgHdDt():
     return 'SELECT                  '\

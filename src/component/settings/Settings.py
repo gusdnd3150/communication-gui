@@ -11,7 +11,8 @@ program_directory = os.path.dirname(program_path)
 
 import traceback
 from conf.logconfig import logger
-
+from conf.InitData_n import selectQuery
+from conf.QueryString import *
 import json
 
 def resource_path(relative_path):
@@ -39,11 +40,32 @@ class Settings(QMainWindow):
         # self.saveSkWindow.instance.show()
 
         self.setEvent()
+        self.createSkGrid() # 소켓 그리드
 
     def setEvent(self):
         self.ui.btn_addSk.clicked.connect(self.addSk)
         self.ui.btn_delSk.clicked.connect(self.delSk)
+        self.ui.btn_saveSk.clicked.connect(self.delSk)
 
+
+    def createSkGrid(self):
+        try:
+            headers = ['PKG_ID', 'SK_ID', 'SK_GROUP', 'SK_TYPE', 'SK_CONN_TYPE', 'SK_CLIENT_TYPE', 'HD_ID', 'SK_IP',
+                       'SK_PORT', 'SK_DELIMIT_TYPE', 'SK_LOG', 'SK_DESC']
+            self.ui.list_sk.setRowCount(0)  # Table의 행을 설정, list의 길이
+            self.ui.list_sk.setColumnCount(12)
+            self.ui.list_sk.setHorizontalHeaderLabels(headers)
+            skList = selectQuery(selectSocketList(None, None, None))
+            for i, skItem in enumerate(skList):
+                row_count = self.ui.list_sk.rowCount()
+                self.ui.list_sk.insertRow(row_count)
+                for j, hd in enumerate(headers):
+                    if skItem.get(hd) is not None:
+                        self.ui.list_sk.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
+
+
+        except Exception as e:
+            logger.info(f'createGrid exception : {traceback.format_exc()}')
 
 
     def addControll(self, target):

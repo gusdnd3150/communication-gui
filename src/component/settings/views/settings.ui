@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>701</width>
-    <height>592</height>
+    <width>1150</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,8 +18,14 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>500</width>
-    <height>400</height>
+    <width>1150</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1150</width>
+    <height>600</height>
    </size>
   </property>
   <property name="baseSize">
@@ -49,47 +55,205 @@
        <attribute name="title">
         <string>SOCKET</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_3">
-        <item row="2" column="0">
-         <widget class="QTableWidget" name="list_sk">
-          <property name="font">
-           <font>
-            <pointsize>7</pointsize>
-           </font>
-          </property>
-          <column>
+       <widget class="QWidget" name="">
+        <property name="geometry">
+         <rect>
+          <x>810</x>
+          <y>0</y>
+          <width>149</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="QToolButton" name="btn_addSk">
            <property name="text">
-            <string>새 행</string>
+            <string>신규</string>
            </property>
-          </column>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="1">
-           <widget class="QToolButton" name="btn_delSk">
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QToolButton" name="btn_saveSk">
-            <property name="text">
-             <string>save</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QToolButton" name="btn_addSk">
-            <property name="text">
-             <string>+</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QToolButton" name="btn_delSk">
+           <property name="text">
+            <string>삭제</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QToolButton" name="btn_saveSk">
+           <property name="text">
+            <string>저장</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="formLayoutWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>810</x>
+          <y>30</y>
+          <width>271</width>
+          <height>461</height>
+         </rect>
+        </property>
+        <layout class="QFormLayout" name="formLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>패키지 명</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="sk_PKG_ID">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>소켓 아이디</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="sk_SK_ID"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>소켓 group</string>
+           </property>
+          </widget>
+         </item>
+         <item row="12" column="0">
+          <widget class="QLabel" name="label_10">
+           <property name="text">
+            <string>desc</string>
+           </property>
+          </widget>
+         </item>
+         <item row="11" column="0">
+          <widget class="QLabel" name="label_11">
+           <property name="text">
+            <string>로그 출력</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_12">
+           <property name="text">
+            <string>사용여부</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_13">
+           <property name="text">
+            <string>소켓 타입</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="0">
+          <widget class="QLabel" name="label_14">
+           <property name="text">
+            <string>딜리미터</string>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="0">
+          <widget class="QLabel" name="label_15">
+           <property name="text">
+            <string>포트</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0">
+          <widget class="QLabel" name="label_16">
+           <property name="text">
+            <string>아이피</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="label_17">
+           <property name="text">
+            <string>해더</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_18">
+           <property name="text">
+            <string>연결유형</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="label_19">
+           <property name="text">
+            <string>연결종류</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="sk_SK_GROUP"/>
+         </item>
+         <item row="8" column="1">
+          <widget class="QLineEdit" name="sk_SK_IP_2"/>
+         </item>
+         <item row="9" column="1">
+          <widget class="QLineEdit" name="sk_SK_PORT"/>
+         </item>
+         <item row="10" column="1">
+          <widget class="QLineEdit" name="sk_SK_DELIMIT_TYPE"/>
+         </item>
+         <item row="3" column="1">
+          <widget class="QComboBox" name="sk_USE_YN"/>
+         </item>
+         <item row="4" column="1">
+          <widget class="QComboBox" name="sk_SK_TYPE"/>
+         </item>
+         <item row="5" column="1">
+          <widget class="QComboBox" name="sk_SK_CONN_TYPE"/>
+         </item>
+         <item row="6" column="1">
+          <widget class="QComboBox" name="sk_SK_CLIENT_TYPE"/>
+         </item>
+         <item row="7" column="1">
+          <widget class="QComboBox" name="sk_HD_ID"/>
+         </item>
+         <item row="11" column="1">
+          <widget class="QComboBox" name="sk_SK_LOG"/>
+         </item>
+         <item row="12" column="1">
+          <widget class="QTextEdit" name="sk_SK_DESC"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QTableWidget" name="list_sk">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>801</width>
+          <height>501</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
+        <column>
+         <property name="text">
+          <string>새 행</string>
+         </property>
+        </column>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -408,7 +572,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>701</width>
+     <width>1150</width>
      <height>21</height>
     </rect>
    </property>

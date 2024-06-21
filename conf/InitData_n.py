@@ -11,7 +11,7 @@ dbInstance = sqlite3.connect('core.db')
 
 
 def getsokcetList():
-    skList = selectQuery(selectSocketList())
+    skList = selectQuery(selectSocketList(None,'Y','CORE'))
     for index, sk in enumerate(skList):
         # 해더정보 처리
         hdList = selectQuery(selectTbSkMsgHdDt().format(sk.get('HD_ID')))
