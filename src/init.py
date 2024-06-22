@@ -6,10 +6,6 @@ from PySide6.QtCore import Qt
 from src.protocols.tcp.ServerThread import ServerThread
 from src.protocols.tcp.ClientThread import ClientThread
 from src.protocols.tcp.ClientEventThread import ClientEventThread
-import psutil
-import time
-from conf.InitData_n import systemGlobals
-
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
 
@@ -117,7 +113,7 @@ class InitClass():
             # sysThread.daemon = True
             # sysThread.start()
         except Exception as e:
-            logger.info(f'Init.start_sk() Exception :: {e}')
+            logger.info(f'Init.start_sk() Exception :: {traceback.format_exc()}')
             # traceback.print_exc()
 
 

@@ -46,7 +46,14 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="1" column="0">
+    <item row="1" column="1">
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
      <widget class="QTabWidget" name="tap_info">
       <property name="currentIndex">
        <number>0</number>
@@ -55,7 +62,7 @@
        <attribute name="title">
         <string>SOCKET</string>
        </attribute>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>810</x>
@@ -255,83 +262,6 @@
         </column>
        </widget>
       </widget>
-      <widget class="QWidget" name="tab_2">
-       <attribute name="title">
-        <string>HEADER</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>해더</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="0">
-           <widget class="QToolButton" name="toolButton">
-            <property name="text">
-             <string>+</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QToolButton" name="toolButton_2">
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QToolButton" name="toolButton_3">
-            <property name="text">
-             <string>save</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="list_hd"/>
-        </item>
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>해더 상세</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_9">
-          <item row="0" column="1">
-           <widget class="QToolButton" name="toolButton_6">
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QToolButton" name="toolButton_4">
-            <property name="text">
-             <string>+</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QToolButton" name="toolButton_7">
-            <property name="text">
-             <string>save</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="list_hd_dt"/>
-        </item>
-       </layout>
-      </widget>
       <widget class="QWidget" name="tab_5">
        <attribute name="title">
         <string>IN</string>
@@ -371,113 +301,174 @@
        <attribute name="title">
         <string>MSG</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>메시지</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_5">
-          <item row="0" column="0">
-           <widget class="QToolButton" name="toolButton_11">
-            <property name="text">
-             <string>+</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QToolButton" name="toolButton_12">
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QToolButton" name="toolButton_13">
-            <property name="text">
-             <string>save</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="list_msg"/>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_10">
-          <item row="0" column="0">
-           <widget class="QToolButton" name="toolButton_14">
-            <property name="text">
-             <string>+</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QToolButton" name="toolButton_15">
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QToolButton" name="toolButton_16">
-            <property name="text">
-             <string>save</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>메시지 상세</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="list_msg_dt"/>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_6">
-       <attribute name="title">
-        <string>DT_VAL</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <layout class="QGridLayout" name="gridLayout_8">
-          <item row="0" column="1">
-           <widget class="QToolButton" name="toolButton_18">
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QToolButton" name="toolButton_17">
-            <property name="text">
-             <string>+</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QToolButton" name="toolButton_19">
-            <property name="text">
-             <string>save</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="list_dt_val"/>
-        </item>
-       </layout>
+       <widget class="QWidget" name="formLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>9</x>
+          <y>9</y>
+          <width>131</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <layout class="QFormLayout" name="formLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>메시지 ID</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="msg_MSG_ID_iq"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QPushButton" name="msg_search">
+        <property name="geometry">
+         <rect>
+          <x>999</x>
+          <y>10</y>
+          <width>111</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>검색</string>
+        </property>
+       </widget>
+       <widget class="QWidget" name="formLayoutWidget_3">
+        <property name="geometry">
+         <rect>
+          <x>150</x>
+          <y>10</y>
+          <width>140</width>
+          <height>30</height>
+         </rect>
+        </property>
+        <layout class="QFormLayout" name="formLayout_3">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>MID</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="msg_MSG_MID_iq"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QPushButton" name="msg_add">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>50</y>
+          <width>75</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>추가</string>
+        </property>
+       </widget>
+       <widget class="QTableWidget" name="msg_list">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>80</y>
+          <width>511</width>
+          <height>411</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QTableWidget" name="msg_dt_list">
+        <property name="geometry">
+         <rect>
+          <x>580</x>
+          <y>80</y>
+          <width>531</width>
+          <height>411</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="msg_dt_add">
+        <property name="geometry">
+         <rect>
+          <x>580</x>
+          <y>50</y>
+          <width>75</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>추가</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="msg_dt_del">
+        <property name="geometry">
+         <rect>
+          <x>670</x>
+          <y>50</y>
+          <width>75</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>삭제</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="msg_del">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>50</y>
+          <width>75</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>삭제</string>
+        </property>
+       </widget>
+       <widget class="Line" name="line_2">
+        <property name="geometry">
+         <rect>
+          <x>540</x>
+          <y>90</y>
+          <width>20</width>
+          <height>401</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="msg_save">
+        <property name="geometry">
+         <rect>
+          <x>190</x>
+          <y>50</y>
+          <width>75</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>저장</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="msg_dt_save">
+        <property name="geometry">
+         <rect>
+          <x>760</x>
+          <y>50</y>
+          <width>75</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>저장</string>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -556,13 +547,6 @@
         </item>
        </layout>
       </widget>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="Line" name="line">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
      </widget>
     </item>
    </layout>

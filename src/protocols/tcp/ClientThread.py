@@ -39,7 +39,7 @@ class ClientThread(threading.Thread):
         # logger.info(f' ClientThread initData : {data}')
         self.initData = data
         self.skId = data['SK_ID']
-        self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
+        # self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
         self.skIp = data['SK_IP']
         self.skPort = int(data['SK_PORT'])
 

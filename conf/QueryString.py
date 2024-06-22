@@ -219,3 +219,41 @@ def selectListTbSkBz ():
             'WHERE PKG_ID = "CORE" ' \
             'AND SK_GROUP = "{}"	' \
             'AND USE_YN = "Y"	'
+
+
+def selectSocketMSgList(msgId , mid):
+
+    query = []
+    query.append('SELECT              ')
+    query.append('	MSG_ID            ')
+    query.append('	,MSG_KEY_TYPE     ')
+    query.append('	,MSG_KEY_VAL      ')
+    query.append('	,MSG_DESC         ')
+    query.append('from TB_SK_MSG_BODY A ')
+    query.append('WHERE 1=1			   ')
+    if msgId is not None and msgId != '':
+        query.append(f'AND MSG_ID LIKE "%{msgId}%"  ')
+    if mid is not None and mid != '':
+        query.append(f'AND MSG_KEY_VAL LIKE "%{mid}%"  ')
+
+    return "".join(query)
+
+
+def selectSocketMSgDtList(msgId ):
+
+    query = []
+    query.append('SELECT							')
+    query.append('	B.MSG_DT_ORD                  ')
+    query.append('	,B.MSG_DT_VAL_ID              ')
+    query.append('	,B.MSG_DT_DESC                ')
+    query.append('	,C.VAL_TYPE                   ')
+    query.append('	,C.VAL_LEN                    ')
+    query.append('from                            ')
+    query.append('	TB_SK_MSG_BODY_DT B           ')
+    query.append('	LEFT JOIN TB_SK_MSG_VAL C     ')
+    query.append('	ON B.MSG_DT_VAL_ID = C.VAL_ID ')
+    query.append('WHERE 1=1  ')
+    if msgId is not None and msgId != '':
+        query.append(f'AND B.MSG_ID = "{msgId}"  ')
+    query.append('ORDER BY CAST(B.MSG_DT_ORD AS INTEGER) ASC;')
+    return "".join(query)

@@ -43,10 +43,15 @@ class Settings(QMainWindow):
         self.setEvent()
         self.createSkGrid() # 소켓 그리드
 
+        self.createMsgGrid(None,None)
+
     def setEvent(self):
         self.ui.btn_addSk.clicked.connect(self.addSk)
         self.ui.btn_delSk.clicked.connect(self.delSk)
         self.ui.btn_saveSk.clicked.connect(self.delSk)
+
+
+        self.ui.msg_search.clicked.connect(self.searchMsg)
 
         for item in useYnCombo:
             self.ui.sk_USE_YN.addItem(item)
@@ -136,3 +141,69 @@ class Settings(QMainWindow):
         row_data = {
         }
 
+#################################################################### 메시지
+
+    def searchMsg(self):
+        try:
+
+            logger.info(f'sss : {self.ui.msg_MSG_MID_iq.text()}')
+            logger.info(f'sss : {self.ui.msg_MSG_ID_iq.text()}')
+            self.createMsgGrid(self.ui.msg_MSG_ID_iq.text(),self.ui.msg_MSG_MID_iq.text())
+            self.createMsgDtGrid(self.ui.msg_MSG_ID_iq.text())
+        except Exception as e:
+            logger.error(f'searchMsg exception : {traceback.format_exc()}')
+    def createMsgGrid(self, msg, mid):
+        try:
+            logger.info('test')
+            headers = ['MSG_ID','MSG_KEY_TYPE','MSG_KEY_VAL','MSG_DESC' ]
+            self.ui.msg_list.setRowCount(0)  # Table의 행을 설정, list의 길이
+            self.ui.msg_list.setColumnCount(4)
+            self.ui.msg_list.setHorizontalHeaderLabels(headers)
+            skList = selectQuery(selectSocketMSgList(msg, mid))
+            for i, skItem in enumerate(skList):
+                row_count = self.ui.msg_list.rowCount()
+                self.ui.msg_list.insertRow(row_count)
+                for j, hd in enumerate(headers):
+                    if skItem.get(hd) is not None:
+                        self.ui.msg_list.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
+            self.ui.msg_list.cellClicked.connect(self.selectMsgRow)
+        except Exception as e:
+            logger.error(f'createMsgGrid exception : {traceback.format_exc()}')
+
+    def selectMsgRow(self,row, column):
+        try:
+            # logger.info(f'row: {row}')
+            # item = self.ui.list_sk.item(row, column)
+            # if item:
+            #     print(f"Item text: {item.text()}")
+            row_data = {}
+            for column in range(self.ui.msg_list.columnCount()):
+                header_item = self.ui.msg_list.horizontalHeaderItem(column)
+                item = self.ui.msg_list.item(row, column)
+                row_data[header_item.text()] = item.text() if item else ""
+
+            # self.ui.sk_PKG_ID.setText(row_data['PKG_ID'])
+            self.createMsgDtGrid(row_data['MSG_ID'])
+
+        except Exception as e :
+            logger.error(f'selectMsgRow exception : {traceback.format_exc()} ')
+
+    def createMsgDtGrid(self, msg):
+        try:
+            if msg is None or msg == '':
+                return
+
+            headers = ['MSG_DT_ORD','MSG_DT_VAL_ID','MSG_DT_DESC','VAL_TYPE','VAL_LEN' ]
+            self.ui.msg_dt_list.setRowCount(0)  # Table의 행을 설정, list의 길이
+            self.ui.msg_dt_list.setColumnCount(5)
+            self.ui.msg_dt_list.setHorizontalHeaderLabels(headers)
+            skList = selectQuery(selectSocketMSgDtList(msg))
+            for i, skItem in enumerate(skList):
+                row_count = self.ui.msg_dt_list.rowCount()
+                self.ui.msg_dt_list.insertRow(row_count)
+                for j, hd in enumerate(headers):
+                    if skItem.get(hd) is not None:
+                        self.ui.msg_dt_list.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
+            # self.ui.msg_dt_list.cellClicked.connect(self.selectMsgRow)
+        except Exception as e:
+            logger.error(f'createMsgGrid exception : {traceback.format_exc()}')

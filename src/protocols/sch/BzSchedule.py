@@ -2,7 +2,6 @@
 from conf.logconfig import logger
 import threading
 import traceback
-import schedule
 import time
 from src.protocols.BzActivator import BzActivator
 
