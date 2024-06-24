@@ -292,8 +292,6 @@ def insertSK(params):
     query = []
     keys = list(params.keys())
     values = [("" if str(v) is None else '""' if str(v) == "" else str(f"'{v}'")) for v in params.values()]
-
-
     query.append('INSERT INTO TB_SK_PKG_SK (')
     query.append(','.join(keys))
     query.append(') VALUES(')

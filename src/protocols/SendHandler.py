@@ -2,6 +2,8 @@
 import traceback
 from conf.logconfig import logger
 
+from src.protocols.tcp.ClientEventThread import ClientEventThread
+
 class SendHandler():
 
     socketList = []
@@ -20,10 +22,15 @@ class SendHandler():
             data['MSG_ID'] = msgId
             for i, sk in enumerate(self.socketList):
                 if sk['SK_ID'] == skId:
-                    # logger.info(f'sendSkId SK_DI : {sk}')
-                    skThread = sk['SK_THREAD']
-                    returnBytes = skThread.codec.encodeSendData(data)
-                    skThread.sendToAllChannels(returnBytes)
+                    if sk['SK_CLIENT_TYPE'] == 'EVENT':
+                        eventThread = ClientEventThread(sk)
+                        eventThread.daemon = True
+                        eventThread.start()
+                    else:
+                        # logger.info(f'sendSkId SK_DI : {sk}')
+                        skThread = sk['SK_THREAD']
+                        returnBytes = skThread.codec.encodeSendData(data)
+                        skThread.sendToAllChannels(returnBytes)
                     break
         except Exception as e:
             logger.info(f'sendSkId() Exception SK_ID:{skId} , MSG_ID:{msgId}, DATA:{data} -- {e}')
