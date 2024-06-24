@@ -56,7 +56,7 @@ def selectSocketList(skId , useYn, pkgId='CORE'):
     query.append(')B                     ')
     query.append('ON A.HD_ID = B.HD_ID   ')
 
-    return "".join(query)
+    return " ".join(query)
 
 def selectTbSkMsgHdDt():
     return 'SELECT                  '\
@@ -98,7 +98,7 @@ def selectMsgBodyList():
     query.append('WHERE 1=1             ')
     query.append('ORDER BY MSG_KEY_VAL   ')
 
-    return "".join(query)
+    return " ".join(query)
 
 
 def selectTbSkMsgBodyDtAndVal():
@@ -189,7 +189,7 @@ def selectSkInList(skId, pkgId):
     query.append(')B                         ')
     query.append('ON (A.IN_MSG_ID = B.MSG_ID)')
 
-    return "".join(query)
+    return " ".join(query)
 
 def selectSkOutList():
     return 'SELECT                   '\
@@ -246,7 +246,7 @@ def selectSocketMSgList(msgId , mid):
     if mid is not None and mid != '':
         query.append(f'AND MSG_KEY_VAL LIKE "%{mid}%"  ')
 
-    return "".join(query)
+    return " ".join(query)
 
 
 def selectSocketMSgDtList(msgId ):
@@ -266,4 +266,52 @@ def selectSocketMSgDtList(msgId ):
     if msgId is not None and msgId != '':
         query.append(f'AND B.MSG_ID = "{msgId}"  ')
     query.append('ORDER BY CAST(B.MSG_DT_ORD AS INTEGER) ASC;')
-    return "".join(query)
+    return " ".join(query)
+
+
+def saveSk(pkgId, skId, params):
+
+    query = []
+    query.append('UPDATE TB_SK_PKG_SK SET')
+    for index, key in enumerate(params):
+        if index == 0:
+            query.append(f'"{key}" = "{params[key]}"')
+        else:
+            query.append(f',"{key}" = "{params[key]}"')
+    query.append('WHERE 1=1')
+    query.append(f'AND SK_ID = "{skId}"')
+    query.append(f'AND PKG_ID = "{pkgId}"')
+
+    result = " ".join(query)
+    print(f'rs : {result}')
+    return result
+
+
+def insertSK(params):
+
+    query = []
+    keys = list(params.keys())
+    values = [("" if str(v) is None else '""' if str(v) == "" else str(f"'{v}'")) for v in params.values()]
+
+
+    query.append('INSERT INTO TB_SK_PKG_SK (')
+    query.append(','.join(keys))
+    query.append(') VALUES(')
+    query.append(','.join(values))
+    query.append(')')
+    result = " ".join(query)
+    print(f'rs : {result}')
+    return result
+
+def delSk(pkgId, skId):
+
+    query = []
+    query.append('DELETE FROM TB_SK_PKG_SK')
+    query.append('WHERE 1=1')
+    query.append(f'AND SK_ID = "{skId}"')
+    query.append(f'AND PKG_ID = "{pkgId}"')
+
+
+    result = " ".join(query)
+    print(f'rs : {result}')
+    return result

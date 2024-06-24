@@ -21,8 +21,8 @@ class TestController():
             skLogger = reciveObj['LOGGER']
             skLogger.info(f'[RECIVE TOTAL_BYTES] : {str(reciveObj["TOTAL_BYTES"])}')
             skLogger.info(f'[RECIVE OBJ] : {reciveObj}')
-            # Channel = reciveObj['CHANNEL']
-            # Channel.sendall('active'.encode('utf-8'))
+            Channel = reciveObj['CHANNEL']
+            Channel.sendall(reciveObj['TOTAL_BYTES'])
             # self.sendHandler.sendSkId('SERVER2','LINE_SIGNAL',returnJson)
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {e}')

@@ -93,6 +93,11 @@ def selectQuery(queryString):
         json_data.append(dict(zip(column_names, row)))
     return json_data
 
+def queryExecute(queryString):
+    c = dbInstance.cursor()
+    c.execute(queryString)
+    c.execute('COMMIT;')
+
 def initPkgData(pkgId):
     logger.info(f'-----------RUN PKG_ID = {pkgId}---------------')
     sokcetList = getsokcetList(pkgId)

@@ -27,6 +27,7 @@ class Settings(QMainWindow):
     saveSkWindow = None
     initData = None
     skRow = None
+    contFlag = 'upd'
 
     def __init__(self, initData):
         self.initData = initData
@@ -42,13 +43,12 @@ class Settings(QMainWindow):
 
         self.setEvent()
         self.createSkGrid() # 소켓 그리드
-
         self.createMsgGrid(None,None)
 
     def setEvent(self):
         self.ui.btn_addSk.clicked.connect(self.addSk)
         self.ui.btn_delSk.clicked.connect(self.delSk)
-        self.ui.btn_saveSk.clicked.connect(self.delSk)
+        self.ui.btn_saveSk.clicked.connect(self.saveSk)
 
 
         self.ui.msg_search.clicked.connect(self.searchMsg)
@@ -91,6 +91,7 @@ class Settings(QMainWindow):
 
     def selectRow(self,row, column):
         try:
+            self.contFlag = 'upd'
             # logger.info(f'row: {row}')
             # item = self.ui.list_sk.item(row, column)
             # if item:
@@ -122,6 +123,7 @@ class Settings(QMainWindow):
             logger.error(f'selectRow exception : {traceback.format_exc()} ')
 
     def addSk(self):
+        self.contFlag = 'ins'
         self.skRow = None
         self.ui.sk_PKG_ID.setText('')
         self.ui.sk_PKG_ID.setDisabled(False)
@@ -136,10 +138,31 @@ class Settings(QMainWindow):
 
     def delSk(self):
         logger.info(f'delete row : {self.skRow}')
+        queryExecute(delSk(self.ui.sk_PKG_ID.text(), self.ui.sk_SK_ID.text()))
+        self.createSkGrid()
 
     def saveSk(self):
         row_data = {
+            'SK_GROUP': self.ui.sk_SK_GROUP.text()
+            , 'USE_YN': self.ui.sk_USE_YN.currentText()
+            , 'SK_TYPE': self.ui.sk_SK_TYPE.currentText()
+            , 'SK_CONN_TYPE': self.ui.sk_SK_CONN_TYPE.currentText()
+            , 'SK_CLIENT_TYPE': self.ui.sk_SK_CLIENT_TYPE.currentText()
+            , 'HD_ID': self.ui.sk_HD_ID.currentText()
+            , 'SK_IP': self.ui.sk_SK_IP.text()
+            , 'SK_PORT': self.ui.sk_SK_PORT.text()
+            , 'SK_LOG': self.ui.sk_SK_LOG.currentText()
+            , 'SK_DELIMIT_TYPE': self.ui.sk_SK_DELIMIT_TYPE.text()
+            , 'SK_DESC': self.ui.sk_SK_DESC.toPlainText()
         }
+        if self.contFlag == 'ins':
+            row_data['SK_ID'] = self.ui.sk_SK_ID.text()
+            row_data['PKG_ID'] = self.ui.sk_PKG_ID.text()
+            queryExecute(insertSK(row_data))
+        else :
+            queryExecute(saveSk(self.ui.sk_PKG_ID.text(), self.ui.sk_SK_ID.text(), row_data))
+        self.createSkGrid()
+        logger.info(f'{row_data}')
 
 #################################################################### 메시지
 
