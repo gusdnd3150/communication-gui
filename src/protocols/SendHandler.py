@@ -2,7 +2,8 @@
 import traceback
 from conf.logconfig import logger
 
-from src.protocols.tcp.ClientEventThread import ClientEventThread
+# from src.protocols.tcp.ClientEventThread import ClientEventThread
+
 
 class SendHandler():
 
@@ -23,9 +24,10 @@ class SendHandler():
             for i, sk in enumerate(self.socketList):
                 if sk['SK_ID'] == skId:
                     if sk['SK_CLIENT_TYPE'] == 'EVENT':
-                        eventThread = ClientEventThread(sk)
-                        eventThread.daemon = True
-                        eventThread.start()
+                        logger.info(f' 준비중')
+                        # eventThread = ClientEventThread(sk)
+                        # eventThread.daemon = True
+                        # eventThread.start()
                     else:
                         # logger.info(f'sendSkId SK_DI : {sk}')
                         skThread = sk['SK_THREAD']

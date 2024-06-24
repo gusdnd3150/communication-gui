@@ -1,7 +1,7 @@
 import sys
 import traceback
 import os
-from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem
+from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QHeaderView
 from PySide6.QtCore import Qt
 from src.protocols.tcp.ServerThread import ServerThread
 from src.protocols.tcp.ClientThread import ClientThread
@@ -120,6 +120,10 @@ class InitClass():
 
 
     def setGrid(self):
+
+        self.mainLayOut.list_run_server.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.mainLayOut.list_run_server.verticalHeader().setVisible(False)  # 행 번호 헤더 숨기기
+        # self.mainLayOut.list_run_server.horizontalHeader().setVisible(False)  # 열 번호 헤더 숨기기
         self.mainLayOut.list_run_server.setRowCount(0)  # Table의 행을 설정, list의 길이
         self.mainLayOut.list_run_server.setColumnCount(10)
         self.mainLayOut.list_run_server.setHorizontalHeaderLabels(
@@ -137,6 +141,8 @@ class InitClass():
              ]
         )
 
+        self.mainLayOut.list_run_client.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.mainLayOut.list_run_client.verticalHeader().setVisible(False)
         self.mainLayOut.list_run_client.setRowCount(0)  # Table의 행을 설정, list의 길이
         self.mainLayOut.list_run_client.setColumnCount(10)
         self.mainLayOut.list_run_client.setHorizontalHeaderLabels(

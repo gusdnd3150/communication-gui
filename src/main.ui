@@ -38,12 +38,37 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QMainWindow {
+    background-color: #2E2E2E;
+    color: #FFFFFF;
+}</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="2">
        <widget class="QToolButton" name="btn_settings">
+        <property name="styleSheet">
+         <string notr="true">QToolButton {
+    background-color: #444444;
+    color: #FFFFFF;
+    border: 1px solid #555555;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+QToolButton:hover {
+    background-color: #555555;
+    border: 1px solid #666666;
+}
+
+QToolButton:pressed {
+    background-color: #333333;
+    border: 1px solid #444444;
+}</string>
+        </property>
         <property name="text">
          <string>settings</string>
         </property>
@@ -51,13 +76,69 @@
       </item>
       <item row="0" column="1">
        <widget class="QPushButton" name="btn_start">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    background-color: #444444;
+    color: #FFFFFF;
+    border: 1px solid #555555;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+QPushButton:hover {
+    background-color: #555555;
+    border: 1px solid #666666;
+}
+
+QPushButton:pressed {
+    background-color: #333333;
+    border: 1px solid #444444;
+}</string>
+        </property>
         <property name="text">
          <string>Run Application</string>
         </property>
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="QComboBox" name="combo_pkg"/>
+       <widget class="QComboBox" name="combo_pkg">
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QComboBox {
+    background-color: #444444;
+    color: #FFFFFF;
+    border: 1px solid #555555;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+QComboBox:hover {
+    border: 1px solid #666666;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left-width: 1px;
+    border-left-color: #555555;
+    border-left-style: solid;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: #555555;
+}
+
+
+QComboBox QAbstractItemView {
+    background-color: #444444;
+    color: #FFFFFF;
+    selection-background-color: #555555;
+    selection-color: #FFFFFF;
+}</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -79,8 +160,13 @@
       </property>
       <item>
        <widget class="QLabel" name="label_2">
+        <property name="styleSheet">
+         <string notr="true">QLabel{
+	color:white
+}</string>
+        </property>
         <property name="text">
-         <string>SERVER</string>
+         <string>Server</string>
         </property>
        </widget>
       </item>
@@ -101,24 +187,74 @@
         </property>
         <property name="styleSheet">
          <string notr="true">QTableWidget {
-                background-color:rgb(255, 255, 255); /* 테이블 배경색 */
-                alternate-background-color: #ffffff; /* 짝수 줄 배경색 */
-                selection-background-color: #b8daff; /* 선택된 셀 배경색 */
-                selection-color: black; /* 선택된 셀 텍스트색 */
-                border: 1px solid #d3d3d3; /* 테두리 선 색상 및 굵기 */
-                border-radius: 5px; /* 테두리 모서리 둥글기 */
-                padding: 5px; /* 내부 여백 */
-            }</string>
+    background-color: #2E2E2E;
+    color: #FFFFFF;
+    gridline-color: #444444;
+    border: 1px solid #444444;
+}
+
+QHeaderView::section {
+    background-color: #444444;
+    color: #FFFFFF;
+    padding: 4px;
+    border: 1px solid #2E2E2E;
+}
+
+QTableWidget::item {
+    border: none;
+    padding: 4px;
+}
+
+QTableWidget::item:selected {
+    background-color: #555555;
+    color: #FFFFFF;
+}
+
+QScrollBar:vertical {
+    background-color: #2E2E2E;
+    width: 3px;
+	height:2px;
+    margin: 15px 0 15px 0;
+}
+QScrollBar::handle:vertical {
+    background-color: #555555;
+    min-height: 5px;
+}
+QScrollBar:horizontal {
+    background-color: #2E2E2E;
+    height: 8px; 
+    margin: 0 15px 0 15px;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    background-color: #444444;
+    height: 5px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}</string>
+        </property>
+        <property name="showGrid">
+         <bool>true</bool>
         </property>
         <property name="sortingEnabled">
          <bool>true</bool>
         </property>
+        <attribute name="verticalHeaderDefaultSectionSize">
+         <number>41</number>
+        </attribute>
        </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_3">
+        <property name="styleSheet">
+         <string notr="true">QLabel{
+	color:white
+}</string>
+        </property>
         <property name="text">
-         <string>CLIENT</string>
+         <string>Client</string>
         </property>
        </widget>
       </item>
@@ -131,14 +267,53 @@
         </property>
         <property name="styleSheet">
          <string notr="true">QTableWidget {
-                background-color:rgb(255, 255, 255); /* 테이블 배경색 */
-                alternate-background-color: #ffffff; /* 짝수 줄 배경색 */
-                selection-background-color: #b8daff; /* 선택된 셀 배경색 */
-                selection-color: black; /* 선택된 셀 텍스트색 */
-                border: 1px solid #d3d3d3; /* 테두리 선 색상 및 굵기 */
-                border-radius: 5px; /* 테두리 모서리 둥글기 */
-                padding: 5px; /* 내부 여백 */
-            }</string>
+    background-color: #2E2E2E;
+    color: #FFFFFF;
+    gridline-color: #444444;
+    border: 1px solid #444444;
+}
+
+QHeaderView::section {
+    background-color: #444444;
+    color: #FFFFFF;
+    padding: 4px;
+    border: 1px solid #2E2E2E;
+}
+
+QTableWidget::item {
+    border: none;
+    padding: 4px;
+}
+
+QTableWidget::item:selected {
+    background-color: #555555;
+    color: #FFFFFF;
+}
+
+QScrollBar:vertical {
+    background-color: #2E2E2E;
+    width: 3px;
+	height:2px;
+    margin: 15px 0 15px 0;
+}
+QScrollBar::handle:vertical {
+    background-color: #555555;
+    min-height: 5px;
+}
+QScrollBar:horizontal {
+    background-color: #2E2E2E;
+    height: 8px; 
+    margin: 0 15px 0 15px;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    background-color: #444444;
+    height: 5px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}</string>
         </property>
        </widget>
       </item>

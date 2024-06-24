@@ -1,6 +1,6 @@
 
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QTabWidget, QPushButton, QCheckBox, QMainWindow
+from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QTabWidget, QPushButton, QCheckBox, QMainWindow, QHeaderView
 import json
 from src.component.settings.SaveSocketPopup import SaveSocketPopup
 import sys
@@ -73,6 +73,10 @@ class Settings(QMainWindow):
         try:
             headers = ['PKG_ID', 'SK_ID','USE_YN', 'SK_GROUP', 'SK_TYPE', 'SK_CONN_TYPE', 'SK_CLIENT_TYPE', 'HD_ID', 'SK_IP',
                        'SK_PORT', 'SK_DELIMIT_TYPE', 'SK_LOG', 'SK_DESC']
+
+            self.ui.list_sk.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+            self.ui.list_sk.verticalHeader().setVisible(False)
+
             self.ui.list_sk.setRowCount(0)  # Table의 행을 설정, list의 길이
             self.ui.list_sk.setColumnCount(13)
             self.ui.list_sk.setHorizontalHeaderLabels(headers)
