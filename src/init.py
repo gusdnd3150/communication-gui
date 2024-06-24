@@ -15,7 +15,7 @@ from PySide6.QtUiTools import QUiLoader
 from src.component.settings.Settings import Settings
 from conf.logconfig import logger
 from src.utils.SystemMonitor import SystemMonitor
-from conf.InitData_n import systemGlobals
+from conf.InitData_n import *
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -81,7 +81,11 @@ class InitClass():
     def start_sk(self):
 
         pkg = self.mainLayOut.combo_pkg.currentText()
+        # 기준정보 로드
+        initPkgData(pkg)
 
+        self.mainLayOut.combo_pkg.setDisabled(True)
+        self.mainLayOut.btn_start.setDisabled(True)
         try:
 
             for i , item in enumerate(systemGlobals['sokcetList']):

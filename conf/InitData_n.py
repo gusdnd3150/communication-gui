@@ -17,10 +17,27 @@ skClientCombo = ['KEEP','EVENT']
 hdCombo = ['LENGTH_STR_8B','LENGTH_STR_20B','LENGTH_20B','FREE','JSON']
 
 
+sokcetList = []
+socketHd = []
+socketHdDt = []
+socketBody = []
+socketBodyDt = []
+socketVal = []
+# sokcetBz = getsokcetBz()
+sokcetBz = []
+sokcetIn = []
+sokcetInToOut = []
+sokcetOut = []
+sokcetSub = []
+sokcetSch = []
+mainLayout = None
+systemGlobals = globals()
+systemGlobals['mainLayout'] = None
+systemGlobals['mainInstance'] = None
 
 
-def getsokcetList():
-    skList = selectQuery(selectSocketList(None,'Y','CORE'))
+def getsokcetList(pkgId):
+    skList = selectQuery(selectSocketList(None,'Y',pkgId))
     for index, sk in enumerate(skList):
         # 해더정보 처리
         hdList = selectQuery(selectTbSkMsgHdDt().format(sk.get('HD_ID')))
@@ -50,8 +67,8 @@ def getsocketBody():
     return msgList
 
 
-def getsokcetIn():
-    return selectQuery(selectSkInList())
+def getsokcetIn(pkgId):
+    return selectQuery(selectSkInList(None,pkgId))
 
 def getsokcetOut():
     return selectQuery(selectSkOutList())
@@ -76,39 +93,41 @@ def selectQuery(queryString):
         json_data.append(dict(zip(column_names, row)))
     return json_data
 
+def initPkgData(pkgId):
+    logger.info(f'-----------RUN PKG_ID = {pkgId}---------------')
+    sokcetList = getsokcetList(pkgId)
+    socketHd = []
+    socketHdDt = []
+    socketBody = getsocketBody()
+    socketBodyDt = []
+    socketVal = []
+    # sokcetBz = getsokcetBz()
+    sokcetBz = []
+    sokcetIn = getsokcetIn(pkgId)
+    sokcetInToOut = []
+    sokcetOut = []
+    sokcetSub = []
+    sokcetSch = getsokcetSch()
+    mainLayout = None
 
-sokcetList = getsokcetList()
-socketHd = []
-socketHdDt = []
-socketBody = getsocketBody()
-socketBodyDt = []
-socketVal = []
-# sokcetBz = getsokcetBz()
-sokcetBz= []
-sokcetIn = getsokcetIn()
-sokcetInToOut = []
-sokcetOut = []
-sokcetSub = []
-sokcetSch = getsokcetSch()
+    logger.info(f'sokcetList size : {len(sokcetList)}')
+    logger.info(f'sokcetSch size : {len(sokcetSch)}')
+    logger.info(f'socketBody size : {len(socketBody)}')
+    logger.info(f'sokcetBz size : {len(sokcetBz)}')
+    logger.info(f'sokcetIn size : {len(sokcetIn)}')
+    logger.info(f'sokcetSch size : {len(sokcetSch)}')
 
-mainLayout = None
+    logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
+    # 비즈니스로직 처리 컨트롤러 지정
 
-logger.info(f'sokcetList size : {len(sokcetList)}')
-logger.info(f'sokcetSch size : {len(sokcetSch)}')
-logger.info(f'socketBody size : {len(socketBody)}')
-logger.info(f'sokcetBz size : {len(sokcetBz)}')
-logger.info(f'sokcetIn size : {len(sokcetIn)}')
-logger.info(f'sokcetSch size : {len(sokcetSch)}')
+    handler = SendHandler(sokcetList, socketBody, sokcetBz, sokcetIn)
+    systemGlobals['TestController'] = TestController(handler)
+    systemGlobals['sokcetList'] = sokcetList
+    systemGlobals['socketBody'] = socketBody
+    systemGlobals['sokcetBz'] = sokcetBz
+    systemGlobals['sokcetIn'] = sokcetIn
+    logger.info(f'---------------------------------------')
 
-logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
-# 비즈니스로직 처리 컨트롤러 지정
-systemGlobals = globals()
-handler = SendHandler(sokcetList,socketBody,sokcetBz,sokcetIn)
-systemGlobals['TestController'] = TestController(handler)
-systemGlobals['sokcetList'] = sokcetList
-systemGlobals['socketBody'] = socketBody
-systemGlobals['sokcetBz'] = sokcetBz
-systemGlobals['sokcetIn'] = sokcetIn
-systemGlobals['mainLayout'] = None
-systemGlobals['mainInstance'] = None
-logger.info(f'---------------------------------------')
+
+
+

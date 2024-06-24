@@ -84,17 +84,21 @@ def selectHdLen():
 
 
 def selectMsgBodyList():
-    return 'SELECT             '\
-        '	MSG_ID             '\
-        '	, MSG_KEY_TYPE     '\
-        '	, MSG_KEY_VAL      '\
-        '	, MSG_DB_LOG_YN    '\
-        '	, MSG_DESC         '\
-        '	, MSG_KEY_VAL_DESC '\
-        '	, MSG_KEY_LENGTH   '\
-        '	, MAX_WORK_SEC     '\
-        'FROM TB_SK_MSG_BODY    '\
-        'ORDER BY MSG_KEY_VAL   '
+    query = []
+    query.append('SELECT                 ')
+    query.append('	MSG_ID               ')
+    query.append('	, MSG_KEY_TYPE       ')
+    query.append('	, MSG_KEY_VAL        ')
+    query.append('	, MSG_DB_LOG_YN      ')
+    query.append('	, MSG_DESC           ')
+    query.append('	, MSG_KEY_VAL_DESC   ')
+    query.append('	, MSG_KEY_LENGTH     ')
+    query.append('	, MAX_WORK_SEC       ')
+    query.append('FROM TB_SK_MSG_BODY    ')
+    query.append('WHERE 1=1             ')
+    query.append('ORDER BY MSG_KEY_VAL   ')
+
+    return "".join(query)
 
 
 def selectTbSkMsgBodyDtAndVal():
@@ -148,38 +152,44 @@ def selectMsgLen():
         'WHERE A.MSG_DT_VAL_ID = B.VAL_ID '\
         'GROUP BY A.MSG_ID				 '\
 
-def selectSkInList():
-    return 'SELECT                     '\
-            '	A.PKG_ID               '\
-            '	, A.SK_IN_SEQ          '\
-            '	, A.IN_SK_ID           '\
-            '	, A.IN_MSG_ID          '\
-            '	, B.MSG_KEY_TYPE       '\
-            '	, B.MSG_KEY_VAL        '\
-            '	, A.BZ_METHOD          '\
-            '	, A.IN_DESC            '\
-            '	, A.USE_YN             '\
-            'FROM (                     '\
-            '	SELECT                 '\
-            '		PKG_ID             '\
-            '		, SK_IN_SEQ        '\
-            '		, IN_SK_ID         '\
-            '		, IN_MSG_ID        '\
-            '		, BZ_METHOD        '\
-            '		, IN_DESC          '\
-            '		, USE_YN           '\
-            '	FROM TB_SK_PKG_SK_IN   '\
-            '	WHERE PKG_ID = "CORE"  '\
-            '	AND USE_YN = "Y"       '\
-            ')A LEFT JOIN (             '\
-            '	SELECT                 '\
-            '		MSG_ID             '\
-            '		, MSG_KEY_TYPE     '\
-            '		, MSG_KEY_VAL      '\
-            '	FROM TB_SK_MSG_BODY    '\
-            ')B                         '\
-            'ON (A.IN_MSG_ID = B.MSG_ID)'
+def selectSkInList(skId, pkgId):
+    query = []
+    query.append('SELECT                   ')
+    query.append('	A.PKG_ID               ')
+    query.append('	, A.SK_IN_SEQ          ')
+    query.append('	, A.IN_SK_ID           ')
+    query.append('	, A.IN_MSG_ID          ')
+    query.append('	, B.MSG_KEY_TYPE       ')
+    query.append('	, B.MSG_KEY_VAL        ')
+    query.append('	, A.BZ_METHOD          ')
+    query.append('	, A.IN_DESC            ')
+    query.append('	, A.USE_YN             ')
+    query.append('FROM (                   ')
+    query.append('	SELECT                 ')
+    query.append('		PKG_ID             ')
+    query.append('		, SK_IN_SEQ        ')
+    query.append('		, IN_SK_ID         ')
+    query.append('		, IN_MSG_ID        ')
+    query.append('		, BZ_METHOD        ')
+    query.append('		, IN_DESC          ')
+    query.append('		, USE_YN           ')
+    query.append('	FROM TB_SK_PKG_SK_IN   ')
+    query.append('	WHERE 1=1  ')
+    if skId is not None and skId != '':
+        query.append(f'	AND SK_ID = "{skId}"       ')
+    if pkgId is not None and pkgId != '':
+        query.append(f'	AND PKG_ID = "{pkgId}"       ')
+    query.append('	AND USE_YN = "Y"       ')
+    query.append(')A LEFT JOIN (             ')
+    query.append('	SELECT                 ')
+    query.append('		MSG_ID             ')
+    query.append('		, MSG_KEY_TYPE     ')
+    query.append('		, MSG_KEY_VAL      ')
+    query.append('	FROM TB_SK_MSG_BODY    ')
+    query.append(')B                         ')
+    query.append('ON (A.IN_MSG_ID = B.MSG_ID)')
 
+    return "".join(query)
 
 def selectSkOutList():
     return 'SELECT                   '\
