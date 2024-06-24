@@ -183,6 +183,7 @@ class Settings(QMainWindow):
         try:
             logger.info('test')
             headers = ['MSG_ID','MSG_KEY_TYPE','MSG_KEY_VAL','MSG_DESC' ]
+            self.ui.msg_list.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
             self.ui.msg_list.setRowCount(0)  # Table의 행을 설정, list의 길이
             self.ui.msg_list.setColumnCount(4)
             self.ui.msg_list.setHorizontalHeaderLabels(headers)

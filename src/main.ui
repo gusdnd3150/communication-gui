@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>720</width>
-    <height>550</height>
+    <width>804</width>
+    <height>529</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>500</width>
+    <width>700</width>
     <height>400</height>
    </size>
   </property>
@@ -50,6 +50,11 @@
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="2">
        <widget class="QToolButton" name="btn_settings">
+        <property name="font">
+         <font>
+          <family>맑은 고딕</family>
+         </font>
+        </property>
         <property name="styleSheet">
          <string notr="true">QToolButton {
     background-color: #444444;
@@ -76,6 +81,13 @@ QToolButton:pressed {
       </item>
       <item row="0" column="1">
        <widget class="QPushButton" name="btn_start">
+        <property name="font">
+         <font>
+          <family>맑은 고딕</family>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="styleSheet">
          <string notr="true">QPushButton {
     background-color: #444444;
@@ -102,6 +114,11 @@ QPushButton:pressed {
       </item>
       <item row="0" column="0">
        <widget class="QComboBox" name="combo_pkg">
+        <property name="font">
+         <font>
+          <family>맑은 고딕</family>
+         </font>
+        </property>
         <property name="acceptDrops">
          <bool>false</bool>
         </property>
@@ -166,7 +183,7 @@ QComboBox QAbstractItemView {
 }</string>
         </property>
         <property name="text">
-         <string>Server</string>
+         <string>[ Server ]</string>
         </property>
        </widget>
       </item>
@@ -254,7 +271,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
 }</string>
         </property>
         <property name="text">
-         <string>Client</string>
+         <string>[ Client ]</string>
         </property>
        </widget>
       </item>
@@ -326,7 +343,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>720</width>
+     <width>804</width>
      <height>21</height>
     </rect>
    </property>
