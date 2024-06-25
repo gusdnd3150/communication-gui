@@ -1,4 +1,5 @@
 from conf.logconfig import logger
+import gc
 import sqlite3
 from conf.QueryString import *
 from src.controller.TestController import TestController
@@ -98,22 +99,27 @@ def queryExecute(queryString):
     c.execute(queryString)
     c.execute('COMMIT;')
 
+
+
+logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
+handler = SendHandler(sokcetList, socketBody, sokcetBz, sokcetIn)
+systemGlobals['TestController'] = TestController(handler)
+socketBody = getsocketBody()
+logger.info(f'------------------- ------------------')
+
 def initPkgData(pkgId):
     logger.info(f'-----------RUN PKG_ID = {pkgId}---------------')
+    # 가비지 컬렉션 강제 실행 (선택 사항)
+    gc.collect()
+    for idex, item in enumerate(systemGlobals['sokcetList']):
+        del item
+
+    systemGlobals['sokcetList'] = None
     sokcetList = getsokcetList(pkgId)
-    socketHd = []
-    socketHdDt = []
-    socketBody = getsocketBody()
-    socketBodyDt = []
-    socketVal = []
     # sokcetBz = getsokcetBz()
-    sokcetBz = []
+    systemGlobals['sokcetIn'] = None
     sokcetIn = getsokcetIn(pkgId)
-    sokcetInToOut = []
-    sokcetOut = []
-    sokcetSub = []
     sokcetSch = getsokcetSch()
-    mainLayout = None
 
     logger.info(f'sokcetList size : {len(sokcetList)}')
     logger.info(f'sokcetSch size : {len(sokcetSch)}')
@@ -122,14 +128,11 @@ def initPkgData(pkgId):
     logger.info(f'sokcetIn size : {len(sokcetIn)}')
     logger.info(f'sokcetSch size : {len(sokcetSch)}')
 
-    logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
+
     # 비즈니스로직 처리 컨트롤러 지정
 
-    handler = SendHandler(sokcetList, socketBody, sokcetBz, sokcetIn)
-    systemGlobals['TestController'] = TestController(handler)
     systemGlobals['sokcetList'] = sokcetList
     systemGlobals['socketBody'] = socketBody
-    systemGlobals['sokcetBz'] = sokcetBz
     systemGlobals['sokcetIn'] = sokcetIn
     logger.info(f'---------------------------------------')
 

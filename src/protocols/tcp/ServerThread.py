@@ -72,18 +72,27 @@ class ServerThread(threading.Thread):
                 elif bz.get('BZ_TYPE') == 'INACTIVE':
                     self.bzInActive = bz
 
-        super().__init__()
+        super(ServerThread,self).__init__()
+        self._stop_event = threading.Event()
+
+    def __del__(self):
+        logger.info('deleted')
 
     def run(self):
         self.initServer()
 
     def stop(self):
         try:
-            self.logger.error(f'-------------')
-            self.isRun = False
+            if self.socket:
+                self.socket.close()
 
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail')
+        finally:
+            self.isRun = False
+            self._stop_event.set()
+            systemGlobals['mainInstance'].deleteTableRow(self.skId, 'list_run_server')
+
 
     def initServer(self):
         try:
@@ -211,6 +220,8 @@ class ServerThread(threading.Thread):
 
         if self.bzSch is not None:
             self.bzSch.stop()
+            self.bzSch.join()
+            self.bzSch = None
 
         self.client_list.remove(client_info)
         self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')

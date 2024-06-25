@@ -7,6 +7,7 @@ from src.protocols.tcp.ServerThread import ServerThread
 from src.protocols.tcp.ClientThread import ClientThread
 from src.protocols.tcp.ClientEventThread import ClientEventThread
 program_path = sys.argv[0]
+import logging
 program_directory = os.path.dirname(program_path)
 
 from PySide6 import QtWidgets
@@ -81,12 +82,31 @@ class InitClass():
     def stop_sk(self):
         try:
             logger.info(f'Stop Run Sockets')
+
             for i, item in enumerate(systemGlobals['sokcetList']):
                 runThread = item['SK_THREAD']
                 runThread.stop()
+                runThread.join()
+                self.removeLogger(item['SK_ID'])
+                item['SK_THREAD'] = None
 
+
+
+            self.mainLayOut.combo_pkg.setDisabled(False)
+            self.mainLayOut.btn_start.setDisabled(False)
         except Exception as e:
             logger.error(f'stop_sk() exceptopn : {traceback.format_exc()}')
+
+    def removeLogger(self,skId):
+        logger = logging.getLogger(skId)
+        # 모든 핸들러 제거
+        handlers = logger.handlers[:]
+        for handler in handlers:
+            handler.close()
+            logger.removeHandler(handler)
+        # 로거 제거
+        logging.getLogger(skId).handlers = []
+
 
     def start_sk(self):
 
@@ -97,7 +117,7 @@ class InitClass():
         self.mainLayOut.combo_pkg.setDisabled(True)
         self.mainLayOut.btn_start.setDisabled(True)
         try:
-
+            logger.info(f' Run Cnt : {len(systemGlobals["sokcetList"])}')
             for i , item in enumerate(systemGlobals['sokcetList']):
                 threadInfo = None
                 skTy = item['SK_TYPE']
@@ -247,6 +267,21 @@ class InitClass():
         except Exception:
             logger.error(f'modClientRow exception : {traceback.format_exc()}')
 
+
+    def deleteTableRow(self, skId, target):
+        try:
+            if target == 'list_run_client':
+                items = self.mainLayOut.list_run_client.findItems(skId, Qt.MatchExactly)
+                for item in items:
+                    self.mainLayOut.list_run_client.removeRow(item.row())
+            else:
+                items = self.mainLayOut.list_run_server.findItems(skId, Qt.MatchExactly)
+                for item in items:
+                    self.mainLayOut.list_run_server.removeRow(item.row())
+
+
+        except Exception as e:
+            logger.error(f'deleteTableRow exception : {traceback.format_exc()}')
 
     def get_column_index_by_name(self,target, column_name):
         headers = 0

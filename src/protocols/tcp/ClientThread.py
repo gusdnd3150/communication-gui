@@ -21,6 +21,7 @@ class ClientThread(threading.Thread):
     socket = None
     reactor = None
     isRun = False
+    isShutdown =  False
     skLogYn = False
     codec = None
     delimiter = b''
@@ -70,8 +71,12 @@ class ClientThread(threading.Thread):
                     self.bzIdleRead = bz
                 elif bz.get('BZ_TYPE') == 'INACTIVE':
                     self.bzInActive = bz
-        super().__init__()
+        # super().__init__()
+        super(ClientThread, self).__init__()
+        self._stop_event = threading.Event()
 
+    def __del__(self):
+        logger.info('deleted')
 
     def run(self):
         systemGlobals['mainInstance'].addClientRow(self.initData)
@@ -79,11 +84,16 @@ class ClientThread(threading.Thread):
 
     def stop(self):
         try:
-            self.logger.error(f'SK_ID:{self.skId} Stop fail')
-            self.isRun = False
-
+            if self.socket:
+                self.socket.close()
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
+        finally:
+            self.isRun = False
+            self.isShutdown = True
+            self._stop_event.set()
+            systemGlobals['mainInstance'].deleteTableRow(self.skId, 'list_run_client')
+
 
     def initClient(self):
         systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '0')
@@ -170,24 +180,11 @@ class ClientThread(threading.Thread):
                         bz = BzActivator(self.bzIdleRead)
                         bz.daemon = True
                         bz.start()
-
                     continue
                 except Exception as e:
                     traceback.print_exc()
                     self.isRun = False
-                    if self.socket:
-                        self.socket.close()
-                        self.socket = None
-                    self.logger.error(f'Exception :: {e}')
                     break
-
-
-            if self.isRun == False:
-                if self.socket:
-                    self.socket.close()
-                    self.socket = None
-                time.sleep(5)  # 5초 대기 후 재시도
-                self.initClient()
 
         except ConnectionRefusedError as e:
             self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
@@ -199,11 +196,15 @@ class ClientThread(threading.Thread):
 
         finally:
             buffer.clear()
-            if self.isRun == False:
-                # 연결이 실패한 경우 잠시 대기 후 재시도
-                if self.socket:
-                    self.socket.close()
-                    self.socket = None
+            if self.socket:
+                self.socket.close()
+                self.socket = None
+
+            if self.bzSch is not None:
+                self.bzSch.stop()
+                self.bzSch = None
+
+            if self.isRun == False and self.isShutdown == False:
                 time.sleep(5)  # 5초 대기 후 재시도
                 self.initClient()
 

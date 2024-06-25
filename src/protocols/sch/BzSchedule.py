@@ -19,7 +19,8 @@ class BzSchedule(threading.Thread):
         self.interval = bzInfo['SEC']
         self.logger = bzInfo['LOGGER']
         self.logger.info(f'BzSchedule initData :{bzInfo}')
-        super().__init__()
+        super(BzSchedule, self).__init__()
+        self._stop_event = threading.Event()
 
     def run(self):
         self.runSchedule()
@@ -54,6 +55,7 @@ class BzSchedule(threading.Thread):
             self.logger.error(f'BzSchedule task exception : {e}')
 
     def stop(self):
-
         self.isRun = False
+        self._stop_event.set()
+
 
