@@ -77,6 +77,13 @@ class ServerThread(threading.Thread):
     def run(self):
         self.initServer()
 
+    def stop(self):
+        try:
+            self.logger.error(f'-------------')
+            self.isRun = False
+
+        except Exception as e:
+            self.logger.error(f'SK_ID:{self.skId} Stop fail')
 
     def initServer(self):
         try:

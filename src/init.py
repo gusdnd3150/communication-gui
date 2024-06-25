@@ -60,6 +60,7 @@ class InitClass():
         self.mainLayOut.setWindowTitle('application')
         self.mainLayOut.btn_settings.clicked.connect(self.open_settings)
         self.mainLayOut.btn_start.clicked.connect(self.start_sk)
+        self.mainLayOut.btn_stop.clicked.connect(self.stop_sk)
         self.mainLayOut.show()
         systemGlobals['mainLayout'] = self.mainLayOut
         systemGlobals['mainInstance'] = self
@@ -77,6 +78,15 @@ class InitClass():
         for i in range(0, len(pkgCombo)):
             self.mainLayOut.combo_pkg.addItem(pkgCombo[i])
 
+    def stop_sk(self):
+        try:
+            logger.info(f'Stop Run Sockets')
+            for i, item in enumerate(systemGlobals['sokcetList']):
+                runThread = item['SK_THREAD']
+                runThread.stop()
+
+        except Exception as e:
+            logger.error(f'stop_sk() exceptopn : {traceback.format_exc()}')
 
     def start_sk(self):
 

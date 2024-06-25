@@ -77,6 +77,14 @@ class ClientThread(threading.Thread):
         systemGlobals['mainInstance'].addClientRow(self.initData)
         self.initClient()
 
+    def stop(self):
+        try:
+            self.logger.error(f'SK_ID:{self.skId} Stop fail')
+            self.isRun = False
+
+        except Exception as e:
+            self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
+
     def initClient(self):
         systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '0')
         buffer = bytearray()
