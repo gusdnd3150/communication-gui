@@ -21,6 +21,7 @@ class ClientEventThread(threading.Thread):
     socket = None
     reactor = None
     isRun = False
+    isShutdown =  False
     skLogYn = False
     codec = None
     delimiter = b''
@@ -30,6 +31,7 @@ class ClientEventThread(threading.Thread):
     bzIdleRead = None
     bzSch = None
     logger = None
+    sendData = bytearray
 
     def __init__(self, data):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
@@ -70,12 +72,29 @@ class ClientEventThread(threading.Thread):
                     self.bzIdleRead = bz
                 elif bz.get('BZ_TYPE') == 'INACTIVE':
                     self.bzInActive = bz
-        super().__init__()
+        # super().__init__()
+        super(ClientEventThread, self).__init__()
+        self._stop_event = threading.Event()
 
+    def __del__(self):
+        logger.info('deleted')
 
     def run(self):
         systemGlobals['mainInstance'].addClientRow(self.initData)
         self.initClient()
+
+    def stop(self):
+        try:
+            if self.socket:
+                self.socket.close()
+        except Exception as e:
+            self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
+        finally:
+            self.isRun = False
+            self.isShutdown = True
+            self._stop_event.set()
+            systemGlobals['mainInstance'].deleteTableRow(self.skId, 'list_run_client')
+
 
     def initClient(self):
         systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '0')
@@ -84,10 +103,10 @@ class ClientEventThread(threading.Thread):
             # 서버에 연결합니다.
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.connect((self.skIp, int(self.skPort)))
-            self.logger.info('TCP EVENT CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
+            self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
 
-            # if self.socket is not None:
-            #     systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '1')
+            if self.socket is not None:
+                systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '1')
 
 
             #2. 여기에 active 이벤트 처리
@@ -162,24 +181,11 @@ class ClientEventThread(threading.Thread):
                         bz = BzActivator(self.bzIdleRead)
                         bz.daemon = True
                         bz.start()
-
                     continue
                 except Exception as e:
                     traceback.print_exc()
                     self.isRun = False
-                    if self.socket:
-                        self.socket.close()
-                        self.socket = None
-                    self.logger.error(f'Exception :: {e}')
                     break
-
-
-            if self.isRun == False:
-                if self.socket:
-                    self.socket.close()
-                    self.socket = None
-                time.sleep(5)  # 5초 대기 후 재시도
-                self.initClient()
 
         except ConnectionRefusedError as e:
             self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
@@ -191,11 +197,15 @@ class ClientEventThread(threading.Thread):
 
         finally:
             buffer.clear()
-            if self.isRun == False:
-                # 연결이 실패한 경우 잠시 대기 후 재시도
-                if self.socket:
-                    self.socket.close()
-                    self.socket = None
+            if self.socket:
+                self.socket.close()
+                self.socket = None
+
+            if self.bzSch is not None:
+                self.bzSch.stop()
+                self.bzSch = None
+
+            if self.isRun == False and self.isShutdown == False:
                 time.sleep(5)  # 5초 대기 후 재시도
                 self.initClient()
 
