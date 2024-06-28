@@ -17,13 +17,19 @@ class TestController():
         logger.info('init testcontroller')
 
     def recive(self, reciveObj):
+        skLogger = reciveObj['LOGGER']
+        Channel = reciveObj['CHANNEL']
+        returnJson = {}
         try:
-            skLogger = reciveObj['LOGGER']
+
             skLogger.info(f'[RECIVE TOTAL_BYTES] : {str(reciveObj["TOTAL_BYTES"])}')
             skLogger.info(f'[RECIVE OBJ] : {reciveObj}')
-            Channel = reciveObj['CHANNEL']
+
             Channel.sendall(reciveObj['TOTAL_BYTES'])
-            # self.sendHandler.sendSkId('SERVER2','LINE_SIGNAL',returnJson)
+
+            returnJson['LINE_CD'] = 'CS01'
+            returnJson['LINE_SIGN'] = '2'
+            self.sendHandler.sendSkId('TPC_FREE','LINE_SIGNAL',returnJson)
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {e}')
 

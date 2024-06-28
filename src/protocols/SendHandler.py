@@ -10,7 +10,7 @@ class SendHandler():
     socketList = []
     socketBody = []
     sokcetBz   = []
-    sokcetIn   =[]
+    sokcetIn   = []
 
     def __init__(self,sokcetList,socketBody,sokcetBz,sokcetIn):
         self.socketList = sokcetList
@@ -24,10 +24,10 @@ class SendHandler():
             for i, sk in enumerate(self.socketList):
                 if sk['SK_ID'] == skId:
                     if sk['SK_CLIENT_TYPE'] == 'EVENT':
-                        logger.info(f' 준비중')
-                        # eventThread = ClientEventThread(sk)
-                        # eventThread.daemon = True
-                        # eventThread.start()
+                        skThread = sk['SK_THREAD']
+                        logger.info(f'event 스레드 : {skThread}')
+                        returnBytes = skThread.codec.encodeSendData(data)
+                        # skThread.sendToAllChannels(returnBytes)
                     else:
                         # logger.info(f'sendSkId SK_DI : {sk}')
                         skThread = sk['SK_THREAD']

@@ -130,6 +130,8 @@ class InitClass():
                     elif (skConTy == 'CLIENT'):
                         if skClientTy == 'KEEP':
                             threadInfo = ClientThread(item)
+                        elif skClientTy == 'EVENT':
+                            threadInfo = ClientEventThread(item)
                 else:
                     logger.info('None Condition')
                     continue
