@@ -9,14 +9,11 @@ from src.protocols.tcp.ClientEventThread import ClientEventThread
 program_path = sys.argv[0]
 import logging
 program_directory = os.path.dirname(program_path)
-
 from PySide6 import QtWidgets
 from PySide6.QtUiTools import QUiLoader
-
 from src.component.settings.Settings import Settings
-from conf.logconfig import logger
-from src.utils.SystemMonitor import SystemMonitor
 from conf.InitData_n import *
+from src.protocols.udp.ServerUdpThread import ServerUdpThread
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -133,8 +130,13 @@ class InitClass():
                             threadInfo = ClientThread(item)
                         elif skClientTy == 'EVENT':
                             threadInfo = ClientEventThread(item)
+
+                elif (skTy == 'UDP'):
+                    if (skConTy == 'SERVER'):
+                        threadInfo = ServerUdpThread(item)
+
                 else:
-                    logger.info('None Condition')
+                    logger.info(f'None condition')
                     continue
 
                 item['SK_THREAD'] = threadInfo
@@ -148,6 +150,7 @@ class InitClass():
             # sysThread.daemon = True
             # sysThread.start()
         except Exception as e:
+            traceback.print_exc()
             logger.info(f'Init.start_sk() Exception :: {traceback.format_exc()}')
             # traceback.print_exc()
 

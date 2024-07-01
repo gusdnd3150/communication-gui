@@ -23,7 +23,8 @@ class TestController():
         try:
             skLogger.info(f'[RECIVE TOTAL_BYTES] : {str(reciveObj["TOTAL_BYTES"])}')
             skLogger.info(f'[RECIVE OBJ] : {reciveObj}')
-            Channel.sendall(reciveObj['TOTAL_BYTES'])
+            # Channel.sendall(reciveObj['TOTAL_BYTES'])
+            # Channel.sendoTo(reciveObj['TOTAL_BYTES'])
             returnJson['LINE_CD'] = 'CS01'
             returnJson['LINE_SIGN'] = '2'
             self.sendHandler.sendSkId('TPC_FREE','LINE_SIGNAL',returnJson)

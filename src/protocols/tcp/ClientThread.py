@@ -5,8 +5,8 @@ import threading
 import time
 import traceback
 import socket
-from src.protocols.tcp.msg.FreeCodec import FreeCodec
-from src.protocols.tcp.msg.LengthCodec import LengthCodec
+from src.protocols.msg.FreeCodec import FreeCodec
+from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.BzActivator import BzActivator
 from conf.InitData_n import systemGlobals
 

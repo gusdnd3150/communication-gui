@@ -2,11 +2,10 @@
 
 from conf.logconfig import *
 import threading
-import time
 import traceback
 import socket
-from src.protocols.tcp.msg.FreeCodec import FreeCodec
-from src.protocols.tcp.msg.LengthCodec import LengthCodec
+from src.protocols.msg.FreeCodec import FreeCodec
+from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.BzActivator import BzActivator
 from conf.InitData_n import systemGlobals
 
@@ -128,7 +127,7 @@ class ClientEventThread():
             sockets.connect((self.skIp, int(self.skPort)))
             self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
 
-            self.conCnt = self.conCnt +self.conCnt
+            self.conCnt = self.conCnt + 1
             sockets.sendall(self.sendData)
             isRun = True
 
@@ -219,10 +218,11 @@ class ClientEventThread():
 
 
         except Exception as e:
+            isRun = False
             self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
 
         finally:
-            self.conCnt = self.conCnt - self.conCnt
+            self.conCnt = self.conCnt - 1
             isRun = False
             systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))
             buffer.clear()

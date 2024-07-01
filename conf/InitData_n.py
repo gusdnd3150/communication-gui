@@ -105,9 +105,9 @@ def queryExecute(queryString):
 def initPkgData(pkgId):
     logger.info(f'-----------RUN PKG_ID = {pkgId}---------------')
     # 가비지 컬렉션 강제 실행 (선택 사항)
-    gc.collect()
-    for idex, item in enumerate(systemGlobals['sokcetList']):
-        del item
+    # gc.collect()
+    # for idex, item in enumerate(systemGlobals['sokcetList']):
+    #     del item
 
     systemGlobals['sokcetList'] = None
     sokcetList = getsokcetList(pkgId)

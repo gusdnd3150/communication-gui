@@ -3,8 +3,8 @@ from conf.logconfig import *
 import threading
 
 import socket
-from src.protocols.tcp.msg.FreeCodec import FreeCodec
-from src.protocols.tcp.msg.LengthCodec import LengthCodec
+from src.protocols.msg.FreeCodec import FreeCodec
+from src.protocols.msg.LengthCodec import LengthCodec
 from conf.InitData_n import systemGlobals
 
 from src.protocols.sch.BzSchedule import BzSchedule
