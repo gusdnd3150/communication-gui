@@ -21,12 +21,9 @@ class TestController():
         Channel = reciveObj['CHANNEL']
         returnJson = {}
         try:
-
             skLogger.info(f'[RECIVE TOTAL_BYTES] : {str(reciveObj["TOTAL_BYTES"])}')
             skLogger.info(f'[RECIVE OBJ] : {reciveObj}')
-
             Channel.sendall(reciveObj['TOTAL_BYTES'])
-
             returnJson['LINE_CD'] = 'CS01'
             returnJson['LINE_SIGN'] = '2'
             self.sendHandler.sendSkId('TPC_FREE','LINE_SIGNAL',returnJson)
@@ -44,18 +41,9 @@ class TestController():
 
     def idle(self, reciveObj):
         returnJson = {}
-        logger.info(f'TestController.idle() IN_DATA : {reciveObj}')
-
         try:
             Channel = reciveObj['CHANNEL']
-            Channel.sendall('idle'.encode('utf-8'))
-            returnJson['LINE_CD'] = 'CS01'
-            returnJson['LINE_SIGN'] = '2'
-            #
-
-            self.sendHandler.sendSkId('SERVER1','LINE_SIGNAL',returnJson)
             Channel.close()
-            # self.sendHandler.sendSkId('TCPC_TEST', 'LINE_SIGNAL', returnJson)
         except Exception as e:
             logger.error(f'TestController.idle() Exception :: {e}')
 

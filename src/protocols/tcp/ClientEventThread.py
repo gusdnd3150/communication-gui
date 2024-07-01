@@ -80,8 +80,8 @@ class ClientEventThread():
 
     def reSendData(self):
         try:
-            logger.info(f'ssssssssssss')
-            clientThread = threading.Thread(self.initClient(),args=())
+            stop_event = threading.Event()
+            clientThread = threading.Thread(self.initClient(self),args=(stop_event,))
             clientThread.daemon = True
             clientThread.start()
             #
@@ -118,7 +118,7 @@ class ClientEventThread():
             systemGlobals['mainInstance'].deleteTableRow(self.skId, 'list_run_client')
 
 
-    def initClient(self):
+    def initClient(self,stop_event):
         isRun = False
         buffer = bytearray()
         sockets = None
@@ -209,10 +209,12 @@ class ClientEventThread():
                         bz.start()
                     continue
                 except Exception as e:
+                    isRun = False
                     traceback.print_exc()
                     break
 
         except ConnectionRefusedError as e:
+            isRun = False
             self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
 
 
@@ -224,6 +226,7 @@ class ClientEventThread():
             isRun = False
             systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))
             buffer.clear()
+            stop_event.set()
             if sockets:
                 sockets.close()
                 sockets = None
@@ -232,14 +235,3 @@ class ClientEventThread():
                 self.bzSch.stop()
                 self.bzSch = None
 
-
-    def sendToAllChannels(self, msgBytes):
-        try:
-            logger.info(f'sss')
-            # if sockets is not None:
-            #     sockets.sendall(msgBytes)
-            # else:
-            #     self.logger.info(f'SK_ID:{self.skId}- can"t send  sendToAllChannels  SERVER is None')
-
-        except Exception as e:
-            self.logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
