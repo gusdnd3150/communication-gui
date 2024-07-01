@@ -17,14 +17,12 @@ skConnCombo = ['SERVER','CLIENT']
 skClientCombo = ['KEEP','EVENT']
 hdCombo = ['LENGTH_STR_8B','LENGTH_STR_20B','LENGTH_20B','FREE','JSON']
 
-
 sokcetList = []
 socketHd = []
 socketHdDt = []
 socketBody = []
 socketBodyDt = []
 socketVal = []
-# sokcetBz = getsokcetBz()
 sokcetBz = []
 sokcetIn = []
 sokcetInToOut = []
@@ -104,23 +102,19 @@ def queryExecute(queryString):
 
 def initPkgData(pkgId):
     logger.info(f'-----------RUN PKG_ID = {pkgId}---------------')
-    # 가비지 컬렉션 강제 실행 (선택 사항)
-    # gc.collect()
-    # for idex, item in enumerate(systemGlobals['sokcetList']):
-    #     del item
-
     systemGlobals['sokcetList'] = None
-    sokcetList = getsokcetList(pkgId)
-    # sokcetBz = getsokcetBz()
+    # systemGlobals['TestController'] = None
     systemGlobals['sokcetIn'] = None
+
+    sokcetList = getsokcetList(pkgId)
     sokcetIn = getsokcetIn(pkgId)
     sokcetSch = getsokcetSch()
     socketBody = getsocketBody()
 
-    logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
-    handler = SendHandler(sokcetList, socketBody, sokcetBz, sokcetIn)
-    systemGlobals['TestController'] = TestController(handler)
-    logger.info(f'------------------- ------------------')
+    # logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
+    # handler = SendHandler(sokcetList, socketBody, sokcetBz, sokcetIn)
+    # systemGlobals['TestController'] = TestController(handler)
+    # logger.info(f'------------------- ------------------')
 
     logger.info(f'sokcetList size : {len(sokcetList)}')
     logger.info(f'sokcetSch size : {len(sokcetSch)}')
@@ -140,3 +134,7 @@ def initPkgData(pkgId):
 
 
 
+logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
+handler = SendHandler(sokcetList, socketBody, sokcetBz, sokcetIn)
+systemGlobals['TestController'] = TestController(handler)
+logger.info(f'------------------- ------------------')

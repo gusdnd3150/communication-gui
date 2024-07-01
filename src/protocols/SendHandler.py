@@ -23,7 +23,6 @@ class SendHandler():
             data['MSG_ID'] = msgId
             for i, sk in enumerate(self.socketList):
                 if sk['SK_ID'] == skId:
-                    logger.info(f'ddddddddddddd')
                     if sk['SK_CLIENT_TYPE'] == 'EVENT':
                         skThread = sk['SK_THREAD']
                         skThread.setSendData(data)
