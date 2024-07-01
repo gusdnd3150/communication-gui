@@ -12,7 +12,7 @@ from conf.InitData_n import systemGlobals
 
 from src.protocols.sch.BzSchedule import BzSchedule
 
-class ClientEventThread(threading.Thread):
+class ClientEventThread():
 
     initData = None
     skId = ''
@@ -31,6 +31,7 @@ class ClientEventThread(threading.Thread):
     bzIdleRead = None
     bzSch = None
     logger = None
+    conCnt = 0
     sendData = bytearray
 
     def __init__(self, data):
@@ -72,18 +73,22 @@ class ClientEventThread(threading.Thread):
                     self.bzIdleRead = bz
                 elif bz.get('BZ_TYPE') == 'INACTIVE':
                     self.bzInActive = bz
-        # super().__init__()
-        super(ClientEventThread, self).__init__()
-        self._stop_event = threading.Event()
+
+        systemGlobals['mainInstance'].addClientRow(self.initData)
 
 
 
     def reSendData(self):
         try:
-            if self.socket is not None:
-                self.socket.sendall(self.sendData)
-            else:
-                self.initClient()
+            logger.info(f'ssssssssssss')
+            clientThread = threading.Thread(self.initClient(),args=())
+            clientThread.daemon = True
+            clientThread.start()
+            #
+            # if sockets is not None:
+            #     sockets.sendall(self.sendData)
+            # else:
+            #     self.initClient()
         except Exception as e:
             self.logger.info(f'ClientEventThread reSendData exception : {traceback.format_exc()}')
 
@@ -94,18 +99,11 @@ class ClientEventThread(threading.Thread):
             self.logger.info(f'ClientEventThread setSendData exception : {traceback.format_exc()}')
 
 
-    def __del__(self):
-        logger.info('deleted')
 
-    def run(self):
-        systemGlobals['mainInstance'].addClientRow(self.initData)
 
 
     def stop(self):
         try:
-            if self.socket:
-                self.socket.close()
-
             logger = logging.getLogger(self.skId)
             # 모든 핸들러 제거
             handlers = logger.handlers[:]
@@ -117,31 +115,33 @@ class ClientEventThread(threading.Thread):
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
         finally:
-            self.isRun = False
-            self.isShutdown = True
             self._stop_event.set()
             systemGlobals['mainInstance'].deleteTableRow(self.skId, 'list_run_client')
 
 
     def initClient(self):
-        systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '0')
+        isRun = False
         buffer = bytearray()
+        sockets = None
         try:
             # 서버에 연결합니다.
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.connect((self.skIp, int(self.skPort)))
+            sockets = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sockets.connect((self.skIp, int(self.skPort)))
             self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
-            self.socket.sendall(self.sendData)
 
-            if self.socket is not None:
-                systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '1')
+            self.conCnt = self.conCnt +self.conCnt
+            sockets.sendall(self.sendData)
+            isRun = True
+
+            if sockets is not None:
+                systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))
 
 
             #2. 여기에 active 이벤트 처리
             if self.bzActive is not None:
                 self.logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
                 self.bzActive['SK_ID'] = self.skId
-                self.bzActive['CHANNEL'] = self.socket
+                self.bzActive['CHANNEL'] = sockets
                 self.bzActive['LOGGER'] = self.logger
                 bz = BzActivator(self.bzActive)
                 bz.daemon = True
@@ -150,7 +150,7 @@ class ClientEventThread(threading.Thread):
                 # KEEP 처리
             if self.bzKeep is not None:
                 self.bzKeep['SK_ID'] = self.skId
-                self.bzKeep['CHANNEL'] = self.socket
+                self.bzKeep['CHANNEL'] = sockets
                 self.bzKeep['LOGGER'] = self.logger
                 self.bzSch = BzSchedule(self.bzKeep)
                 self.bzSch.daemon = True
@@ -159,12 +159,11 @@ class ClientEventThread(threading.Thread):
 
             # 1. IDLE 타임아웃 설정 (예: 5초)
             if self.bzIdleRead is not None:
-                self.socket.settimeout(self.bzIdleRead.get('SEC'))
+                sockets.settimeout(self.bzIdleRead.get('SEC'))
 
-            self.isRun = True
-            while self.isRun:
+            while isRun:
                 try:
-                    reciveBytes = self.socket.recv(self.initData.get('MAX_LENGTH'))
+                    reciveBytes = sockets.recv(self.initData.get('MAX_LENGTH'))
                     if not reciveBytes:
                         break
                     buffer.extend(reciveBytes)
@@ -172,7 +171,7 @@ class ClientEventThread(threading.Thread):
                     if (self.initData['MIN_LENGTH'] > len(buffer)):
                         continue
 
-                    while self.isRun:
+                    while isRun:
                         readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
                         if readBytesCnt == 0:
                             break
@@ -188,7 +187,7 @@ class ClientEventThread(threading.Thread):
 
                             data = self.codec.decodeRecieData(readByte)
                             data['TOTAL_BYTES'] = readByte.copy()
-                            data['CHANNEL'] = self.socket
+                            data['CHANNEL'] = sockets
                             data['SK_ID'] = self.skId
                             data['LOGGER'] = self.logger
                             bz = BzActivator(data)
@@ -204,7 +203,7 @@ class ClientEventThread(threading.Thread):
                     self.logger.error(f'SK_ID:{self.skId} - IDLE READ exception')
                     if self.bzIdleRead is not None:
                         self.bzIdleRead['SK_ID'] = self.skId
-                        self.bzIdleRead['CHANNEL'] = self.socket
+                        self.bzIdleRead['CHANNEL'] = sockets
                         self.bzIdleRead['LOGGER'] = self.logger
                         bz = BzActivator(self.bzIdleRead)
                         bz.daemon = True
@@ -212,22 +211,23 @@ class ClientEventThread(threading.Thread):
                     continue
                 except Exception as e:
                     traceback.print_exc()
-                    self.isRun = False
                     break
 
         except ConnectionRefusedError as e:
             self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
-            self.isRun = False
+
 
         except Exception as e:
-            self.isRun = False
             self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
 
         finally:
+            self.conCnt = self.conCnt - self.conCnt
+            isRun = False
+            systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))
             buffer.clear()
-            if self.socket:
-                self.socket.close()
-                self.socket = None
+            if sockets:
+                sockets.close()
+                sockets = None
 
             if self.bzSch is not None:
                 self.bzSch.stop()
@@ -236,10 +236,11 @@ class ClientEventThread(threading.Thread):
 
     def sendToAllChannels(self, msgBytes):
         try:
-            if self.socket is not None:
-                self.socket.sendall(msgBytes)
-            else:
-                self.logger.info(f'SK_ID:{self.skId}- can"t send  sendToAllChannels  SERVER is None')
+            logger.info(f'sss')
+            # if sockets is not None:
+            #     sockets.sendall(msgBytes)
+            # else:
+            #     self.logger.info(f'SK_ID:{self.skId}- can"t send  sendToAllChannels  SERVER is None')
 
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
