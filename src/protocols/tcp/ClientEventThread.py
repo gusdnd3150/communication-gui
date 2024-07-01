@@ -76,17 +76,44 @@ class ClientEventThread(threading.Thread):
         super(ClientEventThread, self).__init__()
         self._stop_event = threading.Event()
 
+
+
+    def reSendData(self):
+        try:
+            if self.socket is not None:
+                self.socket.sendall(self.sendData)
+            else:
+                self.initClient()
+        except Exception as e:
+            self.logger.info(f'ClientEventThread reSendData exception : {traceback.format_exc()}')
+
+    def setSendData(self, msgBytes):
+        try:
+            self.sendData = self.codec.encodeSendData(msgBytes)
+        except Exception as e:
+            self.logger.info(f'ClientEventThread setSendData exception : {traceback.format_exc()}')
+
+
     def __del__(self):
         logger.info('deleted')
 
     def run(self):
         systemGlobals['mainInstance'].addClientRow(self.initData)
-        self.initClient()
+
 
     def stop(self):
         try:
             if self.socket:
                 self.socket.close()
+
+            logger = logging.getLogger(self.skId)
+            # 모든 핸들러 제거
+            handlers = logger.handlers[:]
+            for handler in handlers:
+                handler.close()
+                logger.removeHandler(handler)
+            # 로거 제거
+            logging.getLogger(self.skId).handlers = []
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
         finally:
@@ -104,6 +131,7 @@ class ClientEventThread(threading.Thread):
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.connect((self.skIp, int(self.skPort)))
             self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
+            self.socket.sendall(self.sendData)
 
             if self.socket is not None:
                 systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '1')
@@ -204,10 +232,6 @@ class ClientEventThread(threading.Thread):
             if self.bzSch is not None:
                 self.bzSch.stop()
                 self.bzSch = None
-
-            if self.isRun == False and self.isShutdown == False:
-                time.sleep(5)  # 5초 대기 후 재시도
-                self.initClient()
 
 
     def sendToAllChannels(self, msgBytes):

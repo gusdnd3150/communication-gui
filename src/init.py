@@ -137,11 +137,13 @@ class InitClass():
                     continue
 
                 item['SK_THREAD'] = threadInfo
+                threadInfo.daemon = True
+                threadInfo.start()
 
                 # KEEP일때만 실행 EVENT 방식일땐 상황에 맞춰 실행
-                if skClientTy == 'KEEP':
-                    threadInfo.daemon = True
-                    threadInfo.start()
+                # if skClientTy == 'KEEP':
+                #     threadInfo.daemon = True
+                #     threadInfo.start()
 
             # sysThread = SystemMonitor(self.mainLayOut)
             # sysThread.daemon = True

@@ -25,10 +25,8 @@ class SendHandler():
                 if sk['SK_ID'] == skId:
                     if sk['SK_CLIENT_TYPE'] == 'EVENT':
                         skThread = sk['SK_THREAD']
-                        logger.info(f'event 스레드 : {skThread}')
-                        skThread.sendData = skThread.codec.encodeSendData(data)
-                        logger.info(f'event 스레드 : {skThread.sendData}')
-                        # skThread.sendToAllChannels(returnBytes)
+                        skThread.setSendData(data)
+                        skThread.reSendData()
                     else:
                         # logger.info(f'sendSkId SK_DI : {sk}')
                         skThread = sk['SK_THREAD']
