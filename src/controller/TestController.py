@@ -1,6 +1,6 @@
 
 from conf.logconfig import logger
-# from src.protocols.SendHandler import SendHandler
+from src.protocols.SendHandler import SendHandler
 
 
 from conf.InitData_n import *
@@ -12,8 +12,8 @@ class TestController():
     # 1. logger 는 전역 로그, reciveObj['LOGGER'] 는 해당 소켓의 로그를 출력한다
     # 2. 각 reciveObj에는 ['CHANNEL'] 이 포함되어있다
 
-    def __init__(self, sendHandler):
-        self.sendHandler = sendHandler
+    def __init__(self):
+        # self.sendHandler = sendHandler
         logger.info('init testcontroller')
 
     def recive(self, reciveObj):
@@ -27,7 +27,8 @@ class TestController():
             # Channel.sendoTo(reciveObj['TOTAL_BYTES'])
             returnJson['LINE_CD'] = 'CS01'
             returnJson['LINE_SIGN'] = '2'
-            self.sendHandler.sendSkId('TPC_FREE','LINE_SIGNAL',returnJson)
+            SendHandler.sendSkId(self, 'TCPS_SERVER2','LINE_SIGNAL',returnJson)
+
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {e}')
 
@@ -60,7 +61,7 @@ class TestController():
             returnJson['LINE_CD'] = '1'
             returnJson['LINE_SIGN'] = '2'
 
-            self.sendHandler.sendSkId('SERVER1','LINE_SIGNAL',returnJson)
-            self.sendHandler.sendSkId('TCPC_TEST', 'LINE_SIGNAL', returnJson)
+            SendHandler.sendSkId('SERVER1','LINE_SIGNAL',returnJson)
+            SendHandler.sendSkId('TCPC_TEST', 'LINE_SIGNAL', returnJson)
         except Exception as e:
             logger.error(f'TestController.test() Exception :: {e}')

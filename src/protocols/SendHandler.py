@@ -3,7 +3,7 @@ import traceback
 from conf.logconfig import logger
 
 # from src.protocols.tcp.ClientEventThread import ClientEventThread
-
+import conf.InitData_n as initData
 
 class SendHandler():
 
@@ -21,7 +21,7 @@ class SendHandler():
     def sendSkId(self, skId, msgId, data):
         try:
             data['MSG_ID'] = msgId
-            for i, sk in enumerate(self.socketList):
+            for i, sk in enumerate(initData.sokcetList):
                 if sk['SK_ID'] == skId:
                     if sk['SK_CLIENT_TYPE'] == 'EVENT':
                         skThread = sk['SK_THREAD']
@@ -47,7 +47,7 @@ class SendHandler():
     def sendChannelMsg(self, channel, msgId, data):
         try:
             data['MSG_ID'] = msgId
-            for i, sk in enumerate(self.socketList):
+            for i, sk in enumerate(initData.sokcetList):
                 if sk['SK_ID'] == data['SK_ID']:
                     # logger.info(f'sendSkId SK_DI : {sk}')
                     skThread = sk['SK_THREAD']
