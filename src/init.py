@@ -86,8 +86,9 @@ class InitClass():
             for i, item in enumerate(systemGlobals['sokcetList']):
                 runThread = item['SK_THREAD']
                 runThread.stop()
-                runThread.join()
-                self.removeLogger(item['SK_ID'])
+                if item['SK_CLIENT_TYPE'] != 'EVENT':
+                    runThread.join()
+
                 item['SK_THREAD'] = None
 
 

@@ -115,7 +115,6 @@ class ClientEventThread():
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
         finally:
-            self._stop_event.set()
             systemGlobals['mainInstance'].deleteTableRow(self.skId, 'list_run_client')
 
 

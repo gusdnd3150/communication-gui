@@ -84,8 +84,19 @@ class ClientThread(threading.Thread):
 
     def stop(self):
         try:
+            logger = logging.getLogger(self.skId)
+            # 모든 핸들러 제거
+            handlers = logger.handlers[:]
+            for handler in handlers:
+                handler.close()
+                logger.removeHandler(handler)
+            # 로거 제거
+            logging.getLogger(self.skId).handlers = []
+
             if self.socket:
                 self.socket.close()
+
+
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
         finally:
