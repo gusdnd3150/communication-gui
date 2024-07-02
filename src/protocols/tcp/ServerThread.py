@@ -259,6 +259,20 @@ class ServerThread(threading.Thread):
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
+    def sendToTargetChannel(self, channel, bytes):
+        try:
+            if len(self.client_list) == 0:
+                self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
+                return
+            for skId, client in self.client_list:
+                if skId == self.skId:
+                    client.sendall(bytes)
+                    if self.skLogYn:
+                        decimal_string = ' '.join(str(byte) for byte in bytes)
+                        self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} decimal_string : [{decimal_string}]')
+
+        except Exception as e:
+            self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
     def countChannelBySkId(self,skId):
         count = 0
         for skid, socket in self.client_list:

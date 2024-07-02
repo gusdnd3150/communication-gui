@@ -114,7 +114,6 @@ class ServerUdpThread(threading.Thread):
             while self.isRun:
                 message, address = self.socket.recvfrom(self.initData.get('MAX_LENGTH'))
                 # self.client_handler(message, address)
-                self.logger.info(f' ddddddddd : {bytearray(message)}')
                 t = threading.Thread(target=self.client_handler, args=(bytearray(message), address))
                 t.start()
         except Exception as e:
@@ -123,33 +122,31 @@ class ServerUdpThread(threading.Thread):
 
 
     def client_handler(self,message,  address):
-        self.logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
+        try:
+            self.logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
 
-        # ACTIVE 이벤트처리
-        if self.bzActive is not None:
-            self.logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
-            self.bzActive['SK_ID'] = self.skId
-            self.bzActive['CHANNEL'] = self.socket
-            self.bzActive['LOGGER'] = self.logger
-            bz = BzActivator(self.bzActive)
+            if self.skLogYn:
+                decimal_string = ' '.join(str(byte) for byte in message)
+                self.logger.info(f'SK_ID:{self.skId} read length : {len(message)} decimal_string : [{decimal_string}]')
+
+            self.connCnt = self.connCnt + 1
+            systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', str(self.connCnt))
+
+            copyButes = message.copy()
+            data = self.codec.decodeRecieData(message)
+            data['TOTAL_BYTES'] = copyButes
+            data['CHANNEL'] = self.socket
+            data['SK_ID'] = self.skId
+            data['LOGGER'] = self.logger
+            bz = BzActivator(data)
             bz.daemon = True
             bz.start()
+            self.connCnt = self.connCnt - 1
+            systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', '0')
+        except Exception as e:
+            self.connCnt = self.connCnt - 1
+            systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', '0')
+            self.logger.info(f'UDP client_handler exception :  {traceback.format_exc()}')
 
-        if self.skLogYn:
-            decimal_string = ' '.join(str(byte) for byte in message)
-            self.logger.info(f'SK_ID:{self.skId} read length : {len(message)} decimal_string : [{decimal_string}]')
 
-        self.connCnt = self.connCnt +1
-        systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', str(self.connCnt))
 
-        copyButes = message.copy()
-        data = self.codec.decodeRecieData(message)
-        data['TOTAL_BYTES'] = copyButes
-        data['CHANNEL'] = self.socket
-        data['SK_ID'] = self.skId
-        data['LOGGER'] = self.logger
-        bz = BzActivator(data)
-        bz.daemon = True
-        bz.start()
-        self.connCnt = self.connCnt - 1
-        systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', '0')

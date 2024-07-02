@@ -109,20 +109,21 @@ class ClientThread(threading.Thread):
     def initClient(self):
         systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '0')
         buffer = bytearray()
+        connInfo = {}
+        connInfo['SK_ID'] = self.skId
+        connInfo['CONN_INFO'] = f"('{self.skIp}', {self.skPort})"
+
         try:
             # 서버에 연결합니다.
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.connect((self.skIp, int(self.skPort)))
             self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
 
-            connInfo = {}
-            connInfo['SK_ID'] = self.skId
-            connInfo['CONN_INFO'] = f"('{self.skIp}', {self.skPort})"
-            systemGlobals['mainInstance'].addConnRow(connInfo)
 
 
             if self.socket is not None:
                 systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '1')
+                systemGlobals['mainInstance'].addConnRow(connInfo)
 
 
             #2. 여기에 active 이벤트 처리
@@ -213,11 +214,11 @@ class ClientThread(threading.Thread):
 
         finally:
             buffer.clear()
-            systemGlobals['mainInstance'].deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
             systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '0')
             if self.socket:
                 self.socket.close()
                 self.socket = None
+                systemGlobals['mainInstance'].deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
 
             if self.bzSch is not None:
                 self.bzSch.stop()
