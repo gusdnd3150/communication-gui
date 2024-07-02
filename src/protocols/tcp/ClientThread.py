@@ -119,8 +119,6 @@ class ClientThread(threading.Thread):
             self.socket.connect((self.skIp, int(self.skPort)))
             self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
 
-
-
             if self.socket is not None:
                 systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '1')
                 systemGlobals['mainInstance'].addConnRow(connInfo)
@@ -215,10 +213,10 @@ class ClientThread(threading.Thread):
         finally:
             buffer.clear()
             systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '0')
+            systemGlobals['mainInstance'].deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
             if self.socket:
                 self.socket.close()
                 self.socket = None
-                systemGlobals['mainInstance'].deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
 
             if self.bzSch is not None:
                 self.bzSch.stop()
