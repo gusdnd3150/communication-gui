@@ -114,7 +114,6 @@ class ServerThread(threading.Thread):
 
             # 서버 테이블 인설트
             systemGlobals['mainInstance'].addServerRow(self.initData)
-
             while self.isRun:
                 # accept connections from outside
                 (clientsocket, address) = self.socket.accept()
@@ -130,6 +129,10 @@ class ServerThread(threading.Thread):
         client_info = (self.skId, clientsocket)
         self.logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
 
+        connInfo = {}
+        connInfo['SK_ID'] = self.skId
+        connInfo['CONN_INFO'] = address
+        systemGlobals['mainInstance'].addConnRow(connInfo)
 
         # ACTIVE 이벤트처리
         if self.bzActive is not None:
@@ -237,6 +240,7 @@ class ServerThread(threading.Thread):
         self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
 
         systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
+        systemGlobals['mainInstance'].deleteTableRow(str(address),'list_conn')
         clientsocket.close()
 
 

@@ -52,7 +52,6 @@ class InitClass():
         self.qLoader = QUiLoader()
         app = QtWidgets.QApplication(sys.argv)
 
-
         #메인창
         self.mainLayOut = self.qLoader.load(resource_path('main.ui'), None)
         self.mainLayOut.setWindowTitle('application')
@@ -68,6 +67,7 @@ class InitClass():
         # 설정팝업
         self.popup = Settings(self.initData)
         self.setGrid()
+
         self.setInitData()
         app.exec()
 
@@ -196,8 +196,20 @@ class InitClass():
             ]
         )
 
+        # self.mainLayOut.list_conn.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.mainLayOut.list_conn.verticalHeader().setVisible(False)
+        self.mainLayOut.list_conn.setRowCount(0)  # Table의 행을 설정, list의 길이
+        self.mainLayOut.list_conn.setColumnCount(2)
+        self.mainLayOut.list_conn.setHorizontalHeaderLabels(
+            [
+                'SK_ID',
+                'CONN_INFO',
+            ]
+        )
+        header = self.mainLayOut.list_conn.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.Stretch)
 
-        # list_table =
+
 
     def setInitData(self):
         logger.info('load Init Data')
@@ -220,6 +232,21 @@ class InitClass():
             self.mainLayOut.list_run_server.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_PORT'])))
             self.mainLayOut.list_run_server.setItem(row_count, 8, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
             self.mainLayOut.list_run_server.setItem(row_count, 9, QTableWidgetItem(str(initData['MAX_LENGTH'])))
+
+
+        except Exception as e:
+            logger.info(f'addTableRow exception : {e}')
+
+
+    def addConnRow(self, initData):
+        try:
+            # logger.info(f'addTableRow / initData: {initData}')
+            row_count = self.mainLayOut.list_conn.rowCount()
+            self.mainLayOut.list_conn.insertRow(row_count)
+            # 예제 데이터를 추가
+            self.mainLayOut.list_conn.setItem(row_count, 0, QTableWidgetItem(initData['SK_ID']))
+            self.mainLayOut.list_conn.setItem(row_count, 1, QTableWidgetItem(str(initData['CONN_INFO'])))
+
 
 
         except Exception as e:
@@ -280,10 +307,14 @@ class InitClass():
                 items = self.mainLayOut.list_run_client.findItems(skId, Qt.MatchExactly)
                 for item in items:
                     self.mainLayOut.list_run_client.removeRow(item.row())
-            else:
+            elif target == 'list_run_server':
                 items = self.mainLayOut.list_run_server.findItems(skId, Qt.MatchExactly)
                 for item in items:
                     self.mainLayOut.list_run_server.removeRow(item.row())
+            elif target == 'list_conn':
+                items = self.mainLayOut.list_conn.findItems(skId, Qt.MatchExactly)
+                for item in items:
+                    self.mainLayOut.list_conn.removeRow(item.row())
 
 
         except Exception as e:
