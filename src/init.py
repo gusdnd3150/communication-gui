@@ -2,6 +2,7 @@ import sys
 import traceback
 import os
 from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QHeaderView
+from PySide6.QtGui import QColor
 from PySide6.QtCore import Qt
 from src.protocols.tcp.ServerThread import ServerThread
 from src.protocols.tcp.ClientThread import ClientThread
@@ -228,7 +229,11 @@ class InitClass():
             self.mainLayOut.list_run_server.setItem(row_count, 3, QTableWidgetItem(initData['SK_TYPE']))
             self.mainLayOut.list_run_server.setItem(row_count, 4, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
             self.mainLayOut.list_run_server.setItem(row_count, 5, QTableWidgetItem(initData['HD_ID']))
-            self.mainLayOut.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
+            # self.mainLayOut.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
+            item_sk_group = QTableWidgetItem(str(initData['SK_IP']))
+            item_sk_group.setForeground(QColor('#d87a7a'))
+            self.mainLayOut.list_run_server.setItem(row_count, 6, item_sk_group)
+
             self.mainLayOut.list_run_server.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_PORT'])))
             self.mainLayOut.list_run_server.setItem(row_count, 8, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
             self.mainLayOut.list_run_server.setItem(row_count, 9, QTableWidgetItem(str(initData['MAX_LENGTH'])))
@@ -264,7 +269,11 @@ class InitClass():
             self.mainLayOut.list_run_client.setItem(row_count, 3, QTableWidgetItem(initData['SK_TYPE']))
             self.mainLayOut.list_run_client.setItem(row_count, 4, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
             self.mainLayOut.list_run_client.setItem(row_count, 5, QTableWidgetItem(initData['HD_ID']))
-            self.mainLayOut.list_run_client.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
+            # self.mainLayOut.list_run_client.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
+            # self.mainLayOut.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
+            item_sk_group = QTableWidgetItem(str(initData['SK_IP']))
+            item_sk_group.setForeground(QColor('#d87a7a'))
+            self.mainLayOut.list_run_client.setItem(row_count, 6, item_sk_group)
             self.mainLayOut.list_run_client.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_PORT'])))
             self.mainLayOut.list_run_client.setItem(row_count, 8, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
             self.mainLayOut.list_run_client.setItem(row_count, 9, QTableWidgetItem(str(initData['MAX_LENGTH'])))
