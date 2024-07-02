@@ -7,16 +7,8 @@ import conf.InitData_n as initData
 
 class SendHandler():
 
-    socketList = []
-    socketBody = []
-    sokcetBz   = []
-    sokcetIn   = []
-
-    def __init__(self,sokcetList,socketBody,sokcetBz,sokcetIn):
-        self.socketList = sokcetList
-        self.socketBody = socketBody
-        self.sokcetBz = sokcetBz
-        self.sokcetIn = sokcetIn
+    def __init__(self):
+        logger.info(f'SendHandler init')
 
     def sendSkId(self, skId, msgId, data):
         try:
@@ -49,7 +41,6 @@ class SendHandler():
             data['MSG_ID'] = msgId
             for i, sk in enumerate(initData.sokcetList):
                 if sk['SK_ID'] == data['SK_ID']:
-                    # logger.info(f'sendSkId SK_DI : {sk}')
                     skThread = sk['SK_THREAD']
                     returnBytes = skThread.codec.encodeSendData(data)
                     channel.sendall(returnBytes)

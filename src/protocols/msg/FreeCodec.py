@@ -1,7 +1,7 @@
 import io
 import traceback
 from conf.logconfig import logger
-from conf.InitData_n import systemGlobals
+import conf.InitData_n as moduleData
 from src.utils.Utilitys import *
 
 
@@ -66,7 +66,7 @@ class FreeCodec():
             del msgBytes[0:hd['DT_LEN']]
 
         # mid or length 로 소켓 IN 정보 검색
-        for index, inData in enumerate(systemGlobals['sokcetIn']):
+        for index, inData in enumerate(moduleData.sokcetIn):
             if self.skId == inData['IN_SK_ID']:
                 # {'PKG_ID': 'CORE', 'SK_IN_SEQ': 100, 'IN_SK_ID': 'SERVER2', 'IN_MSG_ID': 'IF_BODY',
                 #  'MSG_KEY_TYPE': 'STRING', 'MSG_KEY_VAL': 'MC05', 'BZ_METHOD': 'TestController.test', 'IN_DESC': None,
@@ -94,7 +94,7 @@ class FreeCodec():
                         break
 
         # 소켓 메시지 BODY 검색
-        for index, body in enumerate(systemGlobals['socketBody']):
+        for index, body in enumerate(moduleData.socketBody):
             if(body['MSG_ID'] == inMsgId):
                 bodyList = body[body['MSG_ID']]
                 break
@@ -129,7 +129,7 @@ class FreeCodec():
         headerBytes = bytearray()
 
         #  메시지 바디 검색
-        for index, body in enumerate(systemGlobals['socketBody']):
+        for index, body in enumerate(moduleData.socketBody):
             if (body['MSG_ID'] == msgObj['MSG_ID']):
                 # {'MSG_ID': 'LINE_SIGNAL', 'MSG_KEY_TYPE': 'STRING', 'MSG_KEY_VAL': 'LNSN', 'MSG_DB_LOG_YN': 'Y',
                 # 'MSG_DESC': 'VCC', 'MSG_KEY_VAL_DESC': '', 'MSG_KEY_LENGTH': 4, 'MAX_WORK_SEC': 5,

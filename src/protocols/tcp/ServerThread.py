@@ -243,7 +243,7 @@ class ServerThread(threading.Thread):
     def sendToAllChannels(self, bytes):
         try:
             if len(self.client_list) == 0:
-                self.logger.info(f'sendToAllChannels -{self.skIp} has no Clients')
+                self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
                 return
             for skId, client in self.client_list:
                 if skId == self.skId:

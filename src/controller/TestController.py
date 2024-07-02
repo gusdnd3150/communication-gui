@@ -3,17 +3,16 @@ from conf.logconfig import logger
 from src.protocols.SendHandler import SendHandler
 
 
-from conf.InitData_n import *
+import conf.InitData_n as initData
 
 class TestController():
 
-    sendHandler = None
     # guide
     # 1. logger 는 전역 로그, reciveObj['LOGGER'] 는 해당 소켓의 로그를 출력한다
     # 2. 각 reciveObj에는 ['CHANNEL'] 이 포함되어있다
+    # 3.
 
     def __init__(self):
-        # self.sendHandler = sendHandler
         logger.info('init testcontroller')
 
     def recive(self, reciveObj):
@@ -21,13 +20,14 @@ class TestController():
         Channel = reciveObj['CHANNEL']
         returnJson = {}
         try:
+
             skLogger.info(f'[RECIVE TOTAL_BYTES] : {str(reciveObj["TOTAL_BYTES"])}')
             skLogger.info(f'[RECIVE OBJ] : {reciveObj}')
             # Channel.sendall(reciveObj['TOTAL_BYTES'])
             # Channel.sendoTo(reciveObj['TOTAL_BYTES'])
-            returnJson['LINE_CD'] = 'CS01'
+            # returnJson['LINE_CD'] = 'TR01'
             returnJson['LINE_SIGN'] = '2'
-            SendHandler.sendSkId(self, 'TCPS_SERVER2','LINE_SIGNAL',returnJson)
+            SendHandler.sendSkId(self, 'TCPS_LENGTH','LINE_SIGNAL',returnJson)
 
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {e}')
@@ -37,7 +37,6 @@ class TestController():
         skLogger = reciveObj['LOGGER']
         try:
             skLogger.info(f'TestController.keep() IN_DATA : {reciveObj}')
-
         except Exception as e:
             skLogger.error(f'TestController.test() Exception :: {e}')
 

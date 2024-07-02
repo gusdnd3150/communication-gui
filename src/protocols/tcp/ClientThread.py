@@ -224,6 +224,9 @@ class ClientThread(threading.Thread):
         try:
             if self.socket is not None:
                 self.socket.sendall(msgBytes)
+                if self.skLogYn:
+                    decimal_string = ' '.join(str(byte) for byte in msgBytes)
+                    self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(msgBytes)} decimal_string : [{decimal_string}]')
             else:
                 self.logger.info(f'SK_ID:{self.skId}- can"t send  sendToAllChannels  SERVER is None')
 

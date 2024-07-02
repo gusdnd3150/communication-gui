@@ -135,6 +135,5 @@ def initPkgData(pkgId):
 
 
 logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
-# handler = SendHandler(sokcetList, socketBody, sokcetBz, sokcetIn)
 systemGlobals['TestController'] = TestController()
 logger.info(f'------------------- ------------------')
