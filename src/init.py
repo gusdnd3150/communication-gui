@@ -15,6 +15,8 @@ from PySide6.QtUiTools import QUiLoader
 from src.component.settings.Settings import Settings
 from conf.InitData_n import *
 from src.protocols.udp.ServerUdpThread import ServerUdpThread
+from src.protocols.udp.ClientUdpThread import ClientUdpThread
+
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -81,6 +83,7 @@ class InitClass():
         try:
             logger.info(f'Stop Run Sockets')
 
+
             for i, item in enumerate(systemGlobals['sokcetList']):
                 runThread = item['SK_THREAD']
                 runThread.stop()
@@ -134,6 +137,8 @@ class InitClass():
                 elif (skTy == 'UDP'):
                     if (skConTy == 'SERVER'):
                         threadInfo = ServerUdpThread(item)
+                    elif (skConTy == 'CLIENT'):
+                        threadInfo = ClientUdpThread(item)
 
                 else:
                     logger.info(f'None condition')

@@ -98,9 +98,6 @@ class ClientEventThread():
             self.logger.info(f'ClientEventThread setSendData exception : {traceback.format_exc()}')
 
 
-
-
-
     def stop(self):
         try:
             logger = logging.getLogger(self.skId)

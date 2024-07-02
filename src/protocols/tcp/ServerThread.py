@@ -183,8 +183,9 @@ class ServerThread(threading.Thread):
                             decimal_string = ' '.join(str(byte) for byte in readByte)
                             self.logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
 
+                        copybytes = readByte.copy()
                         data = self.codec.decodeRecieData(readByte)
-                        data['TOTAL_BYTES'] = readByte.copy()
+                        data['TOTAL_BYTES'] = copybytes
                         data['CHANNEL'] = clientsocket
                         data['SK_ID'] = self.skId
                         data['LOGGER'] = self.logger

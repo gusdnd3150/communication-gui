@@ -26,7 +26,7 @@ class SendHandler():
                         skThread.sendToAllChannels(returnBytes)
                     break
         except Exception as e:
-            logger.info(f'sendSkId() Exception SK_ID:{skId} , MSG_ID:{msgId}, DATA:{data} -- {e}')
+            logger.info(f'sendSkId() Exception SK_ID:{skId} , MSG_ID:{msgId}, DATA:{data} -- {traceback.format_exc()}')
 
 
     def sendChannelBytes(self, channel, bytes):
@@ -46,4 +46,4 @@ class SendHandler():
                     channel.sendall(returnBytes)
                     break
         except Exception as e:
-            logger.info(f'sendChannelMsg() Exception :: {e}')
+            logger.info(f'sendChannelMsg() Exception :: {traceback.format_exc()}')
