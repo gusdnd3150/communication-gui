@@ -121,18 +121,25 @@ class ClientEventThread():
         isRun = False
         buffer = bytearray()
         sockets = None
+
+        self.conCnt = self.conCnt + 1
+        connInfo = {}
+        connInfo['SK_ID'] = self.skId
+        connInfo['CONN_INFO'] = f"('{f'{self.skIp}: index-{self.conCnt}'}', {self.skPort})"
+
         try:
             # 서버에 연결합니다.
             sockets = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sockets.connect((self.skIp, int(self.skPort)))
             self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
 
-            self.conCnt = self.conCnt + 1
+
             sockets.sendall(self.sendData)
             isRun = True
 
             if sockets is not None:
                 systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))
+                systemGlobals['mainInstance'].addConnRow(connInfo)
 
 
             #2. 여기에 active 이벤트 처리
@@ -222,6 +229,7 @@ class ClientEventThread():
             self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
 
         finally:
+            systemGlobals['mainInstance'].deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
             self.conCnt = self.conCnt - 1
             isRun = False
             systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))

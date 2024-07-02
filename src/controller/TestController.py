@@ -27,7 +27,7 @@ class TestController():
             # Channel.sendoTo(reciveObj['TOTAL_BYTES'])
             # returnJson['LINE_CD'] = 'TR01'
             returnJson['LINE_SIGN'] = '2'
-            SendHandler.sendSkId(self, 'TCPS_LENGTH','LINE_SIGNAL',returnJson)
+            SendHandler.sendSkId(self, 'TPC_FREE','LINE_SIGNAL',returnJson)
 
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {e}')
