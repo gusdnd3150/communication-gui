@@ -89,8 +89,7 @@ class InitClass():
 
                 item['SK_THREAD'] = None
 
-
-
+            self.mainLayOut.list_conn.clearContents()
             self.mainLayOut.combo_pkg.setDisabled(False)
             self.mainLayOut.btn_start.setDisabled(False)
         except Exception as e:
