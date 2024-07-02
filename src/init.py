@@ -16,6 +16,7 @@ from src.component.settings.Settings import Settings
 from conf.InitData_n import *
 from src.protocols.udp.ServerUdpThread import ServerUdpThread
 from src.protocols.udp.ClientUdpThread import ClientUdpThread
+from src.protocols.websk.WebSkServerThread import WebSkServerThread
 
 
 def resource_path(relative_path):
@@ -137,6 +138,12 @@ class InitClass():
                 elif (skTy == 'UDP'):
                     if (skConTy == 'SERVER'):
                         threadInfo = ServerUdpThread(item)
+                    elif (skConTy == 'CLIENT'):
+                        threadInfo = ClientUdpThread(item)
+
+                elif (skTy == 'WEBSK'):
+                    if (skConTy == 'SERVER'):
+                        threadInfo = WebSkServerThread(item)
                     elif (skConTy == 'CLIENT'):
                         threadInfo = ClientUdpThread(item)
 
