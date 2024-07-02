@@ -6,6 +6,7 @@ import traceback
 import socket
 from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
+from src.protocols.msg.JSONCodec import JSONCodec
 from src.protocols.BzActivator import BzActivator
 from conf.InitData_n import systemGlobals
 
@@ -52,6 +53,8 @@ class ClientEventThread():
             self.codec = FreeCodec(self.initData)
         elif (self.initData['HD_TYPE'] == 'LENGTH'):
             self.codec = LengthCodec(self.initData)
+        elif (self.initData['HD_TYPE'] == 'JSON'):
+            self.codec = JSONCodec(self.initData)
 
         if (data.get('SK_LOG') is not None and data.get('SK_LOG') == 'Y'):
             self.skLogYn = True

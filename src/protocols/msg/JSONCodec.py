@@ -75,7 +75,6 @@ class JSONCodec():
             if hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
                 if reciveData.get(hd['DT_ID']) is not None:
                     inMsgVal = reciveData.get(hd['DT_ID'])
-            del msgBytes[0:hd['DT_LEN']]
 
 
         # mid or length 로 소켓 IN 정보 검색
@@ -111,15 +110,12 @@ class JSONCodec():
 
 
     def encodeSendData(self, msgObj):
-        returnBytes = bytearray()
+        returnData = {}
         msgId = msgObj['MSG_ID']
         msgKeyType = None
         msgKeyLen = 0
         msgKeyVal = None
         msgBody = None
-
-        bodyBytes = bytearray()
-        headerBytes = bytearray()
 
         #  메시지 바디 검색
         for index, body in enumerate(moduleData.socketBody):
@@ -138,34 +134,27 @@ class JSONCodec():
         if msgBody is None:
             raise Exception(f'JSONCodec encodeSendData() MSG_ID:{msgId} is None')
 
+        # 바디 세팅
+        if msgBody is not None:
+            for inex, item in enumerate(msgBody):
+                value = None
+                if msgObj.get(item.get('VAL_ID')) is not None:
+                    value = msgObj[item.get('VAL_ID')]
+                returnData[item.get('VAL_ID')] = value
 
-        # 메시지 바디 세팅
-        for index, body in enumerate(msgBody):
-            value = None
-            if msgObj.get(body['VAL_ID']) is not None:
-                value = msgObj[body['VAL_ID']]
-            bodyBytes.extend(encodeDataToBytes(value, body['VAL_TYPE'], body['VAL_LEN']))
-
-        totalLen = len(bodyBytes) + self.hdLen
 
         # 해더 세팅
         for index, hd in enumerate(self.hdList):
             # {'HD_ID': 'HD_HS', 'DT_ORD': 1, 'DT_ID': 'TOTAL_LENGTH', 'DT_TYPE': 'INT', 'DT_LEN': 4, 'DT_NAME': '', 'DT_DESC': '',
             # 'MSG_LEN_REL_YN': 'Y', 'MSG_ID_REL_YN': '', 'DEFAULT_VALUE': ''}
-            if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
-                headerBytes.extend(encodeDataToBytes(totalLen, hd['DT_TYPE'], hd['DT_LEN'],'0'))
-            elif hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
-                headerBytes.extend(encodeDataToBytes(msgKeyVal, msgKeyType, msgKeyLen))
-            else:
-                value = None
-                if msgObj.get(hd['DT_ID']) is not None and msgObj.get(hd['DT_ID']) != '':
-                    value = msgObj.get(hd['DT_ID'])
-                elif hd['DEFAULT_VALUE'] is not None and hd['DEFAULT_VALUE'] != '':
-                    value = hd['DEFAULT_VALUE']
-                headerBytes.extend(encodeDataToBytes(value, hd['DT_TYPE'], hd['DT_LEN']))
+            if hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
+                returnData[hd['DT_ID']] = msgKeyVal
 
-
-        returnBytes = headerBytes+bodyBytes
+        json_str = json.dumps(returnData)
+        # JSON 문자열을 바이트로 인코딩
+        json_bytes = json_str.encode('utf-8')
+        # 바이트를 bytearray로 변환
+        returnBytes = bytearray(json_bytes)
 
         # 딜리미터 세팅
         if (self.delimiter != b''):
