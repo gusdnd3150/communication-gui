@@ -4,6 +4,7 @@ from conf.logconfig import logger
 
 # from src.protocols.tcp.ClientEventThread import ClientEventThread
 import conf.InitData_n as initData
+import asyncio
 
 class SendHandler():
 
@@ -14,14 +15,19 @@ class SendHandler():
         try:
             data['MSG_ID'] = msgId
             for i, sk in enumerate(initData.sokcetList):
+
                 if sk['SK_ID'] == skId:
+                    skThread = sk['SK_THREAD']
                     if sk['SK_CLIENT_TYPE'] == 'EVENT':
-                        skThread = sk['SK_THREAD']
                         skThread.setSendData(data)
                         skThread.reSendData()
+                    elif sk['SK_TYPE'] == 'WEBSK':
+                        logger.info(f'{sk}')
+                        returnBytes = skThread.codec.encodeSendData(data)
+                        loop = skThread.loop
+                        asyncio.run_coroutine_threadsafe(self.send_webSk_message(skThread, returnBytes), loop)
                     else:
                         # logger.info(f'sendSkId SK_DI : {sk}')
-                        skThread = sk['SK_THREAD']
                         returnBytes = skThread.codec.encodeSendData(data)
                         skThread.sendToAllChannels(returnBytes)
                     break
@@ -47,3 +53,6 @@ class SendHandler():
                     break
         except Exception as e:
             logger.info(f'sendChannelMsg() Exception :: {traceback.format_exc()}')
+
+    async def send_webSk_message(self, thread, returnBytes):
+        await thread.sendToAllChannels(returnBytes)

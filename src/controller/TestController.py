@@ -11,9 +11,11 @@ class TestController():
     # 1. logger 는 전역 로그, reciveObj['LOGGER'] 는 해당 소켓의 로그를 출력한다
     # 2. 각 reciveObj에는 ['CHANNEL'] 이 포함되어있다
     # 3.
+    sendHandler = None
 
     def __init__(self):
         logger.info('init testcontroller')
+        self.sendHandler = SendHandler()
 
     def recive(self, reciveObj):
         skLogger = reciveObj['LOGGER']
@@ -27,7 +29,7 @@ class TestController():
             # Channel.sendoTo(reciveObj['TOTAL_BYTES'])
             # returnJson['LINE_CD'] = 'TR01'
             returnJson['LINE_SIGN'] = '2'
-            SendHandler.sendSkId(self, 'JSON_서버','LINE_SIGNAL',returnJson)
+            self.sendHandler.sendSkId('JSON_서버', 'LINE_SIGNAL', returnJson)
 
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {e}')
