@@ -8,7 +8,7 @@ from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
 from src.protocols.BzActivator import BzActivator
-from conf.InitData_n import systemGlobals
+import conf.InitData_n as moduleData
 
 from src.protocols.sch.BzSchedule import BzSchedule
 
@@ -76,7 +76,7 @@ class ClientEventThread():
                 elif bz.get('BZ_TYPE') == 'INACTIVE':
                     self.bzInActive = bz
 
-        systemGlobals['mainInstance'].addClientRow(self.initData)
+        moduleData.mainInstance.addClientRow(self.initData)
 
 
 
@@ -114,7 +114,7 @@ class ClientEventThread():
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
         finally:
-            systemGlobals['mainInstance'].deleteTableRow(self.skId, 'list_run_client')
+            moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_client')
 
 
     def initClient(self,stop_event):
@@ -138,8 +138,8 @@ class ClientEventThread():
             isRun = True
 
             if sockets is not None:
-                systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))
-                systemGlobals['mainInstance'].addConnRow(connInfo)
+                moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))
+                moduleData.mainInstance.addConnRow(connInfo)
 
 
             #2. 여기에 active 이벤트 처리
@@ -229,10 +229,10 @@ class ClientEventThread():
             self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
 
         finally:
-            systemGlobals['mainInstance'].deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
+            moduleData.mainInstance.deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
             self.conCnt = self.conCnt - 1
             isRun = False
-            systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))
+            moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))
             buffer.clear()
             stop_event.set()
             if sockets:

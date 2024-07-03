@@ -13,7 +13,8 @@ program_directory = os.path.dirname(program_path)
 from PySide6 import QtWidgets
 from PySide6.QtUiTools import QUiLoader
 from src.component.settings.Settings import Settings
-from conf.InitData_n import *
+import conf.InitData_n as moduleData
+from conf.logconfig import logger
 from src.protocols.udp.ServerUdpThread import ServerUdpThread
 from src.protocols.udp.ClientUdpThread import ClientUdpThread
 from src.protocols.websk.WebSkServerThread import WebSkServerThread
@@ -63,8 +64,8 @@ class InitClass():
         self.mainLayOut.btn_start.clicked.connect(self.start_sk)
         self.mainLayOut.btn_stop.clicked.connect(self.stop_sk)
         self.mainLayOut.show()
-        systemGlobals['mainLayout'] = self.mainLayOut
-        systemGlobals['mainInstance'] = self
+        moduleData.mainLayout = self.mainLayOut
+        moduleData.mainInstance = self
 
         self.bindData()
 
@@ -83,9 +84,7 @@ class InitClass():
     def stop_sk(self):
         try:
             logger.info(f'Stop Run Sockets')
-
-
-            for i, item in enumerate(systemGlobals['sokcetList']):
+            for i, item in enumerate(moduleData.sokcetList):
                 runThread = item['SK_THREAD']
                 runThread.stop()
                 if item['SK_CLIENT_TYPE'] != 'EVENT':
@@ -114,13 +113,13 @@ class InitClass():
 
         pkg = self.mainLayOut.combo_pkg.currentText()
         # 기준정보 로드
-        initPkgData(pkg)
+        moduleData.initPkgData(pkg)
 
         self.mainLayOut.combo_pkg.setDisabled(True)
         self.mainLayOut.btn_start.setDisabled(True)
         try:
-            logger.info(f' Run Cnt : {len(systemGlobals["sokcetList"])}')
-            for i , item in enumerate(systemGlobals['sokcetList']):
+            logger.info(f' Run Cnt : {len(moduleData.sokcetList)}')
+            for i , item in enumerate(moduleData.sokcetList):
                 threadInfo = None
                 skTy = item['SK_TYPE']
                 skConTy = item['SK_CONN_TYPE']

@@ -9,7 +9,8 @@ from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
 from src.protocols.BzActivator import BzActivator
-from conf.InitData_n import systemGlobals
+# from conf.InitData_n import systemGlobals
+import conf.InitData_n as moduleData
 
 from src.protocols.sch.BzSchedule import BzSchedule
 
@@ -82,7 +83,7 @@ class ClientThread(threading.Thread):
         logger.info('deleted')
 
     def run(self):
-        systemGlobals['mainInstance'].addClientRow(self.initData)
+        moduleData.mainInstance.addClientRow(self.initData)
         self.initClient()
 
     def stop(self):
@@ -106,11 +107,11 @@ class ClientThread(threading.Thread):
             self.isRun = False
             self.isShutdown = True
             self._stop_event.set()
-            systemGlobals['mainInstance'].deleteTableRow(self.skId, 'list_run_client')
+            moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_client')
 
 
     def initClient(self):
-        systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '0')
+        moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', '0')
         buffer = bytearray()
         connInfo = {}
         connInfo['SK_ID'] = self.skId
@@ -123,8 +124,8 @@ class ClientThread(threading.Thread):
             self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
 
             if self.socket is not None:
-                systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '1')
-                systemGlobals['mainInstance'].addConnRow(connInfo)
+                moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', '1')
+                moduleData.mainInstance.addConnRow(connInfo)
 
 
             #2. 여기에 active 이벤트 처리
@@ -215,8 +216,8 @@ class ClientThread(threading.Thread):
 
         finally:
             buffer.clear()
-            systemGlobals['mainInstance'].modClientRow(self.skId, 'CON_COUNT', '0')
-            systemGlobals['mainInstance'].deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
+            moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', '0')
+            moduleData.mainInstance.deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
             if self.socket:
                 self.socket.close()
                 self.socket = None

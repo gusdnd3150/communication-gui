@@ -30,10 +30,13 @@ sokcetOut = []
 sokcetSub = []
 sokcetSch = []
 mainLayout = None
+mainInstance = None
+
 systemGlobals = globals()
 systemGlobals['mainLayout'] = None
 systemGlobals['mainInstance'] = None
 
+runChannels = [] # client,server 통합 접속된 채널 리스트
 
 def getsokcetList(pkgId):
     skList = selectQuery(selectSocketList(None,'Y',pkgId))

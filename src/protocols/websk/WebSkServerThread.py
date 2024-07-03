@@ -6,8 +6,7 @@ import socket
 from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
-from conf.InitData_n import systemGlobals
-
+import conf.InitData_n as moduleData
 from src.protocols.sch.BzSchedule import BzSchedule
 from src.protocols.BzActivator import BzActivator
 
@@ -99,11 +98,11 @@ class WebSkServerThread(threading.Thread):
             self.logger.error(f'SK_ID:{self.skId} Stop fail')
         finally:
             self._stop_event.set()
-            systemGlobals['mainInstance'].deleteTableRow(self.skId, 'list_run_server')
+            moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
 
     def initServer(self):
         try:
-            systemGlobals['mainInstance'].addServerRow(self.initData)
+            moduleData.mainInstance.addServerRow(self.initData)
             self.logger.info(f'WEB SOCKET SERVER Start : SK_ID= {self.skId}, IP= {self.skIp}:{self.skPort} :: Thread ')
             self.logger.info(f"WebSocket server is running on ws://{self.skIp}:{self.skPort}/test")
 
@@ -114,8 +113,8 @@ class WebSkServerThread(threading.Thread):
             app.router.add_get(self.skRelVal, self.websocket_handler)
             runner = web.AppRunner(app)
             self.loop.run_until_complete(runner.setup())
-            site = web.TCPSite(runner, self.skIp, self.skPort)
-            self.loop.run_until_complete(site.start())
+            server = web.TCPSite(runner, self.skIp, self.skPort)
+            self.loop.run_until_complete(server.start())
 
             self.loop.run_forever()
         except Exception as e:
@@ -125,13 +124,36 @@ class WebSkServerThread(threading.Thread):
         ws = web.WebSocketResponse()
         await ws.prepare(request)
 
+        peername = request.transport.get_extra_info('peername')
+        if peername:
+            client_ip, client_port = peername
+            logger.info(f"SK_ID:{self.skId} Client connected: IP={client_ip}, Port={client_port}")
+
         client_info = (self.skId, ws)
         self.client_list.append(client_info)
 
+        connInfo = {'SK_ID': self.skId, 'CONN_INFO': str(peername)}
+        moduleData.mainInstance.addConnRow(connInfo)
+        moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
 
-        connInfo = {'SK_ID': self.skId, 'CONN_INFO': str(ws)}
-        systemGlobals['mainInstance'].addConnRow(connInfo)
-        systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
+        # ACTIVE 이벤트처리
+        if self.bzActive is not None:
+            self.logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
+            self.bzActive['SK_ID'] = self.skId
+            self.bzActive['CHANNEL'] = ws
+            self.bzActive['LOGGER'] = self.logger
+            bz = BzActivator(self.bzActive)
+            bz.daemon = True
+            bz.start()
+
+        # KEEP 처리
+        if self.bzKeep is not None:
+            self.bzKeep['SK_ID'] = self.skId
+            self.bzKeep['CHANNEL'] = ws
+            self.bzKeep['LOGGER'] = self.logger
+            self.bzSch = BzSchedule(self.bzKeep)
+            self.bzSch.daemon = True
+            self.bzSch.start()
 
         try:
             async for msg in ws:
@@ -157,12 +179,18 @@ class WebSkServerThread(threading.Thread):
                     bz.start()
                 elif msg.type == web.WSMsgType.ERROR:
                     self.logger.error(f'SK_ID:{self.skId} Msg convert Exception : {ws.exception()}')
+
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} exception : {traceback.format_exc()}')
         finally:
-            systemGlobals['mainInstance'].deleteTableRow(str(ws), 'list_conn')
+            if self.bzSch is not None:
+                self.bzSch.stop()
+                self.bzSch.join()
+                self.bzSch = None
+
+            moduleData.mainInstance.deleteTableRow(str(peername), 'list_conn')
             self.client_list.remove(client_info)
-            systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
+            moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
 
         return ws
 
@@ -175,13 +203,9 @@ class WebSkServerThread(threading.Thread):
                 if skId == self.skId:
                     json_string = bytes.decode('utf-8')
                     await client.send_str(json_string)
-
-
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in bytes)
                         self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} decimal_string : [{decimal_string}]')
-
-
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
@@ -191,3 +215,12 @@ class WebSkServerThread(threading.Thread):
             if skid == skId:
                 count += 1
         return count
+
+
+    async def idleRead(self, client, timeout):
+        await asyncio.sleep(timeout)
+        self.logger.info(f'Checking idle clients...')
+        try:
+            client.ping()
+        except Exception as e:
+            self.logger.error(f'Error pinging client: {e}')

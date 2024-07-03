@@ -10,6 +10,7 @@ class TestController():
     # guide
     # 1. logger 는 전역 로그, reciveObj['LOGGER'] 는 해당 소켓의 로그를 출력한다
     # 2. 각 reciveObj에는 ['CHANNEL'] 이 포함되어있다
+    # 2.1 tcp/udp 는 sendall 로, 웹소켓은 다이렉트로 보낼 수 없다.(즉 sendHandler를 이용)
     # 3.
     sendHandler = None
 
@@ -39,6 +40,7 @@ class TestController():
         skLogger = reciveObj['LOGGER']
         try:
             skLogger.info(f'TestController.keep() IN_DATA : {reciveObj}')
+            self.sendHandler.sendSkId('JSON_서버', 'LINE_SIGNAL', returnJson)
         except Exception as e:
             skLogger.error(f'TestController.test() Exception :: {e}')
 

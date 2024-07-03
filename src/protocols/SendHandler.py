@@ -3,7 +3,7 @@ import traceback
 from conf.logconfig import logger
 
 # from src.protocols.tcp.ClientEventThread import ClientEventThread
-import conf.InitData_n as initData
+import conf.InitData_n as moduleData
 import asyncio
 
 class SendHandler():
@@ -14,7 +14,7 @@ class SendHandler():
     def sendSkId(self, skId, msgId, data):
         try:
             data['MSG_ID'] = msgId
-            for i, sk in enumerate(initData.sokcetList):
+            for i, sk in enumerate(moduleData.sokcetList):
 
                 if sk['SK_ID'] == skId:
                     skThread = sk['SK_THREAD']
@@ -45,7 +45,7 @@ class SendHandler():
     def sendChannelMsg(self, channel, msgId, data):
         try:
             data['MSG_ID'] = msgId
-            for i, sk in enumerate(initData.sokcetList):
+            for i, sk in enumerate(moduleData.sokcetList):
                 if sk['SK_ID'] == data['SK_ID']:
                     skThread = sk['SK_THREAD']
                     returnBytes = skThread.codec.encodeSendData(data)
@@ -56,3 +56,4 @@ class SendHandler():
 
     async def send_webSk_message(self, thread, returnBytes):
         await thread.sendToAllChannels(returnBytes)
+

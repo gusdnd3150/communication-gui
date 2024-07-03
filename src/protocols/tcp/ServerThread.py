@@ -7,6 +7,7 @@ from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
 from conf.InitData_n import systemGlobals
+import conf.InitData_n as moduleData
 
 from src.protocols.sch.BzSchedule import BzSchedule
 from src.protocols.BzActivator import BzActivator
@@ -104,7 +105,7 @@ class ServerThread(threading.Thread):
         finally:
 
             self._stop_event.set()
-            systemGlobals['mainInstance'].deleteTableRow(self.skId, 'list_run_server')
+            moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
 
 
     def initServer(self):
@@ -116,7 +117,7 @@ class ServerThread(threading.Thread):
             self.isRun = True
 
             # 서버 테이블 인설트
-            systemGlobals['mainInstance'].addServerRow(self.initData)
+            moduleData.mainInstance.addServerRow(self.initData)
             while self.isRun:
                 # accept connections from outside
                 (clientsocket, address) = self.socket.accept()
@@ -130,12 +131,16 @@ class ServerThread(threading.Thread):
     def client_handler(self,clientsocket,  address):
         buffer = bytearray()
         client_info = (self.skId, clientsocket)
+        self.client_list.append(client_info)
         self.logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
 
         connInfo = {}
         connInfo['SK_ID'] = self.skId
         connInfo['CONN_INFO'] = address
-        systemGlobals['mainInstance'].addConnRow(connInfo)
+        moduleData.mainInstance.addConnRow(connInfo)
+        moduleData.runChannels.append((self.codec, clientsocket))
+        moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
+
 
         # ACTIVE 이벤트처리
         if self.bzActive is not None:
@@ -161,8 +166,7 @@ class ServerThread(threading.Thread):
         if self.bzIdleRead is not None:
             clientsocket.settimeout(self.bzIdleRead.get('SEC'))
 
-        self.client_list.append(client_info)
-        systemGlobals['mainInstance'].modServerRow(self.skId,'CON_COUNT',str(self.countChannelBySkId(self.skId)))
+
 
         while self.isRun:
             try:
@@ -240,11 +244,14 @@ class ServerThread(threading.Thread):
             self.bzSch.join()
             self.bzSch = None
 
+
+        logger.info(f'moduleData.runChannels {moduleData.runChannels}')
         self.client_list.remove(client_info)
+        moduleData.runChannels.remove(clientsocket)
         self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
 
-        systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
-        systemGlobals['mainInstance'].deleteTableRow(str(address),'list_conn')
+        moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
+        moduleData.mainInstance.deleteTableRow(str(address),'list_conn')
         clientsocket.close()
 
 

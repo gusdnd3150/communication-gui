@@ -5,7 +5,7 @@ import socket
 from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
-from conf.InitData_n import systemGlobals
+import conf.InitData_n as moduleData
 from src.protocols.BzActivator import BzActivator
 
 
@@ -101,7 +101,7 @@ class ServerUdpThread(threading.Thread):
             self.logger.error(f'SK_ID:{self.skId} Stop fail')
         finally:
             self._stop_event.set()
-            systemGlobals['mainInstance'].deleteTableRow(self.skId, 'list_run_server')
+            moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
 
 
     def initServer(self):
@@ -112,7 +112,7 @@ class ServerUdpThread(threading.Thread):
             self.isRun = True
 
             # 서버 테이블 인설트
-            systemGlobals['mainInstance'].addServerRow(self.initData)
+            moduleData.mainInstance.addServerRow(self.initData)
 
             while self.isRun:
                 message, address = self.socket.recvfrom(self.initData.get('MAX_LENGTH'))
@@ -133,7 +133,7 @@ class ServerUdpThread(threading.Thread):
                 self.logger.info(f'SK_ID:{self.skId} read length : {len(message)} decimal_string : [{decimal_string}]')
 
             self.connCnt = self.connCnt + 1
-            systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', str(self.connCnt))
+            moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.connCnt))
 
             copyButes = message.copy()
             data = self.codec.decodeRecieData(message)
@@ -145,10 +145,10 @@ class ServerUdpThread(threading.Thread):
             bz.daemon = True
             bz.start()
             self.connCnt = self.connCnt - 1
-            systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', '0')
+            moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', '0')
         except Exception as e:
             self.connCnt = self.connCnt - 1
-            systemGlobals['mainInstance'].modServerRow(self.skId, 'CON_COUNT', '0')
+            moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', '0')
             self.logger.info(f'UDP client_handler exception :  {traceback.format_exc()}')
 
 

@@ -5,7 +5,7 @@ import socket
 from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
-from conf.InitData_n import systemGlobals
+import conf.InitData_n as moduleData
 from src.protocols.BzActivator import BzActivator
 
 
@@ -81,7 +81,7 @@ class ClientUdpThread(threading.Thread):
         logger.info('deleted')
 
     def run(self):
-        systemGlobals['mainInstance'].addClientRow(self.initData)
+        moduleData.mainInstance.addClientRow(self.initData)
 
         # self.initServer()
 
@@ -104,7 +104,7 @@ class ClientUdpThread(threading.Thread):
             self.logger.error(f'SK_ID:{self.skId} Stop fail')
         finally:
             self._stop_event.set()
-            systemGlobals['mainInstance'].deleteTableRow(self.skId, 'list_run_client')
+            moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_client')
 
 
     def sendToAllChannels(self, msgBytes):
