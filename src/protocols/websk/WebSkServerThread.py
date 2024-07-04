@@ -6,7 +6,7 @@ import socket
 from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
-import conf.InitData_n as moduleData
+import conf.InitData as moduleData
 from src.protocols.sch.BzSchedule import BzSchedule
 from src.protocols.BzActivator import BzActivator
 
@@ -129,10 +129,11 @@ class WebSkServerThread(threading.Thread):
             client_ip, client_port = peername
             logger.info(f"SK_ID:{self.skId} Client connected: IP={client_ip}, Port={client_port}")
 
-        client_info = (self.skId, ws)
+        client_info = (self.skId, ws, self.codec)
         self.client_list.append(client_info)
 
         connInfo = {'SK_ID': self.skId, 'CONN_INFO': str(peername)}
+        moduleData.runChannels.append(client_info)
         moduleData.mainInstance.addConnRow(connInfo)
         moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
 
@@ -190,6 +191,7 @@ class WebSkServerThread(threading.Thread):
 
             moduleData.mainInstance.deleteTableRow(str(peername), 'list_conn')
             self.client_list.remove(client_info)
+            moduleData.runChannels.remove(client_info)
             moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
 
         return ws
@@ -199,7 +201,7 @@ class WebSkServerThread(threading.Thread):
             if len(self.client_list) == 0:
                 self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
                 return
-            for skId, client in self.client_list:
+            for skId, client, codec in self.client_list:
                 if skId == self.skId:
                     json_string = bytes.decode('utf-8')
                     await client.send_str(json_string)
@@ -211,7 +213,7 @@ class WebSkServerThread(threading.Thread):
 
     def countChannelBySkId(self, skId):
         count = 0
-        for skid, socket in self.client_list:
+        for skid, socket, codec in self.client_list:
             if skid == skId:
                 count += 1
         return count

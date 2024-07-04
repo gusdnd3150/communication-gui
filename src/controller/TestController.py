@@ -3,7 +3,7 @@ from conf.logconfig import logger
 from src.protocols.SendHandler import SendHandler
 
 
-import conf.InitData_n as initData
+import conf.InitData as initData
 
 class TestController():
 

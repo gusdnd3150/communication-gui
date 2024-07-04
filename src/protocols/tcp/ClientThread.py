@@ -9,8 +9,7 @@ from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
 from src.protocols.BzActivator import BzActivator
-# from conf.InitData_n import systemGlobals
-import conf.InitData_n as moduleData
+import conf.InitData as moduleData
 
 from src.protocols.sch.BzSchedule import BzSchedule
 
@@ -116,17 +115,17 @@ class ClientThread(threading.Thread):
         connInfo = {}
         connInfo['SK_ID'] = self.skId
         connInfo['CONN_INFO'] = f"('{self.skIp}', {self.skPort})"
-
+        client_info = None
         try:
             # 서버에 연결합니다.
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.connect((self.skIp, int(self.skPort)))
             self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
 
-            if self.socket is not None:
-                moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', '1')
-                moduleData.mainInstance.addConnRow(connInfo)
-
+            moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', '1')
+            client_info = (self.skId, self.socket, self.codec)
+            moduleData.runChannels.append(client_info)
+            moduleData.mainInstance.addConnRow(connInfo)
 
             #2. 여기에 active 이벤트 처리
             if self.bzActive is not None:
@@ -216,6 +215,7 @@ class ClientThread(threading.Thread):
 
         finally:
             buffer.clear()
+            moduleData.runChannels.remove(client_info)
             moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', '0')
             moduleData.mainInstance.deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
             if self.socket:

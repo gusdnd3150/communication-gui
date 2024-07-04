@@ -13,7 +13,7 @@ program_directory = os.path.dirname(program_path)
 from PySide6 import QtWidgets
 from PySide6.QtUiTools import QUiLoader
 from src.component.settings.Settings import Settings
-import conf.InitData_n as moduleData
+import conf.InitData as moduleData
 from conf.logconfig import logger
 from src.protocols.udp.ServerUdpThread import ServerUdpThread
 from src.protocols.udp.ClientUdpThread import ClientUdpThread
@@ -58,7 +58,9 @@ class InitClass():
         app = QtWidgets.QApplication(sys.argv)
 
         #메인창
-        self.mainLayOut = self.qLoader.load(resource_path('main.ui'), None)
+        path = resource_path('main.ui')
+        logger.info(f'path :: {path}')
+        self.mainLayOut = self.qLoader.load(path, None)
         self.mainLayOut.setWindowTitle('application')
         self.mainLayOut.btn_settings.clicked.connect(self.open_settings)
         self.mainLayOut.btn_start.clicked.connect(self.start_sk)

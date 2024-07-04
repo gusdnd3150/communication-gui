@@ -1,22 +1,15 @@
 from conf.logconfig import logger
-import gc
 import sqlite3
-from conf.QueryString import *
+from conf.sql.SystemQueryString import *
 from src.controller.TestController import TestController
-from src.protocols.SendHandler import SendHandler
+import sys, os
 
-ctrList = []
-
-logger.info('DB connectiom with SqlLite')
-dbInstance = sqlite3.connect('core.db')
-
-
+dbInstance = sqlite3.connect('core.db') # socket system DB
 useYnCombo = ['Y','N']
 skTypeCombo = ['TCP','UDP','WEBSK']
 skConnCombo = ['SERVER','CLIENT']
 skClientCombo = ['KEEP','EVENT']
 hdCombo = ['LENGTH_STR_8B','LENGTH_STR_20B','LENGTH_20B','FREE','JSON']
-
 sokcetList = []
 socketHd = []
 socketHdDt = []
@@ -31,12 +24,23 @@ sokcetSub = []
 sokcetSch = []
 mainLayout = None
 mainInstance = None
-
-systemGlobals = globals()
-systemGlobals['mainLayout'] = None
-systemGlobals['mainInstance'] = None
-
 runChannels = [] # client,server 통합 접속된 채널 리스트
+
+logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
+systemGlobals = globals()
+systemGlobals['TestController'] = TestController()
+logger.info(f'------------------- ------------------')
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
+
+relative_path = resource_path('')
+logger.info(f'relative_path :: {relative_path}')
+
 
 def getsokcetList(pkgId):
     skList = selectQuery(selectSocketList(None,'Y',pkgId))
@@ -137,6 +141,3 @@ def initPkgData(pkgId):
 
 
 
-logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
-systemGlobals['TestController'] = TestController()
-logger.info(f'------------------- ------------------')

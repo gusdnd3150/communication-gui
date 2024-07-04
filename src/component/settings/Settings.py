@@ -1,7 +1,6 @@
 
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QTabWidget, QPushButton, QCheckBox, QMainWindow, QHeaderView
-import json
+from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView
 from src.component.settings.SaveSocketPopup import SaveSocketPopup
 import sys
 import os
@@ -10,16 +9,15 @@ program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
 
 import traceback
-from conf.logconfig import logger
-from conf.InitData_n import *
-from conf.QueryString import *
-import json
+from conf.InitData import *
+from conf.sql.SystemQueryString import *
+
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
-
+resource_path('settings.ui')
 
 class Settings(QMainWindow):
 
@@ -31,13 +29,19 @@ class Settings(QMainWindow):
 
     def __init__(self, initData):
         self.initData = initData
-        self.ui = QUiLoader().load(resource_path('views/settings.ui'), None)
+        # path = resource_path('views\settings.ui')
+        path = resource_path('settings.ui')
+        logger.info(f'path : {path}')
+        self.ui = QUiLoader().load(path, None)
+
         super().__init__()
         self.setCentralWidget(self.ui)
         self.setWindowTitle('설정')
 
         # 메시지 저장 팝업
-        self.saveSkWindow = SaveSocketPopup(resource_path('views/settings-saveSocket.ui'))
+
+        # self.saveSkWindow = SaveSocketPopup('./src/component/settings/views/settings-saveSocket.ui')
+        self.saveSkWindow = SaveSocketPopup()
         self.saveSkWindow.instance.setWindowTitle('추가')
         # self.saveSkWindow.instance.show()
 

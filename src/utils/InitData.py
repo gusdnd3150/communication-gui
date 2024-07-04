@@ -5,7 +5,7 @@ import traceback
 import json
 from conf.logconfig import logger
 import sqlite3
-from conf.QueryString import *
+from conf.sql.SystemQueryString import *
 
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)

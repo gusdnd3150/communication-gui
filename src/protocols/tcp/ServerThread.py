@@ -6,8 +6,8 @@ import socket
 from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
-from conf.InitData_n import systemGlobals
-import conf.InitData_n as moduleData
+from conf.InitData import systemGlobals
+import conf.InitData as moduleData
 
 from src.protocols.sch.BzSchedule import BzSchedule
 from src.protocols.BzActivator import BzActivator
@@ -130,15 +130,16 @@ class ServerThread(threading.Thread):
 
     def client_handler(self,clientsocket,  address):
         buffer = bytearray()
-        client_info = (self.skId, clientsocket)
+        client_info = (self.skId, clientsocket, self.codec)
         self.client_list.append(client_info)
+
         self.logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
 
         connInfo = {}
         connInfo['SK_ID'] = self.skId
         connInfo['CONN_INFO'] = address
         moduleData.mainInstance.addConnRow(connInfo)
-        moduleData.runChannels.append((self.codec, clientsocket))
+        moduleData.runChannels.append(client_info)
         moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
 
 
@@ -247,7 +248,7 @@ class ServerThread(threading.Thread):
 
         logger.info(f'moduleData.runChannels {moduleData.runChannels}')
         self.client_list.remove(client_info)
-        moduleData.runChannels.remove(clientsocket)
+        moduleData.runChannels.remove(client_info)
         self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
 
         moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
@@ -260,7 +261,7 @@ class ServerThread(threading.Thread):
             if len(self.client_list) == 0:
                 self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
                 return
-            for skId, client in self.client_list:
+            for skId, client, codec in self.client_list:
                 if skId == self.skId:
                     client.sendall(bytes)
                     if self.skLogYn:
@@ -275,7 +276,7 @@ class ServerThread(threading.Thread):
             if len(self.client_list) == 0:
                 self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
                 return
-            for skId, client in self.client_list:
+            for skId, client, codec in self.client_list:
                 if skId == self.skId:
                     client.sendall(bytes)
                     if self.skLogYn:
@@ -286,7 +287,7 @@ class ServerThread(threading.Thread):
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
     def countChannelBySkId(self,skId):
         count = 0
-        for skid, socket in self.client_list:
+        for skid, socket, codec in self.client_list:
             if skid == skId:
                 count += 1
         return count

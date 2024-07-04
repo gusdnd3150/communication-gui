@@ -1,7 +1,7 @@
 import io
 import traceback
 from conf.logconfig import logger
-import conf.InitData_n as moduleData
+import conf.InitData as moduleData
 from src.utils.Utilitys import *
 
 

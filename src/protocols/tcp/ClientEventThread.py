@@ -8,7 +8,7 @@ from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
 from src.protocols.BzActivator import BzActivator
-import conf.InitData_n as moduleData
+import conf.InitData as moduleData
 
 from src.protocols.sch.BzSchedule import BzSchedule
 
@@ -126,20 +126,20 @@ class ClientEventThread():
         connInfo = {}
         connInfo['SK_ID'] = self.skId
         connInfo['CONN_INFO'] = f"('{f'{self.skIp}: index-{self.conCnt}'}', {self.skPort})"
-
+        client_info = None
         try:
             # 서버에 연결합니다.
             sockets = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sockets.connect((self.skIp, int(self.skPort)))
             self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
-
-
             sockets.sendall(self.sendData)
             isRun = True
 
-            if sockets is not None:
-                moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))
-                moduleData.mainInstance.addConnRow(connInfo)
+            client_info = (self.skId, self.socket, self.codec)
+
+            moduleData.runChannels.append(client_info)
+            moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))
+            moduleData.mainInstance.addConnRow(connInfo)
 
 
             #2. 여기에 active 이벤트 처리
@@ -229,6 +229,7 @@ class ClientEventThread():
             self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
 
         finally:
+            moduleData.runChannels.remove(client_info)
             moduleData.mainInstance.deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
             self.conCnt = self.conCnt - 1
             isRun = False
