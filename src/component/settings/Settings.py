@@ -26,6 +26,7 @@ class Settings(QMainWindow):
     initData = None
     skRow = None
     contFlag = 'upd'
+    contInFlag = 'upd'
 
     def __init__(self, initData):
         self.initData = initData
@@ -33,8 +34,8 @@ class Settings(QMainWindow):
         path = resource_path('settings.ui')
         logger.info(f'path : {path}')
         self.ui = QUiLoader().load(path, None)
-
         super().__init__()
+
         self.setCentralWidget(self.ui)
         self.setWindowTitle('설정')
 
@@ -47,19 +48,29 @@ class Settings(QMainWindow):
 
         self.setEvent()
         self.createSkGrid() # 소켓 그리드
-        self.createMsgGrid(None,None)
+        self.createInGrid()# 소켓 In 그리드
+        self.createMsgGrid(None,None)# 메시지 그리드
+
 
     def setEvent(self):
+
+        # 소켓 탭 이벤트 설정
         self.ui.btn_addSk.clicked.connect(self.addSk)
         self.ui.btn_delSk.clicked.connect(self.delSk)
         self.ui.btn_saveSk.clicked.connect(self.saveSk)
 
+        # In 탭 이벤트 설정
+        self.ui.btn_addIn.clicked.connect(self.addIn)
+        self.ui.btn_delIn.clicked.connect(self.delIn)
+        self.ui.btn_saveIn.clicked.connect(self.saveIn)
 
+        # 메시지 탭 이벤트 설정
         self.ui.msg_search.clicked.connect(self.searchMsg)
 
         for item in useYnCombo:
             self.ui.sk_USE_YN.addItem(item)
             self.ui.sk_SK_LOG.addItem(item)
+            self.ui.in_USE_YN.addItem(item)
 
         for item in skTypeCombo:
             self.ui.sk_SK_TYPE.addItem(item)
@@ -172,6 +183,90 @@ class Settings(QMainWindow):
         self.createSkGrid()
         logger.info(f'{row_data}')
 
+#################################################################### 소켓 IN
+    def createInGrid(self):
+        try:
+            headers = ['PKG_ID','SK_IN_SEQ','IN_SK_ID','IN_MSG_ID','BZ_METHOD','IN_DESC','USE_YN']
+            # self.ui.list_in.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+            self.ui.list_in.verticalHeader().setVisible(False)
+
+            self.ui.list_in.setRowCount(0)  # Table의 행을 설정, list의 길이
+            self.ui.list_in.setColumnCount(7)
+            self.ui.list_in.setHorizontalHeaderLabels(headers)
+            inList = selectQuery(selectSocketInList(None, None, None))
+            for i, inItem in enumerate(inList):
+                row_count = self.ui.list_in.rowCount()
+                self.ui.list_in.insertRow(row_count)
+                for j, hd in enumerate(headers):
+                    if inItem.get(hd) is not None:
+                        self.ui.list_in.setItem(row_count, j, QTableWidgetItem(str(inItem[hd])))
+            self.ui.list_in.cellClicked.connect(self.selectInRow)
+
+        except Exception as e:
+            logger.info(f'createGrid exception : {traceback.format_exc()}')
+
+    def addIn(self):
+        self.contInFlag = 'ins'
+        self.skRow = None
+        self.ui.in_PKG_ID.setText('')
+        self.ui.in_PKG_ID.setDisabled(False)
+        self.ui.in_SK_IN_SEQ.setText('')
+        self.ui.in_SK_IN_SEQ.setDisabled(False)
+
+        self.ui.in_IN_SK_ID.setText('')
+        self.ui.in_IN_MSG_ID.setText('')
+        self.ui.in_BZ_METHOD.setText('')
+        self.ui.in_IN_DESC.setText('')
+
+
+    def delIn(self):
+        queryExecute(delIn(self.ui.in_PKG_ID.text(), self.ui.in_SK_IN_SEQ.text()))
+        self.createInGrid()
+
+    def saveIn(self):
+        row_data = {
+            'IN_SK_ID': self.ui.in_IN_SK_ID.text()
+            , 'IN_MSG_ID': self.ui.in_IN_MSG_ID.text()
+            , 'BZ_METHOD': self.ui.in_BZ_METHOD.text()
+            , 'USE_YN': self.ui.in_USE_YN.currentText()
+            , 'IN_DESC': self.ui.in_IN_DESC.toPlainText()
+        }
+        logger.info(f' row : {row_data}')
+        if self.contInFlag == 'ins':
+            row_data['PKG_ID'] = self.ui.in_PKG_ID.text()
+            row_data['SK_IN_SEQ'] = self.ui.in_SK_IN_SEQ.text()
+            queryExecute(insertIn(row_data))
+        else :
+            queryExecute(saveIn(self.ui.in_PKG_ID.text(), self.ui.in_SK_IN_SEQ.text(), row_data))
+        self.createInGrid()
+
+    def selectInRow(self,row, column):
+        try:
+            self.contInFlag = 'upd'
+            # logger.info(f'row: {row}')
+            # item = self.ui.list_sk.item(row, column)
+            # if item:
+            #     print(f"Item text: {item.text()}")
+            row_data = {}
+            for column in range(self.ui.list_in.columnCount()):
+                header_item = self.ui.list_in.horizontalHeaderItem(column)
+                item = self.ui.list_in.item(row, column)
+                row_data[header_item.text()] = item.text() if item else ""
+            self.skRow = row
+            self.ui.in_PKG_ID.setText(row_data['PKG_ID'])
+            self.ui.in_PKG_ID.setDisabled(True)
+            self.ui.in_SK_IN_SEQ.setText(row_data['SK_IN_SEQ'])
+            self.ui.in_SK_IN_SEQ.setDisabled(True)
+
+            self.ui.in_IN_SK_ID.setText(row_data['IN_SK_ID'])
+
+            self.ui.in_IN_MSG_ID.setText(row_data['IN_MSG_ID'])
+            self.ui.in_BZ_METHOD.setText(row_data['BZ_METHOD'])
+            self.ui.in_IN_DESC.setText(row_data['IN_DESC'])
+            self.ui.in_USE_YN.setCurrentText(row_data['USE_YN'])
+
+        except Exception as e :
+            logger.error(f'selectRow exception : {traceback.format_exc()} ')
 #################################################################### 메시지
 
     def searchMsg(self):

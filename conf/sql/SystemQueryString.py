@@ -58,6 +58,31 @@ def selectSocketList(skId , useYn, pkgId='CORE'):
 
     return " ".join(query)
 
+def selectSocketInList(skId , useYn, pkgId='CORE'):
+
+    query = []
+    query.append('SELECT 			   ')
+    query.append('	PKG_ID             ')
+    query.append('	,SK_IN_SEQ         ')
+    query.append('	,IN_SK_ID          ')
+    query.append('	,IN_MSG_ID         ')
+    query.append('	,BZ_METHOD         ')
+    query.append('	,IN_DESC           ')
+    query.append('	,USE_YN            ')
+    query.append('	,REG_ID            ')
+    query.append('	,UPD_ID            ')
+    query.append('FROM TB_SK_PKG_SK_IN ')
+    query.append('WHERE 1=1            ')
+    if(pkgId is not None):
+        query.append(f'AND PKG_ID = "{pkgId}"')
+    if(skId is not None):
+        query.append(f'AND IN_SK_ID = "{skId}"')
+    if (useYn is not None):
+        query.append(f'AND USE_YN = "{useYn}"')
+
+    return " ".join(query)
+
+
 def selectTbSkMsgHdDt():
     return 'SELECT                  '\
             '	HD_ID               '\
@@ -309,6 +334,52 @@ def delSk(pkgId, skId):
     query.append(f'AND SK_ID = "{skId}"')
     query.append(f'AND PKG_ID = "{pkgId}"')
 
+    result = " ".join(query)
+    print(f'rs : {result}')
+    return result
+
+
+
+def insertIn(params):
+
+    query = []
+    keys = list(params.keys())
+    values = [("" if str(v) is None else '""' if str(v) == "" else str(f"'{v}'")) for v in params.values()]
+    query.append('INSERT INTO TB_SK_PKG_SK_IN (')
+    query.append(','.join(keys))
+    query.append(') VALUES(')
+    query.append(','.join(values))
+    query.append(')')
+    result = " ".join(query)
+    print(f'rs : {result}')
+    return result
+
+def saveIn(pkgId, inseq, params):
+
+    query = []
+    query.append('UPDATE TB_SK_PKG_SK_IN SET')
+    for index, key in enumerate(params):
+        if index == 0:
+            query.append(f'"{key}" = "{params[key]}"')
+        else:
+            query.append(f',"{key}" = "{params[key]}"')
+    query.append('WHERE 1=1')
+    query.append(f'AND SK_IN_SEQ = "{inseq}"')
+    query.append(f'AND PKG_ID = "{pkgId}"')
+
+    result = " ".join(query)
+    print(f'rs : {result}')
+    return result
+
+
+
+def delIn(pkgId, inseq):
+
+    query = []
+    query.append('DELETE FROM TB_SK_PKG_SK_IN')
+    query.append('WHERE 1=1')
+    query.append(f'AND SK_IN_SEQ = "{inseq}"')
+    query.append(f'AND PKG_ID = "{pkgId}"')
 
     result = " ".join(query)
     print(f'rs : {result}')

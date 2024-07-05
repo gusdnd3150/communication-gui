@@ -1,8 +1,29 @@
 from conf.logconfig import logger
-import sqlite3
 from conf.sql.SystemQueryString import *
 from src.controller.TestController import TestController
-import sys, os
+import sys,os ,json, sqlite3
+
+
+dbUrl=''
+dbUser=''
+dbPwd=''
+
+# 파일 경로
+file_path = "./config.json"
+# 파일이 없을 경우에만 JSON 파일 생성
+if not os.path.exists(file_path):
+    with open(file_path, "w") as file:
+        json.dump({}, file)
+        print(f"{file_path} 파일이 생성되었습니다.")
+        logger.info("config file created")
+else:
+    logger.info("config file is already exits")
+
+with open(file_path, 'r') as f:
+    data = json.load(f)
+
+
+
 
 dbInstance = sqlite3.connect('core.db') # socket system DB
 useYnCombo = ['Y','N']

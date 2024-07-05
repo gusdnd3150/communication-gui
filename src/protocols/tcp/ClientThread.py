@@ -215,7 +215,8 @@ class ClientThread(threading.Thread):
 
         finally:
             buffer.clear()
-            moduleData.runChannels.remove(client_info)
+            if client_info is not None:
+                moduleData.runChannels.remove(client_info)
             moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', '0')
             moduleData.mainInstance.deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
             if self.socket:

@@ -60,15 +60,15 @@
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>SOCKET</string>
+        <string>소켓 리스트</string>
        </attribute>
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>810</x>
           <y>0</y>
-          <width>149</width>
-          <height>24</height>
+          <width>155</width>
+          <height>28</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout">
@@ -101,7 +101,7 @@
           <x>810</x>
           <y>30</y>
           <width>271</width>
-          <height>461</height>
+          <height>473</height>
          </rect>
         </property>
         <layout class="QFormLayout" name="formLayout_2">
@@ -252,8 +252,14 @@
         </property>
         <property name="font">
          <font>
+          <family>맑은 고딕</family>
           <pointsize>7</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
+        </property>
+        <property name="dragEnabled">
+         <bool>true</bool>
         </property>
         <column>
          <property name="text">
@@ -264,49 +270,161 @@
       </widget>
       <widget class="QWidget" name="tab_5">
        <attribute name="title">
-        <string>IN</string>
+        <string>IN 패킷 설정</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <layout class="QGridLayout" name="gridLayout_7">
-          <item row="0" column="1">
-           <widget class="QToolButton" name="toolButton_9">
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QToolButton" name="toolButton_8">
-            <property name="text">
-             <string>+</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QToolButton" name="toolButton_10">
-            <property name="text">
-             <string>save</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="list_in"/>
-        </item>
-       </layout>
+       <widget class="QTableWidget" name="list_in">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>801</width>
+          <height>501</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>맑은 고딕</family>
+          <pointsize>7</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <column>
+         <property name="text">
+          <string>새 행</string>
+         </property>
+        </column>
+       </widget>
+       <widget class="QWidget" name="formLayoutWidget_4">
+        <property name="geometry">
+         <rect>
+          <x>810</x>
+          <y>30</y>
+          <width>271</width>
+          <height>461</height>
+         </rect>
+        </property>
+        <layout class="QFormLayout" name="formLayout_4">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_20">
+           <property name="text">
+            <string>패키지 명</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="in_PKG_ID">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_21">
+           <property name="text">
+            <string>소켓 아이디</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="in_IN_SK_ID"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_22">
+           <property name="text">
+            <string>메시지 아이디</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="in_IN_MSG_ID"/>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_24">
+           <property name="text">
+            <string>처리 핸들러</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="in_BZ_METHOD"/>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_25">
+           <property name="text">
+            <string>사용여부</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QComboBox" name="in_USE_YN"/>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="label_23">
+           <property name="text">
+            <string>desc</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QTextEdit" name="in_IN_DESC"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="ss">
+           <property name="text">
+            <string>SEQ</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="in_SK_IN_SEQ"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>810</x>
+          <y>0</y>
+          <width>155</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
+          <widget class="QToolButton" name="btn_addIn">
+           <property name="text">
+            <string>신규</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QToolButton" name="btn_delIn">
+           <property name="text">
+            <string>삭제</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QToolButton" name="btn_saveIn">
+           <property name="text">
+            <string>저장</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
-        <string>MSG</string>
+        <string>메시지</string>
        </attribute>
        <widget class="QWidget" name="formLayoutWidget">
         <property name="geometry">
          <rect>
           <x>9</x>
           <y>9</y>
-          <width>131</width>
+          <width>140</width>
           <height>31</height>
          </rect>
         </property>
@@ -472,7 +590,7 @@
       </widget>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
-        <string>SCHEDULE</string>
+        <string>스케줄</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
@@ -557,7 +675,7 @@
      <x>0</x>
      <y>0</y>
      <width>1150</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
