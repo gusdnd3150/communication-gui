@@ -228,18 +228,22 @@ def selectSkOutList():
             'WHERE PKG_ID = "CORE" '\
             'AND USE_YN = "Y"		 '
 
-def selectListTbSkSch():
-    return 'SELECT                '\
-            '	PKG_ID            '\
-            '	, SCH_ID          '\
-            '	, BZ_METHOD       '\
-            '	, SCH_DESC        '\
-            '	, USE_YN          '\
-            '	, SCH_JOB         '\
-            '	, SCH_JOB_TYPE    '\
-            'FROM TB_SK_PKG_SCH    '\
-            'WHERE PKG_ID = "CORE" '\
-            'AND USE_YN = "Y"      '
+def selectListTbSkSch(pkgId='CORE'):
+    query =[]
+    query.append('SELECT                 ')
+    query.append('	PKG_ID               ')
+    query.append('	, SCH_ID             ')
+    query.append('	, BZ_METHOD          ')
+    query.append('	, SCH_DESC           ')
+    query.append('	, USE_YN             ')
+    query.append('	, SCH_JOB            ')
+    query.append('	, SCH_JOB_TYPE       ')
+    query.append('FROM TB_SK_PKG_SCH     ')
+    query.append('WHERE 1=1')
+    if(pkgId is not None):
+        query.append(f'AND PKG_ID = "{pkgId}" ')
+    query.append('AND USE_YN = "Y"       ')
+    return " ".join(query)
 
 def selectListTbSkBz ():
     return 'SELECT            '  \

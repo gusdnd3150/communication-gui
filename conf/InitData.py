@@ -101,8 +101,8 @@ def getsokcetOut():
     return selectQuery(selectSkOutList())
 
 
-def getsokcetSch():
-    return selectQuery(selectListTbSkSch())
+def getsokcetSch(pkgId):
+    return selectQuery(selectListTbSkSch(pkgId))
 
 
 # def getsokcetBz():
@@ -136,7 +136,7 @@ def initPkgData(pkgId):
 
     sokcetList = getsokcetList(pkgId)
     sokcetIn = getsokcetIn(pkgId)
-    sokcetSch = getsokcetSch()
+    sokcetSch = getsokcetSch(pkgId)
     socketBody = getsocketBody()
 
     # logger.info(f'비즈니스 컨트롤러 초기화 ------------------')

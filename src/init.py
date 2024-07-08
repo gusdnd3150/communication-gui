@@ -18,6 +18,7 @@ from conf.logconfig import logger
 from src.protocols.udp.ServerUdpThread import ServerUdpThread
 from src.protocols.udp.ClientUdpThread import ClientUdpThread
 from src.protocols.websk.WebSkServerThread import WebSkServerThread
+from src.protocols.sch.Schedule import Schedule
 
 
 def resource_path(relative_path):
@@ -158,6 +159,12 @@ class InitClass():
                 if skClientTy == 'KEEP':
                     threadInfo.daemon = True
                     threadInfo.start()
+
+
+            for index, sch in enumerate(moduleData.sokcetSch):
+                schThread = Schedule(sch)
+                schThread.damon = True
+                schThread.start()
 
             # sysThread = SystemMonitor(self.mainLayOut)
             # sysThread.daemon = True

@@ -103,7 +103,6 @@ class ServerThread(threading.Thread):
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail')
         finally:
-
             self._stop_event.set()
             moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
 
