@@ -1,6 +1,8 @@
 
 from conf.logconfig import logger
 import threading
+from src.protocols.BzActivator import BzActivator
+
 
 class Schedule(threading.Thread):
 
@@ -33,6 +35,30 @@ class Schedule(threading.Thread):
     def runSchedule(self):
         try:
             logger.info(f'runSchedule start SCH_ID:{self.schId}')
-            
+
+            self.isRun = True
+            logger.info(f'BzSchedule start : SCH_ID = {self.schId} ')
+            # self.schedule.every(self.interval).seconds.do(self.task)
+            while self.isRun:
+                # self.times.sleep(self.interval)
+                # if self.isRun:
+                #     self.task()
+                for _ in range(int(self.interval * 10)):  # 100ms 간격으로 체크
+                    if not self.isRun:
+                        return
+                    self.times.sleep(0.1)
+                if self.isRun:
+                    self.task()
+
         except Exception as e:
-            logger.info(f'runSchedule Exception :: {e}')
+            logger.error(f'runSchedule Exception :: {e}')
+
+
+
+ def task(self):
+        try:
+            bz = BzActivator(self.bzInfo)
+            bz.daemon = True
+            bz.start()
+        except Exception as e:
+            logger.error(f'BzSchedule task exception : {e}')
