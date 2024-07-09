@@ -22,6 +22,7 @@ class Schedule(threading.Thread):
     def __init__(self, sch):
 
         self.bzInfo = sch
+        self.schId = sch['SCH_ID']
         if sch.get('SCH_JOB') is not None:
             self.schJob = sch['SCH_JOB']
 

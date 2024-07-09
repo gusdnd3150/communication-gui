@@ -92,7 +92,10 @@ class InitClass():
                 runThread.stop()
                 if item['SK_CLIENT_TYPE'] != 'EVENT':
                     runThread.join()
-
+                item['SK_THREAD'] = None
+            for i, item in enumerate(moduleData.sokcetSch):
+                runThread = item['SK_THREAD']
+                runThread.stop()
                 item['SK_THREAD'] = None
 
             self.mainLayOut.list_conn.clearContents()
@@ -164,6 +167,7 @@ class InitClass():
                 schThread = Schedule(sch)
                 schThread.damon = True
                 schThread.start()
+                sch['SK_THREAD'] = schThread
 
             # sysThread = SystemMonitor(self.mainLayOut)
             # sysThread.daemon = True
