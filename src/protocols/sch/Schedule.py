@@ -20,7 +20,7 @@ class Schedule(threading.Thread):
     # {'PKG_ID': 'CORE', 'SCH_ID': 'TEST', 'BZ_METHOD': 'TestController.sch', 'SCH_DESC': None, 'USE_YN': 'Y',
     #  'SCH_JOB': '2', 'SCH_JOB_TYPE': 'SEC'}
     def __init__(self, sch):
-        logger.info(f'init sch :{sch}')
+        self.logger.info(f'init sch :{sch}')
         self.bzInfo = sch
         if sch.get('SCH_JOB') is not None:
             self.schJob = sch['SCH_JOB']
@@ -37,8 +37,26 @@ class Schedule(threading.Thread):
     def run(self):
         self.runSchedule()
 
+    def stop(self):
+        try:
+            logger = logging.getLogger(self.schId)
+            # 모든 핸들러 제거
+            handlers = logger.handlers[:]
+            for handler in handlers:
+                handler.close()
+                logger.removeHandler(handler)
+            # 로거 제거
+            logging.getLogger(self.schId).handlers = []
+
+            self.isRun = False
+        except Exception as e:
+            self.logger.error(f'SCH_ID:{self.schId} Stop fail')
+        finally:
+            self._stop_event.set()
+            # moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
+
     def __del__(self):
-        logger.info('deleted')
+        self.logger.info('deleted')
 
     def runSchedule(self):
         try:
@@ -57,10 +75,10 @@ class Schedule(threading.Thread):
                     next_run = cron.next(default_utc=True)
                     sleep_time = next_run
                 except Exception as e:
-                    logger.error(f'Invalid cron expression: {self.schJob}')
+                    self.logger.error(f'Invalid cron expression: {self.schJob}')
                     return
             else:
-                logger.error(f'Invalid SCH_JOB_TYPE: {self.schjobTy}')
+                self.logger.error(f'Invalid SCH_JOB_TYPE: {self.schjobTy}')
                 return
 
             while self.isRun:
@@ -75,7 +93,7 @@ class Schedule(threading.Thread):
                     sleep_time = next_run
 
         except Exception as e:
-            logger.error(f'runSchedule Exception :: {e}')
+            self.logger.error(f'runSchedule Exception :: {e}')
 
     def task(self):
         try:
@@ -83,4 +101,4 @@ class Schedule(threading.Thread):
             bz.daemon = True
             bz.start()
         except Exception as e:
-            logger.error(f'BzSchedule task exception : {e}')
+            self.logger.error(f'BzSchedule task exception : {e}')
