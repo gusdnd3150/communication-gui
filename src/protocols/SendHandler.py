@@ -3,7 +3,7 @@ import traceback
 from conf.logconfig import logger
 
 # from src.protocols.tcp.ClientEventThread import ClientEventThread
-import conf.InitData as moduleData
+import conf.skModule as moduleData
 import asyncio
 
 class SendHandler():

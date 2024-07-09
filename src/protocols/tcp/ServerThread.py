@@ -6,8 +6,8 @@ import socket
 from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
-from conf.InitData import systemGlobals
-import conf.InitData as moduleData
+from conf.skModule import systemGlobals
+import conf.skModule as moduleData
 
 from src.protocols.sch.BzSchedule import BzSchedule
 from src.protocols.BzActivator import BzActivator

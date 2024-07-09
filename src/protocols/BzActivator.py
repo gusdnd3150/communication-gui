@@ -2,7 +2,7 @@
 
 import threading
 from conf.logconfig import logger
-from conf.InitData import systemGlobals
+from conf.skModule import systemGlobals
 
 class BzActivator(threading.Thread):
 

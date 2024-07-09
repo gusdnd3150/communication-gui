@@ -1,7 +1,7 @@
 
 from conf.logconfig import logger
 from src.protocols.SendHandler import SendHandler
-import conf.InitData as initData
+import conf.skModule as initData
 
 class SchController():
 

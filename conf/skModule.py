@@ -2,7 +2,9 @@ from conf.logconfig import logger
 from conf.sql.SystemQueryString import *
 from src.controller.TestController import TestController
 from src.controller.SchController import SchController
-import sys,os ,json, sqlite3
+from src.protocols.SendHandler import SendHandler
+import sys,os ,json, sqlite3, importlib, traceback
+import inspect
 
 
 dbUrl=''
@@ -52,8 +54,9 @@ logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
 systemGlobals = globals()
 systemGlobals['TestController'] = TestController()
 systemGlobals['SchController'] = SchController()
-
 logger.info(f'------------------- ------------------')
+
+
 
 
 def resource_path(relative_path):
@@ -107,10 +110,6 @@ def getsokcetOut():
 def getsokcetSch(pkgId):
     return selectQuery(selectListTbSkSch(pkgId))
 
-
-# def getsokcetBz():
-#     return selectQuery(selectListTbSkBz())
-
 def selectQuery(queryString):
     c = dbInstance.cursor()
     c.execute(queryString)
@@ -128,13 +127,10 @@ def queryExecute(queryString):
     c.execute(queryString)
     c.execute('COMMIT;')
 
-
-
-
 def initPkgData(pkgId):
     logger.info(f'-----------RUN PKG_ID = {pkgId}---------------')
     systemGlobals['sokcetList'] = None
-    # systemGlobals['TestController'] = None
+    systemGlobals['sokcetSch'] = None
     systemGlobals['sokcetIn'] = None
 
     sokcetList = getsokcetList(pkgId)
@@ -154,7 +150,6 @@ def initPkgData(pkgId):
     logger.info(f'sokcetIn size : {len(sokcetIn)}')
 
     # 비즈니스로직 처리 컨트롤러 지정
-
     systemGlobals['sokcetList'] = sokcetList
     systemGlobals['socketBody'] = socketBody
     systemGlobals['sokcetIn'] = sokcetIn
@@ -162,5 +157,33 @@ def initPkgData(pkgId):
     logger.info(f'---------------------------------------')
 
 
+def projectPath():
+    return os.path.dirname(os.path.abspath(__file__))
 
 
+# 특정 경로의 py 파일을 동적으로 인스턴스화 시킨다
+def load_all_classes_from_directory(directory_path: str):
+    instances = []
+    logger.info(f'directory_path :{directory_path}')
+    for file_name in os.listdir(directory_path):
+        try:
+            if file_name.endswith('.py') and file_name != os.path.basename(__file__):
+                file_path = os.path.join(directory_path, file_name)
+                module_name = os.path.splitext(file_name)[0]
+
+                spec = importlib.util.spec_from_file_location(module_name, file_path)
+                module = importlib.util.module_from_spec(spec)
+                sys.modules[module_name] = module
+                spec.loader.exec_module(module)
+
+                for name, obj in inspect.getmembers(module):
+                    if inspect.isclass(obj) and obj.__module__ == module_name:
+                        instances.append(obj(logger, SendHandler()))
+        except Exception as e:
+            logger.error(f'load_all_classes_from_directory error : {traceback.format_exc()}')
+
+    return instances
+
+classes = load_all_classes_from_directory('./tempBz/')
+for index, classInstance in enumerate(classes):
+    systemGlobals[classInstance.classNm] = classInstance

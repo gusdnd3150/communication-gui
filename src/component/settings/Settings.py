@@ -9,7 +9,7 @@ program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
 
 import traceback
-from conf.InitData import *
+from conf.skModule import *
 from conf.sql.SystemQueryString import *
 
 

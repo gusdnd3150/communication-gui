@@ -20,7 +20,7 @@ class Schedule(threading.Thread):
     # {'PKG_ID': 'CORE', 'SCH_ID': 'TEST', 'BZ_METHOD': 'TestController.sch', 'SCH_DESC': None, 'USE_YN': 'Y',
     #  'SCH_JOB': '2', 'SCH_JOB_TYPE': 'SEC'}
     def __init__(self, sch):
-        self.logger.info(f'init sch :{sch}')
+
         self.bzInfo = sch
         if sch.get('SCH_JOB') is not None:
             self.schJob = sch['SCH_JOB']
@@ -30,6 +30,8 @@ class Schedule(threading.Thread):
 
         self.logger = setup_sk_logger(sch['SCH_ID'])
         self.bzInfo['LOGGER'] = self.logger
+
+        self.logger.info(f'init sch :{sch}')
 
         super(Schedule, self).__init__()
         self._stop_event = threading.Event()

@@ -2,7 +2,7 @@
 import io
 import traceback
 from conf.logconfig import logger
-import conf.InitData as moduleData
+import conf.skModule as moduleData
 from src.utils.Utilitys import *
 import json
 
