@@ -1,6 +1,7 @@
 from conf.logconfig import logger
 from conf.sql.SystemQueryString import *
 from src.controller.TestController import TestController
+from src.controller.SchController import SchController
 import sys,os ,json, sqlite3
 
 
@@ -50,6 +51,8 @@ runChannels = [] # client,server 통합 접속된 채널 리스트
 logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
 systemGlobals = globals()
 systemGlobals['TestController'] = TestController()
+systemGlobals['SchController'] = SchController()
+
 logger.info(f'------------------- ------------------')
 
 
@@ -149,14 +152,13 @@ def initPkgData(pkgId):
     logger.info(f'socketBody size : {len(socketBody)}')
     logger.info(f'sokcetBz size : {len(sokcetBz)}')
     logger.info(f'sokcetIn size : {len(sokcetIn)}')
-    logger.info(f'sokcetSch size : {len(sokcetSch)}')
-
 
     # 비즈니스로직 처리 컨트롤러 지정
 
     systemGlobals['sokcetList'] = sokcetList
     systemGlobals['socketBody'] = socketBody
     systemGlobals['sokcetIn'] = sokcetIn
+    systemGlobals['sokcetSch'] = sokcetSch
     logger.info(f'---------------------------------------')
 
 

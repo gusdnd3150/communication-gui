@@ -160,7 +160,6 @@ class InitClass():
                     threadInfo.daemon = True
                     threadInfo.start()
 
-
             for index, sch in enumerate(moduleData.sokcetSch):
                 schThread = Schedule(sch)
                 schThread.damon = True
