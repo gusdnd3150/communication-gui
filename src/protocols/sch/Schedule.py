@@ -3,7 +3,7 @@ import threading
 from src.protocols.BzActivator import BzActivator
 import time
 from datetime import datetime
-from crontab import CronTab
+# from crontab import CronTab
 import schedule
 from conf.logconfig import *
 
@@ -74,9 +74,10 @@ class Schedule(threading.Thread):
                 sleep_time = int(self.schJob) * 3600
             elif self.schjobTy is None:
                 try:
-                    cron = CronTab(self.schJob)
-                    next_run = cron.next(default_utc=True)
-                    sleep_time = next_run
+                    self.logger.info(f'ddddddddddd')
+                    # cron = CronTab(self.schJob)
+                    # next_run = cron.next(default_utc=True)
+                    # sleep_time = next_run
                 except Exception as e:
                     self.logger.error(f'Invalid cron expression: {self.schJob}')
                     return
@@ -96,6 +97,7 @@ class Schedule(threading.Thread):
                     sleep_time = next_run
 
         except Exception as e:
+            self.isRun = False
             self.logger.error(f'runSchedule Exception :: {e}')
 
     def task(self):
@@ -104,4 +106,4 @@ class Schedule(threading.Thread):
             bz.daemon = True
             bz.start()
         except Exception as e:
-            self.logger.error(f'BzSchedule task exception : {e}')
+            self.logger.error(f'runSchedule BzSchedule task exception : {e}')

@@ -35,7 +35,6 @@ class Settings(QMainWindow):
         logger.info(f'path : {path}')
         self.ui = QUiLoader().load(path, None)
         super().__init__()
-
         self.setCentralWidget(self.ui)
         self.setWindowTitle('설정')
 
