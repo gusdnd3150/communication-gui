@@ -43,7 +43,7 @@ pkgCombo = [
 # 네이밍
 # 1. btn_?, popup_?, input_?,
 
-class InitClass():
+class InitClass(QMainWindow):
 
     mainLayOut = None
     popup = None # 설정 팝업
@@ -66,19 +66,21 @@ class InitClass():
         self.mainLayOut.btn_settings.clicked.connect(self.open_settings)
         self.mainLayOut.btn_start.clicked.connect(self.start_sk)
         self.mainLayOut.btn_stop.clicked.connect(self.stop_sk)
+
         self.mainLayOut.show()
         moduleData.mainLayout = self.mainLayOut
         moduleData.mainInstance = self
-
-        self.bindData()
+        super().__init__()
 
         # 설정팝업
         self.popup = Settings(self.initData)
+        self.bindData()
         self.setGrid()
-
         self.setInitData()
         app.exec()
 
+    def closeEvent(self, event):
+        logger.info(f' 시스템 종료 ')
 
     def bindData(self):
         for i in range(0, len(pkgCombo)):
