@@ -456,3 +456,57 @@ def delBz(pkgId, skgroup, bzty):
     result = " ".join(query)
     print(f'rs : {result}')
     return result
+
+
+def selectSchList(useYn, pkgId):
+
+    query = []
+    query.append('SELECT            ')
+    query.append('	PKG_ID          ')
+    query.append('	,SCH_ID         ')
+    query.append('	,SCH_JOB_TYPE   ')
+    query.append('	,SCH_JOB        ')
+    query.append('	,BZ_METHOD      ')
+    query.append('	,SCH_DESC       ')
+    query.append('	,USE_YN         ')
+    query.append('	,REG_ID         ')
+    query.append('	,UPD_ID         ')
+    query.append('FROM TB_SK_PKG_SCH')
+    query.append('WHERE 1=1 ')
+    if(pkgId is not None):
+        query.append(f'AND PKG_ID = "{pkgId}"')
+    if (useYn is not None):
+        query.append(f'AND USE_YN = "{useYn}"')
+
+    return " ".join(query)
+
+
+def saveSch(pkgId, skGroup, params):
+
+    query = []
+    query.append('UPDATE TB_SK_PKG_SCH SET')
+    for index, key in enumerate(params):
+        if index == 0:
+            query.append(f'"{key}" = "{params[key]}"')
+        else:
+            query.append(f',"{key}" = "{params[key]}"')
+    query.append('WHERE 1=1')
+    query.append(f'AND PKG_ID = "{pkgId}"')
+    query.append(f'AND SCH_ID = "{skGroup}"')
+
+    result = " ".join(query)
+    print(f'rs : {result}')
+    return result
+
+
+def delSch(pkgId, skgroup):
+
+    query = []
+    query.append('DELETE FROM TB_SK_PKG_SCH')
+    query.append('WHERE 1=1')
+    query.append(f'AND PKG_ID = "{pkgId}"')
+    query.append(f'AND SCH_ID = "{skgroup}"')
+
+    result = " ".join(query)
+    print(f'rs : {result}')
+    return result

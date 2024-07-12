@@ -28,6 +28,7 @@ class Settings(QMainWindow):
     contFlag = 'upd'
     contInFlag = 'upd'
     contBzFlag = 'upd'
+    contSchFlag = 'upd'
 
     def __init__(self, initData):
         self.initData = initData
@@ -50,6 +51,7 @@ class Settings(QMainWindow):
         self.createSkGrid() # 소켓 그리드
         self.createInGrid()# 소켓 In 그리드
         self.createBzGrid()
+        self.createSchGrid()
         self.createMsgGrid(None,None)# 메시지 그리드
 
 
@@ -73,9 +75,10 @@ class Settings(QMainWindow):
         self.ui.btn_delBz.clicked.connect(self.delBz)
         self.ui.btn_saveBz.clicked.connect(self.saveBz)
 
-        self.ui.btn_addSch.clicked.connect(self.searchMsg)
-        self.ui.btn_delSch.clicked.connect(self.searchMsg)
-        self.ui.btn_saveSch.clicked.connect(self.searchMsg)
+        self.ui.btn_addSch.clicked.connect(self.addSch)
+        self.ui.btn_delSch.clicked.connect(self.delSch)
+        self.ui.btn_saveSch.clicked.connect(self.saveSch)
+
 
         for item in useYnCombo:
             self.ui.sk_USE_YN.addItem(item)
@@ -357,7 +360,7 @@ class Settings(QMainWindow):
 
 
 
-#################################################################### 소켓 IN
+#################################################################### 이벤트 설정
     def createBzGrid(self):
         try:
             headers = ['PKG_ID','SK_GROUP','BZ_TYPE','USE_YN','BZ_METHOD','SEC','BZ_DESC']
@@ -438,3 +441,84 @@ class Settings(QMainWindow):
 
         except Exception as e :
             logger.error(f'selectBzRow exception : {traceback.format_exc()} ')
+            
+
+
+
+#################################################################### 스케줄 설정
+    def createSchGrid(self):
+        try:
+            headers = ['PKG_ID','SCH_ID','SCH_JOB_TYPE','SCH_JOB','BZ_METHOD','SCH_DESC','USE_YN']
+
+            # self.ui.list_in.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+            self.ui.list_sch.verticalHeader().setVisible(False)
+
+            self.ui.list_sch.setRowCount(0)  # Table의 행을 설정, list의 길이
+            self.ui.list_sch.setColumnCount(7)
+            self.ui.list_sch.setHorizontalHeaderLabels(headers)
+            # inList = selectQuery(selectSocketInList(None, None, None))
+            inList = selectQuery(selectSchList( None, None))
+            for i, inItem in enumerate(inList):
+                row_count = self.ui.list_sch.rowCount()
+                self.ui.list_sch.insertRow(row_count)
+                for j, hd in enumerate(headers):
+                    if inItem.get(hd) is not None:
+                        self.ui.list_sch.setItem(row_count, j, QTableWidgetItem(str(inItem[hd])))
+            self.ui.list_sch.cellClicked.connect(self.selectSchRow)
+
+        except Exception as e:
+            logger.info(f'createSchGrid exception : {traceback.format_exc()}')
+
+    def addSch(self):
+        self.contSchFlag = 'ins'
+        self.ui.sch_PKG_ID.setText('')
+        self.ui.sch_PKG_ID.setDisabled(False)
+        self.ui.sch_SCH_ID.setText('')
+        self.ui.sch_SCH_ID.setDisabled(False)
+        self.ui.sch_SCH_JOB.setText('')
+        self.ui.sch_SCH_DESC.setText('')
+        self.ui.sch_BZ_METHOD.setText('')
+
+    def delSch(self):
+        queryExecute(delSch(self.ui.sch_PKG_ID.text(), self.ui.sch_SCH_ID.text()))
+        self.createSchGrid()
+
+    def saveSch(self):
+        row_data = {
+            'PKG_ID':self.ui.sch_PKG_ID.text()
+            , 'SCH_ID': self.ui.sch_SCH_ID.text()
+            , 'SCH_JOB_TYPE': self.ui.sch_SCH_JOB_TYPE.currentText()
+            , 'SCH_JOB': self.ui.sch_SCH_JOB.text()
+            , 'BZ_METHOD': self.ui.sch_BZ_METHOD.text()
+            , 'USE_YN': self.ui.sch_USE_YN.currentText()
+            , 'SCH_DESC': self.ui.sch_SCH_DESC.toPlainText()
+        }
+        logger.info(f' row : {row_data}')
+        if self.contSchFlag == 'ins':
+            queryExecute(insertTable(row_data,'TB_SK_PKG_SCH'))
+        else :
+            queryExecute(saveSch(self.ui.sch_PKG_ID.text(), self.ui.sch_SCH_ID.text(),row_data))
+        self.createSchGrid()
+
+    def selectSchRow(self,row, column):
+        try:
+            self.contSchFlag = 'upd'
+            row_data = {}
+            for column in range(self.ui.list_sch.columnCount()):
+                header_item = self.ui.list_sch.horizontalHeaderItem(column)
+                item = self.ui.list_sch.item(row, column)
+                row_data[header_item.text()] = item.text() if item else ""
+
+            # self.ui.bz_PKG_ID.setDisabled(True)
+            self.ui.sch_PKG_ID.setText(row_data['PKG_ID'])
+            self.ui.sch_PKG_ID.setDisabled(True)
+            self.ui.sch_SCH_ID.setText(row_data['SCH_ID'])
+            self.ui.sch_SCH_ID.setDisabled(True)
+            self.ui.sch_SCH_JOB.setText(row_data['SCH_JOB'])
+            self.ui.sch_SCH_DESC.setText(row_data['SCH_DESC'])
+            self.ui.sch_BZ_METHOD.setText(row_data['BZ_METHOD'])
+            self.ui.sch_USE_YN.setCurrentText(row_data['USE_YN'])
+            self.ui.sch_SCH_JOB_TYPE.setCurrentText(row_data['SCH_JOB_TYPE'])
+
+        except Exception as e :
+            logger.error(f'selectSchRow exception : {traceback.format_exc()} ')
