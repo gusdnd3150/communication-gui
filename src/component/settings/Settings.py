@@ -27,6 +27,7 @@ class Settings(QMainWindow):
     skRow = None
     contFlag = 'upd'
     contInFlag = 'upd'
+    contBzFlag = 'upd'
 
     def __init__(self, initData):
         self.initData = initData
@@ -68,9 +69,9 @@ class Settings(QMainWindow):
         self.ui.msg_search.clicked.connect(self.searchMsg)
 
         # 이벤트 탭 이벤트 설정
-        self.ui.btn_addBz.clicked.connect(self.searchMsg)
-        self.ui.btn_delBz.clicked.connect(self.searchMsg)
-        self.ui.btn_saveBz.clicked.connect(self.searchMsg)
+        self.ui.btn_addBz.clicked.connect(self.addBz)
+        self.ui.btn_delBz.clicked.connect(self.delBz)
+        self.ui.btn_saveBz.clicked.connect(self.saveBz)
 
         self.ui.btn_addSch.clicked.connect(self.searchMsg)
         self.ui.btn_delSch.clicked.connect(self.searchMsg)
@@ -294,6 +295,8 @@ class Settings(QMainWindow):
             self.createMsgDtGrid(self.ui.msg_MSG_ID_iq.text())
         except Exception as e:
             logger.error(f'searchMsg exception : {traceback.format_exc()}')
+
+
     def createMsgGrid(self, msg, mid):
         try:
             logger.info('test')
@@ -364,77 +367,74 @@ class Settings(QMainWindow):
             self.ui.list_bz.setRowCount(0)  # Table의 행을 설정, list의 길이
             self.ui.list_bz.setColumnCount(7)
             self.ui.list_bz.setHorizontalHeaderLabels(headers)
-            inList = selectQuery(selectSocketInList(None, None, None))
+            # inList = selectQuery(selectSocketInList(None, None, None))
+            inList = selectQuery(selectBzList(None, None, None))
             for i, inItem in enumerate(inList):
                 row_count = self.ui.list_bz.rowCount()
                 self.ui.list_bz.insertRow(row_count)
                 for j, hd in enumerate(headers):
                     if inItem.get(hd) is not None:
                         self.ui.list_bz.setItem(row_count, j, QTableWidgetItem(str(inItem[hd])))
-            self.ui.list_bz.cellClicked.connect(self.selectInRow)
+            self.ui.list_bz.cellClicked.connect(self.selectBzRow)
 
         except Exception as e:
             logger.info(f'createBzGrid exception : {traceback.format_exc()}')
 
     def addBz(self):
-        self.contInFlag = 'ins'
+        self.contBzFlag = 'ins'
         self.skRow = None
-        self.ui.in_PKG_ID.setText('')
-        self.ui.in_PKG_ID.setDisabled(False)
-        self.ui.in_SK_IN_SEQ.setText('')
-        self.ui.in_SK_IN_SEQ.setDisabled(False)
+        self.ui.bz_PKG_ID.setText('')
+        self.ui.bz_SK_GROUP.setText('')
+        self.ui.bz_BZ_METHOD.setText('')
+        self.ui.bz_SEC.setText('')
+        self.ui.bz_BZ_DESC.setText('')
 
-        self.ui.in_IN_SK_ID.setText('')
-        self.ui.in_IN_MSG_ID.setText('')
-        self.ui.in_BZ_METHOD.setText('')
-        self.ui.in_IN_DESC.setText('')
+        self.ui.bz_PKG_ID.setDisabled(False)
+        self.ui.bz_SK_GROUP.setDisabled(False)
+        self.ui.bz_BZ_TYPE.setDisabled(False)
 
 
     def delBz(self):
-        queryExecute(delIn(self.ui.in_PKG_ID.text(), self.ui.in_SK_IN_SEQ.text()))
-        self.createInGrid()
+        queryExecute(delBz(self.ui.bz_PKG_ID.text(), self.ui.bz_SK_GROUP.text(), self.ui.bz_BZ_TYPE.currentText()))
+        self.createBzGrid()
 
     def saveBz(self):
         row_data = {
-            'IN_SK_ID': self.ui.in_IN_SK_ID.text()
-            , 'IN_MSG_ID': self.ui.in_IN_MSG_ID.text()
-            , 'BZ_METHOD': self.ui.in_BZ_METHOD.text()
-            , 'USE_YN': self.ui.in_USE_YN.currentText()
-            , 'IN_DESC': self.ui.in_IN_DESC.toPlainText()
+            'PKG_ID':self.ui.bz_PKG_ID.text()
+            , 'SK_GROUP': self.ui.bz_SK_GROUP.text()
+            , 'BZ_TYPE': self.ui.bz_BZ_TYPE.currentText()
+            , 'USE_YN': self.ui.bz_USE_YN.currentText()
+            , 'BZ_METHOD': self.ui.bz_BZ_METHOD.text()
+            , 'SEC': self.ui.bz_SEC.text()
+            , 'BZ_DESC': self.ui.bz_BZ_DESC.toPlainText()
         }
         logger.info(f' row : {row_data}')
-        if self.contInFlag == 'ins':
-            row_data['PKG_ID'] = self.ui.in_PKG_ID.text()
-            row_data['SK_IN_SEQ'] = self.ui.in_SK_IN_SEQ.text()
-            queryExecute(insertIn(row_data))
+        if self.contBzFlag == 'ins':
+            queryExecute(insertTable(row_data,'TB_SK_PKG_SK_BZ'))
         else :
-            queryExecute(saveIn(self.ui.in_PKG_ID.text(), self.ui.in_SK_IN_SEQ.text(), row_data))
-        self.createInGrid()
+            queryExecute(saveBz(self.ui.bz_PKG_ID.text(), self.ui.bz_SK_GROUP.text(),self.ui.bz_BZ_TYPE.currentText(), row_data))
+        self.createBzGrid()
 
     def selectBzRow(self,row, column):
         try:
-            self.contInFlag = 'upd'
-            # logger.info(f'row: {row}')
-            # item = self.ui.list_sk.item(row, column)
-            # if item:
-            #     print(f"Item text: {item.text()}")
+            self.contBzFlag = 'upd'
             row_data = {}
-            for column in range(self.ui.list_in.columnCount()):
-                header_item = self.ui.list_in.horizontalHeaderItem(column)
-                item = self.ui.list_in.item(row, column)
+            for column in range(self.ui.list_bz.columnCount()):
+                header_item = self.ui.list_bz.horizontalHeaderItem(column)
+                item = self.ui.list_bz.item(row, column)
                 row_data[header_item.text()] = item.text() if item else ""
             self.skRow = row
-            self.ui.in_PKG_ID.setText(row_data['PKG_ID'])
-            self.ui.in_PKG_ID.setDisabled(True)
-            self.ui.in_SK_IN_SEQ.setText(row_data['SK_IN_SEQ'])
-            self.ui.in_SK_IN_SEQ.setDisabled(True)
+            self.ui.bz_PKG_ID.setText(row_data['PKG_ID'])
+            self.ui.bz_PKG_ID.setDisabled(True)
+            self.ui.bz_SK_GROUP.setText(row_data['SK_GROUP'])
+            self.ui.bz_SK_GROUP.setDisabled(True)
+            self.ui.bz_BZ_METHOD.setText(row_data['BZ_METHOD'])
 
-            self.ui.in_IN_SK_ID.setText(row_data['IN_SK_ID'])
-
-            self.ui.in_IN_MSG_ID.setText(row_data['IN_MSG_ID'])
-            self.ui.in_BZ_METHOD.setText(row_data['BZ_METHOD'])
-            self.ui.in_IN_DESC.setText(row_data['IN_DESC'])
-            self.ui.in_USE_YN.setCurrentText(row_data['USE_YN'])
+            self.ui.bz_SEC.setText(row_data['SEC'])
+            self.ui.bz_BZ_DESC.setText(row_data['BZ_DESC'])
+            self.ui.bz_USE_YN.setCurrentText(row_data['USE_YN'])
+            self.ui.bz_BZ_TYPE.setCurrentText(row_data['BZ_TYPE'])
+            self.ui.bz_BZ_TYPE.setDisabled(True)
 
         except Exception as e :
-            logger.error(f'selectRow exception : {traceback.format_exc()} ')
+            logger.error(f'selectBzRow exception : {traceback.format_exc()} ')

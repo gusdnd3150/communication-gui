@@ -388,3 +388,71 @@ def delIn(pkgId, inseq):
     result = " ".join(query)
     print(f'rs : {result}')
     return result
+
+
+def selectBzList(skGroupId , useYn, pkgId='CORE'):
+
+    query = []
+    query.append('SELECT               ')
+    query.append('	PKG_ID             ')
+    query.append('	,SK_GROUP          ')
+    query.append('	,BZ_TYPE           ')
+    query.append('	,USE_YN            ')
+    query.append('	,BZ_METHOD         ')
+    query.append('	,SEC               ')
+    query.append('	,BZ_DESC           ')
+    query.append('FROM TB_SK_PKG_SK_BZ ')
+    query.append('WHERE 1=1 ')
+    if(pkgId is not None):
+        query.append(f'AND PKG_ID = "{pkgId}"')
+    if(skGroupId is not None):
+        query.append(f'AND SK_GROUP = "{skGroupId}"')
+    if (useYn is not None):
+        query.append(f'AND USE_YN = "{useYn}"')
+
+    return " ".join(query)
+
+def insertTable(params,tableNm):
+
+    query = []
+    keys = list(params.keys())
+    values = [("" if str(v) is None else '""' if str(v) == "" else str(f"'{v}'")) for v in params.values()]
+    query.append(f'INSERT INTO {tableNm} (')
+    query.append(','.join(keys))
+    query.append(') VALUES(')
+    query.append(','.join(values))
+    query.append(')')
+    result = " ".join(query)
+    print(f'rs : {result}')
+    return result
+
+def saveBz(pkgId, skGroup,bzTy, params):
+
+    query = []
+    query.append('UPDATE TB_SK_PKG_SK_BZ SET')
+    for index, key in enumerate(params):
+        if index == 0:
+            query.append(f'"{key}" = "{params[key]}"')
+        else:
+            query.append(f',"{key}" = "{params[key]}"')
+    query.append('WHERE 1=1')
+    query.append(f'AND PKG_ID = "{pkgId}"')
+    query.append(f'AND SK_GROUP = "{skGroup}"')
+    query.append(f'AND BZ_TYPE = "{bzTy}"')
+
+    result = " ".join(query)
+    print(f'rs : {result}')
+    return result
+
+def delBz(pkgId, skgroup, bzty):
+
+    query = []
+    query.append('DELETE FROM TB_SK_PKG_SK_BZ')
+    query.append('WHERE 1=1')
+    query.append(f'AND PKG_ID = "{pkgId}"')
+    query.append(f'AND SK_GROUP = "{skgroup}"')
+    query.append(f'AND BZ_TYPE = "{bzty}"')
+
+    result = " ".join(query)
+    print(f'rs : {result}')
+    return result
