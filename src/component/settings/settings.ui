@@ -56,7 +56,7 @@
     <item row="2" column="1">
      <widget class="QTabWidget" name="tap_info">
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -590,80 +590,324 @@
       </widget>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
-        <string>스케줄</string>
+        <string>이벤트</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_5">
-        <item>
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>BZ 스케줄</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_6">
-          <item row="0" column="1">
-           <widget class="QToolButton" name="toolButton_21">
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QToolButton" name="toolButton_20">
-            <property name="text">
-             <string>+</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QToolButton" name="toolButton_22">
-            <property name="text">
-             <string>save</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QTableView" name="list_bz"/>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string>SCH 스케줄</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_11">
-          <item row="0" column="1">
-           <widget class="QToolButton" name="toolButton_23">
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QToolButton" name="toolButton_24">
-            <property name="text">
-             <string>+</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QToolButton" name="toolButton_25">
-            <property name="text">
-             <string>save</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="list_sch"/>
-        </item>
-       </layout>
+       <widget class="QLabel" name="label_6">
+        <property name="geometry">
+         <rect>
+          <x>9</x>
+          <y>9</y>
+          <width>101</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>이벤트 소켓 그룹</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_5">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>260</y>
+          <width>104</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>시스템 SCH 스케줄</string>
+        </property>
+       </widget>
+       <widget class="QTableWidget" name="list_bz">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>821</width>
+          <height>211</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>맑은 고딕</family>
+          <pointsize>7</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
+        <column>
+         <property name="text">
+          <string>새 행</string>
+         </property>
+        </column>
+       </widget>
+       <widget class="QTableWidget" name="list_sch">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>280</y>
+          <width>821</width>
+          <height>211</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>맑은 고딕</family>
+          <pointsize>7</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
+        <column>
+         <property name="text">
+          <string>새 행</string>
+         </property>
+        </column>
+       </widget>
+       <widget class="QWidget" name="formLayoutWidget_5">
+        <property name="geometry">
+         <rect>
+          <x>840</x>
+          <y>60</y>
+          <width>271</width>
+          <height>181</height>
+         </rect>
+        </property>
+        <layout class="QFormLayout" name="formLayout_5">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_26">
+           <property name="text">
+            <string>패키지 명</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="bz_PKG_ID">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_27">
+           <property name="text">
+            <string>소켓 GROUP</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="bz_SK_GROUP"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="ss_2">
+           <property name="text">
+            <string>이벤트 타입</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="bz_BZ_TYPE"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_29">
+           <property name="text">
+            <string>처리 핸들러</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="bz_BZ_METHOD"/>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_30">
+           <property name="text">
+            <string>사용여부</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QComboBox" name="bz_USE_YN"/>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="label_31">
+           <property name="text">
+            <string>desc</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QTextEdit" name="bz_BZ_DESC"/>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_28">
+           <property name="text">
+            <string>초</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="bz_SEC"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget_3">
+        <property name="geometry">
+         <rect>
+          <x>840</x>
+          <y>30</y>
+          <width>155</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+          <widget class="QToolButton" name="btn_addBz">
+           <property name="text">
+            <string>신규</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QToolButton" name="btn_delBz">
+           <property name="text">
+            <string>삭제</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QToolButton" name="btn_saveBz">
+           <property name="text">
+            <string>저장</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget_4">
+        <property name="geometry">
+         <rect>
+          <x>840</x>
+          <y>280</y>
+          <width>155</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="0" column="0">
+          <widget class="QToolButton" name="btn_addSch">
+           <property name="text">
+            <string>신규</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QToolButton" name="btn_delSch">
+           <property name="text">
+            <string>삭제</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QToolButton" name="btn_saveSch">
+           <property name="text">
+            <string>저장</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="formLayoutWidget_6">
+        <property name="geometry">
+         <rect>
+          <x>840</x>
+          <y>310</y>
+          <width>271</width>
+          <height>235</height>
+         </rect>
+        </property>
+        <layout class="QFormLayout" name="formLayout_6">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_32">
+           <property name="text">
+            <string>패키지 명</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="sch_PKG_ID">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_33">
+           <property name="text">
+            <string>스케줄 ID</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="sch_SCH_ID"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_34">
+           <property name="text">
+            <string>JOB</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="sch_JOB"/>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_35">
+           <property name="text">
+            <string>처리 핸들러</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="sch_BZ_METHOD"/>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_36">
+           <property name="text">
+            <string>사용여부</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QComboBox" name="sch_USE_YN"/>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="label_37">
+           <property name="text">
+            <string>desc</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QTextEdit" name="sch_SCH_DESC"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="ss_3">
+           <property name="text">
+            <string>JOB TYPE</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="sch_SCH_JOB_TYPE"/>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -675,7 +919,7 @@
      <x>0</x>
      <y>0</y>
      <width>1150</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

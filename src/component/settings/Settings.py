@@ -48,6 +48,7 @@ class Settings(QMainWindow):
         self.setEvent()
         self.createSkGrid() # 소켓 그리드
         self.createInGrid()# 소켓 In 그리드
+        self.createBzGrid()
         self.createMsgGrid(None,None)# 메시지 그리드
 
 
@@ -66,10 +67,21 @@ class Settings(QMainWindow):
         # 메시지 탭 이벤트 설정
         self.ui.msg_search.clicked.connect(self.searchMsg)
 
+        # 이벤트 탭 이벤트 설정
+        self.ui.btn_addBz.clicked.connect(self.searchMsg)
+        self.ui.btn_delBz.clicked.connect(self.searchMsg)
+        self.ui.btn_saveBz.clicked.connect(self.searchMsg)
+
+        self.ui.btn_addSch.clicked.connect(self.searchMsg)
+        self.ui.btn_delSch.clicked.connect(self.searchMsg)
+        self.ui.btn_saveSch.clicked.connect(self.searchMsg)
+
         for item in useYnCombo:
             self.ui.sk_USE_YN.addItem(item)
             self.ui.sk_SK_LOG.addItem(item)
             self.ui.in_USE_YN.addItem(item)
+            self.ui.bz_USE_YN.addItem(item)
+            self.ui.sch_USE_YN.addItem(item)
 
         for item in skTypeCombo:
             self.ui.sk_SK_TYPE.addItem(item)
@@ -82,6 +94,11 @@ class Settings(QMainWindow):
         for item in hdCombo:
             self.ui.sk_HD_ID.addItem(item)
 
+        for item in jobTypeCombo:
+            self.ui.sch_SCH_JOB_TYPE.addItem(item)
+
+        for item in eventTypeCombo:
+            self.ui.bz_BZ_TYPE.addItem(item)
 
     def createSkGrid(self):
         try:
@@ -333,3 +350,91 @@ class Settings(QMainWindow):
             # self.ui.msg_dt_list.cellClicked.connect(self.selectMsgRow)
         except Exception as e:
             logger.error(f'createMsgGrid exception : {traceback.format_exc()}')
+
+
+
+
+#################################################################### 소켓 IN
+    def createBzGrid(self):
+        try:
+            headers = ['PKG_ID','SK_GROUP','BZ_TYPE','USE_YN','BZ_METHOD','SEC','BZ_DESC']
+            # self.ui.list_in.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+            self.ui.list_bz.verticalHeader().setVisible(False)
+
+            self.ui.list_bz.setRowCount(0)  # Table의 행을 설정, list의 길이
+            self.ui.list_bz.setColumnCount(7)
+            self.ui.list_bz.setHorizontalHeaderLabels(headers)
+            inList = selectQuery(selectSocketInList(None, None, None))
+            for i, inItem in enumerate(inList):
+                row_count = self.ui.list_bz.rowCount()
+                self.ui.list_bz.insertRow(row_count)
+                for j, hd in enumerate(headers):
+                    if inItem.get(hd) is not None:
+                        self.ui.list_bz.setItem(row_count, j, QTableWidgetItem(str(inItem[hd])))
+            self.ui.list_bz.cellClicked.connect(self.selectInRow)
+
+        except Exception as e:
+            logger.info(f'createBzGrid exception : {traceback.format_exc()}')
+
+    def addBz(self):
+        self.contInFlag = 'ins'
+        self.skRow = None
+        self.ui.in_PKG_ID.setText('')
+        self.ui.in_PKG_ID.setDisabled(False)
+        self.ui.in_SK_IN_SEQ.setText('')
+        self.ui.in_SK_IN_SEQ.setDisabled(False)
+
+        self.ui.in_IN_SK_ID.setText('')
+        self.ui.in_IN_MSG_ID.setText('')
+        self.ui.in_BZ_METHOD.setText('')
+        self.ui.in_IN_DESC.setText('')
+
+
+    def delBz(self):
+        queryExecute(delIn(self.ui.in_PKG_ID.text(), self.ui.in_SK_IN_SEQ.text()))
+        self.createInGrid()
+
+    def saveBz(self):
+        row_data = {
+            'IN_SK_ID': self.ui.in_IN_SK_ID.text()
+            , 'IN_MSG_ID': self.ui.in_IN_MSG_ID.text()
+            , 'BZ_METHOD': self.ui.in_BZ_METHOD.text()
+            , 'USE_YN': self.ui.in_USE_YN.currentText()
+            , 'IN_DESC': self.ui.in_IN_DESC.toPlainText()
+        }
+        logger.info(f' row : {row_data}')
+        if self.contInFlag == 'ins':
+            row_data['PKG_ID'] = self.ui.in_PKG_ID.text()
+            row_data['SK_IN_SEQ'] = self.ui.in_SK_IN_SEQ.text()
+            queryExecute(insertIn(row_data))
+        else :
+            queryExecute(saveIn(self.ui.in_PKG_ID.text(), self.ui.in_SK_IN_SEQ.text(), row_data))
+        self.createInGrid()
+
+    def selectBzRow(self,row, column):
+        try:
+            self.contInFlag = 'upd'
+            # logger.info(f'row: {row}')
+            # item = self.ui.list_sk.item(row, column)
+            # if item:
+            #     print(f"Item text: {item.text()}")
+            row_data = {}
+            for column in range(self.ui.list_in.columnCount()):
+                header_item = self.ui.list_in.horizontalHeaderItem(column)
+                item = self.ui.list_in.item(row, column)
+                row_data[header_item.text()] = item.text() if item else ""
+            self.skRow = row
+            self.ui.in_PKG_ID.setText(row_data['PKG_ID'])
+            self.ui.in_PKG_ID.setDisabled(True)
+            self.ui.in_SK_IN_SEQ.setText(row_data['SK_IN_SEQ'])
+            self.ui.in_SK_IN_SEQ.setDisabled(True)
+
+            self.ui.in_IN_SK_ID.setText(row_data['IN_SK_ID'])
+
+            self.ui.in_IN_MSG_ID.setText(row_data['IN_MSG_ID'])
+            self.ui.in_BZ_METHOD.setText(row_data['BZ_METHOD'])
+            self.ui.in_IN_DESC.setText(row_data['IN_DESC'])
+            self.ui.in_USE_YN.setCurrentText(row_data['USE_YN'])
+
+        except Exception as e :
+            logger.error(f'selectRow exception : {traceback.format_exc()} ')

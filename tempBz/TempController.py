@@ -15,9 +15,12 @@ class TempController:
 
 
     def reciveTest(self, reciveObj):
+        sklogger = reciveObj['LOGGER']
         try:
-            self.logger.info(f'reciveTest reciveObj : {reciveObj}')
+
+
+            sklogger.info(f'reciveTest reciveObj : {reciveObj}')
             ch = reciveObj['CHANNEL']
             ch.sendall(reciveObj['TOTAL_BYTES'])
         except:
-            self.logger.error(f'reciveTest')
+            sklogger.error(f'reciveTest')
