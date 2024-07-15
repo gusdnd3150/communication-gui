@@ -23,7 +23,18 @@ class ExcelUtils():
         try:
             wb = Workbook()
             ws = wb.active
-            ws.title = "Table Information"
+            ws.title = "테이블 정의서"
+
+            ws2 = wb.create_sheet(title="테이블 목록")
+
+            sheet2 = []
+            sheet2.append(['No','Table', 'Table Name'])
+            for i, item in enumerate(tables):
+                sheet2.append([i,item['TABLE_NAME'], item['COMMENTS']])
+            # 데이터 엑셀 시트에 쓰기
+            for row in sheet2:
+                ws2.append(row)
+            
             # 데이터 설정
             data = []
             rowGrpCnts = []
