@@ -1,9 +1,10 @@
 
 from conf.logconfig import logger
 from src.protocols.SendHandler import SendHandler
-
+import conf.skModule as skMOdule
 
 import conf.skModule as initData
+from src.utils.ExcelUtils import ExcelUtils
 
 class TestController():
 
@@ -68,3 +69,18 @@ class TestController():
             SendHandler.sendSkId('TCPC_TEST', 'LINE_SIGNAL', returnJson)
         except Exception as e:
             logger.error(f'TestController.test() Exception :: {e}')
+
+
+
+
+    def excel(self, reciveObj):
+        skLogger = reciveObj['LOGGER']
+        db = skMOdule.dbHandler
+
+        testdata = db.getTables()
+        test = ExcelUtils()
+        test.makeTableList(testdata)
+        try:
+            skLogger.info(f'dddddddddddd')
+        except Exception as e:
+            skLogger.error(f'TestController.reciveObj() Exception :: {e}')

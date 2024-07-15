@@ -1,6 +1,7 @@
 {
-  "DB_USER": "dev.teia.co.kr",
-  "DB_PORT": "8629",
-  "DB_PWD": "HMJJ_USR",
-  "DB_URL": "HMJJ_USR#01"
+  "DB_USER": "HMJJ_ADM",
+  "DB_DSN": "HMJJ_ADM",
+  "DB_PWD": "HMJJ_ADM",
+  "DB_URL": "jdbc:tibero:thin:@dev.teia.co.kr:8629:tibero",
+  "USE_YN": "Y"
 }
