@@ -76,8 +76,7 @@ class ExcelUtils():
                                      top=Side(style='thin'),
                                      bottom=Side(style='thick'))
 
-
-            header_fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+            header_fill = PatternFill(start_color="b1b0b0", end_color="b1b0b0", fill_type="solid")
 
 
             # 데이터 엑셀 시트에 쓰기
@@ -116,7 +115,7 @@ class ExcelUtils():
 
             # 스타일 적용 (1행부터 10행, 1열부터 5열)
             for start, cnt , colcnt, indexcnt in rowGrpCnts:
-                for row in ws.iter_rows(min_row=start, max_row=start+(cnt-2), min_col=1, max_col=10):
+                for row in ws.iter_rows(min_row=start, max_row=start+(cnt-4), min_col=1, max_col=10):
                         for cell in row:
                             cell.border = thin_border
 
@@ -124,19 +123,30 @@ class ExcelUtils():
                         for cell in row:
                             cell.border = top_thick_border
 
-                for row in ws.iter_rows(min_row=start+(cnt-2), max_row=start+(cnt-2), min_col=1, max_col=10):
+                for row in ws.iter_rows(min_row=start+(cnt-4), max_row=start+(cnt-4), min_col=1, max_col=10):
                         for cell in row:
                             cell.border = bom_thick_border
 
+            # bold_font = Font(bold=True, color="eee9e9")
             bold_font = Font(bold=True)
             for row in ws.iter_rows():
                 if row[0].value == 'Table Name':
                     row[0].font = bold_font
+                    row[0].fill = header_fill
+                    row[2].font = bold_font
+                    row[2].fill = header_fill
                 if row[0].value == 'Table Description':
                     row[0].font = bold_font
-                if row[0].value == 'SYNONYM':
+                    row[0].fill = header_fill
+                if row[0].value == 'Column Name':
+                    for cell in row:
+                        cell.fill = header_fill
+                if row[0].value == 'INDEX':
                     row[0].font = bold_font
-
+                    row[0].fill = header_fill
+                if row[0].value == '업무규칙':
+                    row[0].font = bold_font
+                    row[0].fill = header_fill
             # 파일 저장
             file_path = "./Table_Information.xlsx"
             wb.save(file_path)
