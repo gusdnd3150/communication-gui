@@ -66,6 +66,7 @@ class InitClass(QMainWindow):
         self.mainLayOut.btn_settings.clicked.connect(self.open_settings)
         self.mainLayOut.btn_start.clicked.connect(self.start_sk)
         self.mainLayOut.btn_stop.clicked.connect(self.stop_sk)
+        self.mainLayOut.btn_handler.clicked.connect(self.open_handler)
 
         self.mainLayOut.show()
         moduleData.mainLayout = self.mainLayOut
@@ -367,6 +368,15 @@ class InitClass(QMainWindow):
 
 
     def open_settings(self):
+        logger.info('tesst')
+        if self.popup.isVisible():
+            # self.popup.instance.hide()
+            self.popup.hide()
+        else:
+            # self.popup.instance.show()
+            self.popup.show()
+
+    def open_handler(self):
         logger.info('tesst')
         if self.popup.isVisible():
             # self.popup.instance.hide()
