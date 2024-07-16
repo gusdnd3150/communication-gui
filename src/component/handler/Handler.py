@@ -36,8 +36,8 @@ class Handler(QMainWindow):
         self.setCentralWidget(self.ui)
         self.setWindowTitle('핸들러')
 
-        self.setEvent()
-        self.createSkGrid() # 소켓 그리드
+        # self.setEvent()
+        # self.createSkGrid() # 소켓 그리드
 
 
     def setEvent(self):

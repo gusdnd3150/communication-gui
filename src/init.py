@@ -13,6 +13,7 @@ program_directory = os.path.dirname(program_path)
 from PySide6 import QtWidgets
 from PySide6.QtUiTools import QUiLoader
 from src.component.settings.Settings import Settings
+from src.component.handler.Handler import Handler
 import conf.skModule as moduleData
 from conf.logconfig import logger
 from src.protocols.udp.ServerUdpThread import ServerUdpThread
@@ -52,6 +53,7 @@ class InitClass(QMainWindow):
     list_table = None
     initData = None # 초기데이터 초기화 클래스
     reactor = None
+    handlPop =None
 
     def __init__(self):
         logger.info('init UI start')
@@ -75,6 +77,7 @@ class InitClass(QMainWindow):
 
         # 설정팝업
         self.popup = Settings(self.initData)
+        self.handlPop = Handler(self.initData)
         self.bindData()
         self.setGrid()
         self.setInitData()
@@ -368,7 +371,6 @@ class InitClass(QMainWindow):
 
 
     def open_settings(self):
-        logger.info('tesst')
         if self.popup.isVisible():
             # self.popup.instance.hide()
             self.popup.hide()
@@ -377,11 +379,10 @@ class InitClass(QMainWindow):
             self.popup.show()
 
     def open_handler(self):
-        logger.info('tesst')
-        if self.popup.isVisible():
+        if self.handlPop.isVisible():
             # self.popup.instance.hide()
-            self.popup.hide()
+            self.handlPop.hide()
         else:
             # self.popup.instance.show()
-            self.popup.show()
+            self.handlPop.show()
 
