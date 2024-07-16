@@ -40,6 +40,7 @@ skClientCombo = ['KEEP','EVENT']
 jobTypeCombo = ['SEC','MIN','HOUR','CRON']
 eventTypeCombo = ['ACTIVE','KEEP','IDLE_READ']
 hdCombo = ['LENGTH_STR_8B','LENGTH_STR_20B','LENGTH_20B','FREE','JSON']
+runSkCombo = [] # 가동중인 소켓
 sokcetList = []
 socketHd = []
 socketHdDt = []

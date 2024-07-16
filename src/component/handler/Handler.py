@@ -1,9 +1,11 @@
 
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView
+from PySide6.QtGui import QColor, QBrush
 from src.component.settings.SaveSocketPopup import SaveSocketPopup
 import sys
 import os
+import src.protocols.SendHandler as SendHandler
 
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
@@ -25,6 +27,7 @@ class Handler(QMainWindow):
     initData = None
     skRow = None
     contFlag = 'upd'
+    msgId = None
 
     def __init__(self, initData):
         self.initData = initData
@@ -36,121 +39,121 @@ class Handler(QMainWindow):
         self.setCentralWidget(self.ui)
         self.setWindowTitle('핸들러')
 
-        # self.setEvent()
-        # self.createSkGrid() # 소켓 그리드
+        self.setEvent()
+        self.createMsgGrid(None,None)
 
 
     def setEvent(self):
-
-        # 소켓 탭 이벤트 설정
-        self.ui.btn_addSk.clicked.connect(self.addSk)
-        self.ui.btn_delSk.clicked.connect(self.delSk)
-        self.ui.btn_saveSk.clicked.connect(self.saveSk)
-
-        for item in useYnCombo:
-            self.ui.sk_USE_YN.addItem(item)
-            self.ui.sk_SK_LOG.addItem(item)
-            self.ui.in_USE_YN.addItem(item)
-            self.ui.bz_USE_YN.addItem(item)
-            self.ui.sch_USE_YN.addItem(item)
+        # btn_handle_text
+        # input_handle_search
+        # list_handle_msg
+        # combo_sk_list
+        # list_hand_body
+        # btn_handle_send
+        self.ui.btn_handle_search.clicked.connect(self.searchMsg)
+        self.ui.btn_handle_send.clicked.connect(self.sendMsg)
 
 
-    def createSkGrid(self):
+
+    def createMsgGrid(self, msg, mid):
         try:
-            headers = ['PKG_ID', 'SK_ID','USE_YN', 'SK_GROUP', 'SK_TYPE', 'SK_CONN_TYPE', 'SK_CLIENT_TYPE', 'HD_ID', 'SK_IP',
-                       'SK_PORT', 'SK_DELIMIT_TYPE', 'SK_LOG', 'SK_DESC']
-
-            self.ui.list_sk.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-            self.ui.list_sk.verticalHeader().setVisible(False)
-
-            self.ui.list_sk.setRowCount(0)  # Table의 행을 설정, list의 길이
-            self.ui.list_sk.setColumnCount(13)
-            self.ui.list_sk.setHorizontalHeaderLabels(headers)
-            skList = selectQuery(selectSocketList(None, None, None))
+            headers = ['MSG_ID', 'MSG_KEY_TYPE', 'MSG_KEY_VAL', 'MSG_DESC']
+            self.ui.list_handle_msg.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+            self.ui.list_handle_msg.setRowCount(0)  # Table의 행을 설정, list의 길이
+            self.ui.list_handle_msg.setColumnCount(4)
+            self.ui.list_handle_msg.setHorizontalHeaderLabels(headers)
+            skList = selectQuery(selectSocketMSgList(msg, mid))
             for i, skItem in enumerate(skList):
-                row_count = self.ui.list_sk.rowCount()
-                self.ui.list_sk.insertRow(row_count)
+                row_count = self.ui.list_handle_msg.rowCount()
+                self.ui.list_handle_msg.insertRow(row_count)
                 for j, hd in enumerate(headers):
                     if skItem.get(hd) is not None:
-                        self.ui.list_sk.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
-            self.ui.list_sk.cellClicked.connect(self.selectRow)
+                        self.ui.list_handle_msg.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
+            self.ui.list_handle_msg.cellClicked.connect(self.selectMsgRow)
+        except Exception as e:
+            logger.error(f'createMsgGrid exception : {traceback.format_exc()}')
+
+
+    def selectMsgRow(self,row, column):
+        try:
+
+            row_data = {}
+            for column in range(self.ui.list_handle_msg.columnCount()):
+                header_item = self.ui.list_handle_msg.horizontalHeaderItem(column)
+                item = self.ui.list_handle_msg.item(row, column)
+                row_data[header_item.text()] = item.text() if item else ""
+
+            self.msgId = row_data['MSG_ID']
+            self.createMsgDtGrid(row_data['MSG_ID'])
+        except Exception as e :
+            logger.error(f'selectMsgRow exception : {traceback.format_exc()} ')
+
+
+    def searchMsg(self):
+        try:
+            self.createMsgGrid(self.ui.input_handle_search.text(),None)
+            # self.createMsgDtGrid(self.ui.msg_MSG_ID_iq.text())
+        except Exception as e:
+            logger.error(f'searchMsg exception : {traceback.format_exc()}')
+
+    def createMsgDtGrid(self, msg):
+        try:
+            if msg is None or msg == '':
+                return
+
+            headers = ['MSG_DT_ORD', 'MSG_DT_VAL_ID', 'VALUE', 'VAL_TYPE', 'VAL_LEN']
+            self.ui.list_handle_body.setRowCount(0)  # Table의 행을 설정, list의 길이
+            self.ui.list_handle_body.setColumnCount(5)
+            self.ui.list_handle_body.setHorizontalHeaderLabels(headers)
+            skList = selectQuery(selectSocketMSgDtList(msg))
+            for i, skItem in enumerate(skList):
+                row_count = self.ui.list_handle_body.rowCount()
+                self.ui.list_handle_body.insertRow(row_count)
+                for j, hd in enumerate(headers):
+                    if skItem.get(hd) is not None:
+                        item = QTableWidgetItem(str(skItem[hd]))
+                        self.ui.list_handle_body.setItem(row_count, j, item)
+                    if hd =='VALUE':
+                        item = QTableWidgetItem('')
+                        item.setBackground(QBrush(QColor(148,127,127)))  # 노란색 배경 설정
+                        item.setForeground(QBrush(QColor(0, 0, 0)))
+                        self.ui.list_handle_body.setItem(row_count, j, item)
 
         except Exception as e:
-            logger.info(f'createGrid exception : {traceback.format_exc()}')
+            logger.error(f'createMsgGrid exception: {traceback.format_exc()}')
 
-
-    def selectRow(self,row, column):
+    def sendMsg(self):
         try:
-            self.contFlag = 'upd'
-            # logger.info(f'row: {row}')
-            # item = self.ui.list_sk.item(row, column)
-            # if item:
-            #     print(f"Item text: {item.text()}")
-            row_data = {}
-            for column in range(self.ui.list_sk.columnCount()):
-                header_item = self.ui.list_sk.horizontalHeaderItem(column)
-                item = self.ui.list_sk.item(row, column)
-                row_data[header_item.text()] = item.text() if item else ""
-            self.skRow = row
-            self.ui.sk_PKG_ID.setText(row_data['PKG_ID'])
-            self.ui.sk_PKG_ID.setDisabled(True)
-            self.ui.sk_SK_ID.setText(row_data['SK_ID'])
-            self.ui.sk_SK_ID.setDisabled(True)
-            self.ui.sk_SK_GROUP.setText(row_data['SK_GROUP'])
-            self.ui.sk_SK_IP.setText(row_data['SK_IP'])
-            self.ui.sk_SK_PORT.setText(row_data['SK_PORT'])
-            self.ui.sk_SK_DELIMIT_TYPE.setText(row_data['SK_DELIMIT_TYPE'])
-            self.ui.sk_SK_DESC.setText(row_data['SK_DESC'])
+            row_count = self.ui.list_handle_body.rowCount()
+            column_count = self.ui.list_handle_body.columnCount()
+            headers = [self.ui.list_handle_body.horizontalHeaderItem(i).text() for i in range(column_count)]
 
-            self.ui.sk_USE_YN.setCurrentText(row_data['USE_YN'])
-            self.ui.sk_SK_CONN_TYPE.setCurrentText(row_data['SK_CONN_TYPE'])
-            self.ui.sk_SK_CLIENT_TYPE.setCurrentText(row_data['SK_CLIENT_TYPE'])
-            self.ui.sk_HD_ID.setCurrentText(row_data['HD_ID'])
-            self.ui.sk_SK_LOG.setCurrentText(row_data['SK_LOG'])
+            data = []
+            resultObj = {}
+            for row in range(row_count):
+                row_data = {}
+                for column in range(column_count):
+                    item = self.ui.list_handle_body.item(row, column)
+                    if item is not None:
+                        row_data[headers[column]] = item.text()
+                    else:
+                        row_data[headers[column]] = None  # 셀이 비어있는 경우 None으로 처리
+                data.append(row_data)
 
+            for index, item in enumerate(data):
+                if item['VAL_TYPE'] == 'STRING':
+                    resultObj[item['MSG_DT_VAL_ID']] = item['VALUE']
+                elif item['VAL_TYPE'] == 'INT':
+                    resultObj[item['MSG_DT_VAL_ID']] = int(item['VALUE'])
 
-        except Exception as e :
-            logger.error(f'selectRow exception : {traceback.format_exc()} ')
+                elif item['VAL_TYPE'] == 'DOUBLE' or item['VAL_TYPE'] == 'FLOAT':
+                    resultObj[item['MSG_DT_VAL_ID']] = float(item['VALUE'])
 
-    def addSk(self):
-        self.contFlag = 'ins'
-        self.skRow = None
-        self.ui.sk_PKG_ID.setText('')
-        self.ui.sk_PKG_ID.setDisabled(False)
-        self.ui.sk_SK_ID.setText('')
-        self.ui.sk_SK_ID.setDisabled(False)
-        self.ui.sk_SK_GROUP.setText('')
-        self.ui.sk_SK_IP.setText('')
-        self.ui.sk_SK_PORT.setText('')
-        self.ui.sk_SK_DELIMIT_TYPE.setText('')
-        self.ui.sk_SK_DESC.setText('')
+                elif item['VAL_TYPE'] == 'BYTE' or item['VAL_TYPE'] == 'BYTES':
+                    resultObj[item['MSG_DT_VAL_ID']] = item['VALUE']
 
+            skId = self.ui.combo_sk_list.currentText()
 
-    def delSk(self):
-        logger.info(f'delete row : {self.skRow}')
-        queryExecute(delSk(self.ui.sk_PKG_ID.text(), self.ui.sk_SK_ID.text()))
-        self.createSkGrid()
-
-    def saveSk(self):
-        row_data = {
-            'SK_GROUP': self.ui.sk_SK_GROUP.text()
-            , 'USE_YN': self.ui.sk_USE_YN.currentText()
-            , 'SK_TYPE': self.ui.sk_SK_TYPE.currentText()
-            , 'SK_CONN_TYPE': self.ui.sk_SK_CONN_TYPE.currentText()
-            , 'SK_CLIENT_TYPE': self.ui.sk_SK_CLIENT_TYPE.currentText()
-            , 'HD_ID': self.ui.sk_HD_ID.currentText()
-            , 'SK_IP': self.ui.sk_SK_IP.text()
-            , 'SK_PORT': self.ui.sk_SK_PORT.text()
-            , 'SK_LOG': self.ui.sk_SK_LOG.currentText()
-            , 'SK_DELIMIT_TYPE': self.ui.sk_SK_DELIMIT_TYPE.text()
-            , 'SK_DESC': self.ui.sk_SK_DESC.toPlainText()
-        }
-        if self.contFlag == 'ins':
-            row_data['SK_ID'] = self.ui.sk_SK_ID.text()
-            row_data['PKG_ID'] = self.ui.sk_PKG_ID.text()
-            queryExecute(insertSK(row_data))
-        else :
-            queryExecute(saveSk(self.ui.sk_PKG_ID.text(), self.ui.sk_SK_ID.text(), row_data))
-        self.createSkGrid()
-        logger.info(f'{row_data}')
-
+            SendHandler.sendSkId(self,skId,self.msgId,resultObj)
+        except:
+            logger.error(f'sendMsg error : {traceback.format_exc()}')

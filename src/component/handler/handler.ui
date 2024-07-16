@@ -23,7 +23,7 @@
       <item>
        <layout class="QGridLayout" name="gridLayout">
         <item row="1" column="0">
-         <widget class="QLineEdit" name="lineEdit"/>
+         <widget class="QLineEdit" name="input_handle_search"/>
         </item>
         <item row="0" column="0">
          <widget class="QLabel" name="label_3">
@@ -33,25 +33,32 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QPushButton" name="pushButton_2">
+         <widget class="QPushButton" name="btn_handle_search">
           <property name="text">
            <string>검색</string>
           </property>
          </widget>
         </item>
         <item row="4" column="0" colspan="2">
-         <widget class="QTreeWidget" name="treeWidget_2">
-          <column>
-           <property name="text">
-            <string notr="true">1</string>
-           </property>
-          </column>
-         </widget>
+         <widget class="QTableWidget" name="list_handle_msg"/>
         </item>
        </layout>
       </item>
       <item>
        <layout class="QGridLayout" name="gridLayout_2">
+        <item row="4" column="0">
+         <widget class="QPushButton" name="btn_handle_send">
+          <property name="text">
+           <string>Send</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QComboBox" name="combo_sk_list"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QTableWidget" name="list_handle_body"/>
+        </item>
         <item row="0" column="0">
          <widget class="QLabel" name="label_2">
           <property name="text">
@@ -59,29 +66,10 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QComboBox" name="comboBox"/>
-        </item>
         <item row="2" column="0">
          <widget class="QLabel" name="label">
           <property name="text">
            <string>메시지 BODY</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QTreeWidget" name="treeWidget">
-          <column>
-           <property name="text">
-            <string notr="true">1</string>
-           </property>
-          </column>
-         </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QPushButton" name="pushButton">
-          <property name="text">
-           <string>Send</string>
           </property>
          </widget>
         </item>

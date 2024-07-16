@@ -127,8 +127,11 @@ class InitClass(QMainWindow):
         # 기준정보 로드
         moduleData.initPkgData(pkg)
 
+
+        self.handlPop.ui.combo_sk_list.clear()
         self.mainLayOut.combo_pkg.setDisabled(True)
         self.mainLayOut.btn_start.setDisabled(True)
+
         try:
             logger.info(f' Run Cnt : {len(moduleData.sokcetList)}')
             for i , item in enumerate(moduleData.sokcetList):
@@ -163,21 +166,20 @@ class InitClass(QMainWindow):
                     continue
 
                 item['SK_THREAD'] = threadInfo
+                self.handlPop.ui.combo_sk_list.addItem(item['SK_ID'])
 
                 # KEEP일때만 실행 EVENT 방식일땐 상황에 맞춰 실행
                 if skClientTy == 'KEEP':
                     threadInfo.daemon = True
                     threadInfo.start()
 
+            self.handlPop
             for index, sch in enumerate(moduleData.sokcetSch):
                 schThread = Schedule(sch)
                 schThread.damon = True
                 schThread.start()
                 sch['SK_THREAD'] = schThread
 
-            # sysThread = SystemMonitor(self.mainLayOut)
-            # sysThread.daemon = True
-            # sysThread.start()
         except Exception as e:
             traceback.print_exc()
             logger.info(f'Init.start_sk() Exception :: {traceback.format_exc()}')
@@ -380,9 +382,7 @@ class InitClass(QMainWindow):
 
     def open_handler(self):
         if self.handlPop.isVisible():
-            # self.popup.instance.hide()
             self.handlPop.hide()
         else:
-            # self.popup.instance.show()
             self.handlPop.show()
 
