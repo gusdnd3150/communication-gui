@@ -1,3 +1,4 @@
+import traceback
 
 from conf.logconfig import logger
 from src.protocols.SendHandler import SendHandler
@@ -23,15 +24,10 @@ class TestController():
         Channel = reciveObj['CHANNEL']
         returnJson = {}
         try:
-
             skLogger.info(f'[RECIVE TOTAL_BYTES] : {str(reciveObj["TOTAL_BYTES"])}')
             skLogger.info(f'[RECIVE OBJ] : {reciveObj}')
-            # Channel.sendall(reciveObj['TOTAL_BYTES'])
-            # Channel.sendoTo(reciveObj['TOTAL_BYTES'])
-            # returnJson['LINE_CD'] = 'TR01'
             returnJson['LINE_SIGN'] = '2'
-            self.sendHandler.sendSkId('JSON_서버', 'LINE_SIGNAL', returnJson)
-
+            self.sendHandler.sendSkId222('JSON_서버', 'LINE_SIGNAL', returnJson)
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {e}')
 
@@ -83,3 +79,14 @@ class TestController():
             skLogger.info(f'dddddddddddd')
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {e}')
+
+
+    def test(self, reciveObj):
+        skLogger = reciveObj['LOGGER']
+        Channel = reciveObj['CHANNEL']
+        returnJson = {}
+        try:
+            returnJson['LINE_SIGN'] = '2'
+            self.sendHandler.sendSkId222('테스트서버', 'LINE_SIGNAL', returnJson)
+        except Exception as e:
+            skLogger.error(f'TestController.reciveObj() Exception :: {traceback.format_exc()}')

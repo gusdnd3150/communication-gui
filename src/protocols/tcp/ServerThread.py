@@ -11,9 +11,9 @@ import conf.skModule as moduleData
 
 from src.protocols.sch.BzSchedule import BzSchedule
 from src.protocols.BzActivator import BzActivator
+from src.protocols.Server import Server
 
-
-class ServerThread(threading.Thread):
+class ServerThread(threading.Thread, Server):
 
     initData = None
     skId = ''
@@ -255,38 +255,75 @@ class ServerThread(threading.Thread):
         clientsocket.close()
 
 
-    def sendToAllChannels(self, bytes):
-        try:
-            if len(self.client_list) == 0:
-                self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
-                return
-            for skId, client, codec in self.client_list:
-                if skId == self.skId:
-                    client.sendall(bytes)
-                    if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in bytes)
-                        self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} decimal_string : [{decimal_string}]')
 
-        except Exception as e:
-            self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
-    def sendToTargetChannel(self, channel, bytes):
-        try:
-            if len(self.client_list) == 0:
-                self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
-                return
-            for skId, client, codec in self.client_list:
-                if skId == self.skId:
-                    client.sendall(bytes)
-                    if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in bytes)
-                        self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} decimal_string : [{decimal_string}]')
 
-        except Exception as e:
-            self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
     def countChannelBySkId(self,skId):
         count = 0
         for skid, socket, codec in self.client_list:
             if skid == skId:
                 count += 1
         return count
+
+    def sendBytesToAllChannels(self, bytes):
+        try:
+            if len(self.client_list) == 0:
+                self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
+                return
+            for skId, client, codec in self.client_list:
+                if skId == self.skId:
+                    client.sendall(bytes)
+                    if self.skLogYn:
+                        decimal_string = ' '.join(str(byte) for byte in bytes)
+                        self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} decimal_string : [{decimal_string}]')
+
+        except Exception as e:
+            self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+
+
+    def sendBytesToChannel(self,channel, bytes):
+        try:
+            if self.skLogYn:
+                decimal_string = ' '.join(str(byte) for byte in bytes)
+                self.logger.info(
+                    f'SK_ID:{self.skId} send bytes length : {len(bytes)} decimal_string : [{decimal_string}]')
+            channel.sendall(bytes)
+        except:
+            self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
+
+
+
+    def sendMsgToAllChannels(self, obj):
+
+        try:
+            if len(self.client_list) == 0:
+                self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
+                return
+            sendBytes = self.codec.encodeSendData(obj)
+
+            for skId, client, codec in self.client_list:
+                if skId == self.skId:
+                    client.sendall(sendBytes)
+                    if self.skLogYn:
+                        decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                        self.logger.info(
+                            f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} decimal_string : [{decimal_string}]')
+
+        except Exception as e:
+            self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+
+    def sendMsgToChannel(self, channel, obj):
+
+        try:
+            if len(self.client_list) == 0:
+                self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
+                return
+            sendBytes = self.codec.encodeSendData(obj)
+            if self.skLogYn:
+                decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                self.logger.info(
+                    f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} decimal_string : [{decimal_string}]')
+            channel.sendall(sendBytes)
+        except Exception as e:
+            self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+

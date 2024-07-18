@@ -34,6 +34,18 @@ class SendHandler():
             logger.info(f'sendSkId() Exception SK_ID:{skId} , MSG_ID:{msgId}, DATA:{data} -- {traceback.format_exc()}')
 
 
+
+    def sendSkId222(self, skId, msgId, data):
+        try:
+            data['MSG_ID'] = msgId
+            for i, sk in enumerate(moduleData.sokcetList):
+                if sk['SK_ID'] == skId:
+                    skThread = sk['SK_THREAD']
+                    skThread.sendMsgToAllChannels(data)
+                    break
+        except Exception as e:
+            logger.info(f'sendSkId() Exception SK_ID:{skId} , MSG_ID:{msgId}, DATA:{data} -- {traceback.format_exc()}')
+
     def sendChannelBytes(self, channel, bytes):
         try:
             channel.sendall(bytes)

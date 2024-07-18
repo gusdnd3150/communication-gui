@@ -232,7 +232,7 @@ class ClientThread(threading.Thread):
                 self.initClient()
 
 
-    def sendToAllChannels(self, msgBytes):
+    def sendBytesToAllChannels(self, msgBytes):
         try:
             if self.socket is not None:
                 self.socket.sendall(msgBytes)
@@ -244,3 +244,37 @@ class ClientThread(threading.Thread):
 
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+
+
+    def sendBytesToChannel(self,channel, bytes):
+        try:
+            if self.skLogYn:
+                decimal_string = ' '.join(str(byte) for byte in bytes)
+                self.logger.info(
+                    f'SK_ID:{self.skId} send bytes length : {len(bytes)} decimal_string : [{decimal_string}]')
+            channel.sendall(bytes)
+        except:
+            self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
+
+
+
+    def sendMsgToAllChannels(self, obj):
+
+        try:
+            if self.socket is not None:
+                sendBytes = self.codec.encodeSendData(obj)
+                self.socket.sendall(sendBytes)
+                if self.skLogYn:
+                    decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                    self.logger.info(
+                        f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} decimal_string : [{decimal_string}]')
+            else:
+                self.logger.info(f'SK_ID:{self.skId} has no connection')
+        except Exception as e:
+            self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+
+    def sendMsgToChannel(self, channel, obj):
+        try:
+            self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel has no function')
+        except Exception as e:
+            self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
