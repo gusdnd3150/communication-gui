@@ -46,9 +46,9 @@ class ClientEventThread(threading.Thread):
         self.skIp = data['SK_IP']
         self.skPort = int(data['SK_PORT'])
 
-        self.logger = setup_sk_logger(self.skId)
-        self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
-
+        # self.logger = setup_sk_logger(self.skId)
+        self.logger = logger
+        self.logger.info(f'{threading.currentThread().getName()}')
         if (self.initData['HD_TYPE'] == 'FREE'):
             self.codec = FreeCodec(self.initData)
         elif (self.initData['HD_TYPE'] == 'LENGTH'):
@@ -207,7 +207,6 @@ class ClientEventThread(threading.Thread):
         except Exception as e:
             isRun = False
             self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
-
         finally:
             moduleData.mainInstance.deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
             isRun = False
@@ -216,10 +215,11 @@ class ClientEventThread(threading.Thread):
             if sockets:
                 sockets.close()
                 sockets = None
-
             if self.bzSch is not None:
                 self.bzSch.stop()
                 self.bzSch = None
+            self.stop()
+
 
 
 

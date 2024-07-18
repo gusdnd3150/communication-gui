@@ -10,7 +10,7 @@ class SendHandler():
     def __init__(self):
         logger.info(f'SendHandler init')
 
-    def sendSkId(self, skId, msgId, data):
+    def sendSkId_bk(self, skId, msgId, data):
         try:
             data['MSG_ID'] = msgId
             for i, sk in enumerate(moduleData.sokcetList):
@@ -34,11 +34,10 @@ class SendHandler():
 
 
 
-    def sendSkId222(self, skId, msgId, data):
+    def sendSkId(self, skId, msgId, data):
         try:
             data['MSG_ID'] = msgId
             for i, sk in enumerate(moduleData.sokcetList):
-                logger.info(f'sk :{sk}')
                 if sk['SK_ID'] == skId:
                     if sk['SK_CLIENT_TYPE'] == 'EVENT':
                         from src.protocols.tcp.ClientEventThread import ClientEventThread

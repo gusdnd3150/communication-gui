@@ -7,9 +7,9 @@ from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
 import conf.skModule as moduleData
 from src.protocols.BzActivator import BzActivator
+from src.protocols.Client import Client
 
-
-class ClientUdpThread(threading.Thread):
+class ClientUdpThread(threading.Thread,Client):
 
     initData = None
     skId = ''
@@ -107,19 +107,38 @@ class ClientUdpThread(threading.Thread):
             moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_client')
 
 
-    def sendToAllChannels(self, msgBytes):
+    def sendBytesToAllChannels(self, msgBytes):
         try:
-            self.logger.info(f'UDP CLIENT Start : SK_ID= {self.skId}, IP= {self.skIp}:{self.skPort} :: Thread ')
-            udpClient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            sent = udpClient.sendto(msgBytes, (self.skIp, self.skPort))
-            # data, server = sent.recvfrom(4096)
-            if self.skLogYn:
-                decimal_string = ' '.join(str(byte) for byte in msgBytes)
-                self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(msgBytes)} decimal_string : [{decimal_string}]')
+            pass
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
 
+    def sendBytesToChannel(self,channel, bytes):
+        try:
+            pass
+        except:
+            self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
 
 
 
+    def sendMsgToAllChannels(self, obj):
+
+        try:
+            sendBytes = self.codec.encodeSendData(obj)
+            self.logger.info(f'UDP CLIENT Start : SK_ID= {self.skId}, IP= {self.skIp}:{self.skPort} :: Thread ')
+            udpClient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sent = udpClient.sendto(sendBytes, (self.skIp, self.skPort))
+            if self.skLogYn:
+                decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                self.logger.info(
+                    f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} decimal_string : [{decimal_string}]')
+
+        except Exception as e:
+            self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+
+    def sendMsgToChannel(self, channel, obj):
+        try:
+            pass
+        except Exception as e:
+            self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
