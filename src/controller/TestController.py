@@ -87,6 +87,9 @@ class TestController():
         returnJson = {}
         try:
             returnJson['LINE_SIGN'] = '2'
-            self.sendHandler.sendSkId222('테스트서버', 'LINE_SIGNAL', returnJson)
+            self.sendHandler.sendSkId222('이벤트', 'LINE_SIGNAL', returnJson)
+            self.sendHandler.sendSkId222('이벤트', 'LINE_SIGNAL', returnJson)
+            self.sendHandler.sendSkId222('이벤트', 'LINE_SIGNAL', returnJson)
+            self.sendHandler.sendSkId222('이벤트', 'LINE_SIGNAL', returnJson)
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {traceback.format_exc()}')

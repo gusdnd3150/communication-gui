@@ -9,11 +9,12 @@ from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
 from src.protocols.BzActivator import BzActivator
+from src.protocols.Client import Client
 import conf.skModule as moduleData
 
 from src.protocols.sch.BzSchedule import BzSchedule
 
-class ClientThread(threading.Thread):
+class ClientThread(threading.Thread, Client):
 
     initData = None
     skId = ''

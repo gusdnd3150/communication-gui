@@ -80,25 +80,21 @@ class ClientEventThread():
 
 
 
-    def reSendData(self):
-        try:
-            stop_event = threading.Event()
-            clientThread = threading.Thread(self.initClient(self),args=(stop_event,))
-            clientThread.daemon = True
-            clientThread.start()
-            #
-            # if sockets is not None:
-            #     sockets.sendall(self.sendData)
-            # else:
-            #     self.initClient()
-        except Exception as e:
-            self.logger.info(f'ClientEventThread reSendData exception : {traceback.format_exc()}')
-
-    def setSendData(self, msgBytes):
-        try:
-            self.sendData = self.codec.encodeSendData(msgBytes)
-        except Exception as e:
-            self.logger.info(f'ClientEventThread setSendData exception : {traceback.format_exc()}')
+    # def reSendData(self):
+    #     try:
+    #         stop_event = threading.Event()
+    #         clientThread = threading.Thread(self.initClient(self),args=(stop_event,))
+    #         clientThread.daemon = True
+    #         clientThread.start()
+    #
+    #     except Exception as e:
+    #         self.logger.info(f'ClientEventThread reSendData exception : {traceback.format_exc()}')
+    #
+    # def setSendData(self, msgBytes):
+    #     try:
+    #         self.sendData = self.codec.encodeSendData(msgBytes)
+    #     except Exception as e:
+    #         self.logger.info(f'ClientEventThread setSendData exception : {traceback.format_exc()}')
 
 
     def stop(self):
@@ -137,10 +133,8 @@ class ClientEventThread():
 
             client_info = (self.skId, self.socket, self.codec)
 
-            moduleData.runChannels.append(client_info)
             moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))
             moduleData.mainInstance.addConnRow(connInfo)
-
 
             #2. 여기에 active 이벤트 처리
             if self.bzActive is not None:
@@ -244,3 +238,36 @@ class ClientEventThread():
                 self.bzSch.stop()
                 self.bzSch = None
 
+
+
+    def sendBytesToAllChannels(self, msgBytes):
+        try:
+            self.logger.info(f'SK_ID:{self.skId}- sendBytesToAllChannels is None')
+        except Exception as e:
+            self.logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+
+
+    def sendBytesToChannel(self,channel, bytes):
+        try:
+            self.logger.info(f'SK_ID:{self.skId}- sendBytesToChannel is None')
+        except:
+            self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
+
+
+
+    def sendMsgToAllChannels(self, obj):
+
+        try:
+            self.sendData = self.codec.encodeSendData(obj)
+            stop_event = threading.Event()
+            clientThread = threading.Thread(self.initClient(self), args=(stop_event,))
+            clientThread.daemon = True
+            clientThread.start()
+        except Exception as e:
+            self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+
+    def sendMsgToChannel(self, channel, obj):
+        try:
+            self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel is None')
+        except Exception as e:
+            self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
