@@ -1,10 +1,9 @@
 
 import traceback
 from conf.logconfig import logger
-
-# from src.protocols.tcp.ClientEventThread import ClientEventThread
 import conf.skModule as moduleData
 import asyncio
+
 
 class SendHandler():
 
@@ -39,7 +38,14 @@ class SendHandler():
         try:
             data['MSG_ID'] = msgId
             for i, sk in enumerate(moduleData.sokcetList):
+                logger.info(f'sk :{sk}')
                 if sk['SK_ID'] == skId:
+                    if sk['SK_CLIENT_TYPE'] == 'EVENT':
+                        from src.protocols.tcp.ClientEventThread import ClientEventThread
+                        newTh = ClientEventThread(sk, data)
+                        newTh.daemon = True
+                        newTh.start()
+                        break
                     skThread = sk['SK_THREAD']
                     skThread.sendMsgToAllChannels(data)
                     break

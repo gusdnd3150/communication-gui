@@ -91,5 +91,6 @@ class TestController():
             self.sendHandler.sendSkId222('이벤트', 'LINE_SIGNAL', returnJson)
             self.sendHandler.sendSkId222('이벤트', 'LINE_SIGNAL', returnJson)
             self.sendHandler.sendSkId222('이벤트', 'LINE_SIGNAL', returnJson)
+            logger.info('ssss')
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {traceback.format_exc()}')

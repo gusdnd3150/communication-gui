@@ -100,7 +100,6 @@ class ClientThread(threading.Thread, Client):
             if self.socket:
                 self.socket.close()
 
-
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
         finally:

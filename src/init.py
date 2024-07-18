@@ -94,11 +94,14 @@ class InitClass(QMainWindow):
         try:
             logger.info(f'Stop Run Sockets')
             for i, item in enumerate(moduleData.sokcetList):
+                if item['SK_CLIENT_TYPE'] == 'EVENT':
+                    continue
                 runThread = item['SK_THREAD']
                 runThread.stop()
-                if item['SK_CLIENT_TYPE'] != 'EVENT':
-                    runThread.join()
+                runThread.join()
                 item['SK_THREAD'] = None
+
+
             for i, item in enumerate(moduleData.sokcetSch):
                 runThread = item['SK_THREAD']
                 runThread.stop()
@@ -146,8 +149,6 @@ class InitClass(QMainWindow):
                     elif (skConTy == 'CLIENT'):
                         if skClientTy == 'KEEP':
                             threadInfo = ClientThread(item)
-                        elif skClientTy == 'EVENT':
-                            threadInfo = ClientEventThread(item)
 
                 elif (skTy == 'UDP'):
                     if (skConTy == 'SERVER'):

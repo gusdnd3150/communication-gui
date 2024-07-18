@@ -1,8 +1,7 @@
 
 
 import threading
-from conf.logconfig import logger
-from conf.skModule import systemGlobals
+import conf.skModule as systemGlobals
 
 class BzActivator(threading.Thread):
 
@@ -20,8 +19,8 @@ class BzActivator(threading.Thread):
                 bzClass = self.bzInfo.get('BZ_METHOD')
                 classNm = bzClass.split('.')[0]
                 methdNm = bzClass.split('.')[1]
-                if classNm in systemGlobals:
-                    my_class = systemGlobals[classNm]
+                if classNm in systemGlobals.systemGlobals:
+                    my_class = systemGlobals.systemGlobals[classNm]
                     method = getattr(my_class, methdNm)
                     if callable(method):
                         self.logger.info(f" BzActivator run : class:{classNm} / method:{methdNm} ")

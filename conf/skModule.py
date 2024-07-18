@@ -55,8 +55,7 @@ sokcetSub = []
 sokcetSch = []
 mainLayout = None
 mainInstance = None
-runChannels = [] # client,server 통합 접속된 채널 리스트
-
+runChannels= []
 logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
 systemGlobals = globals()
 systemGlobals['TestController'] = TestController()

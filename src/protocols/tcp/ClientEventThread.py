@@ -12,7 +12,7 @@ import conf.skModule as moduleData
 
 from src.protocols.sch.BzSchedule import BzSchedule
 
-class ClientEventThread():
+class ClientEventThread(threading.Thread):
 
     initData = None
     skId = ''
@@ -34,7 +34,7 @@ class ClientEventThread():
     conCnt = 0
     sendData = bytearray
 
-    def __init__(self, data):
+    def __init__(self, data, msgData):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
         #  'SK_TYPE': 'TCP', 'SK_CLIENT_TYPE': 'KEEP', 'HD_ID': 'HD_FREE', 'SK_PORT': 5556, 'SK_IP': '0.0.0.0',
         #  'SK_DELIMIT_TYPE': '0x00', 'RELATION_VAL': None, 'SK_LOG': 'Y', 'HD_TYPE': 'FREE', 'MSG_CLASS': '',
@@ -76,26 +76,15 @@ class ClientEventThread():
                 elif bz.get('BZ_TYPE') == 'INACTIVE':
                     self.bzInActive = bz
 
-        moduleData.mainInstance.addClientRow(self.initData)
+        self.sendData = self.codec.encodeSendData(msgData)
+        super(ClientEventThread, self).__init__()
+        self._stop_event = threading.Event()
 
+    def run(self):
+        self.initClient()
 
-
-    # def reSendData(self):
-    #     try:
-    #         stop_event = threading.Event()
-    #         clientThread = threading.Thread(self.initClient(self),args=(stop_event,))
-    #         clientThread.daemon = True
-    #         clientThread.start()
-    #
-    #     except Exception as e:
-    #         self.logger.info(f'ClientEventThread reSendData exception : {traceback.format_exc()}')
-    #
-    # def setSendData(self, msgBytes):
-    #     try:
-    #         self.sendData = self.codec.encodeSendData(msgBytes)
-    #     except Exception as e:
-    #         self.logger.info(f'ClientEventThread setSendData exception : {traceback.format_exc()}')
-
+    def __del__(self):
+        logger.info('deleted')
 
     def stop(self):
         try:
@@ -113,7 +102,7 @@ class ClientEventThread():
             moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_client')
 
 
-    def initClient(self,stop_event):
+    def initClient(self):
         isRun = False
         buffer = bytearray()
         sockets = None
@@ -121,19 +110,16 @@ class ClientEventThread():
         self.conCnt = self.conCnt + 1
         connInfo = {}
         connInfo['SK_ID'] = self.skId
-        connInfo['CONN_INFO'] = f"('{f'{self.skIp}: index-{self.conCnt}'}', {self.skPort})"
+        connInfo['CONN_INFO'] = f"('{f'{self.skIp}:{threading.currentThread().getName()}'}', {self.skPort})"
         client_info = None
         try:
             # 서버에 연결합니다.
             sockets = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sockets.connect((self.skIp, int(self.skPort)))
-            self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
             sockets.sendall(self.sendData)
             isRun = True
 
             client_info = (self.skId, self.socket, self.codec)
-
-            moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))
             moduleData.mainInstance.addConnRow(connInfo)
 
             #2. 여기에 active 이벤트 처리
@@ -223,13 +209,10 @@ class ClientEventThread():
             self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
 
         finally:
-            moduleData.runChannels.remove(client_info)
             moduleData.mainInstance.deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
-            self.conCnt = self.conCnt - 1
             isRun = False
-            moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', str(self.conCnt))
             buffer.clear()
-            stop_event.set()
+            # stop_event.set()
             if sockets:
                 sockets.close()
                 sockets = None
@@ -260,9 +243,9 @@ class ClientEventThread():
         try:
             self.sendData = self.codec.encodeSendData(obj)
             stop_event = threading.Event()
-            clientThread = threading.Thread(self.initClient(self), args=(stop_event,))
-            clientThread.daemon = True
-            clientThread.start()
+            # clientThread = threading.Thread(self.initClient(self), args=(stop_event,))
+            # clientThread.daemon = True
+            # clientThread.start()
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
