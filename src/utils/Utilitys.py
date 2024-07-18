@@ -1,6 +1,8 @@
+import traceback
+
 from conf.logconfig import logger
 import struct
-
+import requests
 
 def decodeBytesToType( bytes, type):
     returnData = None
@@ -14,7 +16,7 @@ def decodeBytesToType( bytes, type):
         elif type == 'BYTE' or type == 'BYTES' or type == 'VARIABLE_LENGTH':
             returnData = bytes
     except Exception as e:
-        logger.info(f'FreeCodec parsingBytes Exception : {e}')
+        logger.error(f'FreeCodec parsingBytes Exception : {e}')
 
     return returnData
 
@@ -34,7 +36,7 @@ def encodeToBytes(data, type):
         else:
             return None
     except Exception as e:
-        logger.info(f'FreeCodec encodeToBytes Exception : {e}')
+        logger.error(f'FreeCodec encodeToBytes Exception : {e}')
         return None
 
 
@@ -72,7 +74,7 @@ def encodeDataToBytes(data, type, length, pad=' '):
                 return struct.pack('!d', data)
 
     except Exception as e:
-        logger.info(f'Utilitys encodeDataToBytes Exception : {data}:{type}:{length}  {e}')
+        logger.error(f'Utilitys encodeDataToBytes Exception : {data}:{type}:{length}  {e}')
         return None
 
 
@@ -83,3 +85,46 @@ def castingValue(data, type):
 
     except Exception as e:
         logger.info(f'castingValue Exception :: {e}')
+
+
+def requestGet(url, body, header=None):
+    try:
+        logger.info(f'requestGet url:{url} , header:{header} , body:{body}')
+        if header is None:
+            header = {
+                "Content-Type": "application/json"
+                # "Authorization": "Bearer YOUR_ACCESS_TOKEN",  # 필요 시 추가
+                # "User-Agent": "my-app/0.0.1",  # 필요 시 추가
+                # "Accept": "application/json"  # 필요 시 추가
+            }
+        response = requests.get(url, headers=header, params=body)
+        logger.info(f'requestGet Status Code::{response.status_code}')
+        if response.headers.get('Content-Type') == 'application/json':
+            json_response = response.json()
+            return json_response
+        else:
+            return response.text
+    except:
+        logger.error(f'requestGet error: {traceback.format_exc()}')
+
+
+def requestPost(url, body, header=None):
+    try:
+        logger.info(f'requestPost url:{url} , header:{header} , body:{body}')
+        if header is None:
+            header = {
+                "Content-Type": "application/json"
+                # "Authorization": "Bearer YOUR_ACCESS_TOKEN",  # 필요 시 추가
+                # "User-Agent": "my-app/0.0.1",  # 필요 시 추가
+                # "Accept": "application/json"  # 필요 시 추가
+            }
+        response = requests.post(url, headers=header, json=body)
+        logger.info(f'requestPost Status Code::{response.status_code}')
+
+        if response.headers.get('Content-Type') == 'application/json':
+            json_response = response.json()
+            return json_response
+        else:
+            return response.text
+    except:
+        logger.error(f'requestPost error: {traceback.format_exc()}')

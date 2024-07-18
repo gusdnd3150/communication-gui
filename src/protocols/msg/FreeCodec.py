@@ -43,7 +43,6 @@ class FreeCodec():
         else:
             result = len(copyBytes)
 
-
         return result
 
 

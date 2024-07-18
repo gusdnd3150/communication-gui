@@ -345,6 +345,7 @@ class Settings(QMainWindow):
             headers = ['MSG_DT_ORD','MSG_DT_VAL_ID','MSG_DT_DESC','VAL_TYPE','VAL_LEN' ]
             self.ui.msg_dt_list.setRowCount(0)  # Table의 행을 설정, list의 길이
             self.ui.msg_dt_list.setColumnCount(5)
+            self.ui.msg_dt_list.verticalHeader().setVisible(False)  # 행 번호 헤더 숨기기
             self.ui.msg_dt_list.setHorizontalHeaderLabels(headers)
             skList = selectQuery(selectSocketMSgDtList(msg))
             for i, skItem in enumerate(skList):

@@ -104,6 +104,7 @@ class Handler(QMainWindow):
             headers = ['MSG_DT_ORD', 'MSG_DT_VAL_ID', 'VALUE', 'VAL_TYPE', 'VAL_LEN']
             self.ui.list_handle_body.setRowCount(0)  # Table의 행을 설정, list의 길이
             self.ui.list_handle_body.setColumnCount(5)
+            self.ui.list_handle_body.verticalHeader().setVisible(False)  # 행 번호 헤더 숨기기
             self.ui.list_handle_body.setHorizontalHeaderLabels(headers)
             skList = selectQuery(selectSocketMSgDtList(msg))
             for i, skItem in enumerate(skList):
@@ -142,7 +143,8 @@ class Handler(QMainWindow):
 
             for index, item in enumerate(data):
                 if item['VAL_TYPE'] == 'STRING':
-                    resultObj[item['MSG_DT_VAL_ID']] = item['VALUE']
+                    resultObj[item['MSG_DT_VAL_ID']] = str(item['VALUE'])
+
                 elif item['VAL_TYPE'] == 'INT':
                     resultObj[item['MSG_DT_VAL_ID']] = int(item['VALUE'])
 
