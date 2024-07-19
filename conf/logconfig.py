@@ -16,7 +16,8 @@ def setup_sk_logger(skId):
     logger.setLevel(loggingLevl)
 
     # 로그 포맷 설정
-    log_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    # log_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    log_format = logging.Formatter('%(asctime)s - %(levelname)s - %(threadName)s - %(message)s')
     console_handler = logging.StreamHandler()
     console_handler.setLevel(loggingLevl)
     logger.addHandler(console_handler)
@@ -37,7 +38,8 @@ def setup_global_logger():
     logger.setLevel(loggingLevl)
 
     # 로그 포맷 설정
-    log_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    # log_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    log_format = logging.Formatter('%(asctime)s - %(levelname)s - %(threadName)s - %(message)s')
     console_handler = logging.StreamHandler()
     console_handler.setLevel(loggingLevl)
     logger.addHandler(console_handler)
