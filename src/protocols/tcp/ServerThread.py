@@ -96,13 +96,13 @@ class ServerThread(threading.Thread, Server):
             # 로거 제거
             logging.getLogger(self.skId).handlers = []
 
-            self.isRun = False
             if self.socket:
                 self.socket.close()
 
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail')
         finally:
+            self.isRun = False
             self._stop_event.set()
             moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
 
@@ -133,7 +133,6 @@ class ServerThread(threading.Thread, Server):
         self.client_list.append(client_info)
 
         self.logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
-
         connInfo = {}
         connInfo['SK_ID'] = self.skId
         connInfo['CONN_INFO'] = address

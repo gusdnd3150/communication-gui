@@ -93,13 +93,14 @@ class ServerUdpThread(threading.Thread):
             # 로거 제거
             logging.getLogger(self.skId).handlers = []
 
-            self.isRun = False
+
             if self.socket:
                 self.socket.close()
 
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail')
         finally:
+            self.isRun = False
             self._stop_event.set()
             moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
 

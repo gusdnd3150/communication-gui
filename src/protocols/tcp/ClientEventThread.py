@@ -217,6 +217,7 @@ class ClientEventThread(threading.Thread):
                 sockets = None
             if self.bzSch is not None:
                 self.bzSch.stop()
+                self.bzSch.join()
                 self.bzSch = None
             self.stop()
 
