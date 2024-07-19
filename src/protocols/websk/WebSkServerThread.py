@@ -94,6 +94,10 @@ class WebSkServerThread(threading.Thread):
 
             self.loop.call_soon_threadsafe(self.loop.stop)
 
+            if self.bzSch is not None:
+                self.bzSch.stop()
+                self.bzSch.join()
+                self.bzSch = None
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail')
         finally:

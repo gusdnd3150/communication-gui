@@ -96,6 +96,11 @@ class ClientEventThread(threading.Thread):
                 logger.removeHandler(handler)
             # 로거 제거
             logging.getLogger(self.skId).handlers = []
+
+            if self.bzSch is not None:
+                self.bzSch.stop()
+                self.bzSch.join()
+                self.bzSch = None
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
         finally:
