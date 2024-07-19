@@ -30,7 +30,7 @@ class BzSchedule2(threading.Thread):
         try:
             self.isRun = True
             self.logger.info(f'BzSchedule start : SK_GROUP = {self.bzInfo["SK_GROUP"]} ')
-            schedule.every(self.interval).seconds.do(self.task())
+            schedule.every(self.interval).seconds.do(self.task)
             while self.isRun:
                 schedule.run_pending()
                 time.sleep(1)

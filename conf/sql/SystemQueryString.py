@@ -287,6 +287,7 @@ def selectSocketMSgDtList(msgId ):
     query.append('	,B.MSG_DT_DESC                ')
     query.append('	,C.VAL_TYPE                   ')
     query.append('	,C.VAL_LEN                    ')
+    query.append('	,C.VAL_DESC                    ')
     query.append('from                            ')
     query.append('	TB_SK_MSG_BODY_DT B           ')
     query.append('	LEFT JOIN TB_SK_MSG_VAL C     ')
@@ -510,3 +511,13 @@ def delSch(pkgId, skgroup):
     result = " ".join(query)
     print(f'rs : {result}')
     return result
+
+
+
+def updateTbSkMsgVal(valId,val ):
+    query = []
+    query.append('UPDATE TB_SK_MSG_VAL SET  ')
+    query.append(f'	VAL_DESC  = "{val}"          ')
+    query.append('WHERE 1=1                 ')
+    query.append(f'AND VAL_ID = "{valId}"           ')
+    return " ".join(query)

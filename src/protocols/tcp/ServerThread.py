@@ -10,6 +10,7 @@ from conf.skModule import systemGlobals
 import conf.skModule as moduleData
 
 from src.protocols.sch.BzSchedule import BzSchedule
+from src.protocols.sch.BzSchedule2 import BzSchedule2
 from src.protocols.BzActivator import BzActivator
 from src.protocols.Server import Server
 

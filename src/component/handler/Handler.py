@@ -52,6 +52,7 @@ class Handler(QMainWindow):
         # btn_handle_send
         self.ui.btn_handle_search.clicked.connect(self.searchMsg)
         self.ui.btn_handle_send.clicked.connect(self.sendMsg)
+        self.ui.btn_save_dt_val.clicked.connect(self.saveDefaultVal)
 
 
 
@@ -115,7 +116,7 @@ class Handler(QMainWindow):
                         item = QTableWidgetItem(str(skItem[hd]))
                         self.ui.list_handle_body.setItem(row_count, j, item)
                     if hd =='VALUE':
-                        item = QTableWidgetItem('')
+                        item = QTableWidgetItem(str(skItem['VAL_DESC']))
                         item.setBackground(QBrush(QColor(148,127,127)))  # 노란색 배경 설정
                         item.setForeground(QBrush(QColor(0, 0, 0)))
                         self.ui.list_handle_body.setItem(row_count, j, item)
@@ -159,3 +160,34 @@ class Handler(QMainWindow):
             SendHandler.sendSkId(self,skId,self.msgId,resultObj)
         except:
             logger.error(f'sendMsg error : {traceback.format_exc()}')
+
+
+    def saveDefaultVal(self):
+        try:
+            logger.info(f'saveDefaultVal')
+            row_count = self.ui.list_handle_body.rowCount()
+            column_count = self.ui.list_handle_body.columnCount()
+            headers = [self.ui.list_handle_body.horizontalHeaderItem(i).text() for i in range(column_count)]
+
+            data = []
+            resultObj = {}
+            for row in range(row_count):
+                row_data = {}
+                for column in range(column_count):
+                    item = self.ui.list_handle_body.item(row, column)
+                    if item is not None:
+                        row_data[headers[column]] = item.text()
+                    else:
+                        row_data[headers[column]] = None  # 셀이 비어있는 경우 None으로 처리
+                data.append(row_data)
+
+            for index, item in enumerate(data):
+                resultObj[item['MSG_DT_VAL_ID']] = str(item['VALUE'])
+
+            logger.info(f'{resultObj}')
+            for key,val in enumerate(resultObj):
+                logger.info(f'{val},:{resultObj[val]}')
+                queryExecute(updateTbSkMsgVal(val, resultObj[val]))
+
+        except:
+            logger.error(f'saveDefaultVal error : {traceback.format_exc()}')
