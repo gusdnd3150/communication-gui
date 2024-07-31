@@ -54,6 +54,9 @@ class Handler(QMainWindow):
         self.ui.btn_handle_send.clicked.connect(self.sendMsg)
         self.ui.btn_save_dt_val.clicked.connect(self.saveDefaultVal)
 
+        self.ui.input_handle_search.textChanged.connect(self.searchMsg)
+
+
 
 
     def createMsgGrid(self, msg, mid):
@@ -93,7 +96,6 @@ class Handler(QMainWindow):
     def searchMsg(self):
         try:
             self.createMsgGrid(self.ui.input_handle_search.text(),None)
-            # self.createMsgDtGrid(self.ui.msg_MSG_ID_iq.text())
         except Exception as e:
             logger.error(f'searchMsg exception : {traceback.format_exc()}')
 
@@ -108,6 +110,7 @@ class Handler(QMainWindow):
             self.ui.list_handle_body.verticalHeader().setVisible(False)  # 행 번호 헤더 숨기기
             self.ui.list_handle_body.setHorizontalHeaderLabels(headers)
             skList = selectQuery(selectSocketMSgDtList(msg))
+            print(skList)
             for i, skItem in enumerate(skList):
                 row_count = self.ui.list_handle_body.rowCount()
                 self.ui.list_handle_body.insertRow(row_count)
@@ -175,12 +178,14 @@ class Handler(QMainWindow):
                 row_data = {}
                 for column in range(column_count):
                     item = self.ui.list_handle_body.item(row, column)
-                    if item is not None:
-                        row_data[headers[column]] = item.text()
-                    else:
-                        row_data[headers[column]] = None  # 셀이 비어있는 경우 None으로 처리
+                    row_data[headers[column]] = item.text()
+                    # if item is not None:
+                    #     row_data[headers[column]] = item.text()
+                    # else:
+                    #     row_data[headers[column]] = None  # 셀이 비어있는 경우 None으로 처리
                 data.append(row_data)
 
+            logger.info(f'data:{data}')
             for index, item in enumerate(data):
                 resultObj[item['MSG_DT_VAL_ID']] = str(item['VALUE'])
 

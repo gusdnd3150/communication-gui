@@ -2,6 +2,7 @@ from conf.logconfig import logger
 from conf.sql.SystemQueryString import *
 from src.controller.TestController import TestController
 from src.controller.SchController import SchController
+from src.controller.AtlasCopco import AtlasCopco
 from src.protocols.SendHandler import SendHandler
 import sys,os ,json, sqlite3, importlib, traceback
 import inspect
@@ -60,6 +61,9 @@ logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
 systemGlobals = globals()
 systemGlobals['TestController'] = TestController()
 systemGlobals['SchController'] = SchController()
+systemGlobals['AtlasCopco'] = AtlasCopco()
+
+
 logger.info(f'------------------- ------------------')
 
 

@@ -271,7 +271,7 @@ def selectSocketMSgList(msgId , mid):
     query.append('from TB_SK_MSG_BODY A ')
     query.append('WHERE 1=1			   ')
     if msgId is not None and msgId != '':
-        query.append(f'AND MSG_ID LIKE "%{msgId}%"  ')
+        query.append(f'AND (MSG_ID LIKE "%{msgId}%" or MSG_DESC LIKE "%{msgId}%"  )')
     if mid is not None and mid != '':
         query.append(f'AND MSG_KEY_VAL LIKE "%{mid}%"  ')
 
