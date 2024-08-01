@@ -31,7 +31,7 @@ class ServerThread(threading.Thread, Server):
     bzActive = None
     bzInActive = None
     bzIdleRead = None
-    bzSch = None
+    bzSchList = []
     logger = None
 
     def __init__(self, data):
@@ -100,10 +100,10 @@ class ServerThread(threading.Thread, Server):
             if self.socket:
                 self.socket.close()
 
-            if self.bzSch is not None:
-                self.bzSch.stop()
-                self.bzSch.join()
-                self.bzSch = None
+            if len(self.bzSchList) > 0:
+                for item in self.bzSchList:
+                    item.stop()
+                    item.join()
 
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail')
@@ -169,6 +169,7 @@ class ServerThread(threading.Thread, Server):
             bzSch = BzSchedule(combined_dict)
             bzSch.daemon = True
             bzSch.start()
+            self.bzSchList.append(bzSch)
 
 
         # IDLE_READ 처리
@@ -248,11 +249,10 @@ class ServerThread(threading.Thread, Server):
         if bzSch is not None:
             bzSch.stop()
             bzSch.join()
-            bzSch = None
-
 
         logger.info(f'moduleData.runChannels {moduleData.runChannels}')
         self.client_list.remove(client_info)
+        self.bzSchList.remove(bzSch)
         moduleData.runChannels.remove(client_info)
         self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
 
@@ -291,7 +291,7 @@ class ServerThread(threading.Thread, Server):
                     f'SK_ID:{self.skId} send bytes length : {len(bytes)} decimal_string : [{decimal_string}]')
             channel.sendall(bytes)
         except:
-            self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
+            self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {traceback.format_exc()}')
 
 
 
