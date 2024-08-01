@@ -199,12 +199,10 @@ class ClientEventThread(threading.Thread):
                     except socket.timeout:
                         self.logger.error(f'SK_ID:{self.skId} - IDLE READ exception')
                         if self.bzIdleRead is not None:
-                            self.bzIdleRead['SK_ID'] = self.skId
-                            self.bzIdleRead['CHANNEL'] = sockets
-                            self.bzIdleRead['LOGGER'] = self.logger
-                            bz = BzActivator(self.bzIdleRead)
-                            bz.daemon = True
-                            bz.start()
+                            combined_dict = {**chinfo, **self.bzIdleRead}
+                            to = BzActivator(combined_dict)
+                            to.daemon = True
+                            to.start()
                         continue
                     except Exception as e:
                         isRun = False

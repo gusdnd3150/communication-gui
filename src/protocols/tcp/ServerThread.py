@@ -253,7 +253,7 @@ class ServerThread(threading.Thread, Server):
                 bzSch.join()
 
             self.bzSchList.remove(bzSch)
-            moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
+
             moduleData.mainInstance.deleteTableRow(str(address),'list_conn')
 
             if clientsocket:
@@ -261,13 +261,16 @@ class ServerThread(threading.Thread, Server):
                 moduleData.runChannels.remove(client_info)
                 logger.info(f'moduleData.runChannels {moduleData.runChannels}')
                 self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
+                moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
                 clientsocket.close()
         except:
+
             self.logger.error(f'SK_ID:{self.skId} excepton : {traceback.format_exc()}')
             if clientsocket:
                 self.client_list.remove(client_info)
                 moduleData.runChannels.remove(client_info)
                 logger.info(f'moduleData.runChannels {moduleData.runChannels}')
+                moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
                 self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
                 clientsocket.close()
 
