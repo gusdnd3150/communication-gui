@@ -138,7 +138,15 @@ class ServerThread(threading.Thread, Server):
         client_info = (self.skId, clientsocket, self.codec)
         self.client_list.append(client_info)
 
+        bzSch = None
+        chinfo = {
+            'SK_ID': self.skId
+            , 'CHANNEL': clientsocket
+            , 'CODEC': self.codec
+            , 'LOGGER': self.logger
+        }
         self.logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
+
         connInfo = {}
         connInfo['SK_ID'] = self.skId
         connInfo['CONN_INFO'] = address
@@ -150,21 +158,17 @@ class ServerThread(threading.Thread, Server):
         # ACTIVE 이벤트처리
         if self.bzActive is not None:
             self.logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
-            self.bzActive['SK_ID'] = self.skId
-            self.bzActive['CHANNEL'] = clientsocket
-            self.bzActive['LOGGER'] = self.logger
-            bz = BzActivator(self.bzActive)
+            combined_dict = {**chinfo, **self.bzActive}
+            bz = BzActivator(combined_dict)
             bz.daemon = True
             bz.start()
 
         # KEEP 처리
         if self.bzKeep is not None:
-            self.bzKeep['SK_ID'] = self.skId
-            self.bzKeep['CHANNEL'] = clientsocket
-            self.bzKeep['LOGGER'] = self.logger
-            self.bzSch = BzSchedule(self.bzKeep)
-            self.bzSch.daemon = True
-            self.bzSch.start()
+            combined_dict = {**chinfo, **self.bzKeep}
+            bzSch = BzSchedule(combined_dict)
+            bzSch.daemon = True
+            bzSch.start()
 
 
         # IDLE_READ 처리
@@ -199,6 +203,7 @@ class ServerThread(threading.Thread, Server):
                         data = self.codec.decodeRecieData(readByte)
                         data['TOTAL_BYTES'] = copybytes
                         data['CHANNEL'] = clientsocket
+                        data['CODEC'] = self.codec
                         data['SK_ID'] = self.skId
                         data['LOGGER'] = self.logger
                         bz = BzActivator(data)
@@ -213,10 +218,8 @@ class ServerThread(threading.Thread, Server):
             except socket.timeout as e:
                 self.logger.error(f'SK_ID:{self.skId}- IDLE READ exception : {e}')
                 if self.bzIdleRead is not None:
-                    self.bzIdleRead['SK_ID'] = self.skId
-                    self.bzIdleRead['CHANNEL'] = clientsocket
-                    self.bzIdleRead['LOGGER'] = self.logger
-                    bz = BzActivator(self.bzIdleRead)
+                    combined_dict = {**chinfo, **self.bzIdleRead}
+                    bz = BzActivator(combined_dict)
                     bz.daemon = True
                     bz.start()
 
@@ -237,17 +240,15 @@ class ServerThread(threading.Thread, Server):
         # inactive 처리
         self.logger.info(f'SK_ID:{self.skId}- CLIENT disConnected  IP/PORT : {address}')
         if self.bzInActive is not None:
-            self.bzInActive['SK_ID'] = self.skId
-            self.bzInActive['CHANNEL'] = clientsocket
-            self.bzInActive['LOGGER'] = self.logger
-            bz = BzActivator(self.bzInActive)
+            combined_dict = {**chinfo, **self.bzInActive}
+            bz = BzActivator(combined_dict)
             bz.daemon = True
             bz.start()
 
-        if self.bzSch is not None:
-            self.bzSch.stop()
-            self.bzSch.join()
-            self.bzSch = None
+        if bzSch is not None:
+            bzSch.stop()
+            bzSch.join()
+            bzSch = None
 
 
         logger.info(f'moduleData.runChannels {moduleData.runChannels}')
@@ -258,10 +259,6 @@ class ServerThread(threading.Thread, Server):
         moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
         moduleData.mainInstance.deleteTableRow(str(address),'list_conn')
         clientsocket.close()
-
-
-
-
 
     def countChannelBySkId(self,skId):
         count = 0

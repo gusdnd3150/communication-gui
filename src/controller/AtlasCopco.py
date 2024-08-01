@@ -18,9 +18,18 @@ class AtlasCopco():
 
     def keepAlive(self, reciveObj):
         skLogger = reciveObj['LOGGER']
+        channel = reciveObj['CHANNEL']
+        codec = reciveObj['CODEC']
+
         returnJson = {}
+        returnJson['MSG_ID'] = 'TOOL_ATL_KEEP'
+        returnJson['REV'] = '001'
+        returnJson['SPARE'] = '000000000'
         try:
-            skLogger.info('keep')
-            # self.sendHandler.sendSkId('TCPS_LENGTH', 'LINE_SIGNAL', returnJson)
+            skLogger.info(f'채널 정보 : {channel}')
+            returnBytes = codec.encodeSendData(returnJson)
+            channel.sendall(returnBytes)
+            # self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_KEEP', returnJson)
+            # self.sendHandler.sendSkId('아틀라스콥코', 'TOOL_ATL_KEEP', returnJson)
         except Exception as e:
             skLogger.error(f'keepAlive.test() Exception :: {e}')

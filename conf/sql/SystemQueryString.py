@@ -255,7 +255,7 @@ def selectListTbSkBz ():
             '	, SEC             '  \
             '	, BZ_DESC         '  \
             'FROM TB_SK_PKG_SK_BZ  '  \
-            'WHERE PKG_ID = "CORE" ' \
+            'WHERE 1=1 ' \
             'AND SK_GROUP = "{}"	' \
             'AND USE_YN = "Y"	'
 
