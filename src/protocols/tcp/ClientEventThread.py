@@ -33,6 +33,7 @@ class ClientEventThread(threading.Thread):
     logger = None
     conCnt = 0
     sendData = bytearray
+    bzSchList = []
 
     def __init__(self, data, msgData):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
@@ -117,6 +118,8 @@ class ClientEventThread(threading.Thread):
         connInfo['SK_ID'] = self.skId
         connInfo['CONN_INFO'] = f"('{f'{self.skIp}:{threading.currentThread().getName()}'}', {self.skPort})"
         client_info = None
+        chinfo = None
+        bzSch = None
         try:
             # 서버에 연결합니다.
             sockets = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -124,106 +127,103 @@ class ClientEventThread(threading.Thread):
             sockets.sendall(self.sendData)
             isRun = True
 
+            chinfo = {
+                'SK_ID': self.skId
+                , 'CHANNEL': sockets
+                , 'CODEC': self.codec
+                , 'LOGGER': self.logger
+            }
             client_info = (self.skId, self.socket, self.codec)
             moduleData.mainInstance.addConnRow(connInfo)
 
             #2. 여기에 active 이벤트 처리
             if self.bzActive is not None:
                 self.logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
-                self.bzActive['SK_ID'] = self.skId
-                self.bzActive['CHANNEL'] = sockets
-                self.bzActive['LOGGER'] = self.logger
-                bz = BzActivator(self.bzActive)
+                combined_dict = {**chinfo, **self.bzActive}
+                bz = BzActivator(combined_dict)
                 bz.daemon = True
                 bz.start()
 
                 # KEEP 처리
             if self.bzKeep is not None:
-                self.bzKeep['SK_ID'] = self.skId
-                self.bzKeep['CHANNEL'] = sockets
-                self.bzKeep['LOGGER'] = self.logger
-                self.bzSch = BzSchedule(self.bzKeep)
-                self.bzSch.daemon = True
-                self.bzSch.start()
+                combined_dict = {**chinfo, **self.bzKeep}
+                bzSch = BzSchedule(combined_dict)
+                bzSch.daemon = True
+                bzSch.start()
+                self.bzSchList.append(bzSch)
 
 
             # 1. IDLE 타임아웃 설정 (예: 5초)
             if self.bzIdleRead is not None:
                 sockets.settimeout(self.bzIdleRead.get('SEC'))
 
-            while isRun:
-                try:
-                    reciveBytes = sockets.recv(self.initData.get('MAX_LENGTH'))
-                    if not reciveBytes:
-                        break
-                    buffer.extend(reciveBytes)
-
-                    if (self.initData['MIN_LENGTH'] > len(buffer)):
-                        continue
-
-                    while isRun:
-                        readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
-                        if readBytesCnt == 0:
+            with sockets:
+                while sockets:
+                    try:
+                        reciveBytes = sockets.recv(self.initData.get('MAX_LENGTH'))
+                        if not reciveBytes:
                             break
-                        elif readBytesCnt > len(buffer):
-                            break
-                        readByte = buffer[:readBytesCnt]
+                        buffer.extend(reciveBytes)
 
-                        try:
-                            if self.skLogYn:
-                                decimal_string = ' '.join(str(byte) for byte in readByte)
-                                self.logger.info(
-                                    f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+                        if (self.initData['MIN_LENGTH'] > len(buffer)):
+                            continue
 
-                            data = self.codec.decodeRecieData(readByte)
-                            data['TOTAL_BYTES'] = readByte.copy()
-                            data['CHANNEL'] = sockets
-                            data['SK_ID'] = self.skId
-                            data['LOGGER'] = self.logger
-                            bz = BzActivator(data)
+                        while sockets:
+                            readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
+                            if readBytesCnt == 0:
+                                break
+                            elif readBytesCnt > len(buffer):
+                                break
+                            readByte = buffer[:readBytesCnt]
+
+                            try:
+                                if self.skLogYn:
+                                    decimal_string = ' '.join(str(byte) for byte in readByte)
+                                    self.logger.info(
+                                        f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+
+                                data = self.codec.decodeRecieData(readByte)
+                                data['TOTAL_BYTES'] = readByte.copy()
+                                data['CHANNEL'] = sockets
+                                data['SK_ID'] = self.skId
+                                data['LOGGER'] = self.logger
+                                bz = BzActivator(data)
+                                bz.daemon = True
+                                bz.start()
+                            except Exception as e:
+                                traceback.print_exc()
+                                self.logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
+                            finally:
+                                del buffer[0:readBytesCnt]
+
+                    except socket.timeout:
+                        self.logger.error(f'SK_ID:{self.skId} - IDLE READ exception')
+                        if self.bzIdleRead is not None:
+                            self.bzIdleRead['SK_ID'] = self.skId
+                            self.bzIdleRead['CHANNEL'] = sockets
+                            self.bzIdleRead['LOGGER'] = self.logger
+                            bz = BzActivator(self.bzIdleRead)
                             bz.daemon = True
                             bz.start()
-                        except Exception as e:
-                            traceback.print_exc()
-                            self.logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
-                        finally:
-                            del buffer[0:readBytesCnt]
-
-                except socket.timeout:
-                    self.logger.error(f'SK_ID:{self.skId} - IDLE READ exception')
-                    if self.bzIdleRead is not None:
-                        self.bzIdleRead['SK_ID'] = self.skId
-                        self.bzIdleRead['CHANNEL'] = sockets
-                        self.bzIdleRead['LOGGER'] = self.logger
-                        bz = BzActivator(self.bzIdleRead)
-                        bz.daemon = True
-                        bz.start()
-                    continue
-                except Exception as e:
-                    isRun = False
-                    traceback.print_exc()
-                    break
-
-        except ConnectionRefusedError as e:
-            isRun = False
-            self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
-
-
+                        continue
+                    except Exception as e:
+                        isRun = False
+                        traceback.print_exc()
+                        break
         except Exception as e:
             isRun = False
             self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
         finally:
             moduleData.mainInstance.deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
-            isRun = False
             buffer.clear()
             # stop_event.set()
             if sockets:
                 sockets.close()
                 sockets = None
-            if self.bzSch is not None:
-                self.bzSch.stop()
-                self.bzSch.join()
-                self.bzSch = None
+            if bzSch is not None:
+                bzSch.stop()
+                bzSch.join()
+                bzSch = None
             self.stop()
 
 
@@ -257,6 +257,11 @@ class ClientEventThread(threading.Thread):
 
     def sendMsgToChannel(self, channel, obj):
         try:
-            self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel is None')
+            if channel:
+                sendBytes = self.codec.encodeSendData(obj)
+                channel.sendall(sendBytes)
+            else:
+                self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel has no Server')
+
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')

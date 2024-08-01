@@ -115,10 +115,11 @@ class ServerUdpThread(threading.Thread):
             # 서버 테이블 인설트
             moduleData.mainInstance.addServerRow(self.initData)
 
-            while self.isRun:
+            while self.socket:
                 message, address = self.socket.recvfrom(self.initData.get('MAX_LENGTH'))
                 # self.client_handler(message, address)
                 t = threading.Thread(target=self.client_handler, args=(bytearray(message), address))
+                t.daemon = True
                 t.start()
         except Exception as e:
             self.logger.error(f'UDP SERVER Bind exception : SK_ID={self.skId}  : {traceback.format_exc()}')
@@ -141,6 +142,7 @@ class ServerUdpThread(threading.Thread):
             data['TOTAL_BYTES'] = copyButes
             data['CHANNEL'] = self.socket
             data['SK_ID'] = self.skId
+            data['CODEC'] = self.codec
             data['LOGGER'] = self.logger
             bz = BzActivator(data)
             bz.daemon = True
@@ -151,6 +153,4 @@ class ServerUdpThread(threading.Thread):
             self.connCnt = self.connCnt - 1
             moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', '0')
             self.logger.info(f'UDP client_handler exception :  {traceback.format_exc()}')
-
-
 

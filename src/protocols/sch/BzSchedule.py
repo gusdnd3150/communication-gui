@@ -55,7 +55,9 @@ class BzSchedule(threading.Thread):
             self.logger.error(f'BzSchedule task exception : {e}')
 
     def stop(self):
-        self.isRun = False
-        self._stop_event.set()
+        try:
+            self.isRun = False
+        except:
+            self._stop_event.set()
 
 

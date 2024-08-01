@@ -21,7 +21,6 @@ class ServerThread(threading.Thread, Server):
     skIp = ''
     skPort = 0
     socket = None
-    reactor = None
     isRun = False
     skLogYn = False
     codec = None
@@ -33,6 +32,7 @@ class ServerThread(threading.Thread, Server):
     bzIdleRead = None
     bzSchList = []
     logger = None
+    clientThreads = []
 
     def __init__(self, data):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
@@ -97,20 +97,25 @@ class ServerThread(threading.Thread, Server):
             # 로거 제거
             logging.getLogger(self.skId).handlers = []
 
-            if self.socket:
-                self.socket.close()
+            if len(self.client_list) > 0:
+                for conn in self.client_list:
+                    try:
+                        conn.close()
+                    except:
+                        self.logger.error(f'SK_ID:{self.skId} disConnected Client : {conn}')
 
             if len(self.bzSchList) > 0:
                 for item in self.bzSchList:
                     item.stop()
                     item.join()
-
+            self.socket.close()
         except Exception as e:
-            self.logger.error(f'SK_ID:{self.skId} Stop fail')
+            self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
         finally:
             self.isRun = False
             self._stop_event.set()
             moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
+
 
 
     def initServer(self):
@@ -123,13 +128,18 @@ class ServerThread(threading.Thread, Server):
 
             # 서버 테이블 인설트
             moduleData.mainInstance.addServerRow(self.initData)
-            while self.isRun:
-                # accept connections from outside
-                (clientsocket, address) = self.socket.accept()
-                t = threading.Thread(target=self.client_handler, args=(clientsocket, address))
-                t.start()
+            with self.socket:
+                while self.socket:
+                    # accept connections from outside
+                    (clientsocket, address) = self.socket.accept()
+                    t = threading.Thread(target=self.client_handler, args=(clientsocket, address))
+                    t.daemon = True
+                    t.start()
+                    self.clientThreads.append(t)
         except Exception as e:
             self.logger.error(f'TCP SERVER Bind exception : SK_ID={self.skId}  : {e}')
+        finally:
+            self.socket.close()
 
 
 
@@ -137,7 +147,6 @@ class ServerThread(threading.Thread, Server):
         buffer = bytearray()
         client_info = (self.skId, clientsocket, self.codec)
         self.client_list.append(client_info)
-
         bzSch = None
         chinfo = {
             'SK_ID': self.skId
@@ -154,111 +163,113 @@ class ServerThread(threading.Thread, Server):
         moduleData.runChannels.append(client_info)
         moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
 
+        try:
+            # ACTIVE 이벤트처리
+            if self.bzActive is not None:
+                self.logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
+                combined_dict = {**chinfo, **self.bzActive}
+                bz = BzActivator(combined_dict)
+                bz.daemon = True
+                bz.start()
 
-        # ACTIVE 이벤트처리
-        if self.bzActive is not None:
-            self.logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
-            combined_dict = {**chinfo, **self.bzActive}
-            bz = BzActivator(combined_dict)
-            bz.daemon = True
-            bz.start()
-
-        # KEEP 처리
-        if self.bzKeep is not None:
-            combined_dict = {**chinfo, **self.bzKeep}
-            bzSch = BzSchedule(combined_dict)
-            bzSch.daemon = True
-            bzSch.start()
-            self.bzSchList.append(bzSch)
-
-
-        # IDLE_READ 처리
-        if self.bzIdleRead is not None:
-            clientsocket.settimeout(self.bzIdleRead.get('SEC'))
+            # KEEP 처리
+            if self.bzKeep is not None:
+                combined_dict = {**chinfo, **self.bzKeep}
+                bzSch = BzSchedule(combined_dict)
+                bzSch.daemon = True
+                bzSch.start()
+                self.bzSchList.append(bzSch)
 
 
+            # IDLE_READ 처리
+            if self.bzIdleRead is not None:
+                clientsocket.settimeout(self.bzIdleRead.get('SEC'))
 
-        while self.isRun:
-            try:
-                reciveBytes = clientsocket.recv(self.initData.get('MAX_LENGTH'))
-                if not reciveBytes:
-                    break
-                buffer.extend(reciveBytes)
-
-                if (self.initData['MIN_LENGTH'] > len(buffer)):
-                    continue
-
-                while self.isRun:
-                    readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
-                    if readBytesCnt == 0:
-                        break
-                    elif readBytesCnt > len(buffer):
-                        break
-                    readByte = buffer[:readBytesCnt]
+            with clientsocket:
+                while clientsocket:
                     try:
-                        if self.skLogYn:
-                            decimal_string = ' '.join(str(byte) for byte in readByte)
-                            self.logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+                        reciveBytes = clientsocket.recv(self.initData.get('MAX_LENGTH'))
+                        if not reciveBytes:
+                            break
+                        buffer.extend(reciveBytes)
 
-                        copybytes = readByte.copy()
-                        data = self.codec.decodeRecieData(readByte)
-                        data['TOTAL_BYTES'] = copybytes
-                        data['CHANNEL'] = clientsocket
-                        data['CODEC'] = self.codec
-                        data['SK_ID'] = self.skId
-                        data['LOGGER'] = self.logger
-                        bz = BzActivator(data)
-                        bz.daemon = True
-                        bz.start()
+                        if (self.initData['MIN_LENGTH'] > len(buffer)):
+                            continue
+
+                        while self.socket:
+                            readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
+                            if readBytesCnt == 0:
+                                break
+                            elif readBytesCnt > len(buffer):
+                                break
+                            readByte = buffer[:readBytesCnt]
+                            try:
+                                if self.skLogYn:
+                                    decimal_string = ' '.join(str(byte) for byte in readByte)
+                                    self.logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+
+                                copybytes = readByte.copy()
+                                data = self.codec.decodeRecieData(readByte)
+                                data['TOTAL_BYTES'] = copybytes
+
+                                reciveObj = {**chinfo, **data}
+                                bz = BzActivator(reciveObj)
+                                bz.daemon = True
+                                bz.start()
+                            except Exception as e:
+                                traceback.print_exc()
+                                self.logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
+                            finally:
+                                del buffer[0:readBytesCnt]
+
+                    except socket.timeout as e:
+                        self.logger.error(f'SK_ID:{self.skId}- IDLE READ exception : {e}')
+                        if self.bzIdleRead is not None:
+                            combined_dict = {**chinfo, **self.bzIdleRead}
+                            bz = BzActivator(combined_dict)
+                            bz.daemon = True
+                            bz.start()
+
                     except Exception as e:
-                        traceback.print_exc()
-                        self.logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
-                    finally:
-                        del buffer[0:readBytesCnt]
+                        decimal_string = ' '.join(str(byte) for byte in buffer)
+                        self.logger.error(f'SK_ID:{self.skId} handler Exception read length : {len(buffer)} decimal_string : [{decimal_string}]')
+                        self.logger.error(f'SK_ID:{self.skId} handler Exception : {traceback.format_exc()}')
+                        buffer.clear()
+                        break
 
-            except socket.timeout as e:
-                self.logger.error(f'SK_ID:{self.skId}- IDLE READ exception : {e}')
-                if self.bzIdleRead is not None:
-                    combined_dict = {**chinfo, **self.bzIdleRead}
-                    bz = BzActivator(combined_dict)
-                    bz.daemon = True
-                    bz.start()
+            # 버퍼 클리어
+            buffer.clear()
 
-            # 클라가 연결을 종료할 경우
-            except ConnectionResetError as e:
-                self.logger.error(f'SK_ID:{self.skId} ConnectionResetError : {e}')
-                break
-            except Exception as e:
-                decimal_string = ' '.join(str(byte) for byte in buffer)
-                self.logger.error(f'SK_ID:{self.skId} handler Exception read length : {len(buffer)} decimal_string : [{decimal_string}]')
-                self.logger.error(f'SK_ID:{self.skId} handler Exception : {traceback.format_exc()}')
-                buffer.clear()
-                break
+            # inactive 처리
+            self.logger.info(f'SK_ID:{self.skId}- CLIENT disConnected  IP/PORT : {address}')
+            if self.bzInActive is not None:
+                combined_dict = {**chinfo, **self.bzInActive}
+                bz = BzActivator(combined_dict)
+                bz.daemon = True
+                bz.start()
 
-        # 버퍼 클리어
-        buffer.clear()
-        
-        # inactive 처리
-        self.logger.info(f'SK_ID:{self.skId}- CLIENT disConnected  IP/PORT : {address}')
-        if self.bzInActive is not None:
-            combined_dict = {**chinfo, **self.bzInActive}
-            bz = BzActivator(combined_dict)
-            bz.daemon = True
-            bz.start()
+            if bzSch is not None:
+                bzSch.stop()
+                bzSch.join()
 
-        if bzSch is not None:
-            bzSch.stop()
-            bzSch.join()
+            self.bzSchList.remove(bzSch)
+            moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
+            moduleData.mainInstance.deleteTableRow(str(address),'list_conn')
 
-        logger.info(f'moduleData.runChannels {moduleData.runChannels}')
-        self.client_list.remove(client_info)
-        self.bzSchList.remove(bzSch)
-        moduleData.runChannels.remove(client_info)
-        self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
-
-        moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
-        moduleData.mainInstance.deleteTableRow(str(address),'list_conn')
-        clientsocket.close()
+            if clientsocket:
+                self.client_list.remove(client_info)
+                moduleData.runChannels.remove(client_info)
+                logger.info(f'moduleData.runChannels {moduleData.runChannels}')
+                self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
+                clientsocket.close()
+        except:
+            self.logger.error(f'SK_ID:{self.skId} excepton : {traceback.format_exc()}')
+            if clientsocket:
+                self.client_list.remove(client_info)
+                moduleData.runChannels.remove(client_info)
+                logger.info(f'moduleData.runChannels {moduleData.runChannels}')
+                self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
+                clientsocket.close()
 
     def countChannelBySkId(self,skId):
         count = 0

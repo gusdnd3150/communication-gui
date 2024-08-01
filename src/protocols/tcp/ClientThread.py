@@ -31,8 +31,8 @@ class ClientThread(threading.Thread, Client):
     bzActive = None
     bzInActive = None
     bzIdleRead = None
-    bzSch = None
     logger = None
+    bzSchList = []
 
     def __init__(self, data):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
@@ -100,10 +100,10 @@ class ClientThread(threading.Thread, Client):
             if self.socket:
                 self.socket.close()
 
-            if self.bzSch is not None:
-                self.bzSch.stop()
-                self.bzSch.join()
-                self.bzSch = None
+            if len(self.bzSchList) > 0:
+                for item in self.bzSchList:
+                    item.stop()
+                    item.join()
 
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
@@ -120,100 +120,100 @@ class ClientThread(threading.Thread, Client):
         connInfo = {}
         connInfo['SK_ID'] = self.skId
         connInfo['CONN_INFO'] = f"('{self.skIp}', {self.skPort})"
+        bzSch = None
         client_info = None
+        chinfo = None
+
         try:
             # 서버에 연결합니다.
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.connect((self.skIp, int(self.skPort)))
             self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
 
-            moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', '1')
+            chinfo = {
+                'SK_ID': self.skId
+                , 'CHANNEL': self.socket
+                , 'CODEC': self.codec
+                , 'LOGGER': self.logger
+            }
             client_info = (self.skId, self.socket, self.codec)
+            moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', '1')
             moduleData.runChannels.append(client_info)
             moduleData.mainInstance.addConnRow(connInfo)
 
             #2. 여기에 active 이벤트 처리
             if self.bzActive is not None:
                 self.logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
-                self.bzActive['SK_ID'] = self.skId
-                self.bzActive['CHANNEL'] = self.socket
-                self.bzActive['LOGGER'] = self.logger
-                bz = BzActivator(self.bzActive)
+                combined_dict = {**chinfo, **self.bzActive}
+                bz = BzActivator(combined_dict)
                 bz.daemon = True
                 bz.start()
 
                 # KEEP 처리
             if self.bzKeep is not None:
-                self.bzKeep['SK_ID'] = self.skId
-                self.bzKeep['CHANNEL'] = self.socket
-                self.bzKeep['LOGGER'] = self.logger
-                self.bzSch = BzSchedule(self.bzKeep)
-                self.bzSch.daemon = True
-                self.bzSch.start()
-
+                combined_dict = {**chinfo, **self.bzKeep}
+                bzSch = BzSchedule(combined_dict)
+                bzSch.daemon = True
+                bzSch.start()
+                self.bzSchList.append(bzSch)
 
             # 1. IDLE 타임아웃 설정 (예: 5초)
             if self.bzIdleRead is not None:
                 self.socket.settimeout(self.bzIdleRead.get('SEC'))
 
+
             self.isRun = True
-            while self.isRun:
-                try:
-                    reciveBytes = self.socket.recv(self.initData.get('MAX_LENGTH'))
-                    if not reciveBytes:
-                        break
-                    buffer.extend(reciveBytes)
-
-                    if (self.initData['MIN_LENGTH'] > len(buffer)):
-                        continue
-
-                    while self.isRun:
-                        readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
-                        if readBytesCnt == 0:
+            with self.socket:
+                while self.socket:
+                    try:
+                        reciveBytes = self.socket.recv(self.initData.get('MAX_LENGTH'))
+                        if not reciveBytes:
                             break
-                        elif readBytesCnt > len(buffer):
-                            break
-                        readByte = buffer[:readBytesCnt]
+                        buffer.extend(reciveBytes)
 
-                        try:
-                            if self.skLogYn:
-                                decimal_string = ' '.join(str(byte) for byte in readByte)
-                                self.logger.info(
-                                    f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+                        if (self.initData['MIN_LENGTH'] > len(buffer)):
+                            continue
 
-                            data = self.codec.decodeRecieData(readByte)
-                            data['TOTAL_BYTES'] = readByte.copy()
-                            data['CHANNEL'] = self.socket
-                            data['SK_ID'] = self.skId
-                            data['LOGGER'] = self.logger
-                            bz = BzActivator(data)
+                        while self.socket:
+                            readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
+                            if readBytesCnt == 0:
+                                break
+                            elif readBytesCnt > len(buffer):
+                                break
+                            readByte = buffer[:readBytesCnt]
+
+                            try:
+                                if self.skLogYn:
+                                    decimal_string = ' '.join(str(byte) for byte in readByte)
+                                    self.logger.info(
+                                        f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+
+                                copybytes = readByte.copy()
+                                data = self.codec.decodeRecieData(readByte)
+                                data['TOTAL_BYTES'] = copybytes
+
+                                reciveObj = {**chinfo, **data}
+                                bz = BzActivator(reciveObj)
+                                bz.daemon = True
+                                bz.start()
+                            except Exception as e:
+                                traceback.print_exc()
+                                self.logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
+                            finally:
+                                del buffer[0:readBytesCnt]
+
+                    except socket.timeout:
+                        self.logger.error(f'SK_ID:{self.skId} - IDLE READ exception')
+                        if self.bzIdleRead is not None:
+                            combined_dict = {**chinfo, **self.bzIdleRead}
+                            bz = BzActivator(combined_dict)
                             bz.daemon = True
                             bz.start()
-                        except Exception as e:
-                            traceback.print_exc()
-                            self.logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
-                        finally:
-                            del buffer[0:readBytesCnt]
-
-                except socket.timeout:
-                    self.logger.error(f'SK_ID:{self.skId} - IDLE READ exception')
-                    if self.bzIdleRead is not None:
-                        self.bzIdleRead['SK_ID'] = self.skId
-                        self.bzIdleRead['CHANNEL'] = self.socket
-                        self.bzIdleRead['LOGGER'] = self.logger
-                        bz = BzActivator(self.bzIdleRead)
-                        bz.daemon = True
-                        bz.start()
-                    continue
-                except Exception as e:
-                    traceback.print_exc()
-                    self.isRun = False
-                    break
-
-        except ConnectionRefusedError as e:
-            self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
-            self.isRun = False
-
+                        continue
+                    except Exception as e:
+                        traceback.print_exc()
+                        self.isRun = False
+                        break
         except Exception as e:
             self.isRun = False
             self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
@@ -228,11 +228,11 @@ class ClientThread(threading.Thread, Client):
                 self.socket.close()
                 self.socket = None
 
-            if self.bzSch is not None:
-                self.bzSch.stop()
-                self.bzSch = None
+            if bzSch is not None:
+                bzSch.stop()
+                bzSch = None
 
-            if self.isRun == False and self.isShutdown == False:
+            if self.isShutdown == False:
                 time.sleep(5)  # 5초 대기 후 재시도
                 self.initClient()
 
@@ -259,7 +259,7 @@ class ClientThread(threading.Thread, Client):
                     f'SK_ID:{self.skId} send bytes length : {len(bytes)} decimal_string : [{decimal_string}]')
             channel.sendall(bytes)
         except:
-            self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
+            self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {traceback.format_exc()}')
 
 
 
@@ -280,6 +280,11 @@ class ClientThread(threading.Thread, Client):
 
     def sendMsgToChannel(self, channel, obj):
         try:
-            self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel has no function')
+
+            if self.socket:
+                sendBytes = self.codec.encodeSendData(obj)
+                self.socket.sendall(sendBytes)
+            else:
+                self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel has no Server')
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')

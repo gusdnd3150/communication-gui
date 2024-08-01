@@ -26,10 +26,9 @@ class AtlasCopco():
         returnJson['REV'] = '001'
         returnJson['SPARE'] = '000000000'
         try:
-            skLogger.info(f'채널 정보 : {channel}')
-            returnBytes = codec.encodeSendData(returnJson)
-            channel.sendall(returnBytes)
-            # self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_KEEP', returnJson)
+            # returnBytes = codec.encodeSendData(returnJson)
+            # channel.sendall(returnBytes)
+            self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_KEEP', returnJson)
             # self.sendHandler.sendSkId('아틀라스콥코', 'TOOL_ATL_KEEP', returnJson)
         except Exception as e:
             skLogger.error(f'keepAlive.test() Exception :: {e}')
