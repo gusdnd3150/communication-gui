@@ -13,6 +13,7 @@ class ServerUdpThread(threading.Thread):
 
     initData = None
     skId = ''
+    skGrp = ''
     skIp = ''
     skPort = 0
     socket = None
@@ -45,6 +46,8 @@ class ServerUdpThread(threading.Thread):
 
         self.logger = setup_sk_logger(self.skId)
         self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
+        if (data.get('SK_GROUP') is not None):
+            self.skGrp = data['SK_GROUP']
 
         if (self.initData['HD_TYPE'] == 'FREE'):
             self.codec = FreeCodec(self.initData)
@@ -142,6 +145,7 @@ class ServerUdpThread(threading.Thread):
             data['TOTAL_BYTES'] = copyButes
             data['CHANNEL'] = self.socket
             data['SK_ID'] = self.skId
+            data['SK_GROUP'] = self.skGrp
             data['CODEC'] = self.codec
             data['LOGGER'] = self.logger
             bz = BzActivator(data)

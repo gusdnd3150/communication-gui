@@ -13,6 +13,7 @@ class ClientUdpThread(threading.Thread,Client):
 
     initData = None
     skId = ''
+    skGrp = ''
     skIp = ''
     skPort = 0
     socket = None
@@ -46,6 +47,8 @@ class ClientUdpThread(threading.Thread,Client):
 
         self.logger = setup_sk_logger(self.skId)
         self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
+        if (data.get('SK_GROUP') is not None):
+            self.skGrp = data['SK_GROUP']
 
         if (self.initData['HD_TYPE'] == 'FREE'):
             self.codec = FreeCodec(self.initData)
@@ -132,8 +135,7 @@ class ClientUdpThread(threading.Thread,Client):
             sent = udpClient.sendto(sendBytes, (self.skIp, self.skPort))
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                self.logger.info(
-                    f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} decimal_string : [{decimal_string}]')
+                self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} decimal_string : [{decimal_string}]')
 
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')

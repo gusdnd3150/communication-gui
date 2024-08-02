@@ -16,6 +16,7 @@ class ClientEventThread(threading.Thread):
 
     initData = None
     skId = ''
+    skGrp = ''
     skIp = ''
     skPort = 0
     socket = None
@@ -50,6 +51,9 @@ class ClientEventThread(threading.Thread):
         # self.logger = setup_sk_logger(self.skId)
         self.logger = logger
         self.logger.info(f'{threading.currentThread().getName()}')
+        if (data.get('SK_GROUP') is not None):
+            self.skGrp = data['SK_GROUP']
+
         if (self.initData['HD_TYPE'] == 'FREE'):
             self.codec = FreeCodec(self.initData)
         elif (self.initData['HD_TYPE'] == 'LENGTH'):
@@ -129,6 +133,7 @@ class ClientEventThread(threading.Thread):
 
             chinfo = {
                 'SK_ID': self.skId
+                , 'SK_GROUP': self.skGrp
                 , 'CHANNEL': sockets
                 , 'CODEC': self.codec
                 , 'LOGGER': self.logger
@@ -182,12 +187,12 @@ class ClientEventThread(threading.Thread):
                                     self.logger.info(
                                         f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
 
+                                copybytes = readByte.copy()
                                 data = self.codec.decodeRecieData(readByte)
-                                data['TOTAL_BYTES'] = readByte.copy()
-                                data['CHANNEL'] = sockets
-                                data['SK_ID'] = self.skId
-                                data['LOGGER'] = self.logger
-                                bz = BzActivator(data)
+                                data['TOTAL_BYTES'] = copybytes
+
+                                reciveObj = {**chinfo, **data}
+                                bz = BzActivator(reciveObj)
                                 bz.daemon = True
                                 bz.start()
                             except Exception as e:

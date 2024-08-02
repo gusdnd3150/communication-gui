@@ -15,6 +15,7 @@ class JSONCodec():
     hdId = ''
     hdLen = 0
     skId = ''
+    skGrp = ''
     delimiter = b''
     
     def __init__(self, initData):
@@ -28,6 +29,9 @@ class JSONCodec():
         self.hdId = initData['HD_ID']
         self.hdLen = initData['HD_LEN']
         self.skId = initData['SK_ID']
+
+        if (initData.get('SK_GROUP') is not None):
+            self.skGrp = initData['SK_GROUP']
 
         if initData.get(self.hdId) is not None:
             self.hdList = initData[self.hdId]
@@ -79,7 +83,7 @@ class JSONCodec():
 
         # mid or length 로 소켓 IN 정보 검색
         for index, inData in enumerate(moduleData.sokcetIn):
-            if self.skId == inData['IN_SK_ID']:
+            if self.skId == inData['IN_SK_ID'] or self.skGrp == inData['IN_SK_ID']:
                 # {'PKG_ID': 'CORE', 'SK_IN_SEQ': 100, 'IN_SK_ID': 'SERVER2', 'IN_MSG_ID': 'IF_BODY',
                 #  'MSG_KEY_TYPE': 'STRING', 'MSG_KEY_VAL': 'MC05', 'BZ_METHOD': 'TestController.test', 'IN_DESC': None,
                 #  'USE_YN': 'Y'}

@@ -18,6 +18,7 @@ class ServerThread(threading.Thread, Server):
 
     initData = None
     skId = ''
+    skGrp = ''
     skIp = ''
     skPort = 0
     socket = None
@@ -49,6 +50,9 @@ class ServerThread(threading.Thread, Server):
 
         self.logger = setup_sk_logger(self.skId)
         self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
+
+        if (data.get('SK_GROUP') is not None):
+            self.skGrp = data['SK_GROUP']
 
         if (self.initData['HD_TYPE'] == 'FREE'):
             self.codec = FreeCodec(self.initData)
@@ -150,6 +154,7 @@ class ServerThread(threading.Thread, Server):
         bzSch = None
         chinfo = {
             'SK_ID': self.skId
+            ,'SK_GROUP': self.skGrp
             , 'CHANNEL': clientsocket
             , 'CODEC': self.codec
             , 'LOGGER': self.logger
