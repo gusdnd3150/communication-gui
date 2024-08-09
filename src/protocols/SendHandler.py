@@ -39,23 +39,28 @@ class SendHandler():
             data['MSG_ID'] = msgId
             for i, sk in enumerate(moduleData.sokcetList):
                 if sk['SK_ID'] == skId:
+                    skThread = sk['SK_THREAD']
                     if sk['SK_CLIENT_TYPE'] == 'EVENT':
                         from src.protocols.tcp.ClientEventThread import ClientEventThread
                         newTh = ClientEventThread(sk, data)
                         newTh.daemon = True
                         newTh.start()
                         break
-                    skThread = sk['SK_THREAD']
+                    if sk['SK_TYPE'] == 'WEBSK':
+                        returnBytes = skThread.codec.encodeSendData(data)
+                        loop = skThread.loop
+                        asyncio.run_coroutine_threadsafe(self.send_webSk_message(skThread, returnBytes), loop)
+                        break
                     skThread.sendMsgToAllChannels(data)
                     break
         except Exception as e:
             logger.info(f'sendSkId() Exception SK_ID:{skId} , MSG_ID:{msgId}, DATA:{data} -- {traceback.format_exc()}')
 
-    def sendChannelBytes(self, channel, bytes):
-        try:
-            channel.sendall(bytes)
-        except Exception as e:
-            logger.info(f'sendChannelBytes() Exception :: {e}')
+    # def sendChannelBytes(self, channel, bytes):
+    #     try:
+    #         channel.sendall(bytes)
+    #     except Exception as e:
+    #         logger.info(f'sendChannelBytes() Exception :: {e}')
 
 
     def sendChannelMsg(self, channel, msgId, data):

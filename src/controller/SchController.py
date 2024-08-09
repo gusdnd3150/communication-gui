@@ -21,6 +21,6 @@ class SchController():
         returnJson = {}
         try:
             skLogger.info(f' 스케줄 테스트 ')
-            # self.sendHandler.sendSkId('TCPS_LENGTH', 'LINE_SIGNAL', returnJson)
+            self.sendHandler.sendSkId('TCPS_LENGTH', 'LINE_SIGNAL', returnJson)
         except Exception as e:
             skLogger.error(f'SchController.test() Exception :: {e}')
