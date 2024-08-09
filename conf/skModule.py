@@ -28,8 +28,8 @@ with open(file_path, 'r') as f:
     if useYn == 'Y':
         dbHandler = Dbhandler(data)
 #
-# if dbHandler:
-#     dbHandler.test()
+if dbHandler:
+    dbHandler.test()
 
 
 

@@ -4,4 +4,5 @@
   "DB_PWD": "HMJJ_ADM",
   "DB_URL": "jdbc:tibero:thin:@dev.teia.co.kr:8629:tibero",
   "USE_YN": "N"
+
 }
