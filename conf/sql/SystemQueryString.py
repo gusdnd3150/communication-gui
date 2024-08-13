@@ -152,7 +152,7 @@ def selectTbSkMsgBodyDtAndVal():
         '	FROM TB_SK_MSG_VAL            '\
         ')B                                '\
         'WHERE A.MSG_DT_VAL_ID = B.VAL_ID  '\
-        'ORDER BY MSG_ID, MSG_DT_ORD		'\
+        'ORDER BY MSG_ID, CAST(MSG_DT_ORD AS INTEGER)'\
 
 def selectMsgLen():
     return 'SELECT                           '\
