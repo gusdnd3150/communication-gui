@@ -185,7 +185,7 @@ class ClientEventThread(threading.Thread):
                                 if self.skLogYn:
                                     decimal_string = ' '.join(str(byte) for byte in readByte)
                                     self.logger.info(
-                                        f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+                                        f'SK_ID:{self.skId} read length : {len(readByte)} recive_string:[{str(readByte)}] decimal_string : [{decimal_string}]')
 
                                 copybytes = readByte.copy()
                                 data = self.codec.decodeRecieData(readByte)
@@ -234,24 +234,26 @@ class ClientEventThread(threading.Thread):
 
     def sendBytesToAllChannels(self, msgBytes):
         try:
-            self.logger.info(f'SK_ID:{self.skId}- sendBytesToAllChannels is None')
+            pass
+            # self.logger.info(f'SK_ID:{self.skId}- sendBytesToAllChannels is None')
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
 
     def sendBytesToChannel(self,channel, bytes):
         try:
-            self.logger.info(f'SK_ID:{self.skId}- sendBytesToChannel is None')
+            # self.logger.info(f'SK_ID:{self.skId}- sendBytesToChannel is None')
+            pass
         except:
             self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
 
 
 
     def sendMsgToAllChannels(self, obj):
-
         try:
-            self.sendData = self.codec.encodeSendData(obj)
-            stop_event = threading.Event()
+            pass
+            # self.sendData = self.codec.encodeSendData(obj)
+            # stop_event = threading.Event()
             # clientThread = threading.Thread(self.initClient(self), args=(stop_event,))
             # clientThread.daemon = True
             # clientThread.start()
@@ -263,6 +265,9 @@ class ClientEventThread(threading.Thread):
             if channel:
                 sendBytes = self.codec.encodeSendData(obj)
                 channel.sendall(sendBytes)
+                if self.skLogYn:
+                    decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                    self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
             else:
                 self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel has no Server')
 

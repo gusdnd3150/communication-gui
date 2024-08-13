@@ -135,7 +135,7 @@ class ServerUdpThread(threading.Thread):
 
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in message)
-                self.logger.info(f'SK_ID:{self.skId} read length : {len(message)} decimal_string : [{decimal_string}]')
+                self.logger.info(f'SK_ID:{self.skId} read length : {len(message)} recive_string:[{str(message)}] decimal_string : [{decimal_string}]')
 
             self.connCnt = self.connCnt + 1
             moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.connCnt))

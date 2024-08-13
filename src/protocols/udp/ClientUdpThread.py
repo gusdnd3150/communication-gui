@@ -135,7 +135,7 @@ class ClientUdpThread(threading.Thread,Client):
             sent = udpClient.sendto(sendBytes, (self.skIp, self.skPort))
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} decimal_string : [{decimal_string}]')
+                self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
 
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
