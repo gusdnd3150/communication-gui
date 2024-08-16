@@ -521,3 +521,38 @@ def updateTbSkMsgVal(valId,val ):
     query.append('WHERE 1=1                 ')
     query.append(f'AND VAL_ID = "{valId}"           ')
     return " ".join(query)
+
+
+def selectMsgBodyCnt(msgId,):
+    query = []
+    query.append('SELECT COUNT(1)		')
+    query.append('FROM TB_SK_MSG_BODY ')
+    query.append('WHERE 1=1           ')
+    query.append(f'AND MSG_ID= "{msgId}"    ')
+    return " ".join(query)
+
+
+def insertMsgBody(params):
+    query = []
+    keys = list(params.keys())
+    values = [("" if str(v) is None else '""' if str(v) == "" else str(f"'{v}'")) for v in params.values()]
+    query.append('INSERT INTO TB_SK_MSG_BODY (')
+    query.append(','.join(keys))
+    query.append(') VALUES(')
+    query.append(','.join(values))
+    query.append(')')
+    result = " ".join(query)
+    print(f'rs : {result}')
+    return result
+
+
+def updateMsgBody(params ):
+    key = params['MSG_ID']
+    query = []
+    query.append('UPDATE TB_SK_MSG_BODY SET  ')
+    query.append(f'	MSG_KEY_TYPE  = "{params["MSG_KEY_TYPE"]}"          ')
+    query.append(f'	,MSG_KEY_VAL  = "{params["MSG_KEY_VAL"]}"          ')
+    query.append(f'	,MSG_DESC  = "{params["MSG_DESC"]}"          ')
+    query.append('WHERE 1=1                 ')
+    query.append(f'AND MSG_ID = "{key}"           ')
+    return " ".join(query)

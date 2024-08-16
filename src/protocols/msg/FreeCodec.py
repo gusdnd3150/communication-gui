@@ -101,13 +101,13 @@ class FreeCodec():
                 bodyList = body[body['MSG_ID']]
                 break
 
-
-        for index, body in enumerate(bodyList):
-            if (len(msgBytes) < body['VAL_LEN']):
-                raise Exception('FreeCodec convertRecieData : 바디 전문 파싱 오류')
-            read = msgBytes[:body['VAL_LEN']]
-            returnData[body['VAL_ID']] = decodeBytesToType(read, body['VAL_TYPE'])
-            del msgBytes[0:body['VAL_LEN']]
+        if bodyList is not None:
+            for index, body in enumerate(bodyList):
+                if (len(msgBytes) < body['VAL_LEN']):
+                    raise Exception('FreeCodec convertRecieData : 바디 전문 파싱 오류')
+                read = msgBytes[:body['VAL_LEN']]
+                returnData[body['VAL_ID']] = decodeBytesToType(read, body['VAL_TYPE'])
+                del msgBytes[0:body['VAL_LEN']]
 
 
         if msgInfo is not None:

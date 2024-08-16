@@ -8,7 +8,8 @@ class TempController:
     logger = None
     dbInstance = None
     classNm = 'TempController'
-
+    accept0001Ch = []
+    
     def __init__(self, logger, sendHandler, dbHandler=None):
         logger.info(f'TempController init')
         self.sendHandler = sendHandler
@@ -37,7 +38,8 @@ class TempController:
         returnJson['SPARE'] = reciveObj['SPARE']
 
         try:
-            self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_KEEP_9999', returnJson)
+            pass
+            #self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_KEEP_9999', returnJson)
         except Exception as e:
             skLogger.error(f'revKeepAlive Exception :: {e}')
 
@@ -60,25 +62,24 @@ class TempController:
         returnJson = {}
         returnJson['REV'] = '001'
         returnJson['SPARE'] = '0    00  '
-        returnJson['ATLAS_COUNT'] = '11'
-        returnJson['CELL_ID'] = '1234'
-        returnJson['CHANNEL_ID'] = '88'
-        returnJson['CTRL_NM'] = '1234567890123456789012345'
+        #returnJson['ATLAS_COUNT'] = '11'
+        #returnJson['CELL_ID'] = '1234'
+        #returnJson['CHANNEL_ID'] = '88'
+        #returnJson['CTRL_NM'] = '1234567890123456789012345'
         try:
             self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_CNN_SET_REQ_0060', returnJson)
         except Exception as e:
             skLogger.error(f'recive0001 Exception :: {e}')
 
-    def recive0060(self, reciveObj):
+    def recive0061(self, reciveObj):
         skLogger = reciveObj['LOGGER']
         channel = reciveObj['CHANNEL']
-        self.accept0060Ch.append(channel)
+        skLogger.info(f'recive0061 result :: {reciveObj}')
         returnJson = {}
         returnJson['REV'] = '001'
         returnJson['SPARE'] = '0    00  '
-        returnJson['MID_RES'] = reciveObj['MSG_ID']
         try:
-            self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_RES_0005', returnJson)
+            self.sendHandler.sendChannelMsg(channel, 'ATL_PF_RSLT_ACK_AND_REV_0062', returnJson)
         except Exception as e:
             skLogger.error(f'recive0060 Exception :: {e}')
 

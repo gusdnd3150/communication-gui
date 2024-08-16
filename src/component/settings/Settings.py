@@ -1,4 +1,4 @@
-
+from PySide6.QtGui import QBrush, QColor
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView
 from src.component.settings.SaveSocketPopup import SaveSocketPopup
@@ -29,6 +29,7 @@ class Settings(QMainWindow):
     contInFlag = 'upd'
     contBzFlag = 'upd'
     contSchFlag = 'upd'
+    addMsgList = [] # 추가할 row index를 저장
 
     def __init__(self, initData):
         self.initData = initData
@@ -78,6 +79,10 @@ class Settings(QMainWindow):
         self.ui.btn_addSch.clicked.connect(self.addSch)
         self.ui.btn_delSch.clicked.connect(self.delSch)
         self.ui.btn_saveSch.clicked.connect(self.saveSch)
+
+        self.ui.msg_add.clicked.connect(self.msgAddRow)
+        self.ui.msg_save.clicked.connect(self.saveMsg)
+
 
 
         for item in useYnCombo:
@@ -294,6 +299,8 @@ class Settings(QMainWindow):
 
             logger.info(f'sss : {self.ui.msg_MSG_MID_iq.text()}')
             logger.info(f'sss : {self.ui.msg_MSG_ID_iq.text()}')
+
+            self.addMsgList.clear()
             self.createMsgGrid(self.ui.msg_MSG_ID_iq.text(),self.ui.msg_MSG_MID_iq.text())
             self.createMsgDtGrid(self.ui.msg_MSG_ID_iq.text())
         except Exception as e:
@@ -302,7 +309,6 @@ class Settings(QMainWindow):
 
     def createMsgGrid(self, msg, mid):
         try:
-            logger.info('test')
             headers = ['MSG_ID','MSG_KEY_TYPE','MSG_KEY_VAL','MSG_DESC' ]
             self.ui.msg_list.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
             self.ui.msg_list.setRowCount(0)  # Table의 행을 설정, list의 길이
@@ -359,7 +365,54 @@ class Settings(QMainWindow):
             logger.error(f'createMsgGrid exception : {traceback.format_exc()}')
 
 
+    def msgAddRow(self):
+        try:
+            row_count = self.ui.msg_list.rowCount()
+            self.ui.msg_list.insertRow(row_count)
+            headers = ['MSG_ID', 'MSG_KEY_TYPE', 'MSG_KEY_VAL', 'MSG_DESC']
+            for j, hd in enumerate(headers):
+                item = QTableWidgetItem('')
+                item.setBackground(QBrush(QColor(148, 127, 127)))  # 노란색 배경 설정
+                item.setForeground(QBrush(QColor(0, 0, 0)))
+                self.ui.msg_list.setItem(row_count, j, item)
+                
+            self.addMsgList.append(row_count)
+        except:
+            logger.error(f'test')
 
+    def saveMsg(self):
+        try:
+            logger.info(f'saveMsg')
+            upd_rows = []
+            for index, rowNum in enumerate(self.addMsgList):
+                row_data = {}
+                for column in range(self.ui.msg_list.columnCount()):
+                    header_item = self.ui.msg_list.horizontalHeaderItem(column)
+                    item = self.ui.msg_list.item(rowNum, column)
+                    row_data[header_item.text()] = item.text() if item else ""
+                upd_rows.append(row_data)
+
+            for ins, item in enumerate(upd_rows):
+                rslt = selectQueryAsInt(selectMsgBodyCnt(item['MSG_ID']))
+                if rslt < 1:
+                    queryExecute(insertMsgBody(item))
+                else:
+                    queryExecute(updateMsgBody(item))
+        except:
+            logger.error(f'saveMsg error : {traceback.format_exc()}')
+        finally:
+            self.addMsgList.clear()
+            self.searchMsg()
+
+
+    def msgChanged(self):
+        try:
+
+            logger.info(f'ssss')
+
+
+        except:
+            logger.error(f'ddd')
 
 #################################################################### 이벤트 설정
     def createBzGrid(self):

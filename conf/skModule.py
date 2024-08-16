@@ -132,6 +132,15 @@ def selectQuery(queryString):
         json_data.append(dict(zip(column_names, row)))
     return json_data
 
+def selectQueryAsInt(queryString):
+    c = dbInstance.cursor()
+    c.execute(queryString)
+    rslt = c.fetchall()
+    # 열 이름 가져오기
+    return rslt[0][0]
+
+
+
 def queryExecute(queryString):
     c = dbInstance.cursor()
     c.execute(queryString)

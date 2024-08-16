@@ -65,7 +65,10 @@ class LengthCodec():
             if (len(msgBytes) < hd['DT_LEN']):
                 raise Exception('LengthCodec convertRecieData : 해더 전문 파싱 오류')
             read = msgBytes[:hd['DT_LEN']]
-            returnData[hd['DT_ID']] = decodeBytesToType(read, hd['DT_TYPE'])
+            # decimal_string = ' '.join(str(byte) for byte in read)
+            # logger.info(f'dddd  :{decimal_string}')
+            hdval = decodeBytesToType(read, hd['DT_TYPE'])
+            returnData[hd['DT_ID']] = hdval
             if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
                 lenRelYn = returnData[hd['DT_ID']]
             if hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
@@ -108,12 +111,13 @@ class LengthCodec():
                 bodyList = body[body['MSG_ID']]
                 break
 
-        for index, body in enumerate(bodyList):
-            if (len(msgBytes) < body['VAL_LEN']):
-                raise Exception('LengthCodec convertRecieData : 바디 전문 파싱 오류')
-            read = msgBytes[:body['VAL_LEN']]
-            returnData[body['VAL_ID']] = decodeBytesToType(read, body['VAL_TYPE'])
-            del msgBytes[0:body['VAL_LEN']]
+        if bodyList is not None:
+            for index, body in enumerate(bodyList):
+                if (len(msgBytes) < body['VAL_LEN']):
+                    raise Exception('LengthCodec convertRecieData : 바디 전문 파싱 오류')
+                read = msgBytes[:body['VAL_LEN']]
+                returnData[body['VAL_ID']] = decodeBytesToType(read, body['VAL_TYPE'])
+                del msgBytes[0:body['VAL_LEN']]
 
         # reurnData['BZ_METHOD'] = msgInfo['BZ_METHOD']
         if msgInfo is not None:
