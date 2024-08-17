@@ -556,3 +556,18 @@ def updateMsgBody(params ):
     query.append('WHERE 1=1                 ')
     query.append(f'AND MSG_ID = "{key}"           ')
     return " ".join(query)
+
+
+def deleteMsgBody(msgId ):
+    query = []
+    query.append('DELETE FROM TB_SK_MSG_BODY  ')
+    query.append('WHERE 1=1                 ')
+    query.append(f'AND MSG_ID = "{msgId}" ')
+    return " ".join(query)
+
+def deleteMsgBodyDt(msgId ):
+    query = []
+    query.append('DELETE FROM TB_SK_MSG_BODY_DT  ')
+    query.append('WHERE 1=1                 ')
+    query.append(f'AND MSG_ID = "{msgId}"    ')
+    return " ".join(query)

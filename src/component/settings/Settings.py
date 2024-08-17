@@ -1,6 +1,6 @@
 from PySide6.QtGui import QBrush, QColor
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView
+from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView , QCheckBox, QWidget, QHBoxLayout
 from src.component.settings.SaveSocketPopup import SaveSocketPopup
 import sys
 import os
@@ -30,6 +30,7 @@ class Settings(QMainWindow):
     contBzFlag = 'upd'
     contSchFlag = 'upd'
     addMsgList = [] # 추가할 row index를 저장
+    curMsg = ''
 
     def __init__(self, initData):
         self.initData = initData
@@ -82,6 +83,7 @@ class Settings(QMainWindow):
 
         self.ui.msg_add.clicked.connect(self.msgAddRow)
         self.ui.msg_save.clicked.connect(self.saveMsg)
+        self.ui.msg_del.clicked.connect(self.delMsg)
 
 
 
@@ -296,10 +298,6 @@ class Settings(QMainWindow):
 
     def searchMsg(self):
         try:
-
-            logger.info(f'sss : {self.ui.msg_MSG_MID_iq.text()}')
-            logger.info(f'sss : {self.ui.msg_MSG_ID_iq.text()}')
-
             self.addMsgList.clear()
             self.createMsgGrid(self.ui.msg_MSG_ID_iq.text(),self.ui.msg_MSG_MID_iq.text())
             self.createMsgDtGrid(self.ui.msg_MSG_ID_iq.text())
@@ -319,6 +317,7 @@ class Settings(QMainWindow):
                 row_count = self.ui.msg_list.rowCount()
                 self.ui.msg_list.insertRow(row_count)
                 for j, hd in enumerate(headers):
+
                     if skItem.get(hd) is not None:
                         self.ui.msg_list.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
             self.ui.msg_list.cellClicked.connect(self.selectMsgRow)
@@ -327,19 +326,9 @@ class Settings(QMainWindow):
 
     def selectMsgRow(self,row, column):
         try:
-            # logger.info(f'row: {row}')
-            # item = self.ui.list_sk.item(row, column)
-            # if item:
-            #     print(f"Item text: {item.text()}")
-            row_data = {}
-            for column in range(self.ui.msg_list.columnCount()):
-                header_item = self.ui.msg_list.horizontalHeaderItem(column)
-                item = self.ui.msg_list.item(row, column)
-                row_data[header_item.text()] = item.text() if item else ""
-
-            # self.ui.sk_PKG_ID.setText(row_data['PKG_ID'])
+            row_data = self.getMsgByRownum(row)
+            self.ui.selected_msg.setText(row_data['MSG_ID'])
             self.createMsgDtGrid(row_data['MSG_ID'])
-
         except Exception as e :
             logger.error(f'selectMsgRow exception : {traceback.format_exc()} ')
 
@@ -358,6 +347,7 @@ class Settings(QMainWindow):
                 row_count = self.ui.msg_dt_list.rowCount()
                 self.ui.msg_dt_list.insertRow(row_count)
                 for j, hd in enumerate(headers):
+
                     if skItem.get(hd) is not None:
                         self.ui.msg_dt_list.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
             # self.ui.msg_dt_list.cellClicked.connect(self.selectMsgRow)
@@ -367,6 +357,7 @@ class Settings(QMainWindow):
 
     def msgAddRow(self):
         try:
+            self.ui.msg_list.setRowCount(0)
             row_count = self.ui.msg_list.rowCount()
             self.ui.msg_list.insertRow(row_count)
             headers = ['MSG_ID', 'MSG_KEY_TYPE', 'MSG_KEY_VAL', 'MSG_DESC']
@@ -384,35 +375,51 @@ class Settings(QMainWindow):
         try:
             logger.info(f'saveMsg')
             upd_rows = []
-            for index, rowNum in enumerate(self.addMsgList):
-                row_data = {}
-                for column in range(self.ui.msg_list.columnCount()):
-                    header_item = self.ui.msg_list.horizontalHeaderItem(column)
-                    item = self.ui.msg_list.item(rowNum, column)
-                    row_data[header_item.text()] = item.text() if item else ""
-                upd_rows.append(row_data)
+            if len(self.addMsgList) > 0 :
+                for index, rowNum in enumerate(self.addMsgList):
+                    upd_rows.append(self.getMsgByRownum(rowNum))
 
-            for ins, item in enumerate(upd_rows):
-                rslt = selectQueryAsInt(selectMsgBodyCnt(item['MSG_ID']))
-                if rslt < 1:
-                    queryExecute(insertMsgBody(item))
-                else:
-                    queryExecute(updateMsgBody(item))
+                for ins, item in enumerate(upd_rows):
+                    rslt = selectQueryAsInt(selectMsgBodyCnt(item['MSG_ID']))
+                    if rslt < 1:
+                        queryExecute(insertMsgBody(item))
+                    else:
+                        queryExecute(updateMsgBody(item))
+            else:
+                curIndex = self.ui.msg_list.currentRow()
+                row_data = self.getMsgByRownum(curIndex)
+                queryExecute(updateMsgBody(row_data))
         except:
             logger.error(f'saveMsg error : {traceback.format_exc()}')
         finally:
             self.addMsgList.clear()
             self.searchMsg()
 
-
-    def msgChanged(self):
+    def delMsg(self):
         try:
+            msgId = self.ui.selected_msg.text()
+            if msgId != '':
 
-            logger.info(f'ssss')
-
-
+                queryExecute(deleteMsgBody(msgId))
+                queryExecute(deleteMsgBodyDt(msgId))
         except:
-            logger.error(f'ddd')
+            logger.error(f'saveMsg error : {traceback.format_exc()}')
+        finally:
+            self.curMsg = ''
+            self.searchMsg()
+            # self.addMsgList.clear()
+            # self.searchMsg()
+
+    def getMsgByRownum(self, rownum):
+        row_data = {}
+        try:
+            for column in range(self.ui.msg_list.columnCount()):
+                header_item = self.ui.msg_list.horizontalHeaderItem(column)
+                item = self.ui.msg_list.item(rownum, column)
+                row_data[header_item.text()] = item.text() if item else ""
+        except:
+            logger.error(f'getMsgByRownum exceptoon : {traceback.format_exc()}')
+        return row_data
 
 #################################################################### 이벤트 설정
     def createBzGrid(self):
