@@ -30,6 +30,7 @@ class Settings(QMainWindow):
     contBzFlag = 'upd'
     contSchFlag = 'upd'
     addMsgList = [] # 추가할 row index를 저장
+    addMsgDtList = []  # 추가할 row index를 저장
     curMsg = ''
 
     def __init__(self, initData):
@@ -72,7 +73,15 @@ class Settings(QMainWindow):
         # 메시지 탭 이벤트 설정
         self.ui.msg_search.clicked.connect(self.searchMsg)
 
-        # 이벤트 탭 이벤트 설정
+        self.ui.msg_add.clicked.connect(self.msgAddRow)
+        self.ui.msg_save.clicked.connect(self.saveMsg)
+        self.ui.msg_del.clicked.connect(self.delMsg)
+
+        self.ui.msg_dt_add.clicked.connect(self.msgDtAddRow)
+        self.ui.msg_dt_save.clicked.connect(self.saveMsgDt)
+
+
+        # 이벤트/ 스케줄 탭 이벤트 설정
         self.ui.btn_addBz.clicked.connect(self.addBz)
         self.ui.btn_delBz.clicked.connect(self.delBz)
         self.ui.btn_saveBz.clicked.connect(self.saveBz)
@@ -81,9 +90,6 @@ class Settings(QMainWindow):
         self.ui.btn_delSch.clicked.connect(self.delSch)
         self.ui.btn_saveSch.clicked.connect(self.saveSch)
 
-        self.ui.msg_add.clicked.connect(self.msgAddRow)
-        self.ui.msg_save.clicked.connect(self.saveMsg)
-        self.ui.msg_del.clicked.connect(self.delMsg)
 
 
 
@@ -388,6 +394,7 @@ class Settings(QMainWindow):
             else:
                 curIndex = self.ui.msg_list.currentRow()
                 row_data = self.getMsgByRownum(curIndex)
+                logger.info(f' 업데이트 테[스트 : {row_data}')
                 queryExecute(updateMsgBody(row_data))
         except:
             logger.error(f'saveMsg error : {traceback.format_exc()}')
@@ -420,6 +427,63 @@ class Settings(QMainWindow):
         except:
             logger.error(f'getMsgByRownum exceptoon : {traceback.format_exc()}')
         return row_data
+
+
+    def getMsgDtByRownum(self, rownum):
+        row_data = {}
+        try:
+            for column in range(self.ui.msg_dt_list.columnCount()):
+                header_item = self.ui.msg_dt_list.horizontalHeaderItem(column)
+                item = self.ui.msg_dt_list.item(rownum, column)
+                row_data[header_item.text()] = item.text() if item else ""
+        except:
+            logger.error(f'getMsgDtByRownum exceptoon : {traceback.format_exc()}')
+        return row_data
+
+    def msgDtAddRow(self):
+        try:
+            targetMsg = self.ui.selected_msg.text()
+            if targetMsg is not None and targetMsg != '':
+                # self.ui.msg_dt_list.setRowCount(0)
+                row_count = self.ui.msg_dt_list.rowCount()
+                self.ui.msg_dt_list.insertRow(row_count)
+                headers = ['MSG_DT_ORD','MSG_DT_VAL_ID','MSG_DT_DESC','VAL_TYPE','VAL_LEN' ]
+                for j, hd in enumerate(headers):
+                    item = QTableWidgetItem('')
+                    item.setBackground(QBrush(QColor(148, 127, 127)))  # 노란색 배경 설정
+                    item.setForeground(QBrush(QColor(0, 0, 0)))
+                    self.ui.msg_dt_list.setItem(row_count, j, item)
+
+                self.addMsgDtList.append(row_count)
+        except:
+            logger.error(f'msgDtAddRow exception :: {traceback.format_exc()}')
+
+    def saveMsgDt(self):
+        try:
+            upd_rows = []
+            if len(self.addMsgDtList) > 0:
+                targetMsg = self.ui.selected_msg.text()
+                for index, rowNum in enumerate(self.addMsgDtList):
+                    obj = self.getMsgDtByRownum(rowNum)
+                    obj['MSG_ID'] = targetMsg
+                    upd_rows.append(obj)
+
+                # 추가 처리 필수
+                # for ins, item in enumerate(upd_rows):
+                #     rslt = selectQueryAsInt(selectMsgBodyDtCnt(item['MSG_ID'],item['MSG_DT_VAL_ID'],item['MSG_DT_ORD']))
+                #     if rslt < 1:
+                #         queryExecute(insertMsgBodyDt(item))
+                #     else: 
+                #         queryExecute(updateMsgBody(item))
+            else:
+                curIndex = self.ui.msg_dt_list.currentRow()
+                row_data = self.getMsgDtByRownum(curIndex)
+                logger.info(f' 업데이트 테[스트 : {row_data}')
+                # queryExecute(updateMsgBody(row_data))
+        except:
+            logger.error(f'saveMsgDt error : {traceback.format_exc()}')
+        finally:
+            self.addMsgDtList.clear()
 
 #################################################################### 이벤트 설정
     def createBzGrid(self):

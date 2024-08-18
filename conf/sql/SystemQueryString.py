@@ -531,6 +531,15 @@ def selectMsgBodyCnt(msgId,):
     query.append(f'AND MSG_ID= "{msgId}"    ')
     return " ".join(query)
 
+def selectMsgBodyDtCnt(msgId,valId, dtOrd):
+    query = []
+    query.append('SELECT COUNT(1)		')
+    query.append('FROM TB_SK_MSG_BODY_DT ')
+    query.append('WHERE 1=1           ')
+    query.append(f'AND MSG_ID= "{msgId}"    ')
+    query.append(f'AND MSG_DT_VAL_ID= "{msgId}"    ')
+    query.append(f'AND MSG_DT_ORD= "{dtOrd}"    ')
+    return " ".join(query)
 
 def insertMsgBody(params):
     query = []
@@ -545,6 +554,18 @@ def insertMsgBody(params):
     print(f'rs : {result}')
     return result
 
+def insertMsgBodyDt(params):
+    query = []
+    keys = list(params.keys())
+    values = [("" if str(v) is None else '""' if str(v) == "" else str(f"'{v}'")) for v in params.values()]
+    query.append('INSERT INTO TB_SK_MSG_BODY_DT (')
+    query.append(','.join(keys))
+    query.append(') VALUES(')
+    query.append(','.join(values))
+    query.append(')')
+    result = " ".join(query)
+    print(f'rs : {result}')
+    return result
 
 def updateMsgBody(params ):
     key = params['MSG_ID']
@@ -555,6 +576,23 @@ def updateMsgBody(params ):
     query.append(f'	,MSG_DESC  = "{params["MSG_DESC"]}"          ')
     query.append('WHERE 1=1                 ')
     query.append(f'AND MSG_ID = "{key}"           ')
+    return " ".join(query)
+
+def updateMsgBodyDt(params ):
+    key = params['MSG_ID']
+    key2 = params['MSG_DT_VAL_ID']
+    key3 = params['MSG_DT_ORD']
+
+    query = []
+    query.append('UPDATE TB_SK_MSG_BODY_DT SET  ')
+    query.append(f'	MSG_KEY_TYPE  = "{params["MSG_KEY_TYPE"]}"          ')
+    query.append(f'	,MSG_KEY_VAL  = "{params["MSG_KEY_VAL"]}"          ')
+    query.append(f'	,MSG_DESC  = "{params["MSG_DESC"]}"          ')
+    query.append('WHERE 1=1                 ')
+    query.append(f'AND MSG_ID = "{key}"           ')
+    query.append(f'AND MSG_DT_VAL_ID = "{key2}"           ')
+    query.append(f'AND MSG_DT_ORD = "{key3}"           ')
+
     return " ".join(query)
 
 
