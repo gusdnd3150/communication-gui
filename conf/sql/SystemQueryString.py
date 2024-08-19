@@ -359,7 +359,7 @@ def insertIn(params):
     print(f'rs : {result}')
     return result
 
-def saveIn(pkgId, inseq, params):
+def saveIn(pkgId,skId,  inseq, params):
 
     query = []
     query.append('UPDATE TB_SK_PKG_SK_IN SET')
@@ -371,6 +371,7 @@ def saveIn(pkgId, inseq, params):
     query.append('WHERE 1=1')
     query.append(f'AND SK_IN_SEQ = "{inseq}"')
     query.append(f'AND PKG_ID = "{pkgId}"')
+    query.append(f'AND IN_SK_ID = "{skId}"')
 
     result = " ".join(query)
     print(f'rs : {result}')

@@ -247,6 +247,8 @@ class Settings(QMainWindow):
         self.ui.in_SK_IN_SEQ.setDisabled(False)
 
         self.ui.in_IN_SK_ID.setText('')
+        self.ui.in_IN_SK_ID.setDisabled(False)
+
         self.ui.in_IN_MSG_ID.setText('')
         self.ui.in_BZ_METHOD.setText('')
         self.ui.in_IN_DESC.setText('')
@@ -270,7 +272,7 @@ class Settings(QMainWindow):
             row_data['SK_IN_SEQ'] = self.ui.in_SK_IN_SEQ.text()
             queryExecute(insertIn(row_data))
         else :
-            queryExecute(saveIn(self.ui.in_PKG_ID.text(), self.ui.in_SK_IN_SEQ.text(), row_data))
+            queryExecute(saveIn(self.ui.in_PKG_ID.text(),self.ui.in_IN_SK_ID.text(), self.ui.in_SK_IN_SEQ.text(), row_data))
         self.createInGrid()
 
     def selectInRow(self,row, column):
@@ -292,6 +294,7 @@ class Settings(QMainWindow):
             self.ui.in_SK_IN_SEQ.setDisabled(True)
 
             self.ui.in_IN_SK_ID.setText(row_data['IN_SK_ID'])
+            self.ui.in_IN_SK_ID.setDisabled(True)
 
             self.ui.in_IN_MSG_ID.setText(row_data['IN_MSG_ID'])
             self.ui.in_BZ_METHOD.setText(row_data['BZ_METHOD'])

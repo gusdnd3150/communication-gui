@@ -1,6 +1,4 @@
 
-
-
 class TempController:
 
 
@@ -9,7 +7,7 @@ class TempController:
     dbInstance = None
     classNm = 'TempController'
     accept0001Ch = []
-    
+
     def __init__(self, logger, sendHandler, dbHandler=None):
         logger.info(f'TempController init')
         self.sendHandler = sendHandler
@@ -39,7 +37,7 @@ class TempController:
 
         try:
             pass
-            #self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_KEEP_9999', returnJson)
+            # self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_KEEP_9999', returnJson)
         except Exception as e:
             skLogger.error(f'revKeepAlive Exception :: {e}')
 
@@ -62,10 +60,10 @@ class TempController:
         returnJson = {}
         returnJson['REV'] = '001'
         returnJson['SPARE'] = '0    00  '
-        #returnJson['ATLAS_COUNT'] = '11'
-        #returnJson['CELL_ID'] = '1234'
-        #returnJson['CHANNEL_ID'] = '88'
-        #returnJson['CTRL_NM'] = '1234567890123456789012345'
+        # returnJson['ATLAS_COUNT'] = '11'
+        # returnJson['CELL_ID'] = '1234'
+        # returnJson['CHANNEL_ID'] = '88'
+        # returnJson['CTRL_NM'] = '1234567890123456789012345'
         try:
             self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_CNN_SET_REQ_0060', returnJson)
         except Exception as e:
@@ -99,5 +97,40 @@ class TempController:
         self.accept0060Ch.remove(channel)
         try:
             skLogger.info(f'channel inactive : {channel}')
+        except Exception as e:
+            skLogger.error(f'inactive.test() Exception :: {e}')
+
+
+    def recive0001(self, reciveObj):
+        skLogger = reciveObj['LOGGER']
+        channel = reciveObj['CHANNEL']
+        # self.accept0001Ch.append(channel)
+        try:
+
+            returnJson = {}
+            returnJson['REV'] = '001'
+            returnJson['SPARE'] = '0    00  '
+            returnJson['ATLAS_COUNT'] = '11'
+            returnJson['CELL_ID'] = '1234'
+            returnJson['CHANNEL_ID'] = '88'
+            returnJson['CTRL_NM'] = '1234567890123456789012345'
+
+            skLogger.info(f'channel inactive : {channel}')
+            self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_ACTV_RES_0002', returnJson)
+        except Exception as e:
+            skLogger.error(f'inactive.test() Exception :: {e}')
+
+    def recive0060(self, reciveObj):
+        skLogger = reciveObj['LOGGER']
+        channel = reciveObj['CHANNEL']
+        # self.accept0001Ch.append(channel)
+        try:
+
+            returnJson = {}
+            returnJson['REV'] = '001'
+            returnJson['SPARE'] = '0    00  '
+            returnJson['MID_RES'] = reciveObj['MSG_ID']
+            skLogger.info(f'channel inactive : {channel}')
+            self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_RES_0005', returnJson)
         except Exception as e:
             skLogger.error(f'inactive.test() Exception :: {e}')
