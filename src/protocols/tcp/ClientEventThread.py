@@ -220,13 +220,14 @@ class ClientEventThread(threading.Thread):
             moduleData.mainInstance.deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
             buffer.clear()
             # stop_event.set()
-            if sockets:
-                sockets.close()
-                sockets = None
+
             if bzSch is not None:
                 bzSch.stop()
                 bzSch.join()
                 bzSch = None
+            if sockets:
+                sockets.close()
+                sockets = None
             self.stop()
 
 
@@ -242,7 +243,6 @@ class ClientEventThread(threading.Thread):
 
     def sendBytesToChannel(self,channel, bytes):
         try:
-            # self.logger.info(f'SK_ID:{self.skId}- sendBytesToChannel is None')
             pass
         except:
             self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
@@ -252,11 +252,7 @@ class ClientEventThread(threading.Thread):
     def sendMsgToAllChannels(self, obj):
         try:
             pass
-            # self.sendData = self.codec.encodeSendData(obj)
-            # stop_event = threading.Event()
-            # clientThread = threading.Thread(self.initClient(self), args=(stop_event,))
-            # clientThread.daemon = True
-            # clientThread.start()
+
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 

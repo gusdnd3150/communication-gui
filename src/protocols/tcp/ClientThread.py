@@ -101,14 +101,14 @@ class ClientThread(threading.Thread, Client):
             # 로거 제거
             logging.getLogger(self.skId).handlers = []
 
-            if self.socket:
-                self.socket.close()
 
             if len(self.bzSchList) > 0:
                 for item in self.bzSchList:
                     item.stop()
                     item.join()
 
+            if self.socket:
+                self.socket.close()
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
         finally:
@@ -216,7 +216,7 @@ class ClientThread(threading.Thread, Client):
                             bz.start()
                         continue
                     except Exception as e:
-                        traceback.print_exc()
+                        self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {traceback.format_exc()}')
                         self.isRun = False
                         break
         except Exception as e:
@@ -230,7 +230,6 @@ class ClientThread(threading.Thread, Client):
                 moduleData.runChannels.remove(client_info)
             moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', '0')
             moduleData.mainInstance.deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
-
 
             if bzSch is not None:
                 bzSch.stop()
