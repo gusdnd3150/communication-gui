@@ -6,7 +6,7 @@ from src.controller.AtlasCopco import AtlasCopco
 from src.protocols.SendHandler import SendHandler
 import sys,os ,json, sqlite3, importlib, traceback
 import inspect
-from conf.DbHandler import Dbhandler
+# from conf.DbHandler import Dbhandler
 
 
 
@@ -22,14 +22,14 @@ if not os.path.exists(file_path):
 else:
     logger.info("config file is already exits")
 
-with open(file_path, 'r') as f:
-    data = json.load(f)
-    useYn = data.get('USE_YN')
-    if useYn == 'Y':
-        dbHandler = Dbhandler(data)
-#
-if dbHandler:
-    dbHandler.test()
+# with open(file_path, 'r') as f:
+#     data = json.load(f)
+#     useYn = data.get('USE_YN')
+#     if useYn == 'Y':
+#         dbHandler = Dbhandler(data)
+# #
+# if dbHandler:
+#     dbHandler.test()
 
 
 

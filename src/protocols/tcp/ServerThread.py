@@ -102,11 +102,11 @@ class ServerThread(threading.Thread, Server):
             logging.getLogger(self.skId).handlers = []
 
             if len(self.client_list) > 0:
-                for conn in self.client_list:
+                for skId, client, codec in self.client_list:
                     try:
-                        conn.close()
+                        client.close()
                     except:
-                        self.logger.error(f'SK_ID:{self.skId} disConnected Client : {conn}')
+                        self.logger.error(f'SK_ID:{self.skId} disConnected Client : {client}')
 
             if len(self.bzSchList) > 0:
                 for item in self.bzSchList:
@@ -257,27 +257,34 @@ class ServerThread(threading.Thread, Server):
                 bzSch.stop()
                 bzSch.join()
 
-            self.bzSchList.remove(bzSch)
+            # self.bzSchList.remove(bzSch)
+            if bzSch in self.bzSchList:
+                self.bzSchList.remove(bzSch)
 
             moduleData.mainInstance.deleteTableRow(str(address),'list_conn')
 
             if clientsocket:
-                self.client_list.remove(client_info)
-                moduleData.runChannels.remove(client_info)
-                logger.info(f'moduleData.runChannels {moduleData.runChannels}')
-                self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
+                if client_info in self.client_list:
+                    self.client_list.remove(client_info)
+                if client_info in moduleData.runChannels:
+                    moduleData.runChannels.remove(client_info)
+
+                self.logger.info(f'moduleData.runChannels : {moduleData.runChannels}')
+                self.logger.info(f'SK_ID:{self.skId} remain Clients count {len(self.client_list)})')
                 moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
                 clientsocket.close()
         except:
 
             self.logger.error(f'SK_ID:{self.skId} excepton : {traceback.format_exc()}')
             if clientsocket:
-                self.client_list.remove(client_info)
-                moduleData.runChannels.remove(client_info)
-                logger.info(f'moduleData.runChannels {moduleData.runChannels}')
-                moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
-                self.logger.info(f'SK_ID:{self.skId} remain Clients count({len(self.client_list)})')
                 clientsocket.close()
+
+        finally:
+                if client_info in self.client_list:
+                    self.client_list.remove(client_info)
+                if client_info in moduleData.runChannels:
+                    moduleData.runChannels.remove(client_info)
+                moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
 
     def countChannelBySkId(self,skId):
         count = 0

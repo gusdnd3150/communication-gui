@@ -155,7 +155,7 @@ class ClientEventThread(threading.Thread):
                 bzSch = BzSchedule(combined_dict)
                 bzSch.daemon = True
                 bzSch.start()
-                self.bzSchList.append(bzSch)
+                # self.bzSchList.append(bzSch)
 
 
             # 1. IDLE 타임아웃 설정 (예: 5초)

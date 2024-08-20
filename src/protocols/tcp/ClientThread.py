@@ -160,7 +160,7 @@ class ClientThread(threading.Thread, Client):
                 bzSch = BzSchedule(combined_dict)
                 bzSch.daemon = True
                 bzSch.start()
-                self.bzSchList.append(bzSch)
+                # self.bzSchList.append(bzSch)
 
             # 1. IDLE 타임아웃 설정 (예: 5초)
             if self.bzIdleRead is not None:
@@ -225,17 +225,24 @@ class ClientThread(threading.Thread, Client):
 
         finally:
             buffer.clear()
-            if client_info is not None:
+
+            if client_info in moduleData.runChannels:
                 moduleData.runChannels.remove(client_info)
             moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', '0')
             moduleData.mainInstance.deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
-            if self.socket:
-                self.socket.close()
-                self.socket = None
+
 
             if bzSch is not None:
                 bzSch.stop()
+                bzSch.join()
                 bzSch = None
+
+            if bzSch in self.bzSchList:
+                self.bzSchList.remove(bzSch)
+
+            if self.socket:
+                self.socket.close()
+                self.socket = None
 
             if self.isShutdown == False:
                 time.sleep(5)  # 5초 대기 후 재시도

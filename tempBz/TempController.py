@@ -134,3 +134,18 @@ class TempController:
             self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_RES_0005', returnJson)
         except Exception as e:
             skLogger.error(f'inactive.test() Exception :: {e}')
+
+    def recive0062(self, reciveObj):
+        skLogger = reciveObj['LOGGER']
+        channel = reciveObj['CHANNEL']
+        # self.accept0001Ch.append(channel)
+        try:
+
+            returnJson = {}
+            returnJson['REV'] = '001'
+            returnJson['SPARE'] = '0    00  '
+            returnJson['MID_RES'] = reciveObj['MSG_ID']
+            skLogger.info(f'channel inactive : {channel}')
+            self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_RES_0005', returnJson)
+        except Exception as e:
+            skLogger.error(f'inactive.test() Exception :: {e}')

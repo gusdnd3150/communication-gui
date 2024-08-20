@@ -1,6 +1,6 @@
 import traceback
 
-import pyodbc
+# import pyodbc
 from conf.sql.DbQueryString import getTables,getColunmsByTable, getTableIndexes
 
 class Dbhandler():
@@ -18,7 +18,7 @@ class Dbhandler():
         self.dbUrl = dbInfo.get('DB_URL')
         self.dbDsn = dbInfo.get('DB_DSN')
         connection_string = f"DSN={self.dbDsn};UID={self.dbUser};PWD={self.dbPwd};DATABASE={self.dbUrl}"
-        self.DB = pyodbc.connect(connection_string)
+        # self.DB = pyodbc.connect(connection_string)
         self.dbCursor = self.DB.cursor()
 
 
