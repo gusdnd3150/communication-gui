@@ -1,6 +1,6 @@
 from PySide6.QtGui import QBrush, QColor
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView , QCheckBox, QWidget, QHBoxLayout
+from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView , QCheckBox, QWidget, QHBoxLayout, QMessageBox
 from src.component.settings.SaveSocketPopup import SaveSocketPopup
 import sys
 import os
@@ -79,6 +79,7 @@ class Settings(QMainWindow):
 
         self.ui.msg_dt_add.clicked.connect(self.msgDtAddRow)
         self.ui.msg_dt_save.clicked.connect(self.saveMsgDt)
+        self.ui.msg_dt_del.clicked.connect(self.delMsgDt)
 
 
         # 이벤트/ 스케줄 탭 이벤트 설정
@@ -457,36 +458,60 @@ class Settings(QMainWindow):
                     item.setForeground(QBrush(QColor(0, 0, 0)))
                     self.ui.msg_dt_list.setItem(row_count, j, item)
 
-                self.addMsgDtList.append(row_count)
+                # self.addMsgDtList.append(row_count)
         except:
             logger.error(f'msgDtAddRow exception :: {traceback.format_exc()}')
 
     def saveMsgDt(self):
         try:
-            upd_rows = []
-            if len(self.addMsgDtList) > 0:
-                targetMsg = self.ui.selected_msg.text()
-                for index, rowNum in enumerate(self.addMsgDtList):
-                    obj = self.getMsgDtByRownum(rowNum)
+            targetMsg = self.ui.selected_msg.text()
+
+            if(self.checkPop(targetMsg,f' {targetMsg} 데이터를 저장하시겠습니까')):
+                upd_rows = []
+                row_count = self.ui.msg_dt_list.rowCount()
+                for index in range(row_count):
+                    obj = self.getMsgDtByRownum(index)
                     obj['MSG_ID'] = targetMsg
                     upd_rows.append(obj)
 
-                # 추가 처리 필수
-                # for ins, item in enumerate(upd_rows):
-                #     rslt = selectQueryAsInt(selectMsgBodyDtCnt(item['MSG_ID'],item['MSG_DT_VAL_ID'],item['MSG_DT_ORD']))
-                #     if rslt < 1:
-                #         queryExecute(insertMsgBodyDt(item))
-                #     else: 
-                #         queryExecute(updateMsgBody(item))
-            else:
-                curIndex = self.ui.msg_dt_list.currentRow()
-                row_data = self.getMsgDtByRownum(curIndex)
-                logger.info(f' 업데이트 테[스트 : {row_data}')
-                # queryExecute(updateMsgBody(row_data))
+                logger.info(f'ddddddd :: {upd_rows}')
+                queryExecute(f'DELETE FROM TB_SK_MSG_BODY_DT WHERE MSG_ID ="{targetMsg}"')
+                for ix, item in enumerate(upd_rows):
+                    # DT 테이블에 새롭게 INSERT
+                    insertRow = {
+                        'MSG_ID':item['MSG_ID']
+                        ,'MSG_DT_ORD':item['MSG_DT_ORD']
+                        ,'MSG_DT_VAL_ID':item['MSG_DT_VAL_ID']
+                    }
+                    queryExecute(insertMsgBodyDt(insertRow))
+                    cnt = selectQueryAsInt(F'SELECT COUNT(1) FROM TB_SK_MSG_VAL WHERE VAL_ID = "{item["MSG_DT_VAL_ID"]}"')
+                    if cnt < 1:
+                        insertRow2 = {
+                            'VAL_ID': item['MSG_DT_VAL_ID']
+                            , 'VAL_TYPE': item['VAL_TYPE']
+                            , 'VAL_LEN': item['VAL_LEN']
+                        }
+                        queryExecute(insertMsgVal(insertRow2))
+                self.createMsgDtGrid(targetMsg)
+
         except:
             logger.error(f'saveMsgDt error : {traceback.format_exc()}')
         finally:
-            self.addMsgDtList.clear()
+
+            logger.info(f'saveMsgDt done')
+            # self.addMsgDtList.clear()
+
+    def delMsgDt(self):
+        try:
+            targetMsg = self.ui.selected_msg.text()
+            row_count = self.ui.msg_dt_list.currentRow()
+            obj = self.getMsgDtByRownum(row_count)
+            targetVal  = obj['MSG_DT_VAL_ID']
+            if self.checkPop(f'{targetMsg}', f'{obj} - {targetVal}를 삭제 하시겠습니까?'):
+                queryExecute(F'DELETE FROM TB_SK_MSG_BODY_DT WHERE MSG_ID = "{targetMsg}" AND MSG_DT_VAL_ID = "{targetVal}"')
+                self.createMsgDtGrid(targetMsg)
+        except:
+            logger.error(f'delMsgDt exception ::{traceback.format_exc()}')
 
 #################################################################### 이벤트 설정
     def createBzGrid(self):
@@ -650,3 +675,12 @@ class Settings(QMainWindow):
 
         except Exception as e :
             logger.error(f'selectSchRow exception : {traceback.format_exc()} ')
+
+
+    def checkPop(self, title ,msg):
+        reply = QMessageBox.question(self,title, msg,QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            return True
+        else:
+            return False
+

@@ -610,3 +610,16 @@ def deleteMsgBodyDt(msgId ):
     query.append('WHERE 1=1                 ')
     query.append(f'AND MSG_ID = "{msgId}"    ')
     return " ".join(query)
+
+def insertMsgVal(params):
+    query = []
+    keys = list(params.keys())
+    values = [("" if str(v) is None else '""' if str(v) == "" else str(f"'{v}'")) for v in params.values()]
+    query.append('INSERT INTO TB_SK_MSG_VAL (')
+    query.append(','.join(keys))
+    query.append(') VALUES(')
+    query.append(','.join(values))
+    query.append(')')
+    result = " ".join(query)
+    print(f'rs : {result}')
+    return result
