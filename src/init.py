@@ -1,12 +1,11 @@
 import sys
 import traceback
 import os
-from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QHeaderView
+from PySide6.QtWidgets import QMainWindow,  QTableWidgetItem, QHeaderView, QMessageBox
 from PySide6.QtGui import QColor
 from PySide6.QtCore import Qt
 from src.protocols.tcp.ServerThread import ServerThread
 from src.protocols.tcp.ClientThread import ClientThread
-from src.protocols.tcp.ClientEventThread import ClientEventThread
 program_path = sys.argv[0]
 import logging
 program_directory = os.path.dirname(program_path)
@@ -69,6 +68,7 @@ class InitClass(QMainWindow):
         self.mainLayOut.btn_start.clicked.connect(self.start_sk)
         self.mainLayOut.btn_stop.clicked.connect(self.stop_sk)
         self.mainLayOut.btn_handler.clicked.connect(self.open_handler)
+        self.mainLayOut.destroyed.connect(self.closeMain)
 
         self.mainLayOut.show()
         moduleData.mainLayout = self.mainLayOut
@@ -80,12 +80,20 @@ class InitClass(QMainWindow):
         self.handlPop = Handler(self.initData)
         self.bindData()
         self.setGrid()
-        self.setInitData()
-        app.exec()
+
+        # app.exec()
+        sys.exit(app.exec())
 
     def closeEvent(self, event):
-        logger.info(f' 시스템 종료 ')
+        # X 버튼을 눌렀을 때의 이벤트 감지
+        reply = QMessageBox.question(self, '창 닫기',
+                                     '정말로 닫으시겠습니까?',
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
+        if reply == QMessageBox.Yes:
+            event.accept()  # 창을 닫음
+        else:
+            event.ignore()  # 창 닫기 무시
     def bindData(self):
         for i in range(0, len(pkgCombo)):
             self.mainLayOut.combo_pkg.addItem(pkgCombo[i])
@@ -243,9 +251,7 @@ class InitClass(QMainWindow):
 
 
 
-    def setInitData(self):
-        logger.info('load Init Data')
-        program_directory+'\json\*.json'
+
 
 
     def addServerRow(self, initData):
@@ -387,3 +393,6 @@ class InitClass(QMainWindow):
         else:
             self.handlPop.show()
 
+
+    def closeMain(self):
+        logger.info(f'close ``````````````````````````')

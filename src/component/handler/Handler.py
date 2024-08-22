@@ -2,7 +2,6 @@
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView
 from PySide6.QtGui import QColor, QBrush
-from src.component.settings.SaveSocketPopup import SaveSocketPopup
 import sys
 import os
 import src.protocols.SendHandler as SendHandler
@@ -10,10 +9,10 @@ import src.protocols.SendHandler as SendHandler
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
 
+
 import traceback
 from conf.skModule import *
 from conf.sql.SystemQueryString import *
-
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """

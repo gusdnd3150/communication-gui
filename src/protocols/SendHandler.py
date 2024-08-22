@@ -79,6 +79,20 @@ class SendHandler():
         except Exception as e:
             logger.info(f'sendChannelMsg() Exception :: {traceback.format_exc()}')
 
+
+    def sendChannelBytes(self, channel, bytes):
+        try:
+            for skId, ch, codec in moduleData.runChannels:
+                if ch == channel:
+                    for i, sk in enumerate(moduleData.sokcetList):
+                        if sk['SK_ID'] == skId:
+                            skThread = sk['SK_THREAD']
+                            skThread.sendBytesToChannel(channel,bytes)
+                            break
+                    break
+        except Exception as e:
+            logger.info(f'sendChannelMsg() Exception :: {traceback.format_exc()}')
+
     async def send_webSk_message(self, thread, returnBytes):
         await thread.sendToAllChannels(returnBytes)
 

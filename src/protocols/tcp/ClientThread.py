@@ -267,7 +267,7 @@ class ClientThread(threading.Thread, Client):
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in bytes)
                 self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{decimal_string}]')
-            channel.sendall(bytes)
+            channel.sendall(bytes+self.delimiter)
         except:
             self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {traceback.format_exc()}')
 
