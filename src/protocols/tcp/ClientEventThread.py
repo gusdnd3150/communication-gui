@@ -89,7 +89,7 @@ class ClientEventThread(threading.Thread):
         self.initClient()
 
     def __del__(self):
-        logger.info('deleted')
+        logger.info(f'Thread {self.skId} is deleted')
 
     def stop(self):
         try:

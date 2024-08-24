@@ -81,7 +81,7 @@ class ClientUdpThread(threading.Thread,Client):
         self._stop_event = threading.Event()
 
     def __del__(self):
-        logger.info('deleted')
+        logger.info(f'Thread {self.skId} is deleted')
 
     def run(self):
         moduleData.mainInstance.addClientRow(self.initData)

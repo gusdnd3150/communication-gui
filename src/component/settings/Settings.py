@@ -1,23 +1,12 @@
 from PySide6.QtGui import QBrush, QColor
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView , QCheckBox, QWidget, QHBoxLayout, QMessageBox
-from src.component.settings.SaveSocketPopup import SaveSocketPopup
 import sys
 import os
-
-program_path = sys.argv[0]
-program_directory = os.path.dirname(program_path)
-
 import traceback
 from conf.skModule import *
 from conf.sql.SystemQueryString import *
-
-
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-    return os.path.join(base_path, relative_path)
-resource_path('settings.ui')
+from ui.ui_settings import Ui_Settings
 
 class Settings(QMainWindow):
 
@@ -34,22 +23,11 @@ class Settings(QMainWindow):
     curMsg = ''
 
     def __init__(self, initData):
+        super(Settings, self).__init__()
         self.initData = initData
-        # path = resource_path('views\settings.ui')
-        path = resource_path('settings.ui')
-        logger.info(f'path : {path}')
-        self.ui = QUiLoader().load(path, None)
-        super().__init__()
-        self.setCentralWidget(self.ui)
+        self.ui = Ui_Settings()
+        self.ui.setupUi(self)
         self.setWindowTitle('설정')
-
-        # 메시지 저장 팝업
-
-        # self.saveSkWindow = SaveSocketPopup('./src/component/settings/views/settings-saveSocket.ui')
-        self.saveSkWindow = SaveSocketPopup()
-        self.saveSkWindow.instance.setWindowTitle('추가')
-        # self.saveSkWindow.instance.show()
-
         self.setEvent()
         self.createSkGrid() # 소켓 그리드
         self.createInGrid()# 소켓 In 그리드

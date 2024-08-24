@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('src/component/handler/handler.ui', './'), ('src/main.ui', './'), ('src/component/settings/settings.ui', './'), ('src/component/settings/settings-saveSocket.ui', './')],
+    datas=[],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

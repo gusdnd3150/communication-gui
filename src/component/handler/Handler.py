@@ -5,20 +5,12 @@ from PySide6.QtGui import QColor, QBrush
 import sys
 import os
 import src.protocols.SendHandler as SendHandler
-
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
-
-
 import traceback
 from conf.skModule import *
 from conf.sql.SystemQueryString import *
-
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-    return os.path.join(base_path, relative_path)
-resource_path('settings.ui')
+from ui.ui_handler import Ui_Handler
 
 class Handler(QMainWindow):
 
@@ -29,14 +21,11 @@ class Handler(QMainWindow):
     msgId = None
 
     def __init__(self, initData):
+        super(Handler, self).__init__()
         self.initData = initData
-        # path = resource_path('views\settings.ui')
-        path = resource_path('handler.ui')
-        logger.info(f'path : {path}')
-        self.ui = QUiLoader().load(path, None)
-        super().__init__()
-        self.setCentralWidget(self.ui)
-        self.setWindowTitle('핸들러')
+        self.ui = Ui_Handler()
+        self.ui.setupUi(self)
+        self.setWindowTitle('설정')
 
         self.setEvent()
         self.createMsgGrid(None,None)

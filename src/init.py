@@ -9,8 +9,6 @@ from src.protocols.tcp.ClientThread import ClientThread
 program_path = sys.argv[0]
 import logging
 program_directory = os.path.dirname(program_path)
-from PySide6 import QtWidgets
-from PySide6.QtUiTools import QUiLoader
 from src.component.settings.Settings import Settings
 from src.component.handler.Handler import Handler
 import conf.skModule as moduleData
@@ -20,19 +18,7 @@ from src.protocols.udp.ClientUdpThread import ClientUdpThread
 from src.protocols.websk.WebSkServerThread import WebSkServerThread
 from src.protocols.sch.Schedule import Schedule
 
-
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-    return os.path.join(base_path, relative_path)
-
-program_path = sys.argv[0]
-program_directory = os.path.dirname(program_path)
-
-
-# logger.info(resource_path('test.ui'))
-# form = resource_path('test.ui')
-
+from ui.ui_main import Ui_MainWindow
 
 pkgCombo = [
     'CORE'
@@ -55,34 +41,28 @@ class InitClass(QMainWindow):
     handlPop =None
 
     def __init__(self):
-        logger.info('init UI start')
-        self.qLoader = QUiLoader()
-        app = QtWidgets.QApplication(sys.argv)
+        super(InitClass, self).__init__()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        logger.info('application start')
+        # self.qLoader = QUiLoader()
+        # app = QtWidgets.QApplication(sys.argv)
 
-        #메인창
-        path = resource_path('main.ui')
-        logger.info(f'path :: {path}')
-        self.mainLayOut = self.qLoader.load(path, None)
-        self.mainLayOut.setWindowTitle('application')
-        self.mainLayOut.btn_settings.clicked.connect(self.open_settings)
-        self.mainLayOut.btn_start.clicked.connect(self.start_sk)
-        self.mainLayOut.btn_stop.clicked.connect(self.stop_sk)
-        self.mainLayOut.btn_handler.clicked.connect(self.open_handler)
-        self.mainLayOut.destroyed.connect(self.closeMain)
+        self.setWindowTitle('application')
+        self.ui.btn_settings.clicked.connect(self.open_settings)
+        self.ui.btn_start.clicked.connect(self.start_sk)
+        self.ui.btn_stop.clicked.connect(self.stop_sk)
+        self.ui.btn_handler.clicked.connect(self.open_handler)
 
-        self.mainLayOut.show()
-        moduleData.mainLayout = self.mainLayOut
+        moduleData.mainLayout = self.ui
         moduleData.mainInstance = self
-        super().__init__()
+        self.bindData()
+        self.setGrid()
 
         # 설정팝업
         self.popup = Settings(self.initData)
         self.handlPop = Handler(self.initData)
-        self.bindData()
-        self.setGrid()
 
-        # app.exec()
-        sys.exit(app.exec())
 
     def closeEvent(self, event):
         # X 버튼을 눌렀을 때의 이벤트 감지
@@ -91,15 +71,24 @@ class InitClass(QMainWindow):
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
+            self.stop_sk()
+            self.popup.close()
+            self.handlPop.close()
             event.accept()  # 창을 닫음
         else:
             event.ignore()  # 창 닫기 무시
     def bindData(self):
         for i in range(0, len(pkgCombo)):
-            self.mainLayOut.combo_pkg.addItem(pkgCombo[i])
+            self.ui.combo_pkg.addItem(pkgCombo[i])
 
     def stop_sk(self):
         try:
+            reply = QMessageBox.question(self, '프로세스 중지',
+                                         '소켓을 종료 하시겠습니까?',
+                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if reply != QMessageBox.Yes:
+                return
+
             logger.info(f'Stop Run Sockets')
             for i, item in enumerate(moduleData.sokcetList):
                 if item['SK_CLIENT_TYPE'] == 'EVENT':
@@ -113,11 +102,12 @@ class InitClass(QMainWindow):
             for i, item in enumerate(moduleData.sokcetSch):
                 runThread = item['SK_THREAD']
                 runThread.stop()
+                # runThread.join()
                 item['SK_THREAD'] = None
 
-            self.mainLayOut.list_conn.clearContents()
-            self.mainLayOut.combo_pkg.setDisabled(False)
-            self.mainLayOut.btn_start.setDisabled(False)
+            self.ui.list_conn.clearContents()
+            self.ui.combo_pkg.setDisabled(False)
+            self.ui.btn_start.setDisabled(False)
         except Exception as e:
             logger.error(f'stop_sk() exceptopn : {traceback.format_exc()}')
 
@@ -134,14 +124,14 @@ class InitClass(QMainWindow):
 
     def start_sk(self):
 
-        pkg = self.mainLayOut.combo_pkg.currentText()
+        pkg = self.ui.combo_pkg.currentText()
         # 기준정보 로드
         moduleData.initPkgData(pkg)
 
 
         self.handlPop.ui.combo_sk_list.clear()
-        self.mainLayOut.combo_pkg.setDisabled(True)
-        self.mainLayOut.btn_start.setDisabled(True)
+        self.ui.combo_pkg.setDisabled(True)
+        self.ui.btn_start.setDisabled(True)
 
         try:
             logger.info(f' Run Cnt : {len(moduleData.sokcetList)}')
@@ -182,7 +172,7 @@ class InitClass(QMainWindow):
                     threadInfo.daemon = True
                     threadInfo.start()
 
-            self.handlPop
+            
             for index, sch in enumerate(moduleData.sokcetSch):
                 schThread = Schedule(sch)
                 schThread.damon = True
@@ -197,12 +187,12 @@ class InitClass(QMainWindow):
 
     def setGrid(self):
 
-        self.mainLayOut.list_run_server.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-        self.mainLayOut.list_run_server.verticalHeader().setVisible(False)  # 행 번호 헤더 숨기기
-        # self.mainLayOut.list_run_server.horizontalHeader().setVisible(False)  # 열 번호 헤더 숨기기
-        self.mainLayOut.list_run_server.setRowCount(0)  # Table의 행을 설정, list의 길이
-        self.mainLayOut.list_run_server.setColumnCount(10)
-        self.mainLayOut.list_run_server.setHorizontalHeaderLabels(
+        self.ui.list_run_server.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.ui.list_run_server.verticalHeader().setVisible(False)  # 행 번호 헤더 숨기기
+        # self.ui.list_run_server.horizontalHeader().setVisible(False)  # 열 번호 헤더 숨기기
+        self.ui.list_run_server.setRowCount(0)  # Table의 행을 설정, list의 길이
+        self.ui.list_run_server.setColumnCount(10)
+        self.ui.list_run_server.setHorizontalHeaderLabels(
             [
             'CON_COUNT',
             'SK_ID',
@@ -217,11 +207,11 @@ class InitClass(QMainWindow):
              ]
         )
 
-        self.mainLayOut.list_run_client.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-        self.mainLayOut.list_run_client.verticalHeader().setVisible(False)
-        self.mainLayOut.list_run_client.setRowCount(0)  # Table의 행을 설정, list의 길이
-        self.mainLayOut.list_run_client.setColumnCount(10)
-        self.mainLayOut.list_run_client.setHorizontalHeaderLabels(
+        self.ui.list_run_client.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.ui.list_run_client.verticalHeader().setVisible(False)
+        self.ui.list_run_client.setRowCount(0)  # Table의 행을 설정, list의 길이
+        self.ui.list_run_client.setColumnCount(10)
+        self.ui.list_run_client.setHorizontalHeaderLabels(
             [
                 'CON_COUNT',
                 'SK_ID',
@@ -236,17 +226,17 @@ class InitClass(QMainWindow):
             ]
         )
 
-        # self.mainLayOut.list_conn.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-        self.mainLayOut.list_conn.verticalHeader().setVisible(False)
-        self.mainLayOut.list_conn.setRowCount(0)  # Table의 행을 설정, list의 길이
-        self.mainLayOut.list_conn.setColumnCount(2)
-        self.mainLayOut.list_conn.setHorizontalHeaderLabels(
+        # self.ui.list_conn.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.ui.list_conn.verticalHeader().setVisible(False)
+        self.ui.list_conn.setRowCount(0)  # Table의 행을 설정, list의 길이
+        self.ui.list_conn.setColumnCount(2)
+        self.ui.list_conn.setHorizontalHeaderLabels(
             [
                 'SK_ID',
                 'CONN_INFO',
             ]
         )
-        header = self.mainLayOut.list_conn.horizontalHeader()
+        header = self.ui.list_conn.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.Stretch)
 
 
@@ -257,23 +247,23 @@ class InitClass(QMainWindow):
     def addServerRow(self, initData):
         try:
             # logger.info(f'addTableRow / initData: {initData}')
-            row_count = self.mainLayOut.list_run_server.rowCount()
-            self.mainLayOut.list_run_server.insertRow(row_count)
+            row_count = self.ui.list_run_server.rowCount()
+            self.ui.list_run_server.insertRow(row_count)
             # 예제 데이터를 추가
-            self.mainLayOut.list_run_server.setItem(row_count, 0, QTableWidgetItem('0'))
-            self.mainLayOut.list_run_server.setItem(row_count, 1, QTableWidgetItem(initData['SK_ID']))
-            self.mainLayOut.list_run_server.setItem(row_count, 2, QTableWidgetItem(initData['SK_GROUP']))
-            self.mainLayOut.list_run_server.setItem(row_count, 3, QTableWidgetItem(initData['SK_TYPE']))
-            self.mainLayOut.list_run_server.setItem(row_count, 4, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
-            self.mainLayOut.list_run_server.setItem(row_count, 5, QTableWidgetItem(initData['HD_ID']))
-            # self.mainLayOut.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
+            self.ui.list_run_server.setItem(row_count, 0, QTableWidgetItem('0'))
+            self.ui.list_run_server.setItem(row_count, 1, QTableWidgetItem(initData['SK_ID']))
+            self.ui.list_run_server.setItem(row_count, 2, QTableWidgetItem(initData['SK_GROUP']))
+            self.ui.list_run_server.setItem(row_count, 3, QTableWidgetItem(initData['SK_TYPE']))
+            self.ui.list_run_server.setItem(row_count, 4, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
+            self.ui.list_run_server.setItem(row_count, 5, QTableWidgetItem(initData['HD_ID']))
+            # self.ui.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
             item_sk_group = QTableWidgetItem(str(initData['SK_IP']))
             item_sk_group.setForeground(QColor('#d87a7a'))
-            self.mainLayOut.list_run_server.setItem(row_count, 6, item_sk_group)
+            self.ui.list_run_server.setItem(row_count, 6, item_sk_group)
 
-            self.mainLayOut.list_run_server.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_PORT'])))
-            self.mainLayOut.list_run_server.setItem(row_count, 8, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
-            self.mainLayOut.list_run_server.setItem(row_count, 9, QTableWidgetItem(str(initData['MAX_LENGTH'])))
+            self.ui.list_run_server.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_PORT'])))
+            self.ui.list_run_server.setItem(row_count, 8, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
+            self.ui.list_run_server.setItem(row_count, 9, QTableWidgetItem(str(initData['MAX_LENGTH'])))
 
 
         except Exception as e:
@@ -283,11 +273,11 @@ class InitClass(QMainWindow):
     def addConnRow(self, initData):
         try:
             # logger.info(f'addTableRow / initData: {initData}')
-            row_count = self.mainLayOut.list_conn.rowCount()
-            self.mainLayOut.list_conn.insertRow(row_count)
+            row_count = self.ui.list_conn.rowCount()
+            self.ui.list_conn.insertRow(row_count)
             # 예제 데이터를 추가
-            self.mainLayOut.list_conn.setItem(row_count, 0, QTableWidgetItem(initData['SK_ID']))
-            self.mainLayOut.list_conn.setItem(row_count, 1, QTableWidgetItem(str(initData['CONN_INFO'])))
+            self.ui.list_conn.setItem(row_count, 0, QTableWidgetItem(initData['SK_ID']))
+            self.ui.list_conn.setItem(row_count, 1, QTableWidgetItem(str(initData['CONN_INFO'])))
 
 
 
@@ -297,52 +287,52 @@ class InitClass(QMainWindow):
     def addClientRow(self, initData):
         try:
             # logger.info(f'addTableRow / initData: {initData}')
-            row_count = self.mainLayOut.list_run_client.rowCount()
-            self.mainLayOut.list_run_client.insertRow(row_count)
+            row_count = self.ui.list_run_client.rowCount()
+            self.ui.list_run_client.insertRow(row_count)
             # 예제 데이터를 추가
-            self.mainLayOut.list_run_client.setItem(row_count, 0, QTableWidgetItem('0'))
-            self.mainLayOut.list_run_client.setItem(row_count, 1, QTableWidgetItem(initData['SK_ID']))
-            self.mainLayOut.list_run_client.setItem(row_count, 2, QTableWidgetItem(initData['SK_GROUP']))
-            self.mainLayOut.list_run_client.setItem(row_count, 3, QTableWidgetItem(initData['SK_TYPE']))
-            self.mainLayOut.list_run_client.setItem(row_count, 4, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
-            self.mainLayOut.list_run_client.setItem(row_count, 5, QTableWidgetItem(initData['HD_ID']))
-            # self.mainLayOut.list_run_client.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
-            # self.mainLayOut.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
+            self.ui.list_run_client.setItem(row_count, 0, QTableWidgetItem('0'))
+            self.ui.list_run_client.setItem(row_count, 1, QTableWidgetItem(initData['SK_ID']))
+            self.ui.list_run_client.setItem(row_count, 2, QTableWidgetItem(initData['SK_GROUP']))
+            self.ui.list_run_client.setItem(row_count, 3, QTableWidgetItem(initData['SK_TYPE']))
+            self.ui.list_run_client.setItem(row_count, 4, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
+            self.ui.list_run_client.setItem(row_count, 5, QTableWidgetItem(initData['HD_ID']))
+            # self.ui.list_run_client.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
+            # self.ui.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
             item_sk_group = QTableWidgetItem(str(initData['SK_IP']))
             item_sk_group.setForeground(QColor('#d87a7a'))
-            self.mainLayOut.list_run_client.setItem(row_count, 6, item_sk_group)
-            self.mainLayOut.list_run_client.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_PORT'])))
-            self.mainLayOut.list_run_client.setItem(row_count, 8, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
-            self.mainLayOut.list_run_client.setItem(row_count, 9, QTableWidgetItem(str(initData['MAX_LENGTH'])))
+            self.ui.list_run_client.setItem(row_count, 6, item_sk_group)
+            self.ui.list_run_client.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_PORT'])))
+            self.ui.list_run_client.setItem(row_count, 8, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
+            self.ui.list_run_client.setItem(row_count, 9, QTableWidgetItem(str(initData['MAX_LENGTH'])))
 
 
         except Exception as e:
             logger.info(f'addTableRow exception : {e}')
     def modServerRow(self,skId ,colunmNm, data):
         try:
-            items = self.mainLayOut.list_run_server.findItems(skId, Qt.MatchExactly)
+            items = self.ui.list_run_server.findItems(skId, Qt.MatchExactly)
             index = self.get_column_index_by_name('server',colunmNm)
             if items:
                 for item in items:
                     row = item.row()
                     # 특정 열(예: 열 1)을 수정
-                    self.mainLayOut.list_run_server.setItem(row, index, QTableWidgetItem(data))
-                    # self.mainLayOut.list_run_server.scrollToItem(item)  # 수정된 행으로 스크롤
-                    # self.mainLayOut.list_run_server.setCurrentItem(item)  # 수정된 항목을 선택
+                    self.ui.list_run_server.setItem(row, index, QTableWidgetItem(data))
+                    # self.ui.list_run_server.scrollToItem(item)  # 수정된 행으로 스크롤
+                    # self.ui.list_run_server.setCurrentItem(item)  # 수정된 항목을 선택
         except Exception:
             logger.error(f'modServerRow exception : {traceback.format_exc()}')
 
     def modClientRow(self,skId ,colunmNm, data):
         try:
-            items = self.mainLayOut.list_run_client.findItems(skId, Qt.MatchExactly)
+            items = self.ui.list_run_client.findItems(skId, Qt.MatchExactly)
             index = self.get_column_index_by_name('client',colunmNm)
             if items:
                 for item in items:
                     row = item.row()
                     # 특정 열(예: 열 1)을 수정
-                    self.mainLayOut.list_run_client.setItem(row, index, QTableWidgetItem(data))
-                    # self.mainLayOut.list_run_server.scrollToItem(item)  # 수정된 행으로 스크롤
-                    # self.mainLayOut.list_run_server.setCurrentItem(item)  # 수정된 항목을 선택
+                    self.ui.list_run_client.setItem(row, index, QTableWidgetItem(data))
+                    # self.ui.list_run_server.scrollToItem(item)  # 수정된 행으로 스크롤
+                    # self.ui.list_run_server.setCurrentItem(item)  # 수정된 항목을 선택
         except Exception:
             logger.error(f'modClientRow exception : {traceback.format_exc()}')
 
@@ -350,17 +340,17 @@ class InitClass(QMainWindow):
     def deleteTableRow(self, skId, target):
         try:
             if target == 'list_run_client':
-                items = self.mainLayOut.list_run_client.findItems(skId, Qt.MatchExactly)
+                items = self.ui.list_run_client.findItems(skId, Qt.MatchExactly)
                 for item in items:
-                    self.mainLayOut.list_run_client.removeRow(item.row())
+                    self.ui.list_run_client.removeRow(item.row())
             elif target == 'list_run_server':
-                items = self.mainLayOut.list_run_server.findItems(skId, Qt.MatchExactly)
+                items = self.ui.list_run_server.findItems(skId, Qt.MatchExactly)
                 for item in items:
-                    self.mainLayOut.list_run_server.removeRow(item.row())
+                    self.ui.list_run_server.removeRow(item.row())
             elif target == 'list_conn':
-                items = self.mainLayOut.list_conn.findItems(skId, Qt.MatchExactly)
+                items = self.ui.list_conn.findItems(skId, Qt.MatchExactly)
                 for item in items:
-                    self.mainLayOut.list_conn.removeRow(item.row())
+                    self.ui.list_conn.removeRow(item.row())
 
 
         except Exception as e:
@@ -369,10 +359,10 @@ class InitClass(QMainWindow):
     def get_column_index_by_name(self,target, column_name):
         headers = 0
         if target == 'server':
-            headers = [self.mainLayOut.list_run_server.horizontalHeaderItem(i).text() for i in range(self.mainLayOut.list_run_server.columnCount())]
+            headers = [self.ui.list_run_server.horizontalHeaderItem(i).text() for i in range(self.ui.list_run_server.columnCount())]
         else :
-            headers = [self.mainLayOut.list_run_client.horizontalHeaderItem(i).text() for i in
-                       range(self.mainLayOut.list_run_client.columnCount())]
+            headers = [self.ui.list_run_client.horizontalHeaderItem(i).text() for i in
+                       range(self.ui.list_run_client.columnCount())]
         try:
             return headers.index(column_name)
         except ValueError:

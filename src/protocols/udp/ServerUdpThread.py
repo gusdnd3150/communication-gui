@@ -80,7 +80,7 @@ class ServerUdpThread(threading.Thread):
         self._stop_event = threading.Event()
 
     def __del__(self):
-        logger.info('deleted')
+        logger.info(f'Thread {self.skId} is deleted')
 
     def run(self):
         self.initServer()
