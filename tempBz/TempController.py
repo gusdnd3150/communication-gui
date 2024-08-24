@@ -125,6 +125,7 @@ class TempController:
         channel = reciveObj['CHANNEL']
         skId = reciveObj['SK_ID']
         # self.accept0001Ch.append(channel)
+        skLogger.info(f'total bytes {reciveObj["TOTAL_BYTES"]}')
         try:
             returnJson = {}
             returnJson['REV'] = '001'
@@ -136,7 +137,7 @@ class TempController:
             elif resMid == '0034':
                 skLogger.info(f' SK_ID:{skId} , 0005 MID_RES : {resMid} request Vin No Info')
                 self.sendHandler.sendChannelBytes(channel, '003900080011      001601001102000100060'.encode('utf-8'))
-            elif resMid =='0050' : # 0034에 대한 응답이 왔을 경우 잡설정
+            elif resMid =='0050' : # BODY 번호 송신 후 응답 수신시 잡세팅
                 jobId ='01' #임시
                 self.sendHandler.sendChannelBytes(channel, ('002200380010    00  '+jobId).encode('utf-8'))
             elif resMid == '0038': # job 세팅 결과 응답
