@@ -23,7 +23,9 @@ class TempController:
             returnJson['MSG_ID'] = 'TOOL_ATL_KEEP'
             returnJson['REV'] = '001'
             returnJson['SPARE'] = '0    00  '
-            self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_KEEP_9999', returnJson)
+            test = '002099990010    00  '.encode('utf-8') + b'\x00'
+            channel.sendall(test)
+            # self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_KEEP_9999', returnJson)
         except Exception as e:
             skLogger.error(f'sendKeepAlive Exception :: {e}')
 

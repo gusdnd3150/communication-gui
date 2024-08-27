@@ -6,7 +6,7 @@ import conf.skModule as skMOdule
 
 import conf.skModule as initData
 from src.utils.ExcelUtils import ExcelUtils
-
+import time
 class TestController():
 
     # guide
@@ -27,16 +27,31 @@ class TestController():
             # skLogger.info(f'[RECIVE TOTAL_BYTES] : {str(reciveObj["TOTAL_BYTES"])}')
             # skLogger.info(f'[RECIVE OBJ] : {reciveObj}')
             # returnJson['LINE_SIGN'] = '2'
-            logger.info(f'recive Data : {reciveObj}')
+
+            skLogger.info(f'111111111111')
+        except Exception as e:
+            skLogger.error(f'TestController.reciveObj() Exception :: {e}')
+
+    def active(self, reciveObj):
+        skLogger = reciveObj['LOGGER']
+        Channel = reciveObj['CHANNEL']
+        returnJson = {}
+        try:
+            # skLogger.info(f'[RECIVE TOTAL_BYTES] : {str(reciveObj["TOTAL_BYTES"])}')
+            # skLogger.info(f'[RECIVE OBJ] : {reciveObj}')
+            # returnJson['LINE_SIGN'] = '2'
+            time.sleep(5)
+            skLogger.info(f'22222222222')
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {e}')
 
     def keep(self, reciveObj):
         returnJson = {}
         skLogger = reciveObj['LOGGER']
+        channel = reciveObj['CHANNEL']
         try:
-            skLogger.info(f'TestController.keep() IN_DATA : {reciveObj}')
-            self.sendHandler.sendSkId('JSON_서버', 'LINE_SIGNAL', returnJson)
+            self.sendHandler.sendChannelBytes(channel, 'test'.encode('utf-8'))
+            # self.sendHandler.sendSkId('JSON_서버', 'LINE_SIGNAL', returnJson)
         except Exception as e:
             skLogger.error(f'TestController.test() Exception :: {e}')
 

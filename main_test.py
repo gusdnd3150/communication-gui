@@ -1,10 +1,14 @@
 import sys
+import traceback
 sys.path.append('.')
-from PySide6.QtWidgets import QApplication, QMainWindow
-from src.init import InitClass
-
+from conf.logconfig import logger
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    window = InitClass()
-    window.show()
-    sys.exit(app.exec())
+    try:
+
+        logger.info('1212')
+
+
+
+    except:
+        traceback.print_exception()
+

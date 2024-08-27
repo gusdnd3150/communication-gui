@@ -126,7 +126,7 @@ class ServerThread(threading.Thread, Server):
         try:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.bind((self.skIp, self.skPort))
-            self.socket.listen(10) #연결수 설정
+            self.socket.listen(2000) #연결수 설정
             self.logger.info(f'TCP SERVER Start : SK_ID= {self.skId}, IP= {self.skIp}:{self.skPort} :: Thread ')
             self.isRun = True
 

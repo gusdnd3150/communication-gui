@@ -5,6 +5,7 @@ from PySide6.QtWidgets import QMainWindow,  QTableWidgetItem, QHeaderView, QMess
 from PySide6.QtGui import QColor
 from PySide6.QtCore import Qt
 from src.protocols.tcp.ServerThread import ServerThread
+from src.protocols.tcp.ServerThread2 import ServerThread2
 from src.protocols.tcp.ClientThread import ClientThread
 program_path = sys.argv[0]
 import logging
@@ -45,9 +46,6 @@ class InitClass(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         logger.info('application start')
-        # self.qLoader = QUiLoader()
-        # app = QtWidgets.QApplication(sys.argv)
-
         self.setWindowTitle('application')
         self.ui.btn_settings.clicked.connect(self.open_settings)
         self.ui.btn_start.clicked.connect(self.start_sk)
@@ -141,9 +139,11 @@ class InitClass(QMainWindow):
                 skConTy = item['SK_CONN_TYPE']
                 skClientTy = item['SK_CLIENT_TYPE']
 
+
                 if(skTy == 'TCP'):
                     if(skConTy=='SERVER'):
-                        threadInfo = ServerThread(item)
+                        # threadInfo = ServerThread(item)
+                        threadInfo = ServerThread2(item)
                     elif (skConTy == 'CLIENT'):
                         if skClientTy == 'KEEP':
                             threadInfo = ClientThread(item)

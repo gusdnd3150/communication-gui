@@ -6,7 +6,6 @@ import socket
 from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
-from conf.skModule import systemGlobals
 import conf.skModule as moduleData
 
 from src.protocols.sch.BzSchedule import BzSchedule
@@ -15,8 +14,9 @@ from src.protocols.BzActivator2 import BzActivator2
 from src.protocols.Server import Server
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
+from datetime import datetime
 
-class ServerThread(threading.Thread, Server):
+class ServerThread2(threading.Thread, Server):
 
     initData = None
     skId = ''
@@ -35,8 +35,7 @@ class ServerThread(threading.Thread, Server):
     bzIdleRead = None
     bzSchList = []
     logger = None
-    clientThreads = []
-    executor = ThreadPoolExecutor(max_workers=50)
+    executor = ThreadPoolExecutor(max_workers=100)
 
     def __init__(self, data):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
@@ -84,7 +83,7 @@ class ServerThread(threading.Thread, Server):
                 elif bz.get('BZ_TYPE') == 'INACTIVE':
                     self.bzInActive = bz
 
-        super(ServerThread,self).__init__()
+        super(ServerThread2,self).__init__()
         self._stop_event = threading.Event()
 
     def __del__(self):
@@ -115,7 +114,9 @@ class ServerThread(threading.Thread, Server):
                 for item in self.bzSchList:
                     item.stop()
                     item.join()
-            self.socket.close()
+
+
+            self.socket.close() # 완전 종료
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
         finally:
@@ -137,12 +138,10 @@ class ServerThread(threading.Thread, Server):
             moduleData.mainInstance.addServerRow(self.initData)
             with self.socket:
                 while self.socket:
-                    # accept connections from outside
                     (clientsocket, address) = self.socket.accept()
                     t = threading.Thread(target=self.client_handler, args=(clientsocket, address))
                     t.daemon = True
                     t.start()
-                    self.clientThreads.append(t)
         except Exception as e:
             self.logger.error(f'TCP SERVER Bind exception : SK_ID={self.skId}  : {e}')
         finally:
@@ -174,16 +173,14 @@ class ServerThread(threading.Thread, Server):
         try:
             # ACTIVE 이벤트처리
             if self.bzActive is not None:
-                self.logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
-                combined_dict = {**chinfo, **self.bzActive}
-                bz = BzActivator2(combined_dict)
-                bz.daemon = True
-                bz.start()
+                avtive_dict = {**chinfo, **self.bzActive}
+                self.threadPoolExcutor(BzActivator2(avtive_dict), '[ACTIVE Channel]')
+
 
             # KEEP 처리
             if self.bzKeep is not None:
-                combined_dict = {**chinfo, **self.bzKeep}
-                bzSch = BzSchedule(combined_dict)
+                keep_dict = {**chinfo, **self.bzKeep}
+                bzSch = BzSchedule2(keep_dict)
                 bzSch.daemon = True
                 bzSch.start()
                 self.bzSchList.append(bzSch)
@@ -221,16 +218,7 @@ class ServerThread(threading.Thread, Server):
                                 data['TOTAL_BYTES'] = copybytes
 
                                 reciveObj = {**chinfo, **data}
-                                start_time = time.time()
-                                futures = self.executor.submit(BzActivator2(reciveObj).run)
-                                # 작업 결과를 수집
-                                for future in as_completed(futures):
-                                    result = future.result()
-                                    print(f"Result: {result}")
-                                    end_time = time.time()
-                                    logger.info(f' {self.skId} Total execution time: {end_time - start_time} seconds')
-
-
+                                self.threadPoolExcutor(BzActivator2(reciveObj), '[Processing Received Data]')
                             except Exception as e:
                                 traceback.print_exc()
                                 self.logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
@@ -238,12 +226,10 @@ class ServerThread(threading.Thread, Server):
                                 del buffer[0:readBytesCnt]
 
                     except socket.timeout as e:
-                        self.logger.error(f'SK_ID:{self.skId}- IDLE READ exception : {e}')
+                        # self.logger.error(f'SK_ID:{self.skId}- IDLE READ exception : {e}')
                         if self.bzIdleRead is not None:
-                            combined_dict = {**chinfo, **self.bzIdleRead}
-                            bz = BzActivator2(combined_dict)
-                            bz.daemon = True
-                            bz.start()
+                            idle_dict = {**chinfo, **self.bzIdleRead}
+                            self.threadPoolExcutor(BzActivator2(idle_dict), '[IDLE read]')
 
                     except Exception as e:
                         decimal_string = ' '.join(str(byte) for byte in buffer)
@@ -258,10 +244,8 @@ class ServerThread(threading.Thread, Server):
             # inactive 처리
             self.logger.info(f'SK_ID:{self.skId}- CLIENT disConnected  IP/PORT : {address}')
             if self.bzInActive is not None:
-                combined_dict = {**chinfo, **self.bzInActive}
-                bz = BzActivator2(combined_dict)
-                bz.daemon = True
-                bz.start()
+                inav_dict = {**chinfo, **self.bzInActive}
+                self.threadPoolExcutor(BzActivator2(inav_dict), '[INAVTIVE Channel]')
 
             if bzSch is not None:
                 bzSch.stop()
@@ -365,10 +349,28 @@ class ServerThread(threading.Thread, Server):
 
 
 
-    def onReciveData(self):
+    def threadPoolExcutor(self, instance, msg):
         try:
-            self.logger.info(f'sssssss')
-
-
+            start_time = time.time()
+            futures = self.executor.submit(instance.run)
+            # result = futures.result() #다른 스레드에 영향을 미침
+            
+            # 운영시 비권장 futures의 블락을 우회하기위해 스레드 선언
+            result_thread = threading.Thread(target=self.process_result, args=(futures ,msg, start_time,))
+            result_thread.daemon = True
+            result_thread.start()
         except:
-            self.logger.info(f'onReciveData')
+            self.logger.info(f'threadPoolExcutor exception : SK_ID:{self.skId} - {traceback.format_exc()}')
+
+    def process_result(self, future, msg, start_time):
+        try:
+            result = future.result()
+            # 결과를 처리하는 로직
+            if self.skLogYn:
+                end_time = time.time()
+                start = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
+                end = datetime.fromtimestamp(end_time).strftime('%Y-%m-%d %H:%M:%S')
+                # logger.info(f"----------- SK_ID: {self.skId} future Result: {result} and remain thread Que : {self.executor._work_queue}")
+                self.logger.info(f'----------- SK_ID: {self.skId} - {msg} begin:{start} end:{end} total time: {round(end_time - start_time, 4)}------------')
+        except Exception as e:
+            self.logger(f"Exception while processing result: {e}")
