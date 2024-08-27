@@ -15,6 +15,7 @@ class BzSchedule2(threading.Thread):
     isRun = False
     times = time
     executor = ThreadPoolExecutor(max_workers=10)
+    schedule = None
 
     def __init__(self, bzInfo):
         # {'PKG_ID': 'CORE', 'SK_GROUP': 'TEST', 'BZ_TYPE': 'KEEP', 'USE_YN': 'Y', 'BZ_METHOD': 'TestController.test', 'SEC': None, 'BZ_DESC': None, 'CHANNEL':''}
@@ -23,29 +24,37 @@ class BzSchedule2(threading.Thread):
         self.logger = bzInfo['LOGGER']
         self.logger.info(f'BzSchedule initData :{bzInfo}')
 
+        self.schedule = schedule
         super(BzSchedule2, self).__init__()
         self._stop_event = threading.Event()
 
     def run(self):
         self.runSchedule()
 
+    def __del__(self):
+        logger.info(f'Schedules Thread SK_GROUP = {self.bzInfo["SK_GROUP"]} is deleted')
+
     def runSchedule(self):
         try:
             self.isRun = True
             self.logger.info(f'BzSchedule start : SK_GROUP = {self.bzInfo["SK_GROUP"]} ')
-            schedule.every(self.interval).seconds.do(self.task)
+            self.schedule.every(self.interval).seconds.do(self.task)
             while self.isRun:
-                schedule.run_pending()
                 time.sleep(1)
+                self.schedule.run_pending()
+
         except Exception as e:
             self.isRun = False
-            schedule.clear()
+            if self.schedule is not None:
+                self.schedule.clear()
+
             self.logger.error(f'BzSchedule Exception :: {traceback.format_exc()}')
 
     def task(self):
         try:
-            start_time = time.time()
-            futures = self.executor.submit(BzActivator2(self.bzInfo).run)
+            if self.isRun:
+                start_time = time.time()
+                futures = self.executor.submit(BzActivator2(self.bzInfo).run)
             # result = futures.result() #다른 스레드에 영향을 미침
 
             # 운영시 비권장 futures의 블락을 우회하기위해 스레드 선언
@@ -53,13 +62,19 @@ class BzSchedule2(threading.Thread):
             # result_thread.daemon = True
             # result_thread.start()
         except:
-            self.logger.info(f'threadPoolExcutor exception : SK_ID:{self.skId} - {traceback.format_exc()}')
+            self.logger.info(f'threadPoolExcutor exception :  {self.bzInfo["SK_GROUP"]}- {traceback.format_exc()}')
 
 
 
     def stop(self):
-        self.isRun = False
-        self._stop_event.set()
-        self.executor.shutdown()
+        try:
+            self._stop_event.set()
+            self.schedule.clear()
+            self.schedule = None
+            self.isRun = False
+            # self.executor.shutdown()
+        except:
+            self.logger.error(f'stop schedulse exception : {traceback.format_exc()}')
+
 
 
