@@ -27,8 +27,7 @@ class TestController():
             # skLogger.info(f'[RECIVE TOTAL_BYTES] : {str(reciveObj["TOTAL_BYTES"])}')
             # skLogger.info(f'[RECIVE OBJ] : {reciveObj}')
             # returnJson['LINE_SIGN'] = '2'
-
-            skLogger.info(f'111111111111')
+            self.sendHandler.sendChannelBytes(Channel, 'return'.encode('utf-8'))
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {e}')
 

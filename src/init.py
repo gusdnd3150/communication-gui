@@ -7,6 +7,7 @@ from PySide6.QtCore import Qt
 from src.protocols.tcp.ServerThread import ServerThread
 from src.protocols.tcp.ServerThread2 import ServerThread2
 from src.protocols.tcp.ClientThread import ClientThread
+from src.protocols.tcp.ClientThread2 import ClientThread2
 program_path = sys.argv[0]
 import logging
 program_directory = os.path.dirname(program_path)
@@ -146,7 +147,8 @@ class InitClass(QMainWindow):
                         threadInfo = ServerThread2(item)
                     elif (skConTy == 'CLIENT'):
                         if skClientTy == 'KEEP':
-                            threadInfo = ClientThread(item)
+                            # threadInfo = ClientThread(item)
+                            threadInfo = ClientThread2(item)
 
                 elif (skTy == 'UDP'):
                     if (skConTy == 'SERVER'):

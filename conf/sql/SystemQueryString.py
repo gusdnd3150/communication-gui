@@ -79,6 +79,8 @@ def selectSocketInList(skId , useYn, pkgId='CORE'):
         query.append(f'AND IN_SK_ID = "{skId}"')
     if (useYn is not None):
         query.append(f'AND USE_YN = "{useYn}"')
+    query.append(' ORDER BY PKG_ID, SK_IN_SEQ ')
+
 
     return " ".join(query)
 
@@ -213,6 +215,7 @@ def selectSkInList(skId, pkgId):
     query.append('	FROM TB_SK_MSG_BODY    ')
     query.append(')B                         ')
     query.append('ON (A.IN_MSG_ID = B.MSG_ID)')
+    query.append('ORDER BY A.PKG_ID, A.SK_IN_SEQ')
 
     return " ".join(query)
 
