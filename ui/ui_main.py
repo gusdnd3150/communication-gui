@@ -15,10 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QGridLayout, QHeaderView,
-    QLabel, QMainWindow, QMenuBar, QPushButton,
-    QSizePolicy, QStatusBar, QTableWidget, QTableWidgetItem,
-    QToolButton, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QGridLayout,
+    QHeaderView, QLabel, QMainWindow, QMenuBar,
+    QPushButton, QSizePolicy, QStatusBar, QTableWidget,
+    QTableWidgetItem, QToolButton, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -122,6 +122,9 @@ class Ui_MainWindow(object):
                         "rollBar::sub-page:vertical {\n"
 "    background: none;\n"
 "}")
+        self.list_run_server.setDragEnabled(False)
+        self.list_run_server.setDragDropOverwriteMode(False)
+        self.list_run_server.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.list_run_server.setShowGrid(True)
         self.list_run_server.setSortingEnabled(True)
         self.list_run_server.verticalHeader().setDefaultSectionSize(41)
@@ -190,6 +193,10 @@ class Ui_MainWindow(object):
                         "rollBar::sub-page:vertical {\n"
 "    background: none;\n"
 "}")
+        self.list_run_client.setTabKeyNavigation(False)
+        self.list_run_client.setProperty("showDropIndicator", False)
+        self.list_run_client.setDragDropOverwriteMode(False)
+        self.list_run_client.setSelectionBehavior(QAbstractItemView.SelectRows)
 
         self.verticalLayout.addWidget(self.list_run_client)
 
@@ -400,7 +407,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1087, 21))
+        self.menubar.setGeometry(QRect(0, 0, 1087, 22))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")

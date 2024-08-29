@@ -23,7 +23,7 @@ class BzActivator2():
                     my_class = systemGlobals.systemGlobals[classNm]
                     method = getattr(my_class, methdNm)
                     if callable(method):
-                        self.logger.info(f" BzActivator run : class:{classNm} / method:{methdNm} ")
+                        # self.logger.info(f" BzActivator run : class:{classNm} / method:{methdNm} ")
                         method(self.bzInfo)
                     else:
                         self.logger.error(f" {methdNm} is not callable.")

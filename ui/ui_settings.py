@@ -222,7 +222,10 @@ class Ui_Settings(object):
         font1.setPointSize(7)
         font1.setBold(True)
         self.list_sk.setFont(font1)
-        self.list_sk.setDragEnabled(True)
+        self.list_sk.setProperty("showDropIndicator", False)
+        self.list_sk.setDragEnabled(False)
+        self.list_sk.setDragDropOverwriteMode(False)
+        self.list_sk.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tap_info.addTab(self.tab, "")
         self.tab_5 = QWidget()
         self.tab_5.setObjectName(u"tab_5")
@@ -234,6 +237,10 @@ class Ui_Settings(object):
         self.list_in.setObjectName(u"list_in")
         self.list_in.setGeometry(QRect(0, 0, 801, 501))
         self.list_in.setFont(font1)
+        self.list_in.setTabKeyNavigation(False)
+        self.list_in.setProperty("showDropIndicator", False)
+        self.list_in.setDragDropOverwriteMode(False)
+        self.list_in.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.formLayoutWidget_4 = QWidget(self.tab_5)
         self.formLayoutWidget_4.setObjectName(u"formLayoutWidget_4")
         self.formLayoutWidget_4.setGeometry(QRect(810, 30, 271, 461))
@@ -427,6 +434,7 @@ class Ui_Settings(object):
         self.list_bz.setGeometry(QRect(10, 30, 821, 211))
         self.list_bz.setFont(font1)
         self.list_bz.setDragEnabled(True)
+        self.list_bz.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.list_sch = QTableWidget(self.tab_4)
         if (self.list_sch.columnCount() < 1):
             self.list_sch.setColumnCount(1)
@@ -436,6 +444,7 @@ class Ui_Settings(object):
         self.list_sch.setGeometry(QRect(10, 280, 821, 211))
         self.list_sch.setFont(font1)
         self.list_sch.setDragEnabled(True)
+        self.list_sch.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.formLayoutWidget_5 = QWidget(self.tab_4)
         self.formLayoutWidget_5.setObjectName(u"formLayoutWidget_5")
         self.formLayoutWidget_5.setGeometry(QRect(840, 60, 271, 281))
@@ -637,7 +646,7 @@ class Ui_Settings(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1150, 26))
+        self.menubar.setGeometry(QRect(0, 0, 1150, 22))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -645,7 +654,7 @@ class Ui_Settings(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tap_info.setCurrentIndex(0)
+        self.tap_info.setCurrentIndex(3)
 
 
         QMetaObject.connectSlotsByName(MainWindow)

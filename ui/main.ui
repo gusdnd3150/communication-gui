@@ -142,6 +142,15 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     background: none;
 }</string>
         </property>
+        <property name="dragEnabled">
+         <bool>false</bool>
+        </property>
+        <property name="dragDropOverwriteMode">
+         <bool>false</bool>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
         <property name="showGrid">
          <bool>true</bool>
         </property>
@@ -221,6 +230,18 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
 QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     background: none;
 }</string>
+        </property>
+        <property name="tabKeyNavigation">
+         <bool>false</bool>
+        </property>
+        <property name="showDropIndicator" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="dragDropOverwriteMode">
+         <bool>false</bool>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
         </property>
        </widget>
       </item>
@@ -489,7 +510,7 @@ QToolButton:pressed {
      <x>0</x>
      <y>0</y>
      <width>1087</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
