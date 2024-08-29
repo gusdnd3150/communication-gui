@@ -41,8 +41,8 @@ class SendHandler():
                 if sk['SK_ID'] == skId:
                     skThread = sk['SK_THREAD']
                     if sk['SK_CLIENT_TYPE'] == 'EVENT':
-                        from src.protocols.tcp.ClientEventThread import ClientEventThread
-                        newTh = ClientEventThread(sk, data)
+                        from src.protocols.tcp.ClientEventThread2 import ClientEventThread2
+                        newTh = ClientEventThread2(sk, data)
                         newTh.daemon = True
                         newTh.start()
                         break
@@ -68,8 +68,6 @@ class SendHandler():
             data['MSG_ID'] = msgId
             for skId, ch, codec in moduleData.runChannels:
                 if ch == channel:
-                    # returnBytes = codec.encodeSendData(data)
-                    # channel.sendall(returnBytes)
                     for i, sk in enumerate(moduleData.sokcetList):
                         if sk['SK_ID'] == skId:
                             skThread = sk['SK_THREAD']

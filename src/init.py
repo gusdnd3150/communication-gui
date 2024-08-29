@@ -41,6 +41,7 @@ class InitClass(QMainWindow):
     initData = None # 초기데이터 초기화 클래스
     reactor = None
     handlPop =None
+    isRunSk = False
 
     def __init__(self):
         super(InitClass, self).__init__()
@@ -82,11 +83,13 @@ class InitClass(QMainWindow):
 
     def stop_sk(self):
         try:
-            reply = QMessageBox.question(self, '프로세스 중지',
-                                         '소켓을 종료 하시겠습니까?',
-                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if reply != QMessageBox.Yes:
-                return
+
+            if self.isRunSk:
+                reply = QMessageBox.question(self, '프로세스 중지',
+                                             '소켓을 종료 하시겠습니까?',
+                                             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                if reply != QMessageBox.Yes:
+                    return
 
             logger.info(f'Stop Run Sockets')
             for i, item in enumerate(moduleData.sokcetList):
@@ -107,6 +110,8 @@ class InitClass(QMainWindow):
             self.ui.list_conn.clearContents()
             self.ui.combo_pkg.setDisabled(False)
             self.ui.btn_start.setDisabled(False)
+
+            self.isRunSk = False
         except Exception as e:
             logger.error(f'stop_sk() exceptopn : {traceback.format_exc()}')
 
@@ -181,6 +186,7 @@ class InitClass(QMainWindow):
                 schThread.start()
                 sch['SK_THREAD'] = schThread
 
+            self.isRunSk = True
         except Exception as e:
             traceback.print_exc()
             logger.info(f'Init.start_sk() Exception :: {traceback.format_exc()}')
