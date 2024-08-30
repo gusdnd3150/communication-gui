@@ -36,6 +36,7 @@ class ClientThread2(threading.Thread, Client):
     logger = None
     bzSchList = []
     executor = ThreadPoolExecutor(max_workers=30)
+    skclientTy = ''
 
     def __init__(self, data):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
@@ -48,6 +49,7 @@ class ClientThread2(threading.Thread, Client):
         # self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
         self.skIp = data['SK_IP']
         self.skPort = int(data['SK_PORT'])
+        self.skclientTy = data['SK_CLIENT_TYPE']
 
         self.logger = setup_sk_logger(self.skId)
         self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
@@ -120,13 +122,10 @@ class ClientThread2(threading.Thread, Client):
 
 
     def initClient(self):
-        moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', '0')
         buffer = bytearray()
-        connInfo = {}
-        connInfo['SK_ID'] = self.skId
-        connInfo['CONN_INFO'] = f"('{self.skIp}', {self.skPort})"
+        
         bzSch = None
-        client_info = None
+        conn_list = None
         chinfo = None
 
         try:
@@ -139,13 +138,11 @@ class ClientThread2(threading.Thread, Client):
                 'SK_ID': self.skId
                 , 'SK_GROUP': self.skGrp
                 , 'CHANNEL': self.socket
-                , 'CODEC': self.codec
+                , 'THREAD': self
                 , 'LOGGER': self.logger
             }
-            client_info = (self.skId, self.socket, self.codec)
-            moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', '1')
-            moduleData.runChannels.append(client_info)
-            moduleData.mainInstance.addConnRow(connInfo)
+            conn_list = (self.skId, self.socket, self)
+            moduleData.runChannels.append(conn_list)
 
             #2. 여기에 active 이벤트 처리
             if self.bzActive is not None:
@@ -226,10 +223,8 @@ class ClientThread2(threading.Thread, Client):
                 self.threadPoolExcutor(BzActivator2(inav_dict), '[INAVTIVE Channel]')
 
 
-            if client_info in moduleData.runChannels:
-                moduleData.runChannels.remove(client_info)
-            moduleData.mainInstance.modClientRow(self.skId, 'CON_COUNT', '0')
-            moduleData.mainInstance.deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
+            if conn_list in moduleData.runChannels:
+                moduleData.runChannels.remove(conn_list)
 
             if bzSch is not None:
                 bzSch.stop()

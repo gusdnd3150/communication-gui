@@ -28,7 +28,7 @@ class ServerThread2(threading.Thread, Server):
     skLogYn = False
     codec = None
     delimiter = b''
-    client_list = []
+    conn_list = []
     bzKeep = None
     bzActive = None
     bzInActive = None
@@ -36,6 +36,8 @@ class ServerThread2(threading.Thread, Server):
     bzSchList = []
     logger = None
     executor = ThreadPoolExecutor(max_workers=100)
+    skclientTy = ''
+
 
     def __init__(self, data):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
@@ -49,6 +51,7 @@ class ServerThread2(threading.Thread, Server):
         # self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
         self.skIp = data['SK_IP']
         self.skPort = int(data['SK_PORT'])
+        self.skclientTy = data['SK_CLIENT_TYPE']
 
         self.logger = setup_sk_logger(self.skId)
         self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
@@ -103,8 +106,8 @@ class ServerThread2(threading.Thread, Server):
             # 로거 제거
             logging.getLogger(self.skId).handlers = []
 
-            if len(self.client_list) > 0:
-                for skId, client, codec in self.client_list:
+            if len(self.conn_list) > 0:
+                for skId, client, thread in self.conn_list:
                     try:
                         client.close()
                     except:
@@ -149,26 +152,22 @@ class ServerThread2(threading.Thread, Server):
 
 
 
-    def client_handler(self,clientsocket,  address):
+    def client_handler(self,clientsocket, address):
         buffer = bytearray()
-        client_info = (self.skId, clientsocket, self.codec)
-        self.client_list.append(client_info)
+        # 공통  sk_id, channel, codec, thread
+        client_info = (self.skId, clientsocket , self)
+        self.conn_list.append(client_info) # 해당 소켓의 연결된 리스트
+        moduleData.runChannels.append(client_info) # 전체
+
         bzSch = None
         chinfo = {
             'SK_ID': self.skId
             ,'SK_GROUP': self.skGrp
             , 'CHANNEL': clientsocket
-            , 'CODEC': self.codec
             , 'LOGGER': self.logger
+            , 'THREAD': self
         }
         self.logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
-
-        connInfo = {}
-        connInfo['SK_ID'] = self.skId
-        connInfo['CONN_INFO'] = address
-        moduleData.mainInstance.addConnRow(connInfo)
-        moduleData.runChannels.append(client_info)
-        moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
 
         try:
             # ACTIVE 이벤트처리
@@ -255,17 +254,14 @@ class ServerThread2(threading.Thread, Server):
             if bzSch in self.bzSchList:
                 self.bzSchList.remove(bzSch)
 
-            moduleData.mainInstance.deleteTableRow(str(address),'list_conn')
-
             if clientsocket:
-                if client_info in self.client_list:
-                    self.client_list.remove(client_info)
+                if client_info in self.conn_list:
+                    self.conn_list.remove(client_info)
                 if client_info in moduleData.runChannels:
                     moduleData.runChannels.remove(client_info)
 
                 self.logger.info(f'moduleData.runChannels : {moduleData.runChannels}')
-                self.logger.info(f'SK_ID:{self.skId} remain Clients count {len(self.client_list)})')
-                moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
+                self.logger.info(f'SK_ID:{self.skId} remain Clients count {len(self.conn_list)})')
                 clientsocket.close()
         except:
 
@@ -274,25 +270,18 @@ class ServerThread2(threading.Thread, Server):
                 clientsocket.close()
 
         finally:
-                if client_info in self.client_list:
-                    self.client_list.remove(client_info)
+                if client_info in self.conn_list:
+                    self.conn_list.remove(client_info)
                 if client_info in moduleData.runChannels:
                     moduleData.runChannels.remove(client_info)
-                moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
 
-    def countChannelBySkId(self,skId):
-        count = 0
-        for skid, socket, codec in self.client_list:
-            if skid == skId:
-                count += 1
-        return count
 
     def sendBytesToAllChannels(self, bytes):
         try:
-            if len(self.client_list) == 0:
+            if len(self.conn_list) == 0:
                 self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
                 return
-            for skId, client, codec in self.client_list:
+            for skId, client, codec in self.conn_list:
                 if skId == self.skId:
                     client.sendall(bytes)
                     if self.skLogYn:
@@ -317,12 +306,12 @@ class ServerThread2(threading.Thread, Server):
     def sendMsgToAllChannels(self, obj):
 
         try:
-            if len(self.client_list) == 0:
+            if len(self.conn_list) == 0:
                 self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
                 return
             sendBytes = self.codec.encodeSendData(obj)
 
-            for skId, client, codec in self.client_list:
+            for skId, client, thread in self.conn_list:
                 if skId == self.skId:
                     client.sendall(sendBytes)
                     if self.skLogYn:
@@ -336,7 +325,7 @@ class ServerThread2(threading.Thread, Server):
     def sendMsgToChannel(self, channel, obj):
 
         try:
-            if len(self.client_list) == 0:
+            if len(self.conn_list) == 0:
                 self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
                 return
             sendBytes = self.codec.encodeSendData(obj)

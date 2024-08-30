@@ -19,15 +19,38 @@ class TestController():
         logger.info('init testcontroller')
         self.sendHandler = SendHandler()
 
+    def sample(self, reciveObj):
+        skLogger = reciveObj['LOGGER']
+        Channel = reciveObj['CHANNEL']
+        thread = reciveObj['THREAD']
+        returnJson = {}
+        returnJson['MSG_ID'] = ''
+        try:
+            skLogger.info(f'recive data : {reciveObj}')
+            returnJson['LINE_SIGN'] = '2'
+            self.sendHandler.sendSkId('TEST', 'TEST_MSG', returnJson)
+            thread.sendBytesToChannel(Channel, 'sss'.encode('utf-8'))
+            returnJson2 = {}
+            returnJson2['MSG_ID'] = 'TEST_MSG'
+            thread.sendMsgToChannel(Channel,returnJson2)
+        except:
+            logger.error(f'sample exception : {traceback.format_exc()}')
+
     def recive(self, reciveObj):
         skLogger = reciveObj['LOGGER']
         Channel = reciveObj['CHANNEL']
+        thread = reciveObj['THREAD']
         returnJson = {}
+        skLogger.info(f'recive data : {reciveObj}')
         try:
             # skLogger.info(f'[RECIVE TOTAL_BYTES] : {str(reciveObj["TOTAL_BYTES"])}')
             # skLogger.info(f'[RECIVE OBJ] : {reciveObj}')
-            # returnJson['LINE_SIGN'] = '2'
-            self.sendHandler.sendChannelBytes(Channel, 'return'.encode('utf-8'))
+            returnJson['LINE_SIGN'] = '2'
+            # self.sendHandler.sendChannelBytes(Channel, 'return'.encode('utf-8'))
+            self.sendHandler.sendSkId('TEST','TEST_MSG',returnJson)
+            thread.sendBytesToChannel(Channel, 'sss'.encode('utf-8'))
+
+
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {e}')
 

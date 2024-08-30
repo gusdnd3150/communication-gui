@@ -36,6 +36,7 @@ class ClientEventThread(threading.Thread):
     bzSch = None
     logger = None
     conCnt = 0
+    skclientTy = ''
     sendData = bytearray
     bzSchList = []
     executor = ThreadPoolExecutor(max_workers=4)
@@ -51,6 +52,7 @@ class ClientEventThread(threading.Thread):
         # self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
         self.skIp = data['SK_IP']
         self.skPort = int(data['SK_PORT'])
+        self.skclientTy = data['SK_CLIENT_TYPE']
 
         # self.logger = setup_sk_logger(self.skId)
         self.logger = logger
@@ -121,10 +123,6 @@ class ClientEventThread(threading.Thread):
         buffer = bytearray()
         sockets = None
 
-        self.conCnt = self.conCnt + 1
-        connInfo = {}
-        connInfo['SK_ID'] = self.skId
-        connInfo['CONN_INFO'] = f"('{f'{self.skIp}:{threading.currentThread().getName()}'}', {self.skPort})"
         client_info = None
         chinfo = None
         bzSch = None
@@ -139,11 +137,11 @@ class ClientEventThread(threading.Thread):
                 'SK_ID': self.skId
                 , 'SK_GROUP': self.skGrp
                 , 'CHANNEL': sockets
-                , 'CODEC': self.codec
+                , 'THREAD': self
                 , 'LOGGER': self.logger
             }
-            client_info = (self.skId, self.socket, self.codec)
-            moduleData.mainInstance.addConnRow(connInfo)
+            client_info = (self.skId, self.socket, self)
+            moduleData.runChannels.append(client_info)
 
             #2. 여기에 active 이벤트 처리
             if self.bzActive is not None:
@@ -215,14 +213,16 @@ class ClientEventThread(threading.Thread):
             isRun = False
             self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
         finally:
-            moduleData.mainInstance.deleteTableRow(connInfo['CONN_INFO'], 'list_conn')
             buffer.clear()
-            # stop_event.set()
+
+            if client_info in moduleData.runChannels:
+                moduleData.runChannels.remove(client_info)
 
             if bzSch is not None:
                 bzSch.stop()
                 bzSch.join()
                 bzSch = None
+
             if sockets:
                 sockets.close()
                 sockets = None
@@ -241,9 +241,12 @@ class ClientEventThread(threading.Thread):
 
     def sendBytesToChannel(self,channel, bytes):
         try:
-            pass
+            channel.sendall(bytes + self.delimiter)
+            if self.skLogYn:
+                decimal_string = ' '.join(str(byte) for byte in bytes)
+                self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{decimal_string}]')
         except:
-            self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
+            self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {traceback.format_exc()}')
 
 
 

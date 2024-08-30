@@ -13,7 +13,7 @@ from src.protocols.BzActivator import BzActivator
 import asyncio
 import websockets
 from aiohttp import web
-
+from concurrent.futures import ThreadPoolExecutor
 
 class WebSkServerThread(threading.Thread):
     initData = None
@@ -34,6 +34,7 @@ class WebSkServerThread(threading.Thread):
     bzIdleRead = None
     bzSch = None
     logger = None
+    executor = ThreadPoolExecutor(max_workers=4)
 
     def __init__(self, data):
         self.initData = data
