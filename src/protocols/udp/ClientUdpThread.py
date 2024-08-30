@@ -85,7 +85,6 @@ class ClientUdpThread(threading.Thread,Client):
 
     def run(self):
         moduleData.mainInstance.addClientRow(self.initData)
-
         # self.initServer()
 
     def stop(self):

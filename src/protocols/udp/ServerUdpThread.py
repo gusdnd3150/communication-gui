@@ -6,8 +6,11 @@ from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
 import conf.skModule as moduleData
-from src.protocols.BzActivator import BzActivator
+from src.protocols.BzActivator2 import BzActivator2
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
+import time
+from datetime import datetime
 
 class ServerUdpThread(threading.Thread):
 
@@ -30,6 +33,8 @@ class ServerUdpThread(threading.Thread):
     bzSch = None
     logger = None
     connCnt = 0
+    executor = ThreadPoolExecutor(max_workers=20)
+    skclientTy = ''
 
     def __init__(self, data):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
@@ -43,6 +48,7 @@ class ServerUdpThread(threading.Thread):
         # self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
         self.skIp = data['SK_IP']
         self.skPort = int(data['SK_PORT'])
+        self.skclientTy = data['SK_CLIENT_TYPE']
 
         self.logger = setup_sk_logger(self.skId)
         self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
@@ -133,28 +139,51 @@ class ServerUdpThread(threading.Thread):
         try:
             self.logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
 
+            chinfo = {
+                'SK_ID': self.skId
+                , 'SK_GROUP': self.skGrp
+                , 'CHANNEL': address
+                , 'LOGGER': self.logger
+                , 'THREAD': self
+            }
+
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in message)
                 self.logger.info(f'SK_ID:{self.skId} read length : {len(message)} recive_string:[{str(message)}] decimal_string : [{decimal_string}]')
 
-            self.connCnt = self.connCnt + 1
-            moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.connCnt))
-
             copyButes = message.copy()
             data = self.codec.decodeRecieData(message)
             data['TOTAL_BYTES'] = copyButes
-            data['CHANNEL'] = self.socket
-            data['SK_ID'] = self.skId
-            data['SK_GROUP'] = self.skGrp
-            data['CODEC'] = self.codec
-            data['LOGGER'] = self.logger
-            bz = BzActivator(data)
-            bz.daemon = True
-            bz.start()
-            self.connCnt = self.connCnt - 1
-            moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', '0')
+
+            reciveObj = {**chinfo, **data}
+            self.threadPoolExcutor(BzActivator2(reciveObj), '[Processing Received Data]')
         except Exception as e:
-            self.connCnt = self.connCnt - 1
-            moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', '0')
             self.logger.info(f'UDP client_handler exception :  {traceback.format_exc()}')
 
+
+    def threadPoolExcutor(self, instance, msg):
+        try:
+            start_time = time.time()
+            futures = self.executor.submit(instance.run)
+            # result = futures.result() #다른 스레드에 영향을 미침
+
+            # 운영시 비권장 futures의 블락을 우회하기위해 스레드 선언
+            result_thread = threading.Thread(target=self.process_result, args=(futures, msg, start_time,))
+            result_thread.daemon = True
+            result_thread.start()
+        except:
+            self.logger.info(f'threadPoolExcutor exception : SK_ID:{self.skId} - {traceback.format_exc()}')
+
+    def process_result(self, future, msg, start_time):
+        try:
+            result = future.result()
+            # 결과를 처리하는 로직
+            if self.skLogYn:
+                end_time = time.time()
+                start = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
+                end = datetime.fromtimestamp(end_time).strftime('%Y-%m-%d %H:%M:%S')
+                # logger.info(f"----------- SK_ID: {self.skId} future Result: {result} and remain thread Que : {self.executor._work_queue}")
+                self.logger.info(
+                    f'----------- SK_ID: {self.skId} - {msg} begin:{start} end:{end} total time: {round(end_time - start_time, 4)}------------')
+        except Exception as e:
+            self.logger(f"Exception while processing result: {e}")

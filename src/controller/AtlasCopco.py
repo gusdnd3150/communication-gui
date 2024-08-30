@@ -219,7 +219,6 @@ class AtlasCopco():
 
         # self.accept0001Ch.append(channel)
         try:
-
             returnJson = {}
             returnJson['MSG_ID'] = 'TOOL_ATL_RES_0005'
             returnJson['REV'] = '001'
