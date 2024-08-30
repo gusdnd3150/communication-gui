@@ -1,11 +1,11 @@
 from conf.logconfig import logger
 import threading
-from src.protocols.BzActivator import BzActivator
+from src.protocols.BzActivator2 import BzActivator2
+import traceback
 import time
-from datetime import datetime
-# from crontab import CronTab
 import schedule
 from conf.logconfig import *
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class Schedule(threading.Thread):
 
@@ -16,6 +16,8 @@ class Schedule(threading.Thread):
     schjobTy = None
     times = time
     logger = None
+    schedule = None
+    executor = ThreadPoolExecutor(max_workers=10)
 
     # {'PKG_ID': 'CORE', 'SCH_ID': 'TEST', 'BZ_METHOD': 'TestController.sch', 'SCH_DESC': None, 'USE_YN': 'Y',
     #  'SCH_JOB': '2', 'SCH_JOB_TYPE': 'SEC'}
@@ -33,6 +35,7 @@ class Schedule(threading.Thread):
         self.bzInfo['LOGGER'] = self.logger
 
         self.logger.info(f'init sch :{sch}')
+        self.schedule = schedule
 
         super(Schedule, self).__init__()
         self._stop_event = threading.Event()
@@ -51,6 +54,8 @@ class Schedule(threading.Thread):
             # 로거 제거
             logging.getLogger(self.schId).handlers = []
 
+            self.schedule.clear()
+            self.schedule = None
             self.isRun = False
         except Exception as e:
             self.logger.error(f'SCH_ID:{self.schId} Stop fail')
@@ -59,13 +64,11 @@ class Schedule(threading.Thread):
             # moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
 
     def __del__(self):
-        self.logger.info('deleted')
+        self.logger.info('system schedules deleted')
 
     def runSchedule(self):
         try:
-            logger.info(f'runSchedule start SCH_ID:{self.schId}')
-            self.isRun = True
-
+            sleep_time = 0
             if self.schjobTy == 'SEC':
                 sleep_time = int(self.schJob)
             elif self.schjobTy == 'MIN':
@@ -73,37 +76,34 @@ class Schedule(threading.Thread):
             elif self.schjobTy == 'HOUR':
                 sleep_time = int(self.schJob) * 3600
             elif self.schjobTy is None:
-                try:
-                    self.logger.info(f'ddddddddddd')
-                    # cron = CronTab(self.schJob)
-                    # next_run = cron.next(default_utc=True)
-                    # sleep_time = next_run
-                except Exception as e:
-                    self.logger.error(f'Invalid cron expression: {self.schJob}')
-                    return
-            else:
-                self.logger.error(f'Invalid SCH_JOB_TYPE: {self.schjobTy}')
-                return
+                logger.info(f'cron')
 
+            self.isRun = True
+            self.logger.info(f'BzSchedule start : SK_GROUP = {self.bzInfo["SK_GROUP"]} ')
+            self.schedule.every(sleep_time).seconds.do(self.task)
             while self.isRun:
-                for _ in range(int(sleep_time * 10)):  # 100ms 간격으로 체크
-                    if not self.isRun:
-                        return
-                    self.times.sleep(0.1)
-                if self.isRun:
-                    self.task()
-                if self.schjobTy is None:
-                    next_run = cron.next(default_utc=True)
-                    sleep_time = next_run
+                time.sleep(1)
+                self.schedule.run_pending()
 
         except Exception as e:
             self.isRun = False
-            self.logger.error(f'runSchedule Exception :: {e}')
+            if self.schedule is not None:
+                self.schedule.clear()
+
+            self.logger.error(f'system runSchedule Exception :: {traceback.format_exc()}')
+
 
     def task(self):
         try:
-            bz = BzActivator(self.bzInfo)
-            bz.daemon = True
-            bz.start()
-        except Exception as e:
-            self.logger.error(f'runSchedule BzSchedule task exception : {e}')
+            if self.isRun:
+                # start_time = time.time()
+                futures = self.executor.submit(BzActivator2(self.bzInfo).run)
+            # result = futures.result() #다른 스레드에 영향을 미침
+
+            # 운영시 비권장 futures의 블락을 우회하기위해 스레드 선언
+            # result_thread = threading.Thread(target=self.process_result, args=(futures, msg, start_time,))
+            # result_thread.daemon = True
+            # result_thread.start()
+        except:
+            self.logger.info(f'threadPoolExcutor exception :  {self.bzInfo["SK_GROUP"]}- {traceback.format_exc()}')
+

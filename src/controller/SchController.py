@@ -11,7 +11,6 @@ class SchController():
     # 2.1 tcp/udp 는 sendall 로, 웹소켓은 다이렉트로 보낼 수 없다.(즉 sendHandler를 이용)
     # 3.
     sendHandler = None
-
     def __init__(self):
         logger.info('init schController')
         self.sendHandler = SendHandler()
