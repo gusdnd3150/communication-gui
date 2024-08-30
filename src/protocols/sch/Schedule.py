@@ -75,11 +75,10 @@ class Schedule(threading.Thread):
                 sleep_time = int(self.schJob) * 60
             elif self.schjobTy == 'HOUR':
                 sleep_time = int(self.schJob) * 3600
-            elif self.schjobTy is None:
+            elif self.schjobTy == 'CRON':
                 logger.info(f'cron')
 
             self.isRun = True
-            self.logger.info(f'BzSchedule start : SK_GROUP = {self.bzInfo["SK_GROUP"]} ')
             self.schedule.every(sleep_time).seconds.do(self.task)
             while self.isRun:
                 time.sleep(1)

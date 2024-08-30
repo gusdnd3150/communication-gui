@@ -90,7 +90,7 @@ class ServerThread2(threading.Thread, Server):
         self._stop_event = threading.Event()
 
     def __del__(self):
-        logger.info(f'Thread {self.skId} is deleted')
+        self.logger.info(f'Thread {self.skId} is deleted')
 
     def run(self):
         self.initServer()
