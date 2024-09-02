@@ -398,8 +398,9 @@ class InitClass(QMainWindow):
 
     def insertLog(self, skId, bytes, flag):
         try:
-            if self.ui.chkbox_show_log.isChecked():
-                logTm = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-                self.ui.list_log.appendPlainText(f'SK_ID : {skId} [{logTm}] {flag} --- [{bytes.decode("ascii")}] \n')
+            pass
+            # if self.ui.chkbox_show_log.isChecked():
+            #     logTm = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+            #     self.ui.list_log.appendPlainText(f'SK_ID : {skId} [{logTm}] {flag} --- [{bytes.decode("ascii")}] \n')
         except:
             logger.error(f'insertLog exception: {traceback.format_exc()}')

@@ -187,7 +187,7 @@ class ClientEventThread(threading.Thread):
                                     decimal_string = ' '.join(str(byte) for byte in readByte)
                                     self.logger.info(
                                         f'SK_ID:{self.skId} read length : {len(readByte)} recive_string:[{str(readByte)}] decimal_string : [{decimal_string}]')
-                                    moduleData.mainInstance.insertLog(self.skId, readByte, 'IN')
+                                    # moduleData.mainInstance.insertLog(self.skId, readByte, 'IN')
 
                                 copybytes = readByte.copy()
                                 data = self.codec.decodeRecieData(readByte)
@@ -247,7 +247,7 @@ class ClientEventThread(threading.Thread):
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in bytes)
                 self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{decimal_string}]')
-                moduleData.mainInstance.insertLog(self.skId, bytes, 'OUT')
+                # moduleData.mainInstance.insertLog(self.skId, bytes, 'OUT')
         except:
             self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {traceback.format_exc()}')
 
@@ -268,7 +268,7 @@ class ClientEventThread(threading.Thread):
                 if self.skLogYn:
                     decimal_string = ' '.join(str(byte) for byte in sendBytes)
                     self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
-                    moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
+                    # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
             else:
                 self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel has no Server')
 

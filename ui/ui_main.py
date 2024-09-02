@@ -15,12 +15,11 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractItemView, QApplication, QCheckBox, QComboBox,
-    QFrame, QGridLayout, QHBoxLayout, QHeaderView,
-    QLabel, QMainWindow, QMenuBar, QPlainTextEdit,
-    QPushButton, QSizePolicy, QStatusBar, QTabWidget,
-    QTableWidget, QTableWidgetItem, QToolButton, QTreeView,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QFrame,
+    QGridLayout, QHBoxLayout, QHeaderView, QLabel,
+    QMainWindow, QMenuBar, QPushButton, QSizePolicy,
+    QStatusBar, QTabWidget, QTableWidget, QTableWidgetItem,
+    QToolButton, QTreeView, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -258,26 +257,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.list_conn)
 
         self.tabWidget.addTab(self.tab, "")
-        self.tab_2 = QWidget()
-        self.tab_2.setObjectName(u"tab_2")
-        self.verticalLayout_2 = QVBoxLayout(self.tab_2)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.chkbox_show_log = QCheckBox(self.tab_2)
-        self.chkbox_show_log.setObjectName(u"chkbox_show_log")
-
-        self.verticalLayout_2.addWidget(self.chkbox_show_log)
-
-        self.list_log = QPlainTextEdit(self.tab_2)
-        self.list_log.setObjectName(u"list_log")
-        self.list_log.setAutoFillBackground(True)
-        self.list_log.setFrameShape(QFrame.Box)
-        self.list_log.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.list_log.setLineWrapMode(QPlainTextEdit.NoWrap)
-        self.list_log.setReadOnly(False)
-
-        self.verticalLayout_2.addWidget(self.list_log)
-
-        self.tabWidget.addTab(self.tab_2, "")
 
         self.verticalLayout.addWidget(self.tabWidget)
 
@@ -433,7 +412,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -445,8 +424,6 @@ class Ui_MainWindow(object):
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"[ Server ]", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"[ Client ]", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Connection List", None))
-        self.chkbox_show_log.setText(QCoreApplication.translate("MainWindow", u"show log", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Log", None))
         self.btn_settings.setText(QCoreApplication.translate("MainWindow", u"settings", None))
         self.btn_start.setText(QCoreApplication.translate("MainWindow", u"Run Application", None))
         self.btn_stop.setText(QCoreApplication.translate("MainWindow", u"Stop Application", None))

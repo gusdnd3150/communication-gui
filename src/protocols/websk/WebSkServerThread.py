@@ -172,7 +172,7 @@ class WebSkServerThread(threading.Thread):
                         decimal_string = ' '.join(str(byte) for byte in reciveBytes)
                         self.logger.info(
                             f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
-                        moduleData.mainInstance.insertLog(self.skId, reciveBytes, 'IN')
+                        # moduleData.mainInstance.insertLog(self.skId, reciveBytes, 'IN')
 
                     data = self.codec.decodeRecieData(reciveBytes)
                     data['TOTAL_BYTES'] = reciveBytes
@@ -222,7 +222,7 @@ class WebSkServerThread(threading.Thread):
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in bytes)
                         self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} decimal_string : [{decimal_string}]')
-                        moduleData.mainInstance.insertLog(self.skId, bytes, 'OUT')
+                        # moduleData.mainInstance.insertLog(self.skId, bytes, 'OUT')
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
@@ -232,7 +232,7 @@ class WebSkServerThread(threading.Thread):
             async def send(self, channel, bytes):
                 try:
                     await self.sendBytes(bytes)  # await 키워드를 사용하여 비동기 호출
-                    moduleData.mainInstance.insertLog(self.skId, bytes, 'OUT')
+                    # moduleData.mainInstance.insertLog(self.skId, bytes, 'OUT')
                 except Exception:
                     self.logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
 
@@ -261,7 +261,7 @@ class WebSkServerThread(threading.Thread):
             async def send(self):
                 try:
                     await self.sendBytes(sendBytes)  # await 키워드를 사용하여 비동기 호출
-                    moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
+                    # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
                 except Exception:
                     self.logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
 

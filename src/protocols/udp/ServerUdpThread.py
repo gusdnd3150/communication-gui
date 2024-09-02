@@ -150,7 +150,7 @@ class ServerUdpThread(threading.Thread):
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in message)
                 self.logger.info(f'SK_ID:{self.skId} read length : {len(message)} recive_string:[{str(message)}] decimal_string : [{decimal_string}]')
-                moduleData.mainInstance.insertLog(self.skId, message, 'IN')
+                # moduleData.mainInstance.insertLog(self.skId, message, 'IN')
 
             copyButes = message.copy()
             data = self.codec.decodeRecieData(message)

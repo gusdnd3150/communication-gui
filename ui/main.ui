@@ -270,7 +270,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
          <string notr="true"/>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
@@ -327,39 +327,6 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
             </property>
             <property name="verticalScrollBarPolicy">
              <enum>Qt::ScrollBarAsNeeded</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="tab_2">
-         <attribute name="title">
-          <string>Log</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QCheckBox" name="chkbox_show_log">
-            <property name="text">
-             <string>show log</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPlainTextEdit" name="list_log">
-            <property name="autoFillBackground">
-             <bool>true</bool>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::Box</enum>
-            </property>
-            <property name="horizontalScrollBarPolicy">
-             <enum>Qt::ScrollBarAsNeeded</enum>
-            </property>
-            <property name="lineWrapMode">
-             <enum>QPlainTextEdit::NoWrap</enum>
-            </property>
-            <property name="readOnly">
-             <bool>false</bool>
             </property>
            </widget>
           </item>
