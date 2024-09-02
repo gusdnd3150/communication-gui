@@ -9,7 +9,7 @@ from src.protocols.msg.JSONCodec import JSONCodec
 import conf.skModule as moduleData
 from src.protocols.sch.BzSchedule import BzSchedule
 from src.protocols.BzActivator import BzActivator
-
+from src.protocols import Server
 import asyncio
 import websockets
 from aiohttp import web
@@ -78,6 +78,7 @@ class WebSkServerThread(threading.Thread):
         super(WebSkServerThread, self).__init__()
         self._stop_event = threading.Event()
 
+
     def __del__(self):
         self.logger.info('deleted')
 
@@ -134,13 +135,9 @@ class WebSkServerThread(threading.Thread):
             client_ip, client_port = peername
             logger.info(f"SK_ID:{self.skId} Client connected: IP={client_ip}, Port={client_port}")
 
-        client_info = (self.skId, ws, self.codec)
+        client_info = (self.skId, ws, self)
         self.client_list.append(client_info)
-
-        connInfo = {'SK_ID': self.skId, 'CONN_INFO': str(peername)}
         moduleData.runChannels.append(client_info)
-        moduleData.mainInstance.addConnRow(connInfo)
-        moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
 
         # ACTIVE 이벤트처리
         if self.bzActive is not None:
@@ -194,14 +191,22 @@ class WebSkServerThread(threading.Thread):
                 self.bzSch.join()
                 self.bzSch = None
 
-            moduleData.mainInstance.deleteTableRow(str(peername), 'list_conn')
             self.client_list.remove(client_info)
             moduleData.runChannels.remove(client_info)
-            moduleData.mainInstance.modServerRow(self.skId, 'CON_COUNT', str(self.countChannelBySkId(self.skId)))
-
         return ws
 
-    async def sendToAllChannels(self, bytes):
+
+
+    async def idleRead(self, client, timeout):
+        await asyncio.sleep(timeout)
+        self.logger.info(f'Checking idle clients...')
+        try:
+            client.ping()
+        except Exception as e:
+            self.logger.error(f'Error pinging client: {e}')
+
+
+    async def sendBytes(self, bytes):
         try:
             if len(self.client_list) == 0:
                 self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
@@ -216,18 +221,43 @@ class WebSkServerThread(threading.Thread):
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
-    def countChannelBySkId(self, skId):
-        count = 0
-        for skid, socket, codec in self.client_list:
-            if skid == skId:
-                count += 1
-        return count
 
-
-    async def idleRead(self, client, timeout):
-        await asyncio.sleep(timeout)
-        self.logger.info(f'Checking idle clients...')
+    def sendBytesToChannel(self, channel ,bytes):
         try:
-            client.ping()
-        except Exception as e:
-            self.logger.error(f'Error pinging client: {e}')
+            async def send(self, channel, bytes):
+                try:
+                    await self.sendBytes(bytes)  # await 키워드를 사용하여 비동기 호출
+                except Exception:
+                    self.logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
+
+            asyncio.run_coroutine_threadsafe(send(self, channel, bytes),self.loop)
+        except:
+            self.logger.error(f'sendBytesToChannel exception :: {traceback.format_exc()}')
+
+    def sendBytesToAllChannels(self, bytes):
+        try:
+            pass
+        except:
+            self.logger.error(f'sendBytesToAllChannels exception :: {traceback.format_exc()}')
+
+
+    def sendMsgToChannel(self, channel, obj):
+        try:
+            pass
+        except:
+            self.logger.error(f'sendMsgToChannel exception :: {traceback.format_exc()}')
+
+
+
+    def sendMsgToAllChannels(self, obj):
+        try:
+            sendBytes = self.codec.encodeSendData(obj)
+            async def send(self):
+                try:
+                    await self.sendBytes(sendBytes)  # await 키워드를 사용하여 비동기 호출
+                except Exception:
+                    self.logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
+
+            asyncio.run_coroutine_threadsafe(send(self), self.loop)
+        except:
+            self.logger.error(f'sendMsgToAllChannels exception :: {traceback.format_exc()}')

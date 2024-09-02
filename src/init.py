@@ -2,11 +2,9 @@ import sys
 import traceback
 import os
 from PySide6.QtWidgets import QMainWindow,  QTableWidgetItem, QHeaderView, QMessageBox
-from PySide6.QtGui import QColor
+from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem
 from PySide6.QtCore import Qt
-from src.protocols.tcp.ServerThread import ServerThread
 from src.protocols.tcp.ServerThread2 import ServerThread2
-from src.protocols.tcp.ClientThread import ClientThread
 from src.protocols.tcp.ClientThread2 import ClientThread2
 program_path = sys.argv[0]
 import logging
@@ -42,6 +40,8 @@ class InitClass(QMainWindow):
     reactor = None
     handlPop =None
     isRunSk = False
+    treeModel = None
+    root_node = None
 
     def __init__(self):
         super(InitClass, self).__init__()
@@ -107,7 +107,6 @@ class InitClass(QMainWindow):
                 # runThread.join()
                 item['SK_THREAD'] = None
 
-            self.ui.list_conn.clearContents()
             self.ui.combo_pkg.setDisabled(False)
             self.ui.btn_start.setDisabled(False)
 
@@ -165,7 +164,7 @@ class InitClass(QMainWindow):
                     if (skConTy == 'SERVER'):
                         threadInfo = WebSkServerThread(item)
                     elif (skConTy == 'CLIENT'):
-                        threadInfo = ClientUdpThread(item)
+                        threadInfo = None
 
                 else:
                     logger.info(f'None condition')
@@ -194,7 +193,6 @@ class InitClass(QMainWindow):
 
 
     def setGrid(self):
-
         self.ui.list_run_server.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.ui.list_run_server.verticalHeader().setVisible(False)  # 행 번호 헤더 숨기기
         # self.ui.list_run_server.horizontalHeader().setVisible(False)  # 열 번호 헤더 숨기기
@@ -234,19 +232,12 @@ class InitClass(QMainWindow):
             ]
         )
 
-        # self.ui.list_conn.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-        self.ui.list_conn.verticalHeader().setVisible(False)
-        self.ui.list_conn.setRowCount(0)  # Table의 행을 설정, list의 길이
-        self.ui.list_conn.setColumnCount(2)
-        self.ui.list_conn.setHorizontalHeaderLabels(
-            [
-                'SK_ID',
-                'CONN_INFO',
-            ]
-        )
-        header = self.ui.list_conn.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.Stretch)
 
+        # self.ui.list_conn
+        self.treeModel = QStandardItemModel()
+        # self.treeModel.setHorizontalHeaderLabels(["Item", "Description"])
+        self.treeModel.setHorizontalHeaderLabels(["Item"])
+        self.root_node = self.treeModel.invisibleRootItem()
 
 
 
@@ -278,19 +269,7 @@ class InitClass(QMainWindow):
             logger.info(f'addTableRow exception : {e}')
 
 
-    def addConnRow(self, initData):
-        try:
-            # logger.info(f'addTableRow / initData: {initData}')
-            row_count = self.ui.list_conn.rowCount()
-            self.ui.list_conn.insertRow(row_count)
-            # 예제 데이터를 추가
-            self.ui.list_conn.setItem(row_count, 0, QTableWidgetItem(initData['SK_ID']))
-            self.ui.list_conn.setItem(row_count, 1, QTableWidgetItem(str(initData['CONN_INFO'])))
 
-
-
-        except Exception as e:
-            logger.info(f'addTableRow exception : {e}')
 
     def addClientRow(self, initData):
         try:
@@ -355,10 +334,6 @@ class InitClass(QMainWindow):
                 items = self.ui.list_run_server.findItems(skId, Qt.MatchExactly)
                 for item in items:
                     self.ui.list_run_server.removeRow(item.row())
-            elif target == 'list_conn':
-                items = self.ui.list_conn.findItems(skId, Qt.MatchExactly)
-                for item in items:
-                    self.ui.list_conn.removeRow(item.row())
 
 
         except Exception as e:
@@ -394,3 +369,31 @@ class InitClass(QMainWindow):
 
     def closeMain(self):
         logger.info(f'close ``````````````````````````')
+
+
+
+    def updateConnList(self):
+        try:
+            self.treeModel.clear()  # 모델의 모든 항목 제거
+            # self.treeModel.setHorizontalHeaderLabels(["SK_ID", "Description"])  # 헤더 다시 설정
+            self.treeModel.setHorizontalHeaderLabels(["connection Info"])  # 헤더 다시 설정
+            self.root_node = self.treeModel.invisibleRootItem()
+
+            logger.info(f'updateConnList start')
+            for index, item in enumerate(moduleData.sokcetList):
+                logger.info(f'--------{item}')
+                skItem = QStandardItem( item['SK_ID'] )
+                description_item = QStandardItem( item['SK_CONN_TYPE'])
+                for skId, client, thread in moduleData.runChannels:
+                    if skId == item['SK_ID']:
+                        # skItem.appendRow([QStandardItem(str(client)), QStandardItem(str(thread))])
+                        skItem.appendRow([QStandardItem(str(client))])
+
+                # 루트 노드에 부모 항목 추가 (여러 열)
+                # self.root_node.appendRow([skItem, description_item])
+                self.root_node.appendRow([skItem])
+            self.ui.list_conn.setModel(self.treeModel)
+            self.ui.list_conn.expandAll()
+
+        except:
+            logger.error(f'updateConnList exception: {traceback.format_exc()}')

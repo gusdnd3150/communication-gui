@@ -18,13 +18,14 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QGridLayout,
     QHeaderView, QLabel, QMainWindow, QMenuBar,
     QPushButton, QSizePolicy, QStatusBar, QTableWidget,
-    QTableWidgetItem, QToolButton, QVBoxLayout, QWidget)
+    QTableWidgetItem, QToolButton, QTreeView, QVBoxLayout,
+    QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1087, 570)
+        MainWindow.resize(1082, 624)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -203,61 +204,6 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addLayout(self.verticalLayout, 2, 0, 1, 1)
 
-        self.list_conn = QTableWidget(self.centralwidget)
-        self.list_conn.setObjectName(u"list_conn")
-        self.list_conn.setMaximumSize(QSize(300, 16777215))
-        self.list_conn.setStyleSheet(u"QTableWidget {\n"
-"    background-color: #2E2E2E;\n"
-"    color: #FFFFFF;\n"
-"    gridline-color: #444444;\n"
-"    border: 1px solid #444444;\n"
-"}\n"
-"\n"
-"QHeaderView::section {\n"
-"    background-color: #444444;\n"
-"    color: #FFFFFF;\n"
-"    padding: 4px;\n"
-"    border: 1px solid #2E2E2E;\n"
-"}\n"
-"\n"
-"QTableWidget::item {\n"
-"    border: none;\n"
-"    padding: 4px;\n"
-"}\n"
-"\n"
-"QTableWidget::item:selected {\n"
-"    background-color: #555555;\n"
-"    color: #FFFFFF;\n"
-"}\n"
-"\n"
-"QScrollBar:vertical {\n"
-"    background-color: #2E2E2E;\n"
-"    width: 3px;\n"
-"	height:2px;\n"
-"    margin: 15px 0 15px 0;\n"
-"}\n"
-"QScrollBar::handle:vertical {\n"
-"    background-color: #555555;\n"
-"    min-height: 5px;\n"
-"}\n"
-"QScrollBar:horizontal {\n"
-"    background-color: #2E2E2E;\n"
-"    height: 8px; \n"
-"    margin: 0 15px 0 15px;\n"
-"}\n"
-"\n"
-"QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {\n"
-"    background-color: #444444;\n"
-"    height: 5px;\n"
-"}\n"
-"\n"
-"QScrollBar::add-page:vertical, QSc"
-                        "rollBar::sub-page:vertical {\n"
-"    background: none;\n"
-"}")
-
-        self.gridLayout_2.addWidget(self.list_conn, 2, 1, 1, 1)
-
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
         self.btn_settings = QToolButton(self.centralwidget)
@@ -404,10 +350,45 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addWidget(self.label_4, 1, 1, 1, 1)
 
+        self.list_conn = QTreeView(self.centralwidget)
+        self.list_conn.setObjectName(u"list_conn")
+        self.list_conn.setMaximumSize(QSize(350, 16777215))
+        self.list_conn.setStyleSheet(u"QTreeView{\n"
+"	background-color: white;\n"
+"	color:black\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background-color: #2E2E2E;\n"
+"    width: 3px;\n"
+"	height:2px;\n"
+"    margin: 15px 0 15px 0;\n"
+"}\n"
+"QScrollBar::handle:vertical {\n"
+"    background-color: #555555;\n"
+"    min-height: 5px;\n"
+"}\n"
+"QScrollBar:horizontal {\n"
+"    background-color: #2E2E2E;\n"
+"    height: 8px; \n"
+"    margin: 0 15px 0 15px;\n"
+"}\n"
+"\n"
+"QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {\n"
+"    background-color: #444444;\n"
+"    height: 5px;\n"
+"}\n"
+"\n"
+"QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {\n"
+"    background: none;\n"
+"}")
+
+        self.gridLayout_2.addWidget(self.list_conn, 2, 1, 1, 1)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1087, 22))
+        self.menubar.setGeometry(QRect(0, 0, 1082, 22))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")

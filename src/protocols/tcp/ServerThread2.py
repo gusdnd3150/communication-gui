@@ -157,7 +157,9 @@ class ServerThread2(threading.Thread, Server):
         # 공통  sk_id, channel, codec, thread
         client_info = (self.skId, clientsocket , self)
         self.conn_list.append(client_info) # 해당 소켓의 연결된 리스트
+
         moduleData.runChannels.append(client_info) # 전체
+        moduleData.mainInstance.updateConnList()  # 연결 트리에 연결정보 추가
 
         bzSch = None
         chinfo = {

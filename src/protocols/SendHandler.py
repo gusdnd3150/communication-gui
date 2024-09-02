@@ -66,5 +66,5 @@ class SendHandler():
     #         logger.info(f'sendChannelMsg() Exception :: {traceback.format_exc()}')
 
     async def send_webSk_message(self, thread, returnBytes):
-        await thread.sendToAllChannels(returnBytes)
+        await thread.sendBytes(returnBytes)
 
