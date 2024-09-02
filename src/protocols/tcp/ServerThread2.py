@@ -213,11 +213,11 @@ class ServerThread2(threading.Thread, Server):
                                 if self.skLogYn:
                                     decimal_string = ' '.join(str(byte) for byte in readByte)
                                     self.logger.info(f'SK_ID:{self.skId} read length : {len(readByte)} recive_string:[{str(readByte)}] decimal_string : [{decimal_string}]')
+                                    moduleData.mainInstance.insertLog(self.skId, readByte ,'IN')
 
                                 copybytes = readByte.copy()
                                 data = self.codec.decodeRecieData(readByte)
                                 data['TOTAL_BYTES'] = copybytes
-
                                 reciveObj = {**chinfo, **data}
                                 self.threadPoolExcutor(BzActivator2(reciveObj), '[Processing Received Data]')
                             except Exception as e:
@@ -276,7 +276,7 @@ class ServerThread2(threading.Thread, Server):
                     self.conn_list.remove(client_info)
                 if client_info in moduleData.runChannels:
                     moduleData.runChannels.remove(client_info)
-
+                moduleData.mainInstance.updateConnList()
 
     def sendBytesToAllChannels(self, bytes):
         try:
@@ -290,6 +290,8 @@ class ServerThread2(threading.Thread, Server):
                         decimal_string = ' '.join(str(byte) for byte in bytes)
                         self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{decimal_string}]')
 
+                        moduleData.mainInstance.insertLog(self.skId, bytes, 'OUT')
+
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
@@ -300,6 +302,7 @@ class ServerThread2(threading.Thread, Server):
                 decimal_string = ' '.join(str(byte) for byte in bytes)
                 self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{decimal_string}]')
             channel.sendall(bytes)
+            moduleData.mainInstance.insertLog(self.skId, bytes, 'OUT')
         except:
             self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {traceback.format_exc()}')
 
@@ -320,6 +323,7 @@ class ServerThread2(threading.Thread, Server):
                         decimal_string = ' '.join(str(byte) for byte in sendBytes)
                         self.logger.info(
                             f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                        moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
 
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
@@ -331,10 +335,14 @@ class ServerThread2(threading.Thread, Server):
                 self.logger.info(f'sendToAllChannels -{self.skId} has no Clients')
                 return
             sendBytes = self.codec.encodeSendData(obj)
+            channel.sendall(sendBytes)
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in sendBytes)
                 self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
-            channel.sendall(sendBytes)
+
+                # moduleData.mainInstance.insertLog(self.skId, sendBytes)
+                moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
+
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 

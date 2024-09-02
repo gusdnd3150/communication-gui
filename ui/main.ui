@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1087</width>
-    <height>570</height>
+    <width>672</width>
+    <height>646</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>500</width>
+    <width>400</width>
     <height>400</height>
    </size>
   </property>
@@ -30,7 +30,7 @@
   </property>
   <property name="baseSize">
    <size>
-    <width>650</width>
+    <width>499</width>
     <height>300</height>
    </size>
   </property>
@@ -79,6 +79,12 @@
       </item>
       <item>
        <widget class="QTableWidget" name="list_run_server">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>200</height>
+         </size>
+        </property>
         <property name="font">
          <font>
           <pointsize>8</pointsize>
@@ -176,6 +182,12 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
       </item>
       <item>
        <widget class="QTableWidget" name="list_run_client">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>200</height>
+         </size>
+        </property>
         <property name="font">
          <font>
           <pointsize>8</pointsize>
@@ -245,39 +257,34 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
         </property>
        </widget>
       </item>
-     </layout>
-    </item>
-    <item row="2" column="1">
-     <widget class="QTableWidget" name="list_conn">
-      <property name="maximumSize">
-       <size>
-        <width>300</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QTableWidget {
-    background-color: #2E2E2E;
-    color: #FFFFFF;
-    gridline-color: #444444;
-    border: 1px solid #444444;
-}
-
-QHeaderView::section {
-    background-color: #444444;
-    color: #FFFFFF;
-    padding: 4px;
-    border: 1px solid #2E2E2E;
-}
-
-QTableWidget::item {
-    border: none;
-    padding: 4px;
-}
-
-QTableWidget::item:selected {
-    background-color: #555555;
-    color: #FFFFFF;
+      <item>
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <widget class="QWidget" name="tab">
+         <attribute name="title">
+          <string>Connection List</string>
+         </attribute>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QTreeView" name="list_conn">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QTreeView{
+	background-color: white;
+	color:black
 }
 
 QScrollBar:vertical {
@@ -304,8 +311,47 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
 QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     background: none;
 }</string>
-      </property>
-     </widget>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Sunken</enum>
+            </property>
+            <property name="lineWidth">
+             <number>200</number>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAsNeeded</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_2">
+         <attribute name="title">
+          <string>Log</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QCheckBox" name="chkbox_show_log">
+            <property name="text">
+             <string>show log</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPlainTextEdit" name="list_log">
+            <property name="lineWrapMode">
+             <enum>QPlainTextEdit::NoWrap</enum>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item row="0" column="0" colspan="2">
      <layout class="QGridLayout" name="gridLayout">
@@ -490,18 +536,6 @@ QToolButton:pressed {
       </item>
      </layout>
     </item>
-    <item row="1" column="1">
-     <widget class="QLabel" name="label_4">
-      <property name="styleSheet">
-       <string notr="true">QLabel{
-	color:white
-}</string>
-      </property>
-      <property name="text">
-       <string>Connection List</string>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -509,7 +543,7 @@ QToolButton:pressed {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1087</width>
+     <width>672</width>
      <height>22</height>
     </rect>
    </property>

@@ -15,25 +15,26 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QGridLayout,
-    QHeaderView, QLabel, QMainWindow, QMenuBar,
-    QPushButton, QSizePolicy, QStatusBar, QTableWidget,
-    QTableWidgetItem, QToolButton, QTreeView, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QCheckBox, QComboBox,
+    QFrame, QGridLayout, QHBoxLayout, QHeaderView,
+    QLabel, QMainWindow, QMenuBar, QPlainTextEdit,
+    QPushButton, QSizePolicy, QStatusBar, QTabWidget,
+    QTableWidget, QTableWidgetItem, QToolButton, QTreeView,
+    QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1082, 624)
+        MainWindow.resize(672, 646)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
-        MainWindow.setMinimumSize(QSize(500, 400))
+        MainWindow.setMinimumSize(QSize(400, 400))
         MainWindow.setMaximumSize(QSize(16777215, 16777215))
-        MainWindow.setBaseSize(QSize(650, 300))
+        MainWindow.setBaseSize(QSize(499, 300))
         font = QFont()
         font.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
         font.setBold(True)
@@ -68,6 +69,7 @@ class Ui_MainWindow(object):
 
         self.list_run_server = QTableWidget(self.centralwidget)
         self.list_run_server.setObjectName(u"list_run_server")
+        self.list_run_server.setMaximumSize(QSize(16777215, 200))
         font1 = QFont()
         font1.setPointSize(8)
         font1.setBold(False)
@@ -142,6 +144,7 @@ class Ui_MainWindow(object):
 
         self.list_run_client = QTableWidget(self.centralwidget)
         self.list_run_client.setObjectName(u"list_run_client")
+        self.list_run_client.setMaximumSize(QSize(16777215, 200))
         font2 = QFont()
         font2.setPointSize(8)
         self.list_run_client.setFont(font2)
@@ -200,6 +203,72 @@ class Ui_MainWindow(object):
         self.list_run_client.setSelectionBehavior(QAbstractItemView.SelectRows)
 
         self.verticalLayout.addWidget(self.list_run_client)
+
+        self.tabWidget = QTabWidget(self.centralwidget)
+        self.tabWidget.setObjectName(u"tabWidget")
+        self.tabWidget.setStyleSheet(u"")
+        self.tab = QWidget()
+        self.tab.setObjectName(u"tab")
+        self.horizontalLayout = QHBoxLayout(self.tab)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.list_conn = QTreeView(self.tab)
+        self.list_conn.setObjectName(u"list_conn")
+        self.list_conn.setEnabled(True)
+        self.list_conn.setMaximumSize(QSize(16777215, 16777215))
+        self.list_conn.setStyleSheet(u"QTreeView{\n"
+"	background-color: white;\n"
+"	color:black\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background-color: #2E2E2E;\n"
+"    width: 3px;\n"
+"	height:2px;\n"
+"    margin: 15px 0 15px 0;\n"
+"}\n"
+"QScrollBar::handle:vertical {\n"
+"    background-color: #555555;\n"
+"    min-height: 5px;\n"
+"}\n"
+"QScrollBar:horizontal {\n"
+"    background-color: #2E2E2E;\n"
+"    height: 8px; \n"
+"    margin: 0 15px 0 15px;\n"
+"}\n"
+"\n"
+"QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {\n"
+"    background-color: #444444;\n"
+"    height: 5px;\n"
+"}\n"
+"\n"
+"QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {\n"
+"    background: none;\n"
+"}")
+        self.list_conn.setFrameShadow(QFrame.Sunken)
+        self.list_conn.setLineWidth(200)
+        self.list_conn.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+
+        self.horizontalLayout.addWidget(self.list_conn)
+
+        self.tabWidget.addTab(self.tab, "")
+        self.tab_2 = QWidget()
+        self.tab_2.setObjectName(u"tab_2")
+        self.verticalLayout_2 = QVBoxLayout(self.tab_2)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.chkbox_show_log = QCheckBox(self.tab_2)
+        self.chkbox_show_log.setObjectName(u"chkbox_show_log")
+
+        self.verticalLayout_2.addWidget(self.chkbox_show_log)
+
+        self.list_log = QPlainTextEdit(self.tab_2)
+        self.list_log.setObjectName(u"list_log")
+        self.list_log.setReadOnly(True)
+
+        self.verticalLayout_2.addWidget(self.list_log)
+
+        self.tabWidget.addTab(self.tab_2, "")
+
+        self.verticalLayout.addWidget(self.tabWidget)
 
 
         self.gridLayout_2.addLayout(self.verticalLayout, 2, 0, 1, 1)
@@ -342,59 +411,19 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 2)
 
-        self.label_4 = QLabel(self.centralwidget)
-        self.label_4.setObjectName(u"label_4")
-        self.label_4.setStyleSheet(u"QLabel{\n"
-"	color:white\n"
-"}")
-
-        self.gridLayout_2.addWidget(self.label_4, 1, 1, 1, 1)
-
-        self.list_conn = QTreeView(self.centralwidget)
-        self.list_conn.setObjectName(u"list_conn")
-        self.list_conn.setMaximumSize(QSize(350, 16777215))
-        self.list_conn.setStyleSheet(u"QTreeView{\n"
-"	background-color: white;\n"
-"	color:black\n"
-"}\n"
-"\n"
-"QScrollBar:vertical {\n"
-"    background-color: #2E2E2E;\n"
-"    width: 3px;\n"
-"	height:2px;\n"
-"    margin: 15px 0 15px 0;\n"
-"}\n"
-"QScrollBar::handle:vertical {\n"
-"    background-color: #555555;\n"
-"    min-height: 5px;\n"
-"}\n"
-"QScrollBar:horizontal {\n"
-"    background-color: #2E2E2E;\n"
-"    height: 8px; \n"
-"    margin: 0 15px 0 15px;\n"
-"}\n"
-"\n"
-"QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {\n"
-"    background-color: #444444;\n"
-"    height: 5px;\n"
-"}\n"
-"\n"
-"QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {\n"
-"    background: none;\n"
-"}")
-
-        self.gridLayout_2.addWidget(self.list_conn, 2, 1, 1, 1)
-
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1082, 22))
+        self.menubar.setGeometry(QRect(0, 0, 672, 22))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
+
+        self.tabWidget.setCurrentIndex(1)
+
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
@@ -404,10 +433,12 @@ class Ui_MainWindow(object):
         self.label.setText(QCoreApplication.translate("MainWindow", u"--", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"[ Server ]", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"[ Client ]", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Connection List", None))
+        self.chkbox_show_log.setText(QCoreApplication.translate("MainWindow", u"show log", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Log", None))
         self.btn_settings.setText(QCoreApplication.translate("MainWindow", u"settings", None))
         self.btn_start.setText(QCoreApplication.translate("MainWindow", u"Run Application", None))
         self.btn_stop.setText(QCoreApplication.translate("MainWindow", u"Stop Application", None))
         self.btn_handler.setText(QCoreApplication.translate("MainWindow", u"Handler", None))
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Connection List", None))
     # retranslateUi
 

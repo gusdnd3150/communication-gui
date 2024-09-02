@@ -1,8 +1,8 @@
 import sys
 import traceback
 import os
-from PySide6.QtWidgets import QMainWindow,  QTableWidgetItem, QHeaderView, QMessageBox
-from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem
+from PySide6.QtWidgets import QMainWindow,  QTableWidgetItem, QHeaderView, QMessageBox, QListWidgetItem
+from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem, QTextCursor
 from PySide6.QtCore import Qt
 from src.protocols.tcp.ServerThread2 import ServerThread2
 from src.protocols.tcp.ClientThread2 import ClientThread2
@@ -17,7 +17,8 @@ from src.protocols.udp.ServerUdpThread import ServerUdpThread
 from src.protocols.udp.ClientUdpThread import ClientUdpThread
 from src.protocols.websk.WebSkServerThread import WebSkServerThread
 from src.protocols.sch.Schedule import Schedule
-
+import time
+from datetime import datetime
 from ui.ui_main import Ui_MainWindow
 
 pkgCombo = [
@@ -197,10 +198,9 @@ class InitClass(QMainWindow):
         self.ui.list_run_server.verticalHeader().setVisible(False)  # 행 번호 헤더 숨기기
         # self.ui.list_run_server.horizontalHeader().setVisible(False)  # 열 번호 헤더 숨기기
         self.ui.list_run_server.setRowCount(0)  # Table의 행을 설정, list의 길이
-        self.ui.list_run_server.setColumnCount(10)
+        self.ui.list_run_server.setColumnCount(9)
         self.ui.list_run_server.setHorizontalHeaderLabels(
             [
-            'CON_COUNT',
             'SK_ID',
             'SK_GROUP',
             'SK_TYPE',
@@ -216,10 +216,9 @@ class InitClass(QMainWindow):
         self.ui.list_run_client.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.ui.list_run_client.verticalHeader().setVisible(False)
         self.ui.list_run_client.setRowCount(0)  # Table의 행을 설정, list의 길이
-        self.ui.list_run_client.setColumnCount(10)
+        self.ui.list_run_client.setColumnCount(9)
         self.ui.list_run_client.setHorizontalHeaderLabels(
             [
-                'CON_COUNT',
                 'SK_ID',
                 'SK_GROUP',
                 'SK_TYPE',
@@ -249,20 +248,19 @@ class InitClass(QMainWindow):
             row_count = self.ui.list_run_server.rowCount()
             self.ui.list_run_server.insertRow(row_count)
             # 예제 데이터를 추가
-            self.ui.list_run_server.setItem(row_count, 0, QTableWidgetItem('0'))
-            self.ui.list_run_server.setItem(row_count, 1, QTableWidgetItem(initData['SK_ID']))
-            self.ui.list_run_server.setItem(row_count, 2, QTableWidgetItem(initData['SK_GROUP']))
-            self.ui.list_run_server.setItem(row_count, 3, QTableWidgetItem(initData['SK_TYPE']))
-            self.ui.list_run_server.setItem(row_count, 4, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
-            self.ui.list_run_server.setItem(row_count, 5, QTableWidgetItem(initData['HD_ID']))
+            self.ui.list_run_server.setItem(row_count, 0, QTableWidgetItem(initData['SK_ID']))
+            self.ui.list_run_server.setItem(row_count, 1, QTableWidgetItem(initData['SK_GROUP']))
+            self.ui.list_run_server.setItem(row_count, 2, QTableWidgetItem(initData['SK_TYPE']))
+            self.ui.list_run_server.setItem(row_count, 3, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
+            self.ui.list_run_server.setItem(row_count, 4, QTableWidgetItem(initData['HD_ID']))
             # self.ui.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
             item_sk_group = QTableWidgetItem(str(initData['SK_IP']))
             item_sk_group.setForeground(QColor('#d87a7a'))
-            self.ui.list_run_server.setItem(row_count, 6, item_sk_group)
+            self.ui.list_run_server.setItem(row_count, 5, item_sk_group)
 
-            self.ui.list_run_server.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_PORT'])))
-            self.ui.list_run_server.setItem(row_count, 8, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
-            self.ui.list_run_server.setItem(row_count, 9, QTableWidgetItem(str(initData['MAX_LENGTH'])))
+            self.ui.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_PORT'])))
+            self.ui.list_run_server.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
+            self.ui.list_run_server.setItem(row_count, 8, QTableWidgetItem(str(initData['MAX_LENGTH'])))
 
 
         except Exception as e:
@@ -277,20 +275,19 @@ class InitClass(QMainWindow):
             row_count = self.ui.list_run_client.rowCount()
             self.ui.list_run_client.insertRow(row_count)
             # 예제 데이터를 추가
-            self.ui.list_run_client.setItem(row_count, 0, QTableWidgetItem('0'))
-            self.ui.list_run_client.setItem(row_count, 1, QTableWidgetItem(initData['SK_ID']))
-            self.ui.list_run_client.setItem(row_count, 2, QTableWidgetItem(initData['SK_GROUP']))
-            self.ui.list_run_client.setItem(row_count, 3, QTableWidgetItem(initData['SK_TYPE']))
-            self.ui.list_run_client.setItem(row_count, 4, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
-            self.ui.list_run_client.setItem(row_count, 5, QTableWidgetItem(initData['HD_ID']))
+            self.ui.list_run_client.setItem(row_count, 0, QTableWidgetItem(initData['SK_ID']))
+            self.ui.list_run_client.setItem(row_count, 1, QTableWidgetItem(initData['SK_GROUP']))
+            self.ui.list_run_client.setItem(row_count, 2, QTableWidgetItem(initData['SK_TYPE']))
+            self.ui.list_run_client.setItem(row_count, 3, QTableWidgetItem(initData['SK_CLIENT_TYPE']))
+            self.ui.list_run_client.setItem(row_count, 4, QTableWidgetItem(initData['HD_ID']))
             # self.ui.list_run_client.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
             # self.ui.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
             item_sk_group = QTableWidgetItem(str(initData['SK_IP']))
             item_sk_group.setForeground(QColor('#d87a7a'))
-            self.ui.list_run_client.setItem(row_count, 6, item_sk_group)
-            self.ui.list_run_client.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_PORT'])))
-            self.ui.list_run_client.setItem(row_count, 8, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
-            self.ui.list_run_client.setItem(row_count, 9, QTableWidgetItem(str(initData['MAX_LENGTH'])))
+            self.ui.list_run_client.setItem(row_count, 5, item_sk_group)
+            self.ui.list_run_client.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_PORT'])))
+            self.ui.list_run_client.setItem(row_count, 7, QTableWidgetItem(str(initData['SK_DELIMIT_TYPE'])))
+            self.ui.list_run_client.setItem(row_count, 8, QTableWidgetItem(str(initData['MAX_LENGTH'])))
 
 
         except Exception as e:
@@ -387,7 +384,7 @@ class InitClass(QMainWindow):
                 for skId, client, thread in moduleData.runChannels:
                     if skId == item['SK_ID']:
                         # skItem.appendRow([QStandardItem(str(client)), QStandardItem(str(thread))])
-                        skItem.appendRow([QStandardItem(str(client))])
+                        skItem.appendRow([QStandardItem(f'{str(client)} -- {thread}')])
 
                 # 루트 노드에 부모 항목 추가 (여러 열)
                 # self.root_node.appendRow([skItem, description_item])
@@ -397,3 +394,12 @@ class InitClass(QMainWindow):
 
         except:
             logger.error(f'updateConnList exception: {traceback.format_exc()}')
+
+
+    def insertLog(self, skId, bytes, flag):
+        try:
+            if self.ui.chkbox_show_log.isChecked():
+                logTm = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+                self.ui.list_log.appendPlainText(f'SK_ID : {skId} [{logTm}] {flag} --- [{bytes.decode("ascii")}] \n')
+        except:
+            logger.error(f'insertLog exception: {traceback.format_exc()}')

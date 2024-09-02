@@ -138,6 +138,7 @@ class WebSkServerThread(threading.Thread):
         client_info = (self.skId, ws, self)
         self.client_list.append(client_info)
         moduleData.runChannels.append(client_info)
+        moduleData.mainInstance.updateConnList()
 
         # ACTIVE 이벤트처리
         if self.bzActive is not None:
@@ -171,6 +172,7 @@ class WebSkServerThread(threading.Thread):
                         decimal_string = ' '.join(str(byte) for byte in reciveBytes)
                         self.logger.info(
                             f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+                        moduleData.mainInstance.insertLog(self.skId, reciveBytes)
 
                     data = self.codec.decodeRecieData(reciveBytes)
                     data['TOTAL_BYTES'] = reciveBytes
@@ -192,7 +194,9 @@ class WebSkServerThread(threading.Thread):
                 self.bzSch = None
 
             self.client_list.remove(client_info)
-            moduleData.runChannels.remove(client_info)
+            if client_info in moduleData.runChannels:
+                moduleData.runChannels.remove(client_info)
+            moduleData.mainInstance.updateConnList()
         return ws
 
 
@@ -218,6 +222,7 @@ class WebSkServerThread(threading.Thread):
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in bytes)
                         self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} decimal_string : [{decimal_string}]')
+                        moduleData.mainInstance.insertLog(self.skId, bytes)
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
@@ -227,6 +232,7 @@ class WebSkServerThread(threading.Thread):
             async def send(self, channel, bytes):
                 try:
                     await self.sendBytes(bytes)  # await 키워드를 사용하여 비동기 호출
+                    moduleData.mainInstance.insertLog(self.skId, bytes)
                 except Exception:
                     self.logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
 
@@ -255,6 +261,7 @@ class WebSkServerThread(threading.Thread):
             async def send(self):
                 try:
                     await self.sendBytes(sendBytes)  # await 키워드를 사용하여 비동기 호출
+                    moduleData.mainInstance.insertLog(self.skId, sendBytes)
                 except Exception:
                     self.logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
 
