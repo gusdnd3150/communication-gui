@@ -134,6 +134,13 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.list_run_server)
 
+        self.line = QFrame(self.centralwidget)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.Shape.HLine)
+        self.line.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.verticalLayout.addWidget(self.line)
+
         self.label_3 = QLabel(self.centralwidget)
         self.label_3.setObjectName(u"label_3")
         self.label_3.setStyleSheet(u"QLabel{\n"
@@ -262,7 +269,11 @@ class Ui_MainWindow(object):
 
         self.list_log = QPlainTextEdit(self.tab_2)
         self.list_log.setObjectName(u"list_log")
-        self.list_log.setReadOnly(True)
+        self.list_log.setAutoFillBackground(True)
+        self.list_log.setFrameShape(QFrame.Box)
+        self.list_log.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.list_log.setLineWrapMode(QPlainTextEdit.NoWrap)
+        self.list_log.setReadOnly(False)
 
         self.verticalLayout_2.addWidget(self.list_log)
 
