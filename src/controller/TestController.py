@@ -46,9 +46,8 @@ class TestController():
             # skLogger.info(f'[RECIVE TOTAL_BYTES] : {str(reciveObj["TOTAL_BYTES"])}')
             # skLogger.info(f'[RECIVE OBJ] : {reciveObj}')
             returnJson['LINE_SIGN'] = '2'
-            # self.sendHandler.sendChannelBytes(Channel, 'return'.encode('utf-8'))
-            # self.sendHandler.sendSkId('TEST','TEST_MSG',returnJson)
-            thread.sendBytesToChannel(Channel, 'sss'.encode('utf-8'))
+            self.sendHandler.sendSkId('WEB_SK_TEST','TEST_MSG',returnJson)
+            # thread.sendBytesToChannel(Channel, 'sss'.encode('utf-8'))
 
 
         except Exception as e:

@@ -41,7 +41,8 @@ class BzSchedule2(threading.Thread):
             self.schedule.every(self.interval).seconds.do(self.task)
             while self.isRun:
                 time.sleep(1)
-                self.schedule.run_pending()
+                if self.schedule is not None:
+                    self.schedule.run_pending()
 
         except Exception as e:
             self.isRun = False

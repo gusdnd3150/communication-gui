@@ -7,13 +7,16 @@ from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
 import conf.skModule as moduleData
-from src.protocols.sch.BzSchedule import BzSchedule
-from src.protocols.BzActivator import BzActivator
+from src.protocols.sch.BzSchedule2 import BzSchedule2
+from src.protocols.BzActivator2 import BzActivator2
 from src.protocols import Server
 import asyncio
 import websockets
 from aiohttp import web
 from concurrent.futures import ThreadPoolExecutor
+
+import time
+from datetime import datetime
 
 class WebSkServerThread(threading.Thread):
     initData = None
@@ -34,7 +37,12 @@ class WebSkServerThread(threading.Thread):
     bzIdleRead = None
     bzSch = None
     logger = None
-    executor = ThreadPoolExecutor(max_workers=4)
+    skGrp = None
+    executor = ThreadPoolExecutor(max_workers=20)
+    bzSchList = []
+    runner = None
+    server = None
+
 
     def __init__(self, data):
         self.initData = data
@@ -44,6 +52,9 @@ class WebSkServerThread(threading.Thread):
 
         self.logger = setup_sk_logger(self.skId)
         self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
+
+        if (data.get('SK_GROUP') is not None):
+            self.skGrp = data['SK_GROUP']
 
         if self.initData['HD_TYPE'] == 'FREE':
             self.codec = FreeCodec(self.initData)
@@ -80,7 +91,7 @@ class WebSkServerThread(threading.Thread):
 
 
     def __del__(self):
-        self.logger.info('deleted')
+        self.logger.info(f'Thread {self.skId} is deleted')
 
     def run(self):
         self.initServer()
@@ -94,14 +105,41 @@ class WebSkServerThread(threading.Thread):
                 logger.removeHandler(handler)
             logging.getLogger(self.skId).handlers = []
 
-            self.loop.call_soon_threadsafe(self.loop.stop)
+            if self.loop and self.loop.is_running():
+                self.logger.info(f'Shutting down server: SK_ID= {self.skId}')
 
-            if self.bzSch is not None:
-                self.bzSch.stop()
-                self.bzSch.join()
-                self.bzSch = None
+                async def close_client():
+                    for skId, conn, thread in self.client_list:
+                        await conn.close()
+
+                # 서버 정지 및 애플리케이션 정리 비동기적으로 실행
+                async def stop_server():
+                    await self.server.stop()
+                    await self.runner.cleanup()
+                    self.loop.stop()  # 이벤트 루프 중지
+                    # 이벤트 루프 종료
+                    self.loop.close()
+
+                close_client()
+                # 비동기 작업을 이벤트 루프에서 실행
+                self.loop.call_soon_threadsafe(lambda: asyncio.run_coroutine_threadsafe(stop_server(), self.loop))
+
+                # 이벤트 루프가 중지될 때까지 기다림
+                # self.loop.run_until_complete(self.loop.shutdown_asyncgens())
+
+                if len(self.bzSchList) > 0:
+                    for item in self.bzSchList:
+                        item.stop()
+                        item.join()
+
+                # 모든 작업 완료 후 이벤트 루프 종료
+                # self.loop.close()
+                self.logger.info(f'Server stopped: SK_ID= {self.skId}')
+            else:
+                self.logger.info(f'No running loop to stop: SK_ID= {self.skId}')
+
         except Exception as e:
-            self.logger.error(f'SK_ID:{self.skId} Stop fail')
+            self.logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
         finally:
             self._stop_event.set()
             moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
@@ -117,24 +155,34 @@ class WebSkServerThread(threading.Thread):
 
             app = web.Application()
             app.router.add_get(self.skRelVal, self.websocket_handler)
-            runner = web.AppRunner(app)
-            self.loop.run_until_complete(runner.setup())
-            server = web.TCPSite(runner, self.skIp, self.skPort)
-            self.loop.run_until_complete(server.start())
 
+            self.runner = web.AppRunner(app)
+            self.loop.run_until_complete(self.runner.setup())
+            self.server = web.TCPSite(self.runner, self.skIp, self.skPort)
+            self.loop.run_until_complete(self.server.start())
             self.loop.run_forever()
+
         except Exception as e:
             self.logger.error(f'WEB SOCKET SERVER Bind exception : SK_ID={self.skId}  : {e}')
 
     async def websocket_handler(self, request):
+        bzSch = None
         ws = web.WebSocketResponse()
         await ws.prepare(request)
 
         peername = request.transport.get_extra_info('peername')
+
         if peername:
             client_ip, client_port = peername
             logger.info(f"SK_ID:{self.skId} Client connected: IP={client_ip}, Port={client_port}")
 
+        chinfo = {
+            'SK_ID': self.skId
+            , 'SK_GROUP': self.skGrp
+            , 'CHANNEL': ws
+            , 'LOGGER': self.logger
+            , 'THREAD': self
+        }
         client_info = (self.skId, ws, self)
         self.client_list.append(client_info)
         moduleData.runChannels.append(client_info)
@@ -142,22 +190,16 @@ class WebSkServerThread(threading.Thread):
 
         # ACTIVE 이벤트처리
         if self.bzActive is not None:
-            self.logger.info(f'SK_ID:{self.skId} - CHANNEL ACTIVE')
-            self.bzActive['SK_ID'] = self.skId
-            self.bzActive['CHANNEL'] = ws
-            self.bzActive['LOGGER'] = self.logger
-            bz = BzActivator(self.bzActive)
-            bz.daemon = True
-            bz.start()
+            avtive_dict = {**chinfo, **self.bzActive}
+            self.threadPoolExcutor(BzActivator2(avtive_dict), '[ACTIVE Channel]')
 
         # KEEP 처리
         if self.bzKeep is not None:
-            self.bzKeep['SK_ID'] = self.skId
-            self.bzKeep['CHANNEL'] = ws
-            self.bzKeep['LOGGER'] = self.logger
-            self.bzSch = BzSchedule(self.bzKeep)
-            self.bzSch.daemon = True
-            self.bzSch.start()
+            keep_dict = {**chinfo, **self.bzKeep}
+            bzSch = BzSchedule2(keep_dict)
+            bzSch.daemon = True
+            bzSch.start()
+            self.bzSchList.append(bzSch)
 
         try:
             async for msg in ws:
@@ -176,30 +218,29 @@ class WebSkServerThread(threading.Thread):
 
                     data = self.codec.decodeRecieData(reciveBytes)
                     data['TOTAL_BYTES'] = reciveBytes
-                    data['CHANNEL'] = ws
-                    data['SK_ID'] = self.skId
-                    data['LOGGER'] = self.logger
-                    bz = BzActivator(data)
-                    bz.daemon = True
-                    bz.start()
+                    reciveObj = {**chinfo, **data}
+                    self.threadPoolExcutor(BzActivator2(reciveObj), '[Processing Received Data]')
                 elif msg.type == web.WSMsgType.ERROR:
                     self.logger.error(f'SK_ID:{self.skId} Msg convert Exception : {ws.exception()}')
 
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} exception : {traceback.format_exc()}')
         finally:
-            if self.bzSch is not None:
-                self.bzSch.stop()
-                self.bzSch.join()
-                self.bzSch = None
 
-            self.client_list.remove(client_info)
+            if bzSch is not None:
+                bzSch.stop()
+                bzSch.join()
+
+            # self.bzSchList.remove(bzSch)
+            if bzSch in self.bzSchList:
+                self.bzSchList.remove(bzSch)
+
+            if client_info in self.client_list:
+                self.client_list.remove(client_info)
             if client_info in moduleData.runChannels:
                 moduleData.runChannels.remove(client_info)
             moduleData.mainInstance.updateConnList()
         return ws
-
-
 
     async def idleRead(self, client, timeout):
         await asyncio.sleep(timeout)
@@ -268,3 +309,30 @@ class WebSkServerThread(threading.Thread):
             asyncio.run_coroutine_threadsafe(send(self), self.loop)
         except:
             self.logger.error(f'sendMsgToAllChannels exception :: {traceback.format_exc()}')
+
+    def threadPoolExcutor(self, instance, msg):
+        try:
+            start_time = time.time()
+            futures = self.executor.submit(instance.run)
+            # result = futures.result() #다른 스레드에 영향을 미침
+
+            # 운영시 비권장 futures의 블락을 우회하기위해 스레드 선언
+            result_thread = threading.Thread(target=self.process_result, args=(futures, msg, start_time,))
+            result_thread.daemon = True
+            result_thread.start()
+        except:
+            self.logger.info(f'threadPoolExcutor exception : SK_ID:{self.skId} - {traceback.format_exc()}')
+
+    def process_result(self, future, msg, start_time):
+        try:
+            result = future.result()
+            # 결과를 처리하는 로직
+            if self.skLogYn:
+                end_time = time.time()
+                start = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
+                end = datetime.fromtimestamp(end_time).strftime('%Y-%m-%d %H:%M:%S')
+                # logger.info(f"----------- SK_ID: {self.skId} future Result: {result} and remain thread Que : {self.executor._work_queue}")
+                self.logger.info(
+                    f'----------- SK_ID: {self.skId} - {msg} begin:{start} end:{end} total time: {round(end_time - start_time, 4)}------------')
+        except Exception as e:
+            self.logger(f"Exception while processing result: {e}")

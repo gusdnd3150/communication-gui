@@ -22,11 +22,11 @@ class SendHandler():
                         newTh.daemon = True
                         newTh.start()
                         break
-                    if sk['SK_TYPE'] == 'WEBSK':
-                        returnBytes = skThread.codec.encodeSendData(data)
-                        loop = skThread.loop
-                        asyncio.run_coroutine_threadsafe(self.send_webSk_message(skThread, returnBytes), loop)
-                        break
+                    # if sk['SK_TYPE'] == 'WEBSK':
+                    #     returnBytes = skThread.codec.encodeSendData(data)
+                    #     loop = skThread.loop
+                    #     asyncio.run_coroutine_threadsafe(self.send_webSk_message(skThread, returnBytes), loop)
+                    #     break
                     skThread.sendMsgToAllChannels(data)
                     break
         except Exception as e:
