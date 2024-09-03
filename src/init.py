@@ -17,6 +17,7 @@ from src.protocols.udp.ServerUdpThread import ServerUdpThread
 from src.protocols.udp.ClientUdpThread import ClientUdpThread
 from src.protocols.websk.WebSkServerThread import WebSkServerThread
 from src.protocols.sch.Schedule import Schedule
+from src.protocols.bluetooth.BlueToothServerThread import BlueToothServerThread
 import time
 from datetime import datetime
 from ui.ui_main import Ui_MainWindow
@@ -164,6 +165,12 @@ class InitClass(QMainWindow):
                 elif (skTy == 'WEBSK'):
                     if (skConTy == 'SERVER'):
                         threadInfo = WebSkServerThread(item)
+                    elif (skConTy == 'CLIENT'):
+                        threadInfo = None
+
+                elif (skTy == 'BLUETOOTH'):
+                    if (skConTy == 'SERVER'):
+                        threadInfo = BlueToothServerThread(item)
                     elif (skConTy == 'CLIENT'):
                         threadInfo = None
 

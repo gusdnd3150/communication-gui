@@ -42,11 +42,13 @@ class TestController():
         thread = reciveObj['THREAD']
         returnJson = {}
         skLogger.info(f'recive data : {reciveObj}')
+
         try:
+            test = reciveObj['TOTAL_BYTES'].decode('utf-8')
             # skLogger.info(f'[RECIVE TOTAL_BYTES] : {str(reciveObj["TOTAL_BYTES"])}')
-            # skLogger.info(f'[RECIVE OBJ] : {reciveObj}')
+            skLogger.info(f'[RECIVE OBJ] : {test}')
             returnJson['LINE_SIGN'] = '2'
-            self.sendHandler.sendSkId('WEB_SK_TEST','TEST_MSG',returnJson)
+            # self.sendHandler.sendSkId('WEB_SK_TEST','TEST_MSG',returnJson)
             # thread.sendBytesToChannel(Channel, 'sss'.encode('utf-8'))
 
 
