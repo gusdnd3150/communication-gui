@@ -26,6 +26,7 @@ class WebSkClientThread(threading.Thread):
     socket = None
     loop = None
     isRun = False
+    isShutdown = False
     skLogYn = False
     codec = None
     delimiter = b''
@@ -101,45 +102,69 @@ class WebSkClientThread(threading.Thread):
             for handler in handlers:
                 handler.close()
                 logger.removeHandler(handler)
-
             logging.getLogger(self.skId).handlers = []
 
+            self.isShutdown = True
+            self.isRun = False
             self.loop.stop()
-            async def closeClient():
-                for skid, channel, thread in self.client_list:
-                    await channel.close()
+            # async def cancel_all_tasks():
+            #     # 현재 이벤트 루프에서 실행 중인 모든 태스크 가져오기
+            #     tasks = asyncio.all_tasks(self.loop)
+            #     for task in tasks:
+            #         if task is not asyncio.current_task():
+            #             task.cancel()  # 태스크 취소
+            #     # 모든 태스크가 종료될 때까지 대기
+            #     await asyncio.gather(*tasks, return_exceptions=True)
+            #     print("All tasks have been cancelled.")
+            #
+            # # if not self.loop.is_closed():
+            # #     self.loop.run_until_complete(cancel_all_tasks())
+            # # asyncio.run(cancel_all_tasks())
+            # self.loop.run_until_complete(cancel_all_tasks())
+            # self.loop.run(self.socket.close())
 
-            closeClient()
-            for task in asyncio.all_tasks(self.loop):
-                self.logger.info(f'task = {task}')
-                task.cancel()
-            self.loop.close()
+            asyncio.run(self.socket.close())
 
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
         finally:
+            moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_client')
             self._stop_event.set()
-            moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_CLIENT')
+            # self.loop.run_until_complete(self.loop.shutdown_asyncgens())
+            # self.loop.close()
+            self.socket.close()
             self.loop.close()
+
 
     def initClient(self):
         try:
-
-            self.loop = asyncio.new_event_loop()
+            if self.loop == None and self.isShutdown == False:
+                self.loop = asyncio.new_event_loop()
             uri = f"ws://{self.skIp}:{self.skPort}"
             async def runClient():
-                async with websockets.connect(uri) as websocket:
-                    self.socket = websocket
-                    # await websocket.send("Hello, WebSocket!")  # 메시지 전송
-                    while websocket:
-                        await self.websocket_handler(websocket)
+                # async with websockets.connect(uri) as websocket:
+                self.socket = await websockets.connect(uri)
+                self.isRun = True
+                await self.websocket_handler(self.socket)
 
+            if self.isShutdown == False:
+                self.loop.run_until_complete(runClient())
 
-            self.loop.run_until_complete(runClient())
         except Exception:
-            moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_client')
+            # moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_client')
             self.logger.error(f'WEB SOCKET CLIENT Bind exception : SK_ID={self.skId}  : {traceback.format_exc()}')
-            self.loop = None
+            self.socket = None
+            if self.isShutdown == False:
+                time.sleep(3)
+                self.initClient()
+            else:
+                self.isShutdown = True
+                moduleData.mainInstance.updateConnList()
+                self.loop.run_until_complete(self.loop.shutdown_asyncgens())
+                self.loop.close()
+
+
+
         # finally:
         #     time.sleep(5)
         #     self.initClient()
@@ -176,9 +201,10 @@ class WebSkClientThread(threading.Thread):
             self.bzSchList.append(bzSch)
 
         try:
-            async for message in wesk:
-                reciveBytes = message.encode('utf-8')
-                try:
+            while self.isRun:
+                async for message in wesk:
+                    reciveBytes = message.encode('utf-8')
+
                     readBytesCnt = self.codec.concyctencyCheck(reciveBytes)
                     if readBytesCnt == 0:
                         self.logger.info(f'concyctence error : {reciveBytes}')
@@ -193,11 +219,11 @@ class WebSkClientThread(threading.Thread):
                     reciveObj = {**chinfo, **data}
                     self.threadPoolExcutor(BzActivator2(reciveObj), '[Processing Received Data]')
                     # await wesk.send(f"Echo: {message}")
-                except:
-                    self.logger.error(f'websocket_handler error : {traceback.format_exc()}')
-
         except:
             self.logger.error(f'websocket_handler error : {traceback.format_exc()}')
+            moduleData.mainInstance.updateConnList()
+            self.isRun = False
+            wesk.close()
         finally:
             if bzSch is not None:
                 bzSch.stop()
@@ -212,6 +238,12 @@ class WebSkClientThread(threading.Thread):
 
             self.socket = None
             moduleData.mainInstance.updateConnList()
+
+            if self.isShutdown == False:
+                self.initClient()
+
+            # wesk.close()
+
 
 
 
@@ -242,7 +274,7 @@ class WebSkClientThread(threading.Thread):
         try:
             async def send(self, bytes):
                 try:
-                    await self.server.send(bytes)  # await 키워드를 사용하여 비동기 호출
+                    await self.socket.send(bytes)  # await 키워드를 사용하여 비동기 호출
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in bytes)
                         self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
@@ -276,7 +308,7 @@ class WebSkClientThread(threading.Thread):
             sendBytes = self.codec.encodeSendData(obj)
             async def send(self):
                 try:
-                    await self.server.send(sendBytes.decode('utf-8'))
+                    await self.socket.send(sendBytes.decode('utf-8'))
                     # await channel.send(sendBytes.decode('utf-8'))
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in sendBytes)
