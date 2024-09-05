@@ -33,6 +33,28 @@ class TestController():
             returnJson2 = {}
             returnJson2['MSG_ID'] = 'TEST_MSG'
             thread.sendMsgToChannel(Channel,returnJson2)
+            thread.sendMsgToAllChannels(returnJson)
+        except:
+            logger.error(f'sample exception : {traceback.format_exc()}')
+
+
+    def reciveWeb(self, reciveObj):
+        skLogger = reciveObj['LOGGER']
+        Channel = reciveObj['CHANNEL']
+        thread = reciveObj['THREAD']
+        path = reciveObj['PATH']
+        returnJson = {}
+
+        try:
+            skLogger.info(f'recive data : {reciveObj}')
+            returnJson['MSG_ID'] = 'TEST_MSG'
+            returnJson['LINE_SIGN'] = '2'
+            self.sendHandler.sendSkId('TEST', 'TEST_MSG', returnJson)
+            # thread.sendBytesToChannel(Channel, 'sss'.encode('utf-8'))
+            # returnJson2 = {}
+            # returnJson2['MSG_ID'] = 'TEST_MSG'
+            # thread.sendMsgToChannel(Channel,returnJson)
+            # thread.sendMsgToAllChannels(returnJson)
         except:
             logger.error(f'sample exception : {traceback.format_exc()}')
 
@@ -72,9 +94,10 @@ class TestController():
         returnJson = {}
         skLogger = reciveObj['LOGGER']
         channel = reciveObj['CHANNEL']
+        thread = reciveObj['THREAD']
         try:
-            self.sendHandler.sendChannelBytes(channel, 'test'.encode('utf-8'))
             # self.sendHandler.sendSkId('JSON_서버', 'LINE_SIGNAL', returnJson)
+            thread.sendBytesToChannel(channel, 'sss'.encode('utf-8'))
         except Exception as e:
             skLogger.error(f'TestController.test() Exception :: {e}')
 

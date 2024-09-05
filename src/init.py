@@ -16,6 +16,8 @@ from conf.logconfig import logger
 from src.protocols.udp.ServerUdpThread import ServerUdpThread
 from src.protocols.udp.ClientUdpThread import ClientUdpThread
 from src.protocols.websk.WebSkServerThread import WebSkServerThread
+from src.protocols.websk.WebSkClientThread import WebSkClientThread
+
 from src.protocols.sch.Schedule import Schedule
 from src.protocols.bluetooth.BlueToothServerThread import BlueToothServerThread
 from src.protocols.bluetooth.BlueToothClientThread import BlueToothClientThread
@@ -168,7 +170,7 @@ class InitClass(QMainWindow):
                     if (skConTy == 'SERVER'):
                         threadInfo = WebSkServerThread(item)
                     elif (skConTy == 'CLIENT'):
-                        threadInfo = None
+                        threadInfo = WebSkClientThread(item)
 
                 elif (skTy == 'BLUETOOTH'):
                     if (skConTy == 'SERVER'):
