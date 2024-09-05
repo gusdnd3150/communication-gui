@@ -51,7 +51,7 @@ class WebSkClientThread(threading.Thread):
         self.logger = setup_sk_logger(self.skId)
         self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
 
-        self.loop = asyncio.new_event_loop()
+        self.loop = asyncio.get_event_loop()
 
         if (data.get('SK_GROUP') is not None):
             self.skGrp = data['SK_GROUP']
@@ -106,7 +106,10 @@ class WebSkClientThread(threading.Thread):
         finally:
             self.loop.run_until_complete(self.loop.shutdown_asyncgens())
             self.loop.close()
+            moduleData.mainInstance.updateConnList()
+            self.socket.close()
             print("Event loop closed.")
+
 
     def stop(self):
         try:
@@ -117,13 +120,13 @@ class WebSkClientThread(threading.Thread):
                 logger.removeHandler(handler)
             logging.getLogger(self.skId).handlers = []
 
+            self.isShutdown = True
+            self.isRun = False
             self.loop.stop()
             async def cancel_all_tasks(websocket):
                 await websocket.close()
             self.loop.run_until_complete(cancel_all_tasks(self.websocket))
-            self.isRun = False
-            self.isShutdown = True
-
+            self.loop.close()
             #
             # # if not self.loop.is_closed():
             # #     self.loop.run_until_complete(cancel_all_tasks())
@@ -151,6 +154,9 @@ class WebSkClientThread(threading.Thread):
         except Exception as e:
             self.isRun = False
             print(f"Failed to connect to {url}: {e}")
+
+            if self.isShutdown == False:
+                await self.initClient()
             return
         # 서버와의 통신 작업을 처리할 태스크를 이벤트 루프에 추가
         self.loop.create_task(self.websocket_handler())
@@ -194,32 +200,23 @@ class WebSkClientThread(threading.Thread):
                     reciveBytes = message.encode('utf-8')
                     # response = await self.websocket.recv()
 
-                    print(f'dddddddddddddd {reciveBytes}')
-                    # await asyncio.sleep(1)
-            #
-            # while self.isRun:
-            #     async for message in self.socket:
-            #         reciveBytes = message.encode('utf-8')
-            #
-            #         readBytesCnt = self.codec.concyctencyCheck(reciveBytes)
-            #         if readBytesCnt == 0:
-            #             self.logger.info(f'concyctence error : {reciveBytes}')
-            #             return
-            #
-            #         if self.skLogYn:
-            #             decimal_string = ' '.join(str(byte) for byte in reciveBytes)
-            #             self.logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
-            #
-            #         data = self.codec.decodeRecieData(reciveBytes)
-            #         data['TOTAL_BYTES'] = reciveBytes
-            #         reciveObj = {**chinfo, **data}
-            #         self.threadPoolExcutor(BzActivator2(reciveObj), '[Processing Received Data]')
-            #         # await wesk.send(f"Echo: {message}")
+                    readBytesCnt = self.codec.concyctencyCheck(reciveBytes)
+                    if readBytesCnt == 0:
+                        self.logger.info(f'concyctence error : {reciveBytes}')
+                        return
+
+                    if self.skLogYn:
+                        decimal_string = ' '.join(str(byte) for byte in reciveBytes)
+                        self.logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+
+                    data = self.codec.decodeRecieData(reciveBytes)
+                    data['TOTAL_BYTES'] = reciveBytes
+                    reciveObj = {**chinfo, **data}
+                    self.threadPoolExcutor(BzActivator2(reciveObj), '[Processing Received Data]')
         except:
             self.logger.error(f'websocket_handler error : {traceback.format_exc()}')
             moduleData.mainInstance.updateConnList()
             self.isRun = False
-            # self.socket
         finally:
             if bzSch is not None:
                 bzSch.stop()
@@ -237,6 +234,8 @@ class WebSkClientThread(threading.Thread):
 
             if self.isShutdown == False:
                 self.initClient()
+            else:
+                await self.websocket.close()
 
 
 
