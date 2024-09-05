@@ -96,15 +96,19 @@ class InitClass(QMainWindow):
                                              QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if reply != QMessageBox.Yes:
                     return
-
             logger.info(f'Stop Run Sockets')
+
+
             for i, item in enumerate(moduleData.sokcetList):
                 if item['SK_CLIENT_TYPE'] == 'EVENT':
                     continue
-                runThread = item['SK_THREAD']
-                runThread.stop()
-                runThread.join()
-                item['SK_THREAD'] = None
+                try:
+                    runThread = item['SK_THREAD']
+                    runThread.stop()
+                    runThread.join()
+                    item['SK_THREAD'] = None
+                except:
+                    logger.error(f'stop_sk exception {item["SK_ID"]}')
 
 
             for i, item in enumerate(moduleData.sokcetSch):
@@ -389,7 +393,6 @@ class InitClass(QMainWindow):
 
             logger.info(f'updateConnList start')
             for index, item in enumerate(moduleData.sokcetList):
-                logger.info(f'--------{item}')
                 skItem = QStandardItem( item['SK_ID'] )
                 description_item = QStandardItem( item['SK_CONN_TYPE'])
                 for skId, client, thread in moduleData.runChannels:
