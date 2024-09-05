@@ -42,7 +42,7 @@ class TestController():
         skLogger = reciveObj['LOGGER']
         Channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
-        path = reciveObj['PATH']
+        # path = reciveObj['PATH']
         returnJson = {}
 
         try:
@@ -53,7 +53,7 @@ class TestController():
             # thread.sendBytesToChannel(Channel, 'sss'.encode('utf-8'))
             # returnJson2 = {}
             # returnJson2['MSG_ID'] = 'TEST_MSG'
-            # thread.sendMsgToChannel(Channel,returnJson)
+            thread.sendMsgToChannel(Channel,returnJson)
             # thread.sendMsgToAllChannels(returnJson)
         except:
             logger.error(f'sample exception : {traceback.format_exc()}')

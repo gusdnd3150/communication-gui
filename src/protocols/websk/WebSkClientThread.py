@@ -129,7 +129,7 @@ class WebSkClientThread(threading.Thread):
             uri = f"ws://{self.skIp}:{self.skPort}"
             async def runClient():
                 async with websockets.connect(uri) as websocket:
-                    self.server = websocket
+                    self.socket = websocket
                     # await websocket.send("Hello, WebSocket!")  # 메시지 전송
                     while websocket:
                         await self.websocket_handler(websocket)
@@ -207,10 +207,10 @@ class WebSkClientThread(threading.Thread):
             if bzSch in self.bzSchList:
                 self.bzSchList.remove(bzSch)
 
-            if client_info in self.client_list:
-                self.client_list.remove(client_info)
             if client_info in moduleData.runChannels:
                 moduleData.runChannels.remove(client_info)
+
+            self.socket = None
             moduleData.mainInstance.updateConnList()
 
 
@@ -240,7 +240,16 @@ class WebSkClientThread(threading.Thread):
 
     def sendBytesToAllChannels(self, bytes):
         try:
-            pass
+            async def send(self, bytes):
+                try:
+                    await self.server.send(bytes)  # await 키워드를 사용하여 비동기 호출
+                    if self.skLogYn:
+                        decimal_string = ' '.join(str(byte) for byte in bytes)
+                        self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
+                except Exception:
+                    self.logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
+
+            asyncio.run_coroutine_threadsafe(send(self, bytes), self.loop)
         except:
             self.logger.error(f'sendBytesToAllChannels exception :: {traceback.format_exc()}')
 
@@ -267,12 +276,12 @@ class WebSkClientThread(threading.Thread):
             sendBytes = self.codec.encodeSendData(obj)
             async def send(self):
                 try:
-                    for skId, channel, thraed in self.client_list:
-                        await channel.send(sendBytes.decode('utf-8'))
-                        if self.skLogYn:
-                            decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                            self.logger.info(
-                                f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{sendBytes}]')
+                    await self.server.send(sendBytes.decode('utf-8'))
+                    # await channel.send(sendBytes.decode('utf-8'))
+                    if self.skLogYn:
+                        decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                        self.logger.info(
+                            f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{sendBytes}]')
                 except Exception:
                     self.logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
 
