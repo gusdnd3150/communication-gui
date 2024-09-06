@@ -51,7 +51,8 @@ class WebSkClientThread(threading.Thread):
         self.logger = setup_sk_logger(self.skId)
         self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
 
-        self.loop = asyncio.get_event_loop()
+        # self.loop = asyncio.get_event_loop()
+        self.loop = asyncio.new_event_loop()
 
         if (data.get('SK_GROUP') is not None):
             self.skGrp = data['SK_GROUP']
@@ -95,9 +96,7 @@ class WebSkClientThread(threading.Thread):
 
     def run(self):
         moduleData.mainInstance.addClientRow(self.initData)
-        # self.initClient()
-        # asyncio.run(self.initClient())
-        # self.loop.run_until_complete(self.initClient())
+
         try:
             self.loop.run_until_complete(self.initClient())
             self.loop.run_forever()
@@ -107,7 +106,7 @@ class WebSkClientThread(threading.Thread):
             self.loop.run_until_complete(self.loop.shutdown_asyncgens())
             self.loop.close()
             moduleData.mainInstance.updateConnList()
-            self.socket.close()
+            # self.socket.close()
             print("Event loop closed.")
 
 
@@ -124,18 +123,19 @@ class WebSkClientThread(threading.Thread):
             self.isRun = False
             self.loop.stop()
             async def cancel_all_tasks(websocket):
-                await websocket.close()
-            self.loop.run_until_complete(cancel_all_tasks(self.websocket))
-            self.loop.close()
-            #
-            # # if not self.loop.is_closed():
-            # #     self.loop.run_until_complete(cancel_all_tasks())
-            # # asyncio.run(cancel_all_tasks())
-            # self.loop.run_until_complete(cancel_all_tasks())
-            # self.loop.run(self.socket.close())
+                try:
 
-            # asyncio.run(self.socket.close())
+                    for skid, sk, thread in self.client_list:
+                        if sk in moduleData.runChannels:
+                            moduleData.runChannels.remove(sk)
+                    await websocket.close()
+                    self.loop.close()
+                except:
+                    logger.error(f'sssss')
 
+            # await cancel_all_tasks(self.websocket)
+            asyncio.run(cancel_all_tasks(self.websocket))
+            # self.loop.run_until_complete(cancel_all_tasks(self.websocket))
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
         finally:
@@ -150,10 +150,10 @@ class WebSkClientThread(threading.Thread):
             url = f'ws://{self.skIp}:{self.skPort}'
             self.isRun = True
             self.websocket = await websockets.connect(url)
-            print(f"Connected to server at {url}")
+            self.logger.info(f"Connected to server at {url}")
         except Exception as e:
             self.isRun = False
-            print(f"Failed to connect to {url}: {e}")
+            self.logger.error(f"Failed to connect to {url}: {e}")
 
             if self.isShutdown == False:
                 await self.initClient()
@@ -198,8 +198,6 @@ class WebSkClientThread(threading.Thread):
             while self.isRun:
                 async for message in self.websocket:
                     reciveBytes = message.encode('utf-8')
-                    # response = await self.websocket.recv()
-
                     readBytesCnt = self.codec.concyctencyCheck(reciveBytes)
                     if readBytesCnt == 0:
                         self.logger.info(f'concyctence error : {reciveBytes}')
@@ -228,12 +226,14 @@ class WebSkClientThread(threading.Thread):
 
             if client_info in moduleData.runChannels:
                 moduleData.runChannels.remove(client_info)
+            if client_info in self.client_list:
+                self.client_list.remove(client_info)
 
             self.socket = None
             moduleData.mainInstance.updateConnList()
 
             if self.isShutdown == False:
-                self.initClient()
+                await self.initClient()
             else:
                 await self.websocket.close()
 
@@ -257,7 +257,7 @@ class WebSkClientThread(threading.Thread):
         try:
             async def send(self, bytes):
                 try:
-                    await self.socket.send(bytes)  # await 키워드를 사용하여 비동기 호출
+                    await self.websocket.send(bytes)  # await 키워드를 사용하여 비동기 호출
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in bytes)
                         self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
@@ -291,7 +291,7 @@ class WebSkClientThread(threading.Thread):
             sendBytes = self.codec.encodeSendData(obj)
             async def send(self):
                 try:
-                    await self.socket.send(sendBytes.decode('utf-8'))
+                    await self.websocket.send(sendBytes.decode('utf-8'))
                     # await channel.send(sendBytes.decode('utf-8'))
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in sendBytes)
