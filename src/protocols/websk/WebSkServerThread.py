@@ -173,8 +173,8 @@ class WebSkServerThread(threading.Thread):
 
         try:
             async for message in wesk:
-                reciveBytes = message.encode('utf-8')
                 try:
+                    reciveBytes = message.encode('utf-8')
                     readBytesCnt = self.codec.concyctencyCheck(reciveBytes)
                     if readBytesCnt == 0:
                         self.logger.info(f'concyctence error : {reciveBytes}')

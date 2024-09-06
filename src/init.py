@@ -11,6 +11,7 @@ import logging
 program_directory = os.path.dirname(program_path)
 from src.component.settings.Settings import Settings
 from src.component.handler.Handler import Handler
+from src.component.log.Log import Log
 import conf.skModule as moduleData
 from conf.logconfig import logger
 from src.protocols.udp.ServerUdpThread import ServerUdpThread
@@ -25,6 +26,7 @@ from src.protocols.bluetooth.BlueToothClientThread import BlueToothClientThread
 import time
 from datetime import datetime
 from ui.ui_main import Ui_MainWindow
+
 
 pkgCombo = [
     'CORE'
@@ -59,6 +61,7 @@ class InitClass(QMainWindow):
         self.ui.btn_start.clicked.connect(self.start_sk)
         self.ui.btn_stop.clicked.connect(self.stop_sk)
         self.ui.btn_handler.clicked.connect(self.open_handler)
+        self.ui.btn_show_log.clicked.connect(self.open_logger)
 
         moduleData.mainLayout = self.ui
         moduleData.mainInstance = self
@@ -68,6 +71,7 @@ class InitClass(QMainWindow):
         # 설정팝업
         self.popup = Settings(self.initData)
         self.handlPop = Handler(self.initData)
+        self.logPop = Log(self.initData)
 
 
     def closeEvent(self, event):
@@ -377,6 +381,11 @@ class InitClass(QMainWindow):
             self.handlPop.hide()
         else:
             self.handlPop.show()
+    def open_logger(self):
+        if self.logPop.isVisible():
+            self.logPop.hide()
+        else:
+            self.logPop.show()
 
 
     def closeMain(self):

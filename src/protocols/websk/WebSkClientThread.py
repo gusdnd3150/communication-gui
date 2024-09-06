@@ -149,7 +149,7 @@ class WebSkClientThread(threading.Thread):
         try:
             url = f'ws://{self.skIp}:{self.skPort}'
             self.isRun = True
-            self.websocket = await websockets.connect(url)
+            self.socket = await websockets.connect(url)
             self.logger.info(f"Connected to server at {url}")
         except Exception as e:
             self.isRun = False
@@ -164,16 +164,17 @@ class WebSkClientThread(threading.Thread):
 
 
     async def websocket_handler(self):
+
         bzSch = None
         chinfo = {
             'SK_ID': self.skId
             , 'SK_GROUP': self.skGrp
-            , 'CHANNEL': self.websocket
+            , 'CHANNEL': self.socket
             , 'LOGGER': self.logger
             , 'THREAD': self
             # , 'PATH': path  # 웹소켓 한해 접속 URL 을 포함
         }
-        client_info = (self.skId, self.websocket, self)
+        client_info = (self.skId, self.socket, self)
         self.client_list.append(client_info)
         moduleData.runChannels.append(client_info)
         moduleData.mainInstance.updateConnList()
@@ -196,21 +197,26 @@ class WebSkClientThread(threading.Thread):
 
         try:
             while self.isRun:
-                async for message in self.websocket:
-                    reciveBytes = message.encode('utf-8')
-                    readBytesCnt = self.codec.concyctencyCheck(reciveBytes)
-                    if readBytesCnt == 0:
-                        self.logger.info(f'concyctence error : {reciveBytes}')
-                        return
+                async for message in self.socket:
+                    try:
+                        reciveBytes = message.encode('utf-8')
+                        readBytesCnt = self.codec.concyctencyCheck(reciveBytes)
+                        if readBytesCnt == 0:
+                            self.logger.info(f'concyctence error : {reciveBytes}')
+                            return
 
-                    if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in reciveBytes)
-                        self.logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+                        if self.skLogYn:
+                            decimal_string = ' '.join(str(byte) for byte in reciveBytes)
+                            self.logger.info(
+                                f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
 
-                    data = self.codec.decodeRecieData(reciveBytes)
-                    data['TOTAL_BYTES'] = reciveBytes
-                    reciveObj = {**chinfo, **data}
-                    self.threadPoolExcutor(BzActivator2(reciveObj), '[Processing Received Data]')
+                        data = self.codec.decodeRecieData(reciveBytes)
+                        data['TOTAL_BYTES'] = reciveBytes
+                        reciveObj = {**chinfo, **data}
+                        self.threadPoolExcutor(BzActivator2(reciveObj), '[Processing Received Data]')
+                    except:
+                        self.logger.error(f'')
+                        continue
         except:
             self.logger.error(f'websocket_handler error : {traceback.format_exc()}')
             moduleData.mainInstance.updateConnList()
@@ -235,13 +241,13 @@ class WebSkClientThread(threading.Thread):
             if self.isShutdown == False:
                 await self.initClient()
             else:
-                await self.websocket.close()
+                await self.socket.close()
 
 
 
     def sendBytesToChannel(self, channel ,bytes):
         try:
-            async def send(self, channel, bytes):
+            async def send(channel, bytes):
                 try:
                     await channel.send(bytes)  # await 키워드를 사용하여 비동기 호출
                     if self.skLogYn:
@@ -249,22 +255,23 @@ class WebSkClientThread(threading.Thread):
                         self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
                 except Exception:
                     self.logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
-            asyncio.run_coroutine_threadsafe(send(self, channel, bytes),self.loop)
+            asyncio.run_coroutine_threadsafe(send(channel, bytes),self.loop)
         except:
             self.logger.error(f'sendBytesToChannel exception :: {traceback.format_exc()}')
 
     def sendBytesToAllChannels(self, bytes):
         try:
-            async def send(self, bytes):
+            async def send( bytes):
                 try:
-                    await self.websocket.send(bytes)  # await 키워드를 사용하여 비동기 호출
-                    if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in bytes)
-                        self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
+                    if self.socket is not None:
+                        await self.socket.send(bytes)  # await 키워드를 사용하여 비동기 호출
+                        if self.skLogYn:
+                            decimal_string = ' '.join(str(byte) for byte in bytes)
+                            self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
                 except Exception:
                     self.logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
 
-            asyncio.run_coroutine_threadsafe(send(self, bytes), self.loop)
+            asyncio.run_coroutine_threadsafe(send( bytes), self.loop)
         except:
             self.logger.error(f'sendBytesToAllChannels exception :: {traceback.format_exc()}')
 
@@ -272,7 +279,7 @@ class WebSkClientThread(threading.Thread):
     def sendMsgToChannel(self, channel, obj):
         try:
             sendBytes = self.codec.encodeSendData(obj)
-            async def send(self):
+            async def send():
                 try:
                     await channel.send(sendBytes.decode('utf-8'))
                     if self.skLogYn:
@@ -280,7 +287,7 @@ class WebSkClientThread(threading.Thread):
                         self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
                 except Exception:
                     self.logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
-            asyncio.run_coroutine_threadsafe(send(self), self.loop)
+            asyncio.run_coroutine_threadsafe(send(), self.loop)
         except:
             self.logger.error(f'sendMsgToChannel exception :: {traceback.format_exc()}')
 
@@ -289,18 +296,19 @@ class WebSkClientThread(threading.Thread):
     def sendMsgToAllChannels(self, obj):
         try:
             sendBytes = self.codec.encodeSendData(obj)
-            async def send(self):
+            async def send():
                 try:
-                    await self.websocket.send(sendBytes.decode('utf-8'))
-                    # await channel.send(sendBytes.decode('utf-8'))
-                    if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                        self.logger.info(
-                            f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{sendBytes}]')
+                    if self.socket is not None:
+                        await self.socket.send(sendBytes.decode('utf-8'))
+                        # await channel.send(sendBytes.decode('utf-8'))
+                        if self.skLogYn:
+                            decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                            self.logger.info(
+                                f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{sendBytes}]')
                 except Exception:
                     self.logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
 
-            asyncio.run_coroutine_threadsafe(send(self), self.loop)
+            asyncio.run_coroutine_threadsafe(send(), self.loop)
         except:
             self.logger.error(f'sendMsgToAllChannels exception :: {traceback.format_exc()}')
 

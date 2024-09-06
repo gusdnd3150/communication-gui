@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>672</width>
-    <height>646</height>
+    <width>556</width>
+    <height>660</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -45,32 +45,208 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QMainWindow {
-    background-color: #2E2E2E;
-    color: #FFFFFF;
-}</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="1" column="0">
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
+    <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="3">
+       <widget class="QToolButton" name="btn_settings">
+        <property name="font">
+         <font>
+          <family>맑은 고딕</family>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QToolButton {
+    border: 1px solid #555555;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+QToolButton:hover {
+    background-color: rgb(240, 233, 232);
+    border: 1px solid #666666;
+}
+
+QToolButton:pressed {
+    background-color: rgb(199, 199, 199);
+    border: 1px solid #444444;
+}</string>
+        </property>
         <property name="text">
-         <string>--</string>
+         <string>settings</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QComboBox" name="combo_pkg">
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>맑은 고딕</family>
+         </font>
+        </property>
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QComboBox {
+    border: 1px solid #555555;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+QComboBox:hover {
+    border: 1px solid #666666;
+}
+
+
+QComboBox QAbstractItemView {
+    background-color: #444444;
+    color: #FFFFFF;
+    selection-background-color: #555555;
+    selection-color: #FFFFFF;
+}</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QToolButton" name="btn_handler">
+        <property name="styleSheet">
+         <string notr="true">QToolButton {
+    border: 1px solid #555555;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+QToolButton:hover {
+    background-color: rgb(240, 233, 232);
+    border: 1px solid #666666;
+}
+
+QToolButton:pressed {
+    background-color: rgb(199, 199, 199);
+    border: 1px solid #444444;
+}</string>
+        </property>
+        <property name="text">
+         <string>Handler</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="btn_start">
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>맑은 고딕</family>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    background-color: rgb(11, 230, 0);
+    color: black;
+    border: 1px solid #555555;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+QPushButton:hover {
+    background-color: rgb(80, 190, 11);
+    border: 1px solid #666666;
+}
+
+QPushButton:pressed {
+    background-color: rgb(7, 143, 0);
+    border: 1px solid #444444;
+}</string>
+        </property>
+        <property name="text">
+         <string>Run Application</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="btn_stop">
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    background-color: rgb(180, 74, 3);
+    color: white;
+    border: 1px solid #555555;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+QPushButton:hover {
+    background-color: rgb(255, 74, 74);
+    border: 1px solid #666666;
+}
+
+QPushButton:pressed {
+    background-color: rgb(255, 74, 74);
+    border: 1px solid #444444;
+}</string>
+        </property>
+        <property name="text">
+         <string>Stop Application</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QToolButton" name="btn_show_log">
+        <property name="styleSheet">
+         <string notr="true">QToolButton {
+    border: 1px solid #555555;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+QToolButton:hover {
+    background-color: rgb(240, 233, 232);
+    border: 1px solid #666666;
+}
+
+QToolButton:pressed {
+    background-color: rgb(199, 199, 199);
+    border: 1px solid #444444;
+}</string>
+        </property>
+        <property name="text">
+         <string>Log</string>
         </property>
        </widget>
       </item>
      </layout>
+    </item>
+    <item row="1" column="0">
+     <layout class="QGridLayout" name="gridLayout_3"/>
     </item>
     <item row="2" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QLabel" name="label_2">
         <property name="styleSheet">
-         <string notr="true">QLabel{
-	color:white
-}</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>[ Server ]</string>
@@ -99,54 +275,7 @@
          <bool>true</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true">QTableWidget {
-    background-color: #2E2E2E;
-    color: #FFFFFF;
-    gridline-color: #444444;
-    border: 1px solid #444444;
-}
-
-QHeaderView::section {
-    background-color: #444444;
-    color: #FFFFFF;
-    padding: 4px;
-    border: 1px solid #2E2E2E;
-}
-
-QTableWidget::item {
-    border: none;
-    padding: 4px;
-}
-
-QTableWidget::item:selected {
-    background-color: #555555;
-    color: #FFFFFF;
-}
-
-QScrollBar:vertical {
-    background-color: #2E2E2E;
-    width: 3px;
-	height:2px;
-    margin: 15px 0 15px 0;
-}
-QScrollBar::handle:vertical {
-    background-color: #555555;
-    min-height: 5px;
-}
-QScrollBar:horizontal {
-    background-color: #2E2E2E;
-    height: 8px; 
-    margin: 0 15px 0 15px;
-}
-
-QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
-    background-color: #444444;
-    height: 5px;
-}
-
-QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
-    background: none;
-}</string>
+         <string notr="true"/>
         </property>
         <property name="dragEnabled">
          <bool>false</bool>
@@ -178,9 +307,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
       <item>
        <widget class="QLabel" name="label_3">
         <property name="styleSheet">
-         <string notr="true">QLabel{
-	color:white
-}</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>[ Client ]</string>
@@ -201,54 +328,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">QTableWidget {
-    background-color: #2E2E2E;
-    color: #FFFFFF;
-    gridline-color: #444444;
-    border: 1px solid #444444;
-}
-
-QHeaderView::section {
-    background-color: #444444;
-    color: #FFFFFF;
-    padding: 4px;
-    border: 1px solid #2E2E2E;
-}
-
-QTableWidget::item {
-    border: none;
-    padding: 4px;
-}
-
-QTableWidget::item:selected {
-    background-color: #555555;
-    color: #FFFFFF;
-}
-
-QScrollBar:vertical {
-    background-color: #2E2E2E;
-    width: 3px;
-	height:2px;
-    margin: 15px 0 15px 0;
-}
-QScrollBar::handle:vertical {
-    background-color: #555555;
-    min-height: 5px;
-}
-QScrollBar:horizontal {
-    background-color: #2E2E2E;
-    height: 8px; 
-    margin: 0 15px 0 15px;
-}
-
-QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
-    background-color: #444444;
-    height: 5px;
-}
-
-QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
-    background: none;
-}</string>
+         <string notr="true"/>
         </property>
         <property name="tabKeyNavigation">
          <bool>false</bool>
@@ -265,7 +345,10 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
        </widget>
       </item>
       <item>
-       <widget class="QTabWidget" name="tabWidget">
+       <layout class="QHBoxLayout" name="horizontalLayout"/>
+      </item>
+      <item>
+       <widget class="QTabWidget" name="ddddd">
         <property name="styleSheet">
          <string notr="true"/>
         </property>
@@ -276,8 +359,8 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
          <attribute name="title">
           <string>Connection List</string>
          </attribute>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
            <widget class="QTreeView" name="list_conn">
             <property name="enabled">
              <bool>true</bool>
@@ -336,189 +419,6 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
       </item>
      </layout>
     </item>
-    <item row="0" column="0" colspan="2">
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="3">
-       <widget class="QToolButton" name="btn_settings">
-        <property name="font">
-         <font>
-          <family>맑은 고딕</family>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QToolButton {
-    background-color: #444444;
-    color: #FFFFFF;
-    border: 1px solid #555555;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-QToolButton:hover {
-    background-color: #555555;
-    border: 1px solid #666666;
-}
-
-QToolButton:pressed {
-    background-color: #333333;
-    border: 1px solid #444444;
-}</string>
-        </property>
-        <property name="text">
-         <string>settings</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="btn_start">
-        <property name="maximumSize">
-         <size>
-          <width>200</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>맑은 고딕</family>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QPushButton {
-    background-color: rgb(11, 230, 0);
-    color: black;
-    border: 1px solid #555555;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-QPushButton:hover {
-    background-color: rgb(80, 190, 11);
-    border: 1px solid #666666;
-}
-
-QPushButton:pressed {
-    background-color: rgb(7, 143, 0);
-    border: 1px solid #444444;
-}</string>
-        </property>
-        <property name="text">
-         <string>Run Application</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QComboBox" name="combo_pkg">
-        <property name="maximumSize">
-         <size>
-          <width>200</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>맑은 고딕</family>
-         </font>
-        </property>
-        <property name="acceptDrops">
-         <bool>false</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QComboBox {
-    background-color: #444444;
-    color: #FFFFFF;
-    border: 1px solid #555555;
-    padding: 5px;
-    border-radius: 5px;
-}
-
-QComboBox:hover {
-    border: 1px solid #666666;
-}
-
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: top right;
-    width: 20px;
-    border-left-width: 1px;
-    border-left-color: #555555;
-    border-left-style: solid;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    background-color: #555555;
-}
-
-
-QComboBox QAbstractItemView {
-    background-color: #444444;
-    color: #FFFFFF;
-    selection-background-color: #555555;
-    selection-color: #FFFFFF;
-}</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="btn_stop">
-        <property name="maximumSize">
-         <size>
-          <width>200</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QPushButton {
-    background-color: rgb(180, 74, 3);
-    color: white;
-    border: 1px solid #555555;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-QPushButton:hover {
-    background-color: rgb(255, 74, 74);
-    border: 1px solid #666666;
-}
-
-QPushButton:pressed {
-    background-color: rgb(255, 74, 74);
-    border: 1px solid #444444;
-}</string>
-        </property>
-        <property name="text">
-         <string>Stop Application</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QToolButton" name="btn_handler">
-        <property name="styleSheet">
-         <string notr="true">QToolButton {
-    background-color: #444444;
-    color: #FFFFFF;
-    border: 1px solid #555555;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-QToolButton:hover {
-    background-color: #555555;
-    border: 1px solid #666666;
-}
-
-QToolButton:pressed {
-    background-color: #333333;
-    border: 1px solid #444444;
-}</string>
-        </property>
-        <property name="text">
-         <string>Handler</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -526,8 +426,8 @@ QToolButton:pressed {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>672</width>
-     <height>22</height>
+     <width>556</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>
