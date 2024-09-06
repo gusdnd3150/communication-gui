@@ -122,19 +122,19 @@ class WebSkClientThread(threading.Thread):
             self.isShutdown = True
             self.isRun = False
             self.loop.stop()
-            async def cancel_all_tasks(websocket):
+            async def cancel_all_tasks(socket):
                 try:
 
                     for skid, sk, thread in self.client_list:
                         if sk in moduleData.runChannels:
                             moduleData.runChannels.remove(sk)
-                    await websocket.close()
+                    await socket.close()
                     self.loop.close()
                 except:
                     logger.error(f'sssss')
 
             # await cancel_all_tasks(self.websocket)
-            asyncio.run(cancel_all_tasks(self.websocket))
+            asyncio.run(cancel_all_tasks(self.socket))
             # self.loop.run_until_complete(cancel_all_tasks(self.websocket))
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
