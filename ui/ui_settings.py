@@ -419,35 +419,19 @@ class Ui_Settings(object):
         self.tap_info.addTab(self.tab_3, "")
         self.tab_4 = QWidget()
         self.tab_4.setObjectName(u"tab_4")
-        self.label_6 = QLabel(self.tab_4)
-        self.label_6.setObjectName(u"label_6")
-        self.label_6.setGeometry(QRect(9, 9, 101, 16))
-        self.label_5 = QLabel(self.tab_4)
-        self.label_5.setObjectName(u"label_5")
-        self.label_5.setGeometry(QRect(10, 260, 104, 16))
         self.list_bz = QTableWidget(self.tab_4)
         if (self.list_bz.columnCount() < 1):
             self.list_bz.setColumnCount(1)
         __qtablewidgetitem2 = QTableWidgetItem()
         self.list_bz.setHorizontalHeaderItem(0, __qtablewidgetitem2)
         self.list_bz.setObjectName(u"list_bz")
-        self.list_bz.setGeometry(QRect(10, 30, 821, 211))
+        self.list_bz.setGeometry(QRect(0, 0, 831, 501))
         self.list_bz.setFont(font1)
         self.list_bz.setDragEnabled(True)
         self.list_bz.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.list_sch = QTableWidget(self.tab_4)
-        if (self.list_sch.columnCount() < 1):
-            self.list_sch.setColumnCount(1)
-        __qtablewidgetitem3 = QTableWidgetItem()
-        self.list_sch.setHorizontalHeaderItem(0, __qtablewidgetitem3)
-        self.list_sch.setObjectName(u"list_sch")
-        self.list_sch.setGeometry(QRect(10, 280, 821, 211))
-        self.list_sch.setFont(font1)
-        self.list_sch.setDragEnabled(True)
-        self.list_sch.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.formLayoutWidget_5 = QWidget(self.tab_4)
         self.formLayoutWidget_5.setObjectName(u"formLayoutWidget_5")
-        self.formLayoutWidget_5.setGeometry(QRect(840, 60, 271, 281))
+        self.formLayoutWidget_5.setGeometry(QRect(840, 30, 271, 471))
         self.formLayout_5 = QFormLayout(self.formLayoutWidget_5)
         self.formLayout_5.setObjectName(u"formLayout_5")
         self.formLayout_5.setContentsMargins(0, 0, 0, 0)
@@ -523,7 +507,7 @@ class Ui_Settings(object):
 
         self.layoutWidget_3 = QWidget(self.tab_4)
         self.layoutWidget_3.setObjectName(u"layoutWidget_3")
-        self.layoutWidget_3.setGeometry(QRect(840, 30, 155, 28))
+        self.layoutWidget_3.setGeometry(QRect(840, 0, 155, 28))
         self.gridLayout_4 = QGridLayout(self.layoutWidget_3)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
@@ -542,104 +526,117 @@ class Ui_Settings(object):
 
         self.gridLayout_4.addWidget(self.btn_saveBz, 0, 1, 1, 1)
 
-        self.layoutWidget_4 = QWidget(self.tab_4)
-        self.layoutWidget_4.setObjectName(u"layoutWidget_4")
-        self.layoutWidget_4.setGeometry(QRect(840, 280, 155, 28))
-        self.gridLayout_5 = QGridLayout(self.layoutWidget_4)
-        self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.gridLayout_5.setContentsMargins(0, 0, 0, 0)
-        self.btn_addSch = QToolButton(self.layoutWidget_4)
+        self.tap_info.addTab(self.tab_4, "")
+        self.tab_2 = QWidget()
+        self.tab_2.setObjectName(u"tab_2")
+        self.list_sch = QTableWidget(self.tab_2)
+        if (self.list_sch.columnCount() < 1):
+            self.list_sch.setColumnCount(1)
+        __qtablewidgetitem3 = QTableWidgetItem()
+        self.list_sch.setHorizontalHeaderItem(0, __qtablewidgetitem3)
+        self.list_sch.setObjectName(u"list_sch")
+        self.list_sch.setGeometry(QRect(0, 0, 831, 501))
+        self.list_sch.setFont(font1)
+        self.list_sch.setDragEnabled(True)
+        self.list_sch.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.layoutWidget_5 = QWidget(self.tab_2)
+        self.layoutWidget_5.setObjectName(u"layoutWidget_5")
+        self.layoutWidget_5.setGeometry(QRect(840, 0, 155, 28))
+        self.gridLayout_6 = QGridLayout(self.layoutWidget_5)
+        self.gridLayout_6.setObjectName(u"gridLayout_6")
+        self.gridLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.btn_addSch = QToolButton(self.layoutWidget_5)
         self.btn_addSch.setObjectName(u"btn_addSch")
 
-        self.gridLayout_5.addWidget(self.btn_addSch, 0, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.btn_addSch, 0, 0, 1, 1)
 
-        self.btn_delSch = QToolButton(self.layoutWidget_4)
+        self.btn_delSch = QToolButton(self.layoutWidget_5)
         self.btn_delSch.setObjectName(u"btn_delSch")
 
-        self.gridLayout_5.addWidget(self.btn_delSch, 0, 2, 1, 1)
+        self.gridLayout_6.addWidget(self.btn_delSch, 0, 2, 1, 1)
 
-        self.btn_saveSch = QToolButton(self.layoutWidget_4)
+        self.btn_saveSch = QToolButton(self.layoutWidget_5)
         self.btn_saveSch.setObjectName(u"btn_saveSch")
 
-        self.gridLayout_5.addWidget(self.btn_saveSch, 0, 1, 1, 1)
+        self.gridLayout_6.addWidget(self.btn_saveSch, 0, 1, 1, 1)
 
-        self.formLayoutWidget_6 = QWidget(self.tab_4)
-        self.formLayoutWidget_6.setObjectName(u"formLayoutWidget_6")
-        self.formLayoutWidget_6.setGeometry(QRect(840, 310, 271, 281))
-        self.formLayout_6 = QFormLayout(self.formLayoutWidget_6)
-        self.formLayout_6.setObjectName(u"formLayout_6")
-        self.formLayout_6.setContentsMargins(0, 0, 0, 0)
-        self.label_32 = QLabel(self.formLayoutWidget_6)
-        self.label_32.setObjectName(u"label_32")
+        self.formLayoutWidget_7 = QWidget(self.tab_2)
+        self.formLayoutWidget_7.setObjectName(u"formLayoutWidget_7")
+        self.formLayoutWidget_7.setGeometry(QRect(840, 30, 271, 461))
+        self.formLayout_7 = QFormLayout(self.formLayoutWidget_7)
+        self.formLayout_7.setObjectName(u"formLayout_7")
+        self.formLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.label_38 = QLabel(self.formLayoutWidget_7)
+        self.label_38.setObjectName(u"label_38")
 
-        self.formLayout_6.setWidget(0, QFormLayout.LabelRole, self.label_32)
+        self.formLayout_7.setWidget(0, QFormLayout.LabelRole, self.label_38)
 
-        self.sch_PKG_ID = QLineEdit(self.formLayoutWidget_6)
+        self.sch_PKG_ID = QLineEdit(self.formLayoutWidget_7)
         self.sch_PKG_ID.setObjectName(u"sch_PKG_ID")
 
-        self.formLayout_6.setWidget(0, QFormLayout.FieldRole, self.sch_PKG_ID)
+        self.formLayout_7.setWidget(0, QFormLayout.FieldRole, self.sch_PKG_ID)
 
-        self.label_33 = QLabel(self.formLayoutWidget_6)
-        self.label_33.setObjectName(u"label_33")
+        self.label_39 = QLabel(self.formLayoutWidget_7)
+        self.label_39.setObjectName(u"label_39")
 
-        self.formLayout_6.setWidget(1, QFormLayout.LabelRole, self.label_33)
+        self.formLayout_7.setWidget(1, QFormLayout.LabelRole, self.label_39)
 
-        self.sch_SCH_ID = QLineEdit(self.formLayoutWidget_6)
+        self.sch_SCH_ID = QLineEdit(self.formLayoutWidget_7)
         self.sch_SCH_ID.setObjectName(u"sch_SCH_ID")
 
-        self.formLayout_6.setWidget(1, QFormLayout.FieldRole, self.sch_SCH_ID)
+        self.formLayout_7.setWidget(1, QFormLayout.FieldRole, self.sch_SCH_ID)
 
-        self.label_34 = QLabel(self.formLayoutWidget_6)
-        self.label_34.setObjectName(u"label_34")
+        self.label_40 = QLabel(self.formLayoutWidget_7)
+        self.label_40.setObjectName(u"label_40")
 
-        self.formLayout_6.setWidget(3, QFormLayout.LabelRole, self.label_34)
+        self.formLayout_7.setWidget(3, QFormLayout.LabelRole, self.label_40)
 
-        self.sch_SCH_JOB = QLineEdit(self.formLayoutWidget_6)
+        self.sch_SCH_JOB = QLineEdit(self.formLayoutWidget_7)
         self.sch_SCH_JOB.setObjectName(u"sch_SCH_JOB")
 
-        self.formLayout_6.setWidget(3, QFormLayout.FieldRole, self.sch_SCH_JOB)
+        self.formLayout_7.setWidget(3, QFormLayout.FieldRole, self.sch_SCH_JOB)
 
-        self.label_35 = QLabel(self.formLayoutWidget_6)
-        self.label_35.setObjectName(u"label_35")
+        self.label_41 = QLabel(self.formLayoutWidget_7)
+        self.label_41.setObjectName(u"label_41")
 
-        self.formLayout_6.setWidget(4, QFormLayout.LabelRole, self.label_35)
+        self.formLayout_7.setWidget(4, QFormLayout.LabelRole, self.label_41)
 
-        self.sch_BZ_METHOD = QLineEdit(self.formLayoutWidget_6)
+        self.sch_BZ_METHOD = QLineEdit(self.formLayoutWidget_7)
         self.sch_BZ_METHOD.setObjectName(u"sch_BZ_METHOD")
 
-        self.formLayout_6.setWidget(4, QFormLayout.FieldRole, self.sch_BZ_METHOD)
+        self.formLayout_7.setWidget(4, QFormLayout.FieldRole, self.sch_BZ_METHOD)
 
-        self.label_36 = QLabel(self.formLayoutWidget_6)
-        self.label_36.setObjectName(u"label_36")
+        self.label_42 = QLabel(self.formLayoutWidget_7)
+        self.label_42.setObjectName(u"label_42")
 
-        self.formLayout_6.setWidget(5, QFormLayout.LabelRole, self.label_36)
+        self.formLayout_7.setWidget(5, QFormLayout.LabelRole, self.label_42)
 
-        self.sch_USE_YN = QComboBox(self.formLayoutWidget_6)
+        self.sch_USE_YN = QComboBox(self.formLayoutWidget_7)
         self.sch_USE_YN.setObjectName(u"sch_USE_YN")
 
-        self.formLayout_6.setWidget(5, QFormLayout.FieldRole, self.sch_USE_YN)
+        self.formLayout_7.setWidget(5, QFormLayout.FieldRole, self.sch_USE_YN)
 
-        self.label_37 = QLabel(self.formLayoutWidget_6)
-        self.label_37.setObjectName(u"label_37")
+        self.label_43 = QLabel(self.formLayoutWidget_7)
+        self.label_43.setObjectName(u"label_43")
 
-        self.formLayout_6.setWidget(6, QFormLayout.LabelRole, self.label_37)
+        self.formLayout_7.setWidget(6, QFormLayout.LabelRole, self.label_43)
 
-        self.sch_SCH_DESC = QTextEdit(self.formLayoutWidget_6)
+        self.sch_SCH_DESC = QTextEdit(self.formLayoutWidget_7)
         self.sch_SCH_DESC.setObjectName(u"sch_SCH_DESC")
 
-        self.formLayout_6.setWidget(6, QFormLayout.FieldRole, self.sch_SCH_DESC)
+        self.formLayout_7.setWidget(6, QFormLayout.FieldRole, self.sch_SCH_DESC)
 
-        self.ss_3 = QLabel(self.formLayoutWidget_6)
-        self.ss_3.setObjectName(u"ss_3")
+        self.ss_4 = QLabel(self.formLayoutWidget_7)
+        self.ss_4.setObjectName(u"ss_4")
 
-        self.formLayout_6.setWidget(2, QFormLayout.LabelRole, self.ss_3)
+        self.formLayout_7.setWidget(2, QFormLayout.LabelRole, self.ss_4)
 
-        self.sch_SCH_JOB_TYPE = QComboBox(self.formLayoutWidget_6)
+        self.sch_SCH_JOB_TYPE = QComboBox(self.formLayoutWidget_7)
         self.sch_SCH_JOB_TYPE.setObjectName(u"sch_SCH_JOB_TYPE")
 
-        self.formLayout_6.setWidget(2, QFormLayout.FieldRole, self.sch_SCH_JOB_TYPE)
+        self.formLayout_7.setWidget(2, QFormLayout.FieldRole, self.sch_SCH_JOB_TYPE)
 
-        self.tap_info.addTab(self.tab_4, "")
+        self.tap_info.addTab(self.tab_2, "")
 
         self.gridLayout_2.addWidget(self.tap_info, 2, 1, 1, 1)
 
@@ -654,7 +651,7 @@ class Ui_Settings(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tap_info.setCurrentIndex(3)
+        self.tap_info.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -708,12 +705,8 @@ class Ui_Settings(object):
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"MSG ID :", None))
         self.selected_msg.setText(QCoreApplication.translate("MainWindow", u"-", None))
         self.tap_info.setTabText(self.tap_info.indexOf(self.tab_3), QCoreApplication.translate("MainWindow", u"\uba54\uc2dc\uc9c0", None))
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u"\uc774\ubca4\ud2b8 \uc18c\ucf13 \uadf8\ub8f9", None))
-        self.label_5.setText(QCoreApplication.translate("MainWindow", u"\uc2dc\uc2a4\ud15c SCH \uc2a4\ucf00\uc904", None))
         ___qtablewidgetitem2 = self.list_bz.horizontalHeaderItem(0)
         ___qtablewidgetitem2.setText(QCoreApplication.translate("MainWindow", u"\uc0c8 \ud589", None));
-        ___qtablewidgetitem3 = self.list_sch.horizontalHeaderItem(0)
-        ___qtablewidgetitem3.setText(QCoreApplication.translate("MainWindow", u"\uc0c8 \ud589", None));
         self.label_26.setText(QCoreApplication.translate("MainWindow", u"\ud328\ud0a4\uc9c0 \uba85", None))
         self.bz_PKG_ID.setText("")
         self.label_27.setText(QCoreApplication.translate("MainWindow", u"\uc18c\ucf13 GROUP", None))
@@ -725,17 +718,20 @@ class Ui_Settings(object):
         self.btn_addBz.setText(QCoreApplication.translate("MainWindow", u"\uc2e0\uaddc", None))
         self.btn_delBz.setText(QCoreApplication.translate("MainWindow", u"\uc0ad\uc81c", None))
         self.btn_saveBz.setText(QCoreApplication.translate("MainWindow", u"\uc800\uc7a5", None))
+        self.tap_info.setTabText(self.tap_info.indexOf(self.tab_4), QCoreApplication.translate("MainWindow", u"\uc774\ubca4\ud2b8", None))
+        ___qtablewidgetitem3 = self.list_sch.horizontalHeaderItem(0)
+        ___qtablewidgetitem3.setText(QCoreApplication.translate("MainWindow", u"\uc0c8 \ud589", None));
         self.btn_addSch.setText(QCoreApplication.translate("MainWindow", u"\uc2e0\uaddc", None))
         self.btn_delSch.setText(QCoreApplication.translate("MainWindow", u"\uc0ad\uc81c", None))
         self.btn_saveSch.setText(QCoreApplication.translate("MainWindow", u"\uc800\uc7a5", None))
-        self.label_32.setText(QCoreApplication.translate("MainWindow", u"\ud328\ud0a4\uc9c0 \uba85", None))
+        self.label_38.setText(QCoreApplication.translate("MainWindow", u"\ud328\ud0a4\uc9c0 \uba85", None))
         self.sch_PKG_ID.setText("")
-        self.label_33.setText(QCoreApplication.translate("MainWindow", u"\uc2a4\ucf00\uc904 ID", None))
-        self.label_34.setText(QCoreApplication.translate("MainWindow", u"JOB", None))
-        self.label_35.setText(QCoreApplication.translate("MainWindow", u"\ucc98\ub9ac \ud578\ub4e4\ub7ec", None))
-        self.label_36.setText(QCoreApplication.translate("MainWindow", u"\uc0ac\uc6a9\uc5ec\ubd80", None))
-        self.label_37.setText(QCoreApplication.translate("MainWindow", u"desc", None))
-        self.ss_3.setText(QCoreApplication.translate("MainWindow", u"JOB TYPE", None))
-        self.tap_info.setTabText(self.tap_info.indexOf(self.tab_4), QCoreApplication.translate("MainWindow", u"\uc774\ubca4\ud2b8", None))
+        self.label_39.setText(QCoreApplication.translate("MainWindow", u"\uc2a4\ucf00\uc904 ID", None))
+        self.label_40.setText(QCoreApplication.translate("MainWindow", u"JOB", None))
+        self.label_41.setText(QCoreApplication.translate("MainWindow", u"\ucc98\ub9ac \ud578\ub4e4\ub7ec", None))
+        self.label_42.setText(QCoreApplication.translate("MainWindow", u"\uc0ac\uc6a9\uc5ec\ubd80", None))
+        self.label_43.setText(QCoreApplication.translate("MainWindow", u"desc", None))
+        self.ss_4.setText(QCoreApplication.translate("MainWindow", u"JOB TYPE", None))
+        self.tap_info.setTabText(self.tap_info.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"\uc2dc\uc2a4\ud15c", None))
     # retranslateUi
 

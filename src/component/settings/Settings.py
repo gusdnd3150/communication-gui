@@ -115,7 +115,8 @@ class Settings(QMainWindow):
                     if skItem.get(hd) is not None:
                         self.ui.list_sk.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
             self.ui.list_sk.cellClicked.connect(self.selectRow)
-
+            # self.ui.list_sk.cellChanged.connect(self.selectRow)
+            self.ui.list_sk.currentCellChanged.connect(self.selectRow)
         except Exception as e:
             logger.info(f'createGrid exception : {traceback.format_exc()}')
 
@@ -142,7 +143,7 @@ class Settings(QMainWindow):
             self.ui.sk_SK_PORT.setText(row_data['SK_PORT'])
             self.ui.sk_SK_DELIMIT_TYPE.setText(row_data['SK_DELIMIT_TYPE'])
             self.ui.sk_SK_DESC.setText(row_data['SK_DESC'])
-
+            self.ui.sk_SK_TYPE.setCurrentText(row_data['SK_TYPE'])
             self.ui.sk_USE_YN.setCurrentText(row_data['USE_YN'])
             self.ui.sk_SK_CONN_TYPE.setCurrentText(row_data['SK_CONN_TYPE'])
             self.ui.sk_SK_CLIENT_TYPE.setCurrentText(row_data['SK_CLIENT_TYPE'])
@@ -213,7 +214,7 @@ class Settings(QMainWindow):
                     if inItem.get(hd) is not None:
                         self.ui.list_in.setItem(row_count, j, QTableWidgetItem(str(inItem[hd])))
             self.ui.list_in.cellClicked.connect(self.selectInRow)
-
+            self.ui.list_in.currentCellChanged.connect(self.selectInRow)
         except Exception as e:
             logger.info(f'createGrid exception : {traceback.format_exc()}')
 
@@ -309,6 +310,7 @@ class Settings(QMainWindow):
                     if skItem.get(hd) is not None:
                         self.ui.msg_list.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
             self.ui.msg_list.cellClicked.connect(self.selectMsgRow)
+            self.ui.msg_list.currentCellChanged.connect(self.selectMsgRow)
         except Exception as e:
             logger.error(f'createMsgGrid exception : {traceback.format_exc()}')
 
@@ -510,7 +512,7 @@ class Settings(QMainWindow):
                     if inItem.get(hd) is not None:
                         self.ui.list_bz.setItem(row_count, j, QTableWidgetItem(str(inItem[hd])))
             self.ui.list_bz.cellClicked.connect(self.selectBzRow)
-
+            self.ui.list_bz.currentCellChanged.connect(self.selectBzRow)
         except Exception as e:
             logger.info(f'createBzGrid exception : {traceback.format_exc()}')
 
@@ -596,7 +598,7 @@ class Settings(QMainWindow):
                     if inItem.get(hd) is not None:
                         self.ui.list_sch.setItem(row_count, j, QTableWidgetItem(str(inItem[hd])))
             self.ui.list_sch.cellClicked.connect(self.selectSchRow)
-
+            self.ui.list_sch.currentCellChanged.connect(self.selectSchRow)
         except Exception as e:
             logger.info(f'createSchGrid exception : {traceback.format_exc()}')
 

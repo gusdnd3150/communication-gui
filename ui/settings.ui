@@ -56,7 +56,7 @@
     <item row="2" column="1">
      <widget class="QTabWidget" name="tap_info">
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -654,68 +654,13 @@
        <attribute name="title">
         <string>이벤트</string>
        </attribute>
-       <widget class="QLabel" name="label_6">
-        <property name="geometry">
-         <rect>
-          <x>9</x>
-          <y>9</y>
-          <width>101</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>이벤트 소켓 그룹</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_5">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>260</y>
-          <width>104</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>시스템 SCH 스케줄</string>
-        </property>
-       </widget>
        <widget class="QTableWidget" name="list_bz">
         <property name="geometry">
          <rect>
-          <x>10</x>
-          <y>30</y>
-          <width>821</width>
-          <height>211</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>맑은 고딕</family>
-          <pointsize>7</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="dragEnabled">
-         <bool>true</bool>
-        </property>
-        <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
-        </property>
-        <column>
-         <property name="text">
-          <string>새 행</string>
-         </property>
-        </column>
-       </widget>
-       <widget class="QTableWidget" name="list_sch">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>280</y>
-          <width>821</width>
-          <height>211</height>
+          <x>0</x>
+          <y>0</y>
+          <width>831</width>
+          <height>501</height>
          </rect>
         </property>
         <property name="font">
@@ -742,9 +687,9 @@
         <property name="geometry">
          <rect>
           <x>840</x>
-          <y>60</y>
+          <y>30</y>
           <width>271</width>
-          <height>281</height>
+          <height>471</height>
          </rect>
         </property>
         <layout class="QFormLayout" name="formLayout_5">
@@ -828,7 +773,7 @@
         <property name="geometry">
          <rect>
           <x>840</x>
-          <y>30</y>
+          <y>0</y>
           <width>155</width>
           <height>28</height>
          </rect>
@@ -857,16 +802,50 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="layoutWidget_4">
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>시스템</string>
+       </attribute>
+       <widget class="QTableWidget" name="list_sch">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>831</width>
+          <height>501</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>맑은 고딕</family>
+          <pointsize>7</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <column>
+         <property name="text">
+          <string>새 행</string>
+         </property>
+        </column>
+       </widget>
+       <widget class="QWidget" name="layoutWidget_5">
         <property name="geometry">
          <rect>
           <x>840</x>
-          <y>280</y>
+          <y>0</y>
           <width>155</width>
           <height>28</height>
          </rect>
         </property>
-        <layout class="QGridLayout" name="gridLayout_5">
+        <layout class="QGridLayout" name="gridLayout_6">
          <item row="0" column="0">
           <widget class="QToolButton" name="btn_addSch">
            <property name="text">
@@ -890,18 +869,18 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="formLayoutWidget_6">
+       <widget class="QWidget" name="formLayoutWidget_7">
         <property name="geometry">
          <rect>
           <x>840</x>
-          <y>310</y>
+          <y>30</y>
           <width>271</width>
-          <height>281</height>
+          <height>461</height>
          </rect>
         </property>
-        <layout class="QFormLayout" name="formLayout_6">
+        <layout class="QFormLayout" name="formLayout_7">
          <item row="0" column="0">
-          <widget class="QLabel" name="label_32">
+          <widget class="QLabel" name="label_38">
            <property name="text">
             <string>패키지 명</string>
            </property>
@@ -915,7 +894,7 @@
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="label_33">
+          <widget class="QLabel" name="label_39">
            <property name="text">
             <string>스케줄 ID</string>
            </property>
@@ -925,7 +904,7 @@
           <widget class="QLineEdit" name="sch_SCH_ID"/>
          </item>
          <item row="3" column="0">
-          <widget class="QLabel" name="label_34">
+          <widget class="QLabel" name="label_40">
            <property name="text">
             <string>JOB</string>
            </property>
@@ -935,7 +914,7 @@
           <widget class="QLineEdit" name="sch_SCH_JOB"/>
          </item>
          <item row="4" column="0">
-          <widget class="QLabel" name="label_35">
+          <widget class="QLabel" name="label_41">
            <property name="text">
             <string>처리 핸들러</string>
            </property>
@@ -945,7 +924,7 @@
           <widget class="QLineEdit" name="sch_BZ_METHOD"/>
          </item>
          <item row="5" column="0">
-          <widget class="QLabel" name="label_36">
+          <widget class="QLabel" name="label_42">
            <property name="text">
             <string>사용여부</string>
            </property>
@@ -955,7 +934,7 @@
           <widget class="QComboBox" name="sch_USE_YN"/>
          </item>
          <item row="6" column="0">
-          <widget class="QLabel" name="label_37">
+          <widget class="QLabel" name="label_43">
            <property name="text">
             <string>desc</string>
            </property>
@@ -965,7 +944,7 @@
           <widget class="QTextEdit" name="sch_SCH_DESC"/>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="ss_3">
+          <widget class="QLabel" name="ss_4">
            <property name="text">
             <string>JOB TYPE</string>
            </property>
