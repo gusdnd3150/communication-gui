@@ -2,6 +2,8 @@
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView
 from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit, QVBoxLayout, QWidget
+from PySide6.QtCore import QSize
+
 import sys
 import os
 import src.protocols.SendHandler as SendHandler
@@ -20,6 +22,7 @@ class Log(QMainWindow):
     skRow = None
     contFlag = 'upd'
     msgId = None
+    isChk = False
 
     def __init__(self, initData):
         super(Log, self).__init__()
@@ -27,31 +30,35 @@ class Log(QMainWindow):
         self.ui = Ui_Log()
         self.ui.setupUi(self)
         self.setWindowTitle('logging')
-
         self.setEvent()
-        # self.createMsgGrid(None,None)
 
 
     def setEvent(self):
+        # self.ui.log_text_log.setMaximumSize(QSize(10))
+
+        self.ui.log_btn_clear.clicked.connect(self.clickClear)
+        self.ui.log_chk_showlog.stateChanged.connect(self.setChk)
         self.ui.log_text_log.setReadOnly(True)  # 편집 불가능하도록 설정
-        # self.ui.log_text_log.setMaximumSize(1000)  # 최대 1000줄로 제한
-        text_edit_handler = QTextEditLogger(self.ui.log_text_log)
+        text_edit_handler = QTextEditLogger(self.ui.log_text_log, self)
         text_edit_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
         logging.getLogger().addHandler(text_edit_handler)
-        # # FileHandler 설정
-        # file_handler = logging.FileHandler("application.log")  # 로그 파일 설정
-        # file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-        # logging.getLogger().addHandler(file_handler)
-        # # 로그 레벨 설정
-        # logging.getLogger().setLevel(logging.DEBUG)
 
+    def setChk(self):
+        self.isChk = self.ui.log_chk_showlog.isChecked()
 
+    def clickClear(self):
+        logger.info(f'testsets')
+        self.ui.log_text_log.clear()
 
 class QTextEditLogger(logging.Handler):
-    def __init__(self, text_edit):
+    log = None
+
+    def __init__(self, text_edit, log):
         super().__init__()
         self.text_edit = text_edit
+        self.log = log
 
     def emit(self, record):
         msg = self.format(record)
         self.text_edit.append(msg)
+
