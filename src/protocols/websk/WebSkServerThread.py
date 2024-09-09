@@ -51,7 +51,7 @@ class WebSkServerThread(threading.Thread):
         self.logger = setup_sk_logger(self.skId)
         self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
 
-
+        self.loop = asyncio.new_event_loop()
 
         if (data.get('SK_GROUP') is not None):
             self.skGrp = data['SK_GROUP']
@@ -103,20 +103,20 @@ class WebSkServerThread(threading.Thread):
             for handler in handlers:
                 handler.close()
                 logger.removeHandler(handler)
-
             logging.getLogger(self.skId).handlers = []
 
-            self.loop.stop()
-            async def closeClient():
-                for skid, channel, thread in self.client_list:
-                    await channel.close()
-
-            closeClient()
-            for task in asyncio.all_tasks(self.loop):
-                self.logger.info(f'task = {task}')
-                task.cancel()
-            self.loop.close()
-
+            async def closeServer():
+                self.loop.stop()
+                try:
+                    for skid, channel, thread in self.client_list:
+                        await channel.close()
+                    for task in asyncio.all_tasks(self.loop):
+                        self.logger.info(f'task = {task}')
+                        task.cancel()
+                except:
+                    logger.error(f'stop Server exception: {traceback.format_exc()}')
+                self.loop.close()
+            asyncio.run(closeServer())
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
         finally:
@@ -127,7 +127,6 @@ class WebSkServerThread(threading.Thread):
     def initServer(self):
         try:
             moduleData.mainInstance.addServerRow(self.initData)
-            self.loop = asyncio.new_event_loop()
             async def runServer():
                 self.server = await websockets.serve(self.websocket_handler, self.skIp, self.skPort)
                 await asyncio.gather(
@@ -135,7 +134,6 @@ class WebSkServerThread(threading.Thread):
                 )
             self.loop.run_until_complete(runServer())
             self.loop.run_forever()
-
         except Exception:
             moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
             self.logger.error(f'WEB SOCKET SERVER Bind exception : SK_ID={self.skId}  : {traceback.format_exc()}')
@@ -173,8 +171,8 @@ class WebSkServerThread(threading.Thread):
 
         try:
             async for message in wesk:
+                reciveBytes = message.encode('utf-8')
                 try:
-                    reciveBytes = message.encode('utf-8')
                     readBytesCnt = self.codec.concyctencyCheck(reciveBytes)
                     if readBytesCnt == 0:
                         self.logger.info(f'concyctence error : {reciveBytes}')
@@ -188,10 +186,8 @@ class WebSkServerThread(threading.Thread):
                     data['TOTAL_BYTES'] = reciveBytes
                     reciveObj = {**chinfo, **data}
                     self.threadPoolExcutor(BzActivator2(reciveObj), '[Processing Received Data]')
-                    # await wesk.send(f"Echo: {message}")
                 except:
                     self.logger.error(f'websocket_handler error : {traceback.format_exc()}')
-
         except:
             self.logger.error(f'websocket_handler error : {traceback.format_exc()}')
         finally:
@@ -208,16 +204,6 @@ class WebSkServerThread(threading.Thread):
             if client_info in moduleData.runChannels:
                 moduleData.runChannels.remove(client_info)
             moduleData.mainInstance.updateConnList()
-
-
-
-    async def idleRead(self, client, timeout):
-        await asyncio.sleep(timeout)
-        self.logger.info(f'Checking idle clients...')
-        try:
-            client.ping()
-        except Exception as e:
-            self.logger.error(f'Error pinging client: {e}')
 
 
     def sendBytesToChannel(self, channel ,bytes):
