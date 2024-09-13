@@ -1,7 +1,6 @@
 
 import traceback
 from conf.logconfig import logger
-import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import Font, Border, Side, PatternFill
 

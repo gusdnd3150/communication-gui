@@ -13,7 +13,7 @@ from src.protocols.Client import Client
 import conf.skModule as moduleData
 from datetime import datetime
 from src.protocols.sch.BzSchedule2 import BzSchedule2
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 
 class ClientThread2(threading.Thread, Client):
 

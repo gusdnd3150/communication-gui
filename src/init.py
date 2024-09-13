@@ -1,8 +1,8 @@
 import sys
 import traceback
 import os
-from PySide6.QtWidgets import QMainWindow,  QTableWidgetItem, QHeaderView, QMessageBox, QListWidgetItem
-from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem, QTextCursor
+from PySide6.QtWidgets import QMainWindow,  QTableWidgetItem, QHeaderView, QMessageBox
+from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem
 from PySide6.QtCore import Qt
 from src.protocols.tcp.ServerThread2 import ServerThread2
 from src.protocols.tcp.ClientThread2 import ClientThread2
@@ -58,6 +58,8 @@ class InitClass(QMainWindow):
         logger.info('application start')
         self.setWindowTitle('application')
         self.ui.btn_settings.clicked.connect(self.open_settings)
+        # self.ui.btn_settings.setIcon()
+
         self.ui.btn_start.clicked.connect(self.start_sk)
         self.ui.btn_stop.clicked.connect(self.stop_sk)
         self.ui.btn_handler.clicked.connect(self.open_handler)

@@ -11,7 +11,7 @@ from src.protocols.BzActivator2 import BzActivator2
 import conf.skModule as moduleData
 
 from src.protocols.sch.BzSchedule2 import BzSchedule2
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 import time
 from datetime import datetime
 

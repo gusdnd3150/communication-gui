@@ -1,5 +1,3 @@
-
-from conf.logconfig import logger
 import threading
 import traceback
 import time

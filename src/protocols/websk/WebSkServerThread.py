@@ -1,18 +1,14 @@
 import traceback
 from conf.logconfig import *
 import threading
-
-import socket
 from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
 import conf.skModule as moduleData
 from src.protocols.sch.BzSchedule2 import BzSchedule2
 from src.protocols.BzActivator2 import BzActivator2
-from src.protocols import Server
 import asyncio
 import websockets
-from aiohttp import web
 from concurrent.futures import ThreadPoolExecutor
 
 import time

@@ -6,7 +6,6 @@ from src.protocols.msg.FreeCodec import FreeCodec
 from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
 import conf.skModule as moduleData
-from src.protocols.BzActivator import BzActivator
 from src.protocols.Client import Client
 
 class ClientUdpThread(threading.Thread,Client):

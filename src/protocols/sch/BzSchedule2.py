@@ -5,7 +5,7 @@ import traceback
 import time
 from src.protocols.BzActivator2 import BzActivator2
 import schedule
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 
 class BzSchedule2(threading.Thread):
 
