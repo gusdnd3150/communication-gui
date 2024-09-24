@@ -73,7 +73,7 @@ class InitClass(QMainWindow):
         # 설정팝업
         self.popup = Settings(self.initData)
         self.handlPop = Handler(self.initData)
-        self.logPop = Log(self.initData)
+        # self.logPop = Log(self.initData)
 
 
     def closeEvent(self, event):
@@ -385,10 +385,16 @@ class InitClass(QMainWindow):
         else:
             self.handlPop.show()
     def open_logger(self):
-        if self.logPop.isVisible():
-            self.logPop.hide()
-        else:
-            self.logPop.show()
+        # 열고 싶은 경로
+        path = r"../logs/"
+        current_path = os.getcwd()
+        logger.info(f'path : {current_path}')
+        # 경로 열기
+        os.startfile(f'{current_path}/logs')
+        # if self.logPop.isVisible():
+        #     self.logPop.hide()
+        # else:
+        #     self.logPop.show()
 
 
     def closeMain(self):
