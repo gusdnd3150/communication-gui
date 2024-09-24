@@ -140,6 +140,14 @@ def selectQueryAsInt(queryString):
     return rslt[0][0]
 
 
+def insertConnHis(skId, chInfo, flag):
+    try:
+        cnt = selectQueryAsInt('SELECT COUNT(1) FROM TB_SK_PKG_SK_CONN_HIS')
+        if cnt < 100: # 100 row만 관리
+            queryExecute(f"INSERT INTO TB_SK_PKG_SK_CONN_HIS(	SK_ID	,CONN_IP	,CONN_STAT	,REG_DT)VALUES(	'{skId}','{str(chInfo)}','{flag}'	,datetime('now','localtime'));")
+    except:
+        traceback.print_exc()
+
 
 def queryExecute(queryString):
     c = dbInstance.cursor()

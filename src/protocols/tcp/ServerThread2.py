@@ -159,6 +159,7 @@ class ServerThread2(threading.Thread, Server):
 
         moduleData.runChannels.append(client_info) # 전체
         moduleData.mainInstance.updateConnList()  # 연결 트리에 연결정보 추가
+        # moduleData.insertConnHis(self.skId,client_info,'connected')
 
         bzSch = None
         chinfo = {

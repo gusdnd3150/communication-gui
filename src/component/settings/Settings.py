@@ -115,8 +115,8 @@ class Settings(QMainWindow):
                     if skItem.get(hd) is not None:
                         self.ui.list_sk.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
             self.ui.list_sk.cellClicked.connect(self.selectRow)
-            # self.ui.list_sk.cellChanged.connect(self.selectRow)
             self.ui.list_sk.currentCellChanged.connect(self.selectRow)
+
         except Exception as e:
             logger.info(f'createGrid exception : {traceback.format_exc()}')
 
@@ -200,7 +200,7 @@ class Settings(QMainWindow):
     def createInGrid(self):
         try:
             headers = ['PKG_ID','SK_IN_SEQ','IN_SK_ID','IN_MSG_ID','BZ_METHOD','IN_DESC','USE_YN']
-            # self.ui.list_in.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+            self.ui.list_in.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
             self.ui.list_in.verticalHeader().setVisible(False)
 
             self.ui.list_in.setRowCount(0)  # Table의 행을 설정, list의 길이
@@ -497,7 +497,7 @@ class Settings(QMainWindow):
     def createBzGrid(self):
         try:
             headers = ['PKG_ID','SK_GROUP','BZ_TYPE','USE_YN','BZ_METHOD','SEC','BZ_DESC']
-            # self.ui.list_in.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+            self.ui.list_bz.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
             self.ui.list_bz.verticalHeader().setVisible(False)
 
             self.ui.list_bz.setRowCount(0)  # Table의 행을 설정, list의 길이

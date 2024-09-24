@@ -102,16 +102,21 @@ class WebSkServerThread(threading.Thread):
             logging.getLogger(self.skId).handlers = []
 
             async def closeServer():
-                self.loop.stop()
+
                 try:
                     for skid, channel, thread in self.client_list:
                         await channel.close()
+
+                    self.loop.stop()
+
                     for task in asyncio.all_tasks(self.loop):
                         self.logger.info(f'task = {task}')
                         task.cancel()
                 except:
                     logger.error(f'stop Server exception: {traceback.format_exc()}')
-                self.loop.close()
+                finally:
+                    self.loop.close()
+
             asyncio.run(closeServer())
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')

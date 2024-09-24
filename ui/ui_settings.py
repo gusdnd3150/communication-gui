@@ -219,7 +219,7 @@ class Ui_Settings(object):
         self.list_sk.setGeometry(QRect(0, 0, 801, 501))
         font1 = QFont()
         font1.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
-        font1.setPointSize(7)
+        font1.setPointSize(9)
         font1.setBold(True)
         self.list_sk.setFont(font1)
         self.list_sk.setProperty("showDropIndicator", False)

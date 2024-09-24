@@ -238,6 +238,7 @@ class InitClass(QMainWindow):
         self.ui.list_run_client.verticalHeader().setVisible(False)
         self.ui.list_run_client.setRowCount(0)  # Table의 행을 설정, list의 길이
         self.ui.list_run_client.setColumnCount(9)
+
         self.ui.list_run_client.setHorizontalHeaderLabels(
             [
                 'SK_ID',
@@ -276,7 +277,7 @@ class InitClass(QMainWindow):
             self.ui.list_run_server.setItem(row_count, 4, QTableWidgetItem(initData['HD_ID']))
             # self.ui.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_IP'])))
             item_sk_group = QTableWidgetItem(str(initData['SK_IP']))
-            item_sk_group.setForeground(QColor('#d87a7a'))
+            item_sk_group.setForeground(QColor('blue'))
             self.ui.list_run_server.setItem(row_count, 5, item_sk_group)
 
             self.ui.list_run_server.setItem(row_count, 6, QTableWidgetItem(str(initData['SK_PORT'])))

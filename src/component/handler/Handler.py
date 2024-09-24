@@ -1,5 +1,4 @@
 
-from PySide6.QtUiTools import QUiLoader
 from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView
 from PySide6.QtGui import QColor, QBrush
 import sys

@@ -107,6 +107,8 @@ class BlueToothClientThread(threading.Thread, Client):
         # 검색된 장비 출력
         print("Found {} devices.".format(len(devices)))
         for device in devices:
+            if device.address == self.skIp:
+                self.initClient()
             print(f"Device: {device.name}, Address: {device.address}")
 
     def run(self):

@@ -50,20 +50,16 @@ class Ui_MainWindow(object):
         font1 = QFont()
         font1.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
         self.btn_settings.setFont(font1)
-        self.btn_settings.setStyleSheet(u"QToolButton {\n"
-"    border: 1px solid #555555;\n"
-"    padding: 5px 10px;\n"
-"    border-radius: 5px;\n"
+        self.btn_settings.setStyleSheet(u"QPushButton {\n"
+"    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(27, 188, 194, 255), stop:1 rgba(24, 163, 168, 255));\n"
+"    border: none;\n"
+"    border-radius: 4px;\n"
+"    color: white;\n"
+"    padding: 5px\n"
 "}\n"
 "\n"
-"QToolButton:hover {\n"
-"    background-color: rgb(240, 233, 232);\n"
-"    border: 1px solid #666666;\n"
-"}\n"
-"\n"
-"QToolButton:pressed {\n"
-"    background-color: rgb(199, 199, 199);\n"
-"    border: 1px solid #444444;\n"
+"QPushButton:hover {\n"
+"    background-color: #169499;\n"
 "}")
 
         self.gridLayout.addWidget(self.btn_settings, 0, 3, 1, 1)
@@ -95,20 +91,16 @@ class Ui_MainWindow(object):
 
         self.btn_handler = QToolButton(self.centralwidget)
         self.btn_handler.setObjectName(u"btn_handler")
-        self.btn_handler.setStyleSheet(u"QToolButton {\n"
-"    border: 1px solid #555555;\n"
-"    padding: 5px 10px;\n"
-"    border-radius: 5px;\n"
+        self.btn_handler.setStyleSheet(u"QPushButton {\n"
+"    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(27, 188, 194, 255), stop:1 rgba(24, 163, 168, 255));\n"
+"    border: none;\n"
+"    border-radius: 4px;\n"
+"    color: white;\n"
+"    padding: 5px\n"
 "}\n"
 "\n"
-"QToolButton:hover {\n"
-"    background-color: rgb(240, 233, 232);\n"
-"    border: 1px solid #666666;\n"
-"}\n"
-"\n"
-"QToolButton:pressed {\n"
-"    background-color: rgb(199, 199, 199);\n"
-"    border: 1px solid #444444;\n"
+"QPushButton:hover {\n"
+"    background-color: #169499;\n"
 "}")
 
         self.gridLayout.addWidget(self.btn_handler, 0, 4, 1, 1)
@@ -118,21 +110,15 @@ class Ui_MainWindow(object):
         self.btn_start.setMaximumSize(QSize(200, 16777215))
         self.btn_start.setFont(font)
         self.btn_start.setStyleSheet(u"QPushButton {\n"
-"    background-color: rgb(11, 230, 0);\n"
-"    color: black;\n"
-"    border: 1px solid #555555;\n"
-"    padding: 5px 10px;\n"
-"    border-radius: 5px;\n"
+"    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(27, 188, 194, 255), stop:1 rgba(24, 163, 168, 255));\n"
+"    border: none;\n"
+"    border-radius: 4px;\n"
+"    color: white;\n"
+"    padding: 5px\n"
 "}\n"
 "\n"
 "QPushButton:hover {\n"
-"    background-color: rgb(80, 190, 11);\n"
-"    border: 1px solid #666666;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: rgb(7, 143, 0);\n"
-"    border: 1px solid #444444;\n"
+"    background-color: #169499;\n"
 "}")
 
         self.gridLayout.addWidget(self.btn_start, 0, 1, 1, 1)
@@ -140,42 +126,40 @@ class Ui_MainWindow(object):
         self.btn_stop = QPushButton(self.centralwidget)
         self.btn_stop.setObjectName(u"btn_stop")
         self.btn_stop.setMaximumSize(QSize(200, 16777215))
-        self.btn_stop.setStyleSheet(u"QPushButton {\n"
-"    background-color: rgb(180, 74, 3);\n"
+        font2 = QFont()
+        font2.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
+        font2.setBold(True)
+        font2.setUnderline(False)
+        font2.setStrikeOut(False)
+        self.btn_stop.setFont(font2)
+        self.btn_stop.setStyleSheet(u"/* \uc77c\ubc18 \ubc84\ud2bc \uc2a4\ud0c0\uc77c */\n"
+"QPushButton {\n"
+"    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(250, 90, 90, 255), stop:1 rgba(232, 81, 81, 255));\n"
+"    border: none;\n"
+"    border-radius: 4px;\n"
 "    color: white;\n"
-"    border: 1px solid #555555;\n"
-"    padding: 5px 10px;\n"
-"    border-radius: 5px;\n"
+"    padding: 5px\n"
 "}\n"
 "\n"
+"/* Hover \uc0c1\ud0dc\uc5d0\uc11c \ubc30\uacbd\uc0c9 \ubcc0\uacbd */\n"
 "QPushButton:hover {\n"
-"    background-color: rgb(255, 74, 74);\n"
-"    border: 1px solid #666666;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: rgb(255, 74, 74);\n"
-"    border: 1px solid #444444;\n"
+"    background-color: #E35252;\n"
 "}")
 
         self.gridLayout.addWidget(self.btn_stop, 0, 2, 1, 1)
 
         self.btn_show_log = QToolButton(self.centralwidget)
         self.btn_show_log.setObjectName(u"btn_show_log")
-        self.btn_show_log.setStyleSheet(u"QToolButton {\n"
-"    border: 1px solid #555555;\n"
-"    padding: 5px 10px;\n"
-"    border-radius: 5px;\n"
+        self.btn_show_log.setStyleSheet(u"QPushButton {\n"
+"    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(27, 188, 194, 255), stop:1 rgba(24, 163, 168, 255));\n"
+"    border: none;\n"
+"    border-radius: 4px;\n"
+"    color: white;\n"
+"    padding: 5px\n"
 "}\n"
 "\n"
-"QToolButton:hover {\n"
-"    background-color: rgb(240, 233, 232);\n"
-"    border: 1px solid #666666;\n"
-"}\n"
-"\n"
-"QToolButton:pressed {\n"
-"    background-color: rgb(199, 199, 199);\n"
-"    border: 1px solid #444444;\n"
+"QPushButton:hover {\n"
+"    background-color: #169499;\n"
 "}")
 
         self.gridLayout.addWidget(self.btn_show_log, 0, 5, 1, 1)
@@ -199,19 +183,22 @@ class Ui_MainWindow(object):
         self.list_run_server = QTableWidget(self.centralwidget)
         self.list_run_server.setObjectName(u"list_run_server")
         self.list_run_server.setMaximumSize(QSize(16777215, 200))
-        font2 = QFont()
-        font2.setPointSize(8)
-        font2.setBold(False)
-        self.list_run_server.setFont(font2)
+        font3 = QFont()
+        font3.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
+        font3.setPointSize(9)
+        font3.setBold(False)
+        font3.setItalic(False)
+        self.list_run_server.setFont(font3)
         self.list_run_server.setAcceptDrops(False)
         self.list_run_server.setAutoFillBackground(True)
-        self.list_run_server.setStyleSheet(u"")
+        self.list_run_server.setStyleSheet(u"font: 9pt \"\ub9d1\uc740 \uace0\ub515\";")
         self.list_run_server.setDragEnabled(False)
         self.list_run_server.setDragDropOverwriteMode(False)
         self.list_run_server.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.list_run_server.setShowGrid(True)
-        self.list_run_server.setSortingEnabled(True)
-        self.list_run_server.verticalHeader().setDefaultSectionSize(41)
+        self.list_run_server.setSortingEnabled(False)
+        self.list_run_server.horizontalHeader().setProperty("showSortIndicator", False)
+        self.list_run_server.verticalHeader().setDefaultSectionSize(30)
 
         self.verticalLayout.addWidget(self.list_run_server)
 
@@ -231,12 +218,11 @@ class Ui_MainWindow(object):
         self.list_run_client = QTableWidget(self.centralwidget)
         self.list_run_client.setObjectName(u"list_run_client")
         self.list_run_client.setMaximumSize(QSize(16777215, 200))
-        font3 = QFont()
-        font3.setPointSize(8)
         self.list_run_client.setFont(font3)
-        self.list_run_client.setStyleSheet(u"")
-        self.list_run_client.setTabKeyNavigation(False)
-        self.list_run_client.setProperty("showDropIndicator", False)
+        self.list_run_client.setAutoFillBackground(True)
+        self.list_run_client.setStyleSheet(u"font: 9pt \"\ub9d1\uc740 \uace0\ub515\";")
+        self.list_run_client.setTabKeyNavigation(True)
+        self.list_run_client.setProperty("showDropIndicator", True)
         self.list_run_client.setDragDropOverwriteMode(False)
         self.list_run_client.setSelectionBehavior(QAbstractItemView.SelectRows)
 
@@ -303,7 +289,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 556, 21))
+        self.menubar.setGeometry(QRect(0, 0, 556, 22))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -320,10 +306,10 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.btn_settings.setText(QCoreApplication.translate("MainWindow", u"settings", None))
-        self.btn_handler.setText(QCoreApplication.translate("MainWindow", u"Handler", None))
-        self.btn_start.setText(QCoreApplication.translate("MainWindow", u"Run Application", None))
-        self.btn_stop.setText(QCoreApplication.translate("MainWindow", u"Stop Application", None))
-        self.btn_show_log.setText(QCoreApplication.translate("MainWindow", u"Log", None))
+        self.btn_handler.setText(QCoreApplication.translate("MainWindow", u"handler", None))
+        self.btn_start.setText(QCoreApplication.translate("MainWindow", u"run", None))
+        self.btn_stop.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
+        self.btn_show_log.setText(QCoreApplication.translate("MainWindow", u"log", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"[ Server ]", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"[ Client ]", None))
         self.ddddd.setTabText(self.ddddd.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Connection List", None))
