@@ -147,6 +147,7 @@ class Handler(QMainWindow):
 
             skId = self.ui.combo_sk_list.currentText()
 
+            print(f'resultObj : {resultObj}')
             SendHandler.sendSkId(self,skId,self.msgId,resultObj)
         except:
             logger.error(f'sendMsg error : {traceback.format_exc()}')

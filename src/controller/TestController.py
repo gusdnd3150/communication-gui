@@ -80,13 +80,12 @@ class TestController():
     def active(self, reciveObj):
         skLogger = reciveObj['LOGGER']
         Channel = reciveObj['CHANNEL']
-        returnJson = {}
+        skLogger.info('active gogo')
         try:
+            returnJson = {}
             # skLogger.info(f'[RECIVE TOTAL_BYTES] : {str(reciveObj["TOTAL_BYTES"])}')
             # skLogger.info(f'[RECIVE OBJ] : {reciveObj}')
             # returnJson['LINE_SIGN'] = '2'
-            time.sleep(5)
-            skLogger.info(f'22222222222')
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {e}')
 
@@ -149,6 +148,5 @@ class TestController():
         try:
             returnJson['LINE_SIGN'] = '2'
             self.sendHandler.sendSkId('이벤트', 'LINE_SIGNAL', returnJson)
-            logger.info('ssss')
         except Exception as e:
             skLogger.error(f'TestController.reciveObj() Exception :: {traceback.format_exc()}')

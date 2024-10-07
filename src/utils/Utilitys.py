@@ -29,7 +29,7 @@ def encodeToBytes(data, type):
             int_data = int(data)
             return int_data
         elif type == 'BYTE':
-            byte_data = int(data, 16)  # 16진수 문자열을 정수로 변환
+            byte_data = int(data, 16).to_bytes(1, byteorder='big')  # 16진수 문자열을 바이트로 변환
             return bytes([byte_data])
         elif type == 'BYTES':
             return bytes.fromhex(data)

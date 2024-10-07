@@ -287,7 +287,7 @@ class ClientThread2(threading.Thread, Client):
             else:
                 self.logger.info(f'SK_ID:{self.skId} has no connection')
         except Exception as e:
-            self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+            self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {traceback.format_exc()}')
 
     def sendMsgToChannel(self, channel, obj):
         try:

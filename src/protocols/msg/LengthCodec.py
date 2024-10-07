@@ -170,6 +170,10 @@ class LengthCodec():
             if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
                 headerBytes.extend(encodeDataToBytes(totalLen, hd['DT_TYPE'], hd['DT_LEN'], '0'))
             elif hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
+                print(f'headerBytes : f{msgKeyVal} f{msgKeyType} f{msgKeyLen}' )
+                if msgKeyType == 'BYTE': # '0x00' 형식의 16진수 문자열
+                    msgKeyVal = int(msgKeyVal, 16).to_bytes(1, byteorder='big')
+                    msgKeyLen = 1
                 headerBytes.extend(encodeDataToBytes(msgKeyVal, msgKeyType, msgKeyLen))
             else:
                 value = None

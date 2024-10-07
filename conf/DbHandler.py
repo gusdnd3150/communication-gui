@@ -23,9 +23,11 @@ class Dbhandler():
 
 
     def getTables(self):
+        print('getTables')
         tables = []
         try:
-            tables = self.selectQuery(getTables(self.dbUser))
+            query = getTables(self.dbUser)
+            tables = self.selectQuery(query)
             for i, item in enumerate(tables):
                 item['COL_INFO'] = self.selectQuery(getColunmsByTable(item['TABLE_NAME'], self.dbUser))
                 item['TABLE_INDEX'] = self.selectQuery(getTableIndexes(item['TABLE_NAME'], self.dbUser))
