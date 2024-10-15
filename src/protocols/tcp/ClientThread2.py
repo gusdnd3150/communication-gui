@@ -268,11 +268,12 @@ class ClientThread2(threading.Thread, Client):
 
     def sendBytesToChannel(self,channel, bytes):
         try:
-            channel.sendall(bytes + self.delimiter)
+            sendBytes = bytes + self.delimiter
+            channel.sendall(sendBytes)
             if self.skLogYn:
-                decimal_string = ' '.join(str(byte) for byte in bytes)
-                self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{decimal_string}]')
-                # moduleData.mainInstance.insertLog(self.skId, bytes, 'OUT')
+                decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+
         except:
             self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {traceback.format_exc()}')
 

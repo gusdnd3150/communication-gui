@@ -42,17 +42,12 @@ class TempController:
         skLogger = reciveObj['LOGGER']
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
-
+        skId = reciveObj['SK_ID']
         try:
-            returnJson = {}
-            returnJson['MSG_ID'] = 'TOOL_ATL_KEEP_9999'
-            returnJson['REV'] = '001'
-            returnJson['SPARE'] = '0    00  '
-            # test = '002099990010    00  '.encode('utf-8') + b'\x00'
-            # channel.sendall(test)
-            thread.sendMsgToChannel(channel, returnJson)
+
+            thread.sendBytesToChannel(channel, '002099990010    00  '.encode('utf-8'))
         except Exception as e:
-            skLogger.error(f'sendKeepAlive Exception :: {e}')
+            skLogger.error(f'TempController.sendKeepAlive() Exception :: {e}')
 
 
 
@@ -61,16 +56,11 @@ class TempController:
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         skId = reciveObj['SK_ID']
-        skLogger.info(f'TempController.active - {skId} recive KeepAlive')
 
-        returnJson = {}
-        returnJson['MSG_ID'] = 'TOOL_ATL_ACTV_REQ_0001'
-        # returnJson['REV'] = '001'
-        # returnJson['SPARE'] = '0    00  '
         try:
-            thread.sendMsgToChannel(channel, returnJson)
+            thread.sendBytesToChannel(channel, '002000010010    00  '.encode('utf-8'))
         except Exception as e:
-            skLogger.error(f'active Exception :: {e}')
+            skLogger.error(f'TempController.active() Exception :: {e}')
 
     def recive9999(self, reciveObj):
         try:
@@ -80,50 +70,42 @@ class TempController:
 
             returnJson = {}
             skId = reciveObj['SK_ID']
-            skLogger.info(f'TempController.recive9999 - {skId} recive KeepAlive')
-            # thread.sendMsgToChannel(channel, returnJson)
-            # thread.sendBytesToChannel(channel, '00200105000000000000'.encode('utf-8'))
-        except Exception as e:
-            skLogger.error(f'recive0002 Exception :: {e}')
 
+        except Exception as e:
+            skLogger.error(f'TempController.recive9999() Exception :: {e}')
+
+
+    # '00570002001 0000    010000020003                         '
     def recive0002(self, reciveObj):
         skLogger = reciveObj['LOGGER']
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         skId = reciveObj['SK_ID']
-        skLogger.info(f'TempController.recive0002 - {skId} recive 0002')
-        returnJson = {}
+        total = str(reciveObj['TOTAL_BYTES'])
 
-        returnJson = {}
-        # returnJson['MSG_ID'] = 'TOOL_ATL_CNN_SET_REQ_0060'
-        returnJson['MSG_ID'] = 'TOOL_ATL_CNN_SET_REQ_0105'
-        returnJson['REV'] = '000'
-        returnJson['SPARE'] = '000000000'
         try:
             # thread.sendMsgToChannel(channel, returnJson)
             thread.sendBytesToChannel(channel, '00200105000000000000'.encode('utf-8'))
         except Exception as e:
-            skLogger.error(f'recive0002 Exception :: {e}')
+            skLogger.error(f'TempController.recive0002() Exception :: {e}')
 
     def idle(self, reciveObj):
         skLogger = reciveObj['LOGGER']
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         skId = reciveObj['SK_ID']
-        skLogger.info(f'TempController.idle - {skId} idle')
 
         self.accept0001Ch.remove(channel)
         try:
             channel.close()
         except Exception as e:
-            skLogger.error(f'idle Exception :: {e}')
+            skLogger.error(f'TempController.idle() Exception :: {e}')
 
     def recive0061(self, reciveObj):
         skLogger = reciveObj['LOGGER']
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         skId = reciveObj['SK_ID']
-        skLogger.info(f'TempController.recive0061 {skId} result :: {reciveObj}')
         returnJson = {}
         returnJson['MSG_ID'] = 'ATL_PF_RSLT_ACK_AND_REV_0062'
         returnJson['REV'] = '001'
@@ -131,35 +113,18 @@ class TempController:
         try:
             thread.sendMsgToChannel(channel, returnJson)
         except Exception as e:
-            skLogger.error(f'recive0061 Exception :: {e}')
+            skLogger.error(f'TempController.recive0061() Exception :: {e}')
+
 
     def inactive(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
-        channel = reciveObj['CHANNEL']
-
         try:
-            skLogger.info(f'channel inactive : {channel}')
+            skLogger = reciveObj['LOGGER']
+            channel = reciveObj['CHANNEL']
+
         except Exception as e:
-            skLogger.error(f'inactive.test() Exception :: {e}')
+            skLogger.error(f'TempController.inactive() Exception :: {e}')
 
-    def recive0001(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
-        channel = reciveObj['CHANNEL']
-        # self.accept0001Ch.append(channel)
-        try:
 
-            returnJson = {}
-            returnJson['REV'] = '001'
-            returnJson['SPARE'] = '0    00  '
-            returnJson['ATLAS_COUNT'] = '11'
-            returnJson['CELL_ID'] = '1234'
-            returnJson['CHANNEL_ID'] = '88'
-            returnJson['CTRL_NM'] = '1234567890123456789012345'
-
-            skLogger.info(f'channel inactive : {channel}')
-            self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_ACTV_RES_0002', returnJson)
-        except Exception as e:
-            skLogger.error(f'inactive.test() Exception :: {e}')
 
     def recive0005(self, reciveObj):
         skLogger = reciveObj['LOGGER']
@@ -194,78 +159,31 @@ class TempController:
 
             # self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_RES_0005', returnJson)
         except Exception as e:
-            skLogger.error(f' recive0005 Exception :: {e}')
-
-    def recive0060(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
-        channel = reciveObj['CHANNEL']
-        thread = reciveObj['THREAD']
-        # self.accept0001Ch.append(channel)
-        try:
-
-            returnJson = {}
-            returnJson['MSG_ID'] = 'TOOL_ATL_RES_0005'
-            returnJson['REV'] = '001'
-            returnJson['SPARE'] = '0    00  '
-            returnJson['MID_RES'] = reciveObj['MSG_ID']
-            thread.sendMsgToChannel(channel, returnJson)
-        except Exception as e:
-            skLogger.error(f'inactive.test() Exception :: {e}')
-
-    def recive0062(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
-        channel = reciveObj['CHANNEL']
-        thread = reciveObj['THREAD']
-
-        # self.accept0001Ch.append(channel)
-        try:
-            returnJson = {}
-            returnJson['MSG_ID'] = 'TOOL_ATL_RES_0005'
-            returnJson['REV'] = '001'
-            returnJson['SPARE'] = '0    00  '
-            returnJson['MID_RES'] = reciveObj['MSG_ID']
-            thread.sendMsgToChannel(channel, returnJson)
-        except Exception as e:
-            skLogger.error(f'inactive.test() Exception :: {e}')
+            skLogger.error(f'TempController.recive0005() Exception :: {e}')
 
 
+
+
+
+    # '05380106            01060201030008177966040105LH Tire Wheel       062024-10-10:16:56:52070108Mode 01             09110011                                        1205130114115116117137.8991848.525519150.00020110.00021500.00022       130214115116117136.3491847.201319150.00020110.00021500.00022       130314115116117135.9581850.285019150.00020110.00021500.00022       130414115116117135.7501854.940119150.00020110.00021500.00022       130514115116117135.7501848.146719150.00020110.00021500.00022       2301Data No Station     I 100000037015'
     def recive0106(self, reciveObj):
         skLogger = reciveObj['LOGGER']
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         skId = reciveObj['SK_ID']
-        skLogger.info(f'TempController.recive0106 {skId} result totalbytes :: {reciveObj["TOTAL_BYTES"]}')
-        # self.accept0001Ch.append(channel)
         try:
-
             thread.sendBytesToChannel(channel, '002101080000000000001'.encode('utf-8'))
         except Exception as e:
-            skLogger.error(f'inactive.test() Exception :: {e}')
+            skLogger.error(f'TempController.recive0106() Exception :: {e}')
 
 
     def recive0107(self, reciveObj):
         skLogger = reciveObj['LOGGER']
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
-
         skId = reciveObj['SK_ID']
-        skLogger.info(f'TempController.recive0107 {skId} result totalbytes :: {reciveObj["TOTAL_BYTES"]}')
-
-        # self.accept0001Ch.append(channel)
         try:
             thread.sendBytesToChannel(channel, '002101080000000000001'.encode('utf-8'))
         except Exception as e:
-            skLogger.error(f'inactive.test() Exception :: {e}')
+            skLogger.error(f'TempController.recive0107() Exception :: {e}')
 
-    def reciveOtherBytes(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
-        channel = reciveObj['CHANNEL']
-        thread = reciveObj['THREAD']
-        # self.accept0001Ch.append(channel)
-        try:
-            returnJson = {}
-            returnJson['REV'] = '001'
-            returnJson['SPARE'] = '0    00  '
-            thread.sendBytesToChannel(channel, 'tttt'.encode('utf-8'))
-        except Exception as e:
-            skLogger.error(f'reciveOtherBytes Exception :: {e}')
