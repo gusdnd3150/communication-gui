@@ -6,13 +6,13 @@ import traceback
 class AtlasCopco():
 
     # guide
-    # 1. logger 는 전역 로그, reciveObj['LOGGER'] 는 해당 소켓의 로그를 출력한다
-    # 2. 각 reciveObj에는 ['CHANNEL'] 이 포함되어있다
-    # 2.1 tcp/udp 는 sendall 로, 웹소켓은 다이렉트로 보낼 수 없다.(즉 sendHandler를 이용)
-    # # returnBytes = THREAD.encodeSendData(returnJson)
-    # channel.sendall(returnBytes)
-    # self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_KEEP_9999', returnJson)
-    # self.sendHandler.sendSkId('아틀라스콥코', 'TOOL_ATL_KEEP', returnJson)
+    # 데이터 전송 방법
+    # skLogger = reciveObj['LOGGER']
+    # Channel = reciveObj['CHANNEL']
+    # thread = reciveObj['THREAD']
+    # 1. SendHandler.sendSkId(skId, msgId, data)
+    # 2. thread.sendBytesToChannel(channel, '00200105000000000000'.encode('utf-8'))
+    # 3. thread.sendMsgToChannel(channel, map) // map 안    MSG_ID    키: 값이    있어야함
 
     sendHandler = None
 
@@ -66,12 +66,11 @@ class AtlasCopco():
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         returnJson = {}
+        returnJson['MSG_ID'] = 'TOOL_ATL_KEEP_9999'
         returnJson['REV'] = reciveObj['REV']
         returnJson['SPARE'] = reciveObj['SPARE']
-
         try:
-            pass
-            # self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_KEEP_9999', returnJson)
+            thread.sendMsgToChannel(channel, returnJson)
         except Exception as e:
             skLogger.error(f'revKeepAlive Exception :: {e}')
 
@@ -82,8 +81,8 @@ class AtlasCopco():
 
         returnJson = {}
         returnJson['MSG_ID'] = 'TOOL_ATL_ACTV_REQ_0001'
-        returnJson['REV'] = '001'
-        returnJson['SPARE'] = '0    00  '
+        # returnJson['REV'] = '001'
+        # returnJson['SPARE'] = '0    00  '
         try:
             thread.sendMsgToChannel(channel, returnJson)
         except Exception as e:
@@ -97,12 +96,23 @@ class AtlasCopco():
         self.accept0001Ch.append(channel)
         returnJson = {}
         returnJson['MSG_ID'] = 'TOOL_ATL_CNN_SET_REQ_0060'
-        returnJson['REV'] = '001'
-        returnJson['SPARE'] = '0    00  '
+        # returnJson['REV'] = '001'
+        # returnJson['SPARE'] = '0    00  '
         try:
             thread.sendMsgToChannel(channel, returnJson)
         except Exception as e:
             skLogger.error(f'recive0002 Exception :: {e}')
+
+    def idle(self, reciveObj):
+        skLogger = reciveObj['LOGGER']
+        channel = reciveObj['CHANNEL']
+        thread = reciveObj['THREAD']
+        self.accept0001Ch.remove(channel)
+        try:
+            channel.close()
+        except Exception as e:
+            skLogger.error(f'idle Exception :: {e}')
+
 
     def recive0061(self, reciveObj):
         skLogger = reciveObj['LOGGER']
@@ -117,17 +127,6 @@ class AtlasCopco():
             thread.sendMsgToChannel(channel, returnJson)
         except Exception as e:
             skLogger.error(f'recive0061 Exception :: {e}')
-
-
-    def idle(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
-        channel = reciveObj['CHANNEL']
-        thread = reciveObj['THREAD']
-        self.accept0001Ch.remove(channel)
-        try:
-            channel.close()
-        except Exception as e:
-            skLogger.error(f'idle Exception :: {e}')
 
     def inactive(self, reciveObj):
         skLogger = reciveObj['LOGGER']

@@ -6,10 +6,14 @@ import conf.skModule as initData
 class SchController():
 
     # guide
-    # 1. logger 는 전역 로그, reciveObj['LOGGER'] 는 해당 소켓의 로그를 출력한다
-    # 2. 각 reciveObj에는 ['CHANNEL'] 이 포함되어있다
-    # 2.1 tcp/udp 는 sendall 로, 웹소켓은 다이렉트로 보낼 수 없다.(즉 sendHandler를 이용)
-    # 3.
+    # 데이터 전송 방법
+    # skLogger = reciveObj['LOGGER']
+    # Channel = reciveObj['CHANNEL']
+    # thread = reciveObj['THREAD']
+    # 1. SendHandler.sendSkId(skId, msgId, data)
+    # 2. thread.sendBytesToChannel(channel, '00200105000000000000'.encode('utf-8'))
+    # 3. thread.sendMsgToChannel(channel, map) // map 안    MSG_ID    키: 값이    있어야함
+
     sendHandler = None
     def __init__(self):
         logger.info('init schController')

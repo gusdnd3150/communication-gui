@@ -160,11 +160,13 @@ class WebSkServerThread(threading.Thread):
         # ACTIVE 이벤트처리
         if self.bzActive is not None:
             avtive_dict = {**chinfo, **self.bzActive}
-            self.threadPoolExcutor(BzActivator2(avtive_dict), '[ACTIVE Channel]')
+            self.logger.info(f'{self.skId} : [ACTIVE CHANNEL EVENT START]')
+            self.threadPoolExcutor(BzActivator2(avtive_dict))
 
         # KEEP 처리
         if self.bzKeep is not None:
             keep_dict = {**chinfo, **self.bzKeep}
+            self.logger.info(f'{self.skId} : [KEEP CHANNEL EVENT START]')
             bzSch = BzSchedule2(keep_dict)
             bzSch.daemon = True
             bzSch.start()
@@ -186,7 +188,7 @@ class WebSkServerThread(threading.Thread):
                     data = self.codec.decodeRecieData(reciveBytes)
                     data['TOTAL_BYTES'] = reciveBytes
                     reciveObj = {**chinfo, **data}
-                    self.threadPoolExcutor(BzActivator2(reciveObj), '[Processing Received Data]')
+                    self.threadPoolExcutor(BzActivator2(reciveObj))
                 except:
                     self.logger.error(f'websocket_handler error : {traceback.format_exc()}')
         except:
@@ -266,16 +268,16 @@ class WebSkServerThread(threading.Thread):
 
 
 
-    def threadPoolExcutor(self, instance, msg):
+    def threadPoolExcutor(self, instance):
         try:
-            start_time = time.time()
+            # start_time = time.time()
             futures = self.executor.submit(instance.run)
             # result = futures.result() #다른 스레드에 영향을 미침
 
             # 운영시 비권장 futures의 블락을 우회하기위해 스레드 선언
-            result_thread = threading.Thread(target=self.process_result, args=(futures, msg, start_time,))
-            result_thread.daemon = True
-            result_thread.start()
+            # result_thread = threading.Thread(target=self.process_result, args=(futures, msg, start_time,))
+            # result_thread.daemon = True
+            # result_thread.start()
         except:
             self.logger.info(f'threadPoolExcutor exception : SK_ID:{self.skId} - {traceback.format_exc()}')
 

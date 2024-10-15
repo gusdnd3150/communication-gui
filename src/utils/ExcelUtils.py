@@ -10,13 +10,6 @@ class ExcelUtils():
     def __init__(self):
         logger.info('--')
 
-    def test(self):
-        try:
-            logger.info('ddddddd')
-
-        except Exception as e:
-            logger.error(f'test error : {traceback.format_exc()}')
-
 
     def makeTableList(self, tables):
         try:
