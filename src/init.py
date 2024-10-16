@@ -84,9 +84,7 @@ class InitClass(QMainWindow):
 
     def updateConnList(self):
         try:
-            logger.info(f'test')
             self.workThread.start()
-            logger.info(f'test done')
         except:
             traceback.print_exception()
 
@@ -417,7 +415,7 @@ class InitClass(QMainWindow):
 
     @Slot()
     def workUpdateConnList(self):
-        logger.info(f'dddddddddddddd')
+
         try:
             self.treeModel.clear()  # 모델의 모든 항목 제거
             # self.treeModel.setHorizontalHeaderLabels(["SK_ID", "Description"])  # 헤더 다시 설정
