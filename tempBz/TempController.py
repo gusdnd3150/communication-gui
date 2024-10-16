@@ -94,8 +94,6 @@ class TempController:
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         skId = reciveObj['SK_ID']
-
-        self.accept0001Ch.remove(channel)
         try:
             channel.close()
         except Exception as e:
@@ -183,7 +181,7 @@ class TempController:
         thread = reciveObj['THREAD']
         skId = reciveObj['SK_ID']
         try:
-            thread.sendBytesToChannel(channel, '002101080000000000001'.encode('utf-8'))
+            thread.sendBytesToChannel(channel, '002101080000000000000'.encode('utf-8'))
         except Exception as e:
             skLogger.error(f'TempController.recive0107() Exception :: {e}')
 

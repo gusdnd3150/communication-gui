@@ -22,7 +22,8 @@ from src.protocols.websk.WebSkClientThread import WebSkClientThread
 from src.protocols.sch.Schedule import Schedule
 from src.protocols.bluetooth.BlueToothServerThread import BlueToothServerThread
 from src.protocols.bluetooth.BlueToothClientThread import BlueToothClientThread
-
+from PySide6.QtCore import QThread, Signal, Slot
+from src.WorkThread import WorkThread
 import time
 from datetime import datetime
 from ui.ui_main import Ui_MainWindow
@@ -50,6 +51,7 @@ class InitClass(QMainWindow):
     isRunSk = False
     treeModel = None
     root_node = None
+    workThread = None # 실시간성 GUI 수정작업을 스레드를 통해 진행
 
     def __init__(self):
         super(InitClass, self).__init__()
@@ -58,7 +60,10 @@ class InitClass(QMainWindow):
         logger.info('application start')
         self.setWindowTitle('application')
         self.ui.btn_settings.clicked.connect(self.open_settings)
-        # self.ui.btn_settings.setIcon()
+
+        self.workThread = WorkThread()
+        self.workThread.updateConnList.connect(self.workUpdateConnList)
+
 
         self.ui.btn_start.clicked.connect(self.start_sk)
         self.ui.btn_stop.clicked.connect(self.stop_sk)
@@ -74,6 +79,16 @@ class InitClass(QMainWindow):
         self.popup = Settings(self.initData)
         self.handlPop = Handler(self.initData)
         # self.logPop = Log(self.initData)
+
+
+
+    def updateConnList(self):
+        try:
+            logger.info(f'test')
+            self.workThread.start()
+            logger.info(f'test done')
+        except:
+            traceback.print_exception()
 
 
     def closeEvent(self, event):
@@ -400,9 +415,9 @@ class InitClass(QMainWindow):
     def closeMain(self):
         logger.info(f'close ``````````````````````````')
 
-
-
-    def updateConnList(self):
+    @Slot()
+    def workUpdateConnList(self):
+        logger.info(f'dddddddddddddd')
         try:
             self.treeModel.clear()  # 모델의 모든 항목 제거
             # self.treeModel.setHorizontalHeaderLabels(["SK_ID", "Description"])  # 헤더 다시 설정
