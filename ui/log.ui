@@ -25,10 +25,23 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="log_btn_openFoler">
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>open log Foler</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="log_btn_clear">
         <property name="maximumSize">
          <size>
-          <width>100</width>
+          <width>150</width>
           <height>16777215</height>
          </size>
         </property>
@@ -64,19 +77,6 @@ p, li { white-space: pre-wrap; }
      </layout>
     </item>
    </layout>
-   <widget class="QCheckBox" name="checkBox">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>220</y>
-      <width>74</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>CheckBox</string>
-    </property>
-   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

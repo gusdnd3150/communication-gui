@@ -78,7 +78,7 @@ class InitClass(QMainWindow):
         # 설정팝업
         self.popup = Settings(self.initData)
         self.handlPop = Handler(self.initData)
-        # self.logPop = Log(self.initData)
+        self.logPop = Log(self.initData)
 
 
 
@@ -399,15 +399,15 @@ class InitClass(QMainWindow):
             self.handlPop.show()
     def open_logger(self):
         # 열고 싶은 경로
-        path = r"../logs/"
-        current_path = os.getcwd()
-        logger.info(f'path : {current_path}')
-        # 경로 열기
-        os.startfile(f'{current_path}/logs')
-        # if self.logPop.isVisible():
-        #     self.logPop.hide()
-        # else:
-        #     self.logPop.show()
+        # path = r"../logs/"
+        # current_path = os.getcwd()
+        # logger.info(f'path : {current_path}')
+        # # 경로 열기
+        # os.startfile(f'{current_path}/logs')
+        if self.logPop.isVisible():
+            self.logPop.hide()
+        else:
+            self.logPop.show()
 
 
     def closeMain(self):
@@ -422,7 +422,7 @@ class InitClass(QMainWindow):
             self.treeModel.setHorizontalHeaderLabels(["connection Info"])  # 헤더 다시 설정
             self.root_node = self.treeModel.invisibleRootItem()
 
-            logger.info(f'updateConnList start')
+
             for index, item in enumerate(moduleData.sokcetList):
                 skItem = QStandardItem( item['SK_ID'] )
                 description_item = QStandardItem( item['SK_CONN_TYPE'])

@@ -26,9 +26,6 @@ class Ui_Log(object):
         MainWindow.resize(571, 696)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.checkBox = QCheckBox(self.centralwidget)
-        self.checkBox.setObjectName(u"checkBox")
-        self.checkBox.setGeometry(QRect(480, 220, 74, 16))
         self.gridLayout = QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.horizontalLayout_2 = QHBoxLayout()
@@ -38,9 +35,15 @@ class Ui_Log(object):
 
         self.horizontalLayout_2.addWidget(self.log_chk_showlog)
 
+        self.log_btn_openFoler = QPushButton(self.centralwidget)
+        self.log_btn_openFoler.setObjectName(u"log_btn_openFoler")
+        self.log_btn_openFoler.setMaximumSize(QSize(150, 16777215))
+
+        self.horizontalLayout_2.addWidget(self.log_btn_openFoler)
+
         self.log_btn_clear = QPushButton(self.centralwidget)
         self.log_btn_clear.setObjectName(u"log_btn_clear")
-        self.log_btn_clear.setMaximumSize(QSize(100, 16777215))
+        self.log_btn_clear.setMaximumSize(QSize(150, 16777215))
 
         self.horizontalLayout_2.addWidget(self.log_btn_clear)
 
@@ -76,8 +79,8 @@ class Ui_Log(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.checkBox.setText(QCoreApplication.translate("MainWindow", u"CheckBox", None))
         self.log_chk_showlog.setText(QCoreApplication.translate("MainWindow", u"show Log", None))
+        self.log_btn_openFoler.setText(QCoreApplication.translate("MainWindow", u"open log Foler", None))
         self.log_btn_clear.setText(QCoreApplication.translate("MainWindow", u"clear", None))
         self.log_text_log.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
