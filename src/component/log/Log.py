@@ -16,12 +16,12 @@ from ui.ui_log import Ui_Log
 import logging
 from PySide6.QtCore import QThread, Signal, Slot
 
-
+from collections import deque
 
 class LogThread(QThread):
     # 데이터를 수정하는 신호 정의
     updateLog = Signal(str)  # row, column, data
-    msgQue = []
+    msgQue = deque([])
     def __init__(self):
         super().__init__()
 
@@ -30,7 +30,7 @@ class LogThread(QThread):
 
     def run(self): # 백그라운드 작업 실행
         while self.msgQue:  # 배열이 비어있지 않은 동안 반복
-            self.updateLog.emit(self.msgQue.pop(0))
+            self.updateLog.emit(self.msgQue.popleft())
 
 
 
