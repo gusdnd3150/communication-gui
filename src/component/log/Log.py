@@ -30,7 +30,7 @@ class LogThread(QThread):
 
     def run(self): # 백그라운드 작업 실행
         while self.msgQue:  # 배열이 비어있지 않은 동안 반복
-            self.updateLog.emit(self.msgQue.pop())
+            self.updateLog.emit(self.msgQue.pop(0))
 
 
 
