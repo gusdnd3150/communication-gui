@@ -32,7 +32,14 @@
          <widget class="QLineEdit" name="input_handle_search"/>
         </item>
         <item row="4" column="0" colspan="2">
-         <widget class="QTableWidget" name="list_handle_msg"/>
+         <widget class="QTableWidget" name="list_handle_msg">
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+         </widget>
         </item>
         <item row="1" column="1">
          <widget class="QPushButton" name="btn_handle_search">
@@ -102,7 +109,7 @@
      <x>0</x>
      <y>0</y>
      <width>1119</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

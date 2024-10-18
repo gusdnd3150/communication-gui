@@ -99,6 +99,8 @@ class InitClass(QMainWindow):
             self.stop_sk()
             self.popup.close()
             self.handlPop.close()
+            self.logPop.close()
+
             event.accept()  # 창을 닫음
         else:
             event.ignore()  # 창 닫기 무시

@@ -107,7 +107,7 @@ class Handler(QMainWindow):
                         self.ui.list_handle_body.setItem(row_count, j, item)
                     if hd =='VALUE':
                         item = QTableWidgetItem(str(skItem['VAL_DESC']))
-                        item.setBackground(QBrush(QColor(148,127,127)))  # 노란색 배경 설정
+                        item.setBackground(QBrush(QColor(247, 243, 243)))  # 노란색 배경 설정
                         item.setForeground(QBrush(QColor(0, 0, 0)))
                         self.ui.list_handle_body.setItem(row_count, j, item)
 

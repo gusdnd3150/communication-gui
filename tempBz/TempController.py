@@ -11,7 +11,7 @@ class TempController:
     # skLogger = reciveObj['LOGGER']
     # Channel = reciveObj['CHANNEL']
     # thread = reciveObj['THREAD']
-    # 1. SendHandler.sendSkId(skId, msgId, data)
+    # 1. self.sendHandler.sendSkId(skId, msgId, data)
     # 2. thread.sendBytesToChannel(channel, '00200105000000000000'.encode('utf-8'))
     # 3. thread.sendMsgToChannel(channel, map) // map 안    MSG_ID    키: 값이    있어야함
 

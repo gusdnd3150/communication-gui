@@ -39,7 +39,7 @@ class ClientEventThread(threading.Thread):
     skclientTy = ''
     sendData = bytearray
     bzSchList = []
-    executor = ThreadPoolExecutor(max_workers=4)
+    executor = ThreadPoolExecutor(max_workers=10)
 
     def __init__(self, data, msgData):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',

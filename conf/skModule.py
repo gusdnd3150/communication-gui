@@ -9,9 +9,9 @@ import inspect
 from src.utils.ExcelUtils import ExcelUtils
 from conf.DbHandler import Dbhandler
 
-
-
 dbHandler = None
+
+
 # 파일 경로
 file_path = "./config.json"
 # 파일이 없을 경우에만 JSON 파일 생성
@@ -33,13 +33,12 @@ with open(file_path, 'r') as f:
 
 dbInstance = sqlite3.connect('core.db') # socket system DB
 useYnCombo = ['Y','N']
-skTypeCombo = ['TCP','UDP','WEBSK','BLUETOOTH']
+skTypeCombo = ['TCP','UDP','WEBSK']
 skConnCombo = ['SERVER','CLIENT']
 skClientCombo = ['KEEP','EVENT']
 jobTypeCombo = ['SEC','MIN','HOUR','CRON']
 eventTypeCombo = ['ACTIVE','KEEP','IDLE_READ','INACTIVE']
 hdCombo = ['LENGTH_STR_8B','LENGTH_STR_20B','LENGTH_20B','COPCO_STR_20B','FREE','JSON']
-runSkCombo = [] # 가동중인 소켓
 sokcetList = []
 socketHd = []
 socketHdDt = []
@@ -52,20 +51,16 @@ sokcetInToOut = []
 sokcetOut = []
 sokcetSub = []
 sokcetSch = []
-mainLayout = None
-mainInstance = None
-runChannels= []
-logger.info(f'비즈니스 컨트롤러 초기화 ------------------')
+mainLayout = None   # GUI ui
+mainInstance = None # GUI 메인 인스턴스
+runChannels = [] # 접속중인 채널 리스트
+
+logger.info(f'Global Controller Instance Generate! ------------------')
 systemGlobals = globals()
 systemGlobals['TestController'] = TestController()
 systemGlobals['SchController'] = SchController()
 systemGlobals['AtlasCopco'] = AtlasCopco()
-
-
 logger.info(f'------------------- ------------------')
-
-
-
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -106,6 +101,15 @@ def getsocketBody():
         else:
             msg['MSG_LEN'] = 0
     return msgList
+
+def getheaderCombo():
+    headers = selectQuery(selectHeaderList())
+
+    for index, sk in enumerate(headers):
+        logger.info(f'{sk}')
+
+    return ['1']
+
 
 
 def getsokcetIn(pkgId):
@@ -209,6 +213,9 @@ def load_all_classes_from_directory(directory_path: str):
 
     return instances
 
-classes = load_all_classes_from_directory('./tempBz/')
-for index, classInstance in enumerate(classes):
-    systemGlobals[classInstance.classNm] = classInstance
+
+if os.path.exists('./tempBz/'):
+    classes = load_all_classes_from_directory('./tempBz/')
+    for index, classInstance in enumerate(classes):
+        systemGlobals[classInstance.classNm] = classInstance
+

@@ -84,6 +84,24 @@ def selectSocketInList(skId , useYn, pkgId='CORE'):
 
     return " ".join(query)
 
+def selectHeaderList():
+
+    query = []
+    query.append('SELECT 			   ')
+    query.append('	PKG_ID             ')
+    query.append('	,SK_IN_SEQ         ')
+    query.append('	,IN_SK_ID          ')
+    query.append('	,IN_MSG_ID         ')
+    query.append('	,BZ_METHOD         ')
+    query.append('	,IN_DESC           ')
+    query.append('	,USE_YN            ')
+    query.append('	,REG_ID            ')
+    query.append('	,UPD_ID            ')
+    query.append('FROM TB_SK_PKG_SK_IN ')
+    query.append('WHERE 1=1            ')
+    query.append(' ORDER BY PKG_ID, SK_IN_SEQ ')
+    return " ".join(query)
+
 
 def selectTbSkMsgHdDt():
     return 'SELECT                  '\

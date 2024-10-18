@@ -59,6 +59,8 @@ class Settings(QMainWindow):
         self.ui.msg_dt_save.clicked.connect(self.saveMsgDt)
         self.ui.msg_dt_del.clicked.connect(self.delMsgDt)
 
+        self.ui.msg_MSG_ID_iq.textChanged.connect(self.searchMsg)
+        self.ui.msg_MSG_MID_iq.textChanged.connect(self.searchMsg)
 
         # 이벤트/ 스케줄 탭 이벤트 설정
         self.ui.btn_addBz.clicked.connect(self.addBz)
@@ -353,7 +355,7 @@ class Settings(QMainWindow):
             headers = ['MSG_ID', 'MSG_KEY_TYPE', 'MSG_KEY_VAL', 'MSG_DESC']
             for j, hd in enumerate(headers):
                 item = QTableWidgetItem('')
-                item.setBackground(QBrush(QColor(148, 127, 127)))  # 노란색 배경 설정
+                item.setBackground(QBrush(QColor(247, 243, 243)))  # 노란색 배경 설정
                 item.setForeground(QBrush(QColor(0, 0, 0)))
                 self.ui.msg_list.setItem(row_count, j, item)
                 
@@ -434,7 +436,7 @@ class Settings(QMainWindow):
                 headers = ['MSG_DT_ORD','MSG_DT_VAL_ID','MSG_DT_DESC','VAL_TYPE','VAL_LEN' ]
                 for j, hd in enumerate(headers):
                     item = QTableWidgetItem('')
-                    item.setBackground(QBrush(QColor(148, 127, 127)))  # 노란색 배경 설정
+                    item.setBackground(QBrush(QColor(247, 243, 243)))  # 노란색 배경 설정
                     item.setForeground(QBrush(QColor(0, 0, 0)))
                     self.ui.msg_dt_list.setItem(row_count, j, item)
 

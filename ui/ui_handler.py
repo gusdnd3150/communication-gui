@@ -15,10 +15,11 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QGridLayout, QHBoxLayout,
-    QHeaderView, QLabel, QLineEdit, QMainWindow,
-    QMenuBar, QPushButton, QSizePolicy, QStatusBar,
-    QTableWidget, QTableWidgetItem, QToolButton, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QGridLayout,
+    QHBoxLayout, QHeaderView, QLabel, QLineEdit,
+    QMainWindow, QMenuBar, QPushButton, QSizePolicy,
+    QStatusBar, QTableWidget, QTableWidgetItem, QToolButton,
+    QWidget)
 
 class Ui_Handler(object):
     def setupUi(self, MainWindow):
@@ -42,6 +43,8 @@ class Ui_Handler(object):
 
         self.list_handle_msg = QTableWidget(self.centralwidget)
         self.list_handle_msg.setObjectName(u"list_handle_msg")
+        self.list_handle_msg.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.list_handle_msg.setSelectionBehavior(QAbstractItemView.SelectRows)
 
         self.gridLayout.addWidget(self.list_handle_msg, 4, 0, 1, 2)
 
@@ -104,7 +107,7 @@ class Ui_Handler(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1119, 21))
+        self.menubar.setGeometry(QRect(0, 0, 1119, 22))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
