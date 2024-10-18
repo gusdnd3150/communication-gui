@@ -202,21 +202,29 @@ class ClientAsync(Client):
             await asyncio.sleep(1)
 
 
-    def sendBytesToAllChannels(self, msgBytes):
+    async def sendBytesToAllChannels(self, msgBytes):
         try:
-            async def send(self, bytes):
-                try:
-                    await self.socket.write(bytes)  # await 키워드를 사용하여 비동기 호출
-                    if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in bytes)
-                        self.logger.info(
-                            f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
-                except Exception:
-                    self.logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
 
-            asyncio.run_coroutine_threadsafe(send(self, bytes), self.loop)
-        except:
-            self.logger.error(f'sendBytesToAllChannels exception :: {traceback.format_exc()}')
+            await self.socket.write(msgBytes)  # await 키워드를 사용하여 비동기 호출
+            if self.skLogYn:
+                decimal_string = ' '.join(str(byte) for byte in msgBytes)
+                self.logger.info(
+                    f'SK_ID:{self.skId} send bytes length : {len(msgBytes)} send_string:[{str(msgBytes)}] decimal_string : [{msgBytes}]')
+        except Exception:
+            self.logger.error(f'sendBytesToAllChannels send exception :: {traceback.format_exc()}')
+
+
+            # async def send(self, bytes):
+            #     try:
+            #         await self.socket.write(bytes)  # await 키워드를 사용하여 비동기 호출
+            #         if self.skLogYn:
+            #             decimal_string = ' '.join(str(byte) for byte in bytes)
+            #             self.logger.info(
+            #                 f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
+            #     except Exception:
+            #         self.logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
+            #
+            # asyncio.run_coroutine_threadsafe(send(self, bytes), self.loop)
 
 
     def sendBytesToChannel(self,channel, bytes):
@@ -227,17 +235,27 @@ class ClientAsync(Client):
                 decimal_string = ' '.join(str(byte) for byte in sendBytes)
                 self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
 
+            # async def send(self, channel,bytes):
+            #     try:
+            #         await self.channel.write(bytes)  # await 키워드를 사용하여 비동기 호출
+            #         if self.skLogYn:
+            #             decimal_string = ' '.join(str(byte) for byte in bytes)
+            #             self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
+            #     except Exception:
+            #         self.logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
+            #
+            # asyncio.run_coroutine_threadsafe(send(self, channel,bytes), self.mainLoop)
         except:
             self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {traceback.format_exc()}')
 
 
 
-    def sendMsgToAllChannels(self, obj):
+    async def sendMsgToAllChannels(self, obj):
 
         try:
             if self.socket is not None:
                 sendBytes = self.codec.encodeSendData(obj)
-                self.socket.write(sendBytes)
+                await self.socket.write(sendBytes)
                 if self.skLogYn:
                     decimal_string = ' '.join(str(byte) for byte in sendBytes)
                     self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
@@ -247,12 +265,12 @@ class ClientAsync(Client):
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {traceback.format_exc()}')
 
-    def sendMsgToChannel(self, channel, obj):
+    async def sendMsgToChannel(self, channel, obj):
         try:
 
             if self.socket:
                 sendBytes = self.codec.encodeSendData(obj)
-                self.socket.write(sendBytes)
+                await self.socket.write(sendBytes)
 
                 if self.skLogYn:
                     decimal_string = ' '.join(str(byte) for byte in sendBytes)
