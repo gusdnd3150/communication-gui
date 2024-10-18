@@ -1,3 +1,4 @@
+import asyncio
 import sys
 import traceback
 import os
@@ -28,6 +29,9 @@ import time
 from datetime import datetime
 from ui.ui_main import Ui_MainWindow
 
+from src.protocolsAsy.tcp.ClientAsync import ClientAsync
+from src.protocolsAsy.MainThread import MainThread
+
 
 pkgCombo = [
     'CORE'
@@ -52,6 +56,8 @@ class InitClass(QMainWindow):
     treeModel = None
     root_node = None
     workThread = None # 실시간성 GUI 수정작업을 스레드를 통해 진행
+
+    mainLoop = None
 
     def __init__(self):
         super(InitClass, self).__init__()
@@ -156,77 +162,96 @@ class InitClass(QMainWindow):
         logging.getLogger(skId).handlers = []
 
 
+    # def start_sk(self):
+    #
+    #     pkg = self.ui.combo_pkg.currentText()
+    #     # 기준정보 로드
+    #     moduleData.initPkgData(pkg)
+    #
+    #
+    #     self.handlPop.ui.combo_sk_list.clear()
+    #     self.ui.combo_pkg.setDisabled(True)
+    #     self.ui.btn_start.setDisabled(True)
+    #
+    #     try:
+    #         logger.info(f' Run Cnt : {len(moduleData.sokcetList)}')
+    #         for i , item in enumerate(moduleData.sokcetList):
+    #             threadInfo = None
+    #             skTy = item['SK_TYPE']
+    #             skConTy = item['SK_CONN_TYPE']
+    #             skClientTy = item['SK_CLIENT_TYPE']
+    #
+    #
+    #             if(skTy == 'TCP'):
+    #                 if(skConTy=='SERVER'):
+    #                     # threadInfo = ServerThread(item)
+    #                     threadInfo = ServerThread2(item)
+    #                 elif (skConTy == 'CLIENT'):
+    #                     if skClientTy == 'KEEP':
+    #                         # threadInfo = ClientThread(item)
+    #                         threadInfo = ClientThread2(item)
+    #
+    #             elif (skTy == 'UDP'):
+    #                 if (skConTy == 'SERVER'):
+    #                     threadInfo = ServerUdpThread(item)
+    #                 elif (skConTy == 'CLIENT'):
+    #                     threadInfo = ClientUdpThread(item)
+    #
+    #             elif (skTy == 'WEBSK'):
+    #                 if (skConTy == 'SERVER'):
+    #                     threadInfo = WebSkServerThread(item)
+    #                 elif (skConTy == 'CLIENT'):
+    #                     threadInfo = WebSkClientThread(item)
+    #
+    #             elif (skTy == 'BLUETOOTH'):
+    #                 if (skConTy == 'SERVER'):
+    #                     threadInfo = BlueToothServerThread(item)
+    #                 elif (skConTy == 'CLIENT'):
+    #                     threadInfo = BlueToothClientThread(item)
+    #
+    #             else:
+    #                 logger.info(f'None condition')
+    #                 continue
+    #
+    #             item['SK_THREAD'] = threadInfo
+    #             self.handlPop.ui.combo_sk_list.addItem(item['SK_ID'])
+    #
+    #             # KEEP일때만 실행 EVENT 방식일땐 상황에 맞춰 실행
+    #             if skClientTy == 'KEEP':
+    #                 threadInfo.daemon = True
+    #                 threadInfo.start()
+    #
+    #
+    #         for index, sch in enumerate(moduleData.sokcetSch):
+    #             schThread = Schedule(sch)
+    #             schThread.damon = True
+    #             schThread.start()
+    #             sch['SK_THREAD'] = schThread
+    #
+    #         self.isRunSk = True
+    #     except Exception as e:
+    #         traceback.print_exc()
+    #         logger.info(f'Init.start_sk() Exception :: {traceback.format_exc()}')
+    #         # traceback.print_exc()
+
     def start_sk(self):
 
         pkg = self.ui.combo_pkg.currentText()
         # 기준정보 로드
         moduleData.initPkgData(pkg)
 
-
         self.handlPop.ui.combo_sk_list.clear()
         self.ui.combo_pkg.setDisabled(True)
         self.ui.btn_start.setDisabled(True)
-
         try:
-            logger.info(f' Run Cnt : {len(moduleData.sokcetList)}')
-            for i , item in enumerate(moduleData.sokcetList):
-                threadInfo = None
-                skTy = item['SK_TYPE']
-                skConTy = item['SK_CONN_TYPE']
-                skClientTy = item['SK_CLIENT_TYPE']
+            main = MainThread(self)
+            main.daemon = True
+            main.start()
+        except:
+            logger.error(f'start_sk error')
 
 
-                if(skTy == 'TCP'):
-                    if(skConTy=='SERVER'):
-                        # threadInfo = ServerThread(item)
-                        threadInfo = ServerThread2(item)
-                    elif (skConTy == 'CLIENT'):
-                        if skClientTy == 'KEEP':
-                            # threadInfo = ClientThread(item)
-                            threadInfo = ClientThread2(item)
 
-                elif (skTy == 'UDP'):
-                    if (skConTy == 'SERVER'):
-                        threadInfo = ServerUdpThread(item)
-                    elif (skConTy == 'CLIENT'):
-                        threadInfo = ClientUdpThread(item)
-
-                elif (skTy == 'WEBSK'):
-                    if (skConTy == 'SERVER'):
-                        threadInfo = WebSkServerThread(item)
-                    elif (skConTy == 'CLIENT'):
-                        threadInfo = WebSkClientThread(item)
-
-                elif (skTy == 'BLUETOOTH'):
-                    if (skConTy == 'SERVER'):
-                        threadInfo = BlueToothServerThread(item)
-                    elif (skConTy == 'CLIENT'):
-                        threadInfo = BlueToothClientThread(item)
-
-                else:
-                    logger.info(f'None condition')
-                    continue
-
-                item['SK_THREAD'] = threadInfo
-                self.handlPop.ui.combo_sk_list.addItem(item['SK_ID'])
-
-                # KEEP일때만 실행 EVENT 방식일땐 상황에 맞춰 실행
-                if skClientTy == 'KEEP':
-                    threadInfo.daemon = True
-                    threadInfo.start()
-
-            
-            for index, sch in enumerate(moduleData.sokcetSch):
-                schThread = Schedule(sch)
-                schThread.damon = True
-                schThread.start()
-                sch['SK_THREAD'] = schThread
-
-            self.isRunSk = True
-        except Exception as e:
-            traceback.print_exc()
-            logger.info(f'Init.start_sk() Exception :: {traceback.format_exc()}')
-            # traceback.print_exc()
 
 
     def setGrid(self):
