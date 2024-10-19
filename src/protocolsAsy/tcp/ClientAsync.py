@@ -38,9 +38,9 @@ class ClientAsync(Client):
     bzIdleRead = None
     logger = None
     bzSchList = []
-
+    executor = ThreadPoolExecutor(max_workers=30)
     mainLoop = None
-
+    reciveLoop = None
 
     def __init__(self, data, mainloop):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
@@ -55,6 +55,7 @@ class ClientAsync(Client):
         self.skPort = int(data['SK_PORT'])
         self.skclientTy = data['SK_CLIENT_TYPE']
         self.mainLoop = mainloop
+        self.reciveLoop = asyncio.new_event_loop()
 
         self.logger = setup_sk_logger(self.skId)
         self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
@@ -108,7 +109,7 @@ class ClientAsync(Client):
 
 
     async def initClient(self):
-        task = []
+        tasks = []
         conn_list = None
         try:
             reader, writer = await asyncio.open_connection(self.skIp, self.skPort)
@@ -129,20 +130,21 @@ class ClientAsync(Client):
             # await writer.drain()  # 데이터가 전송될 때까지 대기 - 동기처리이기 때문에 패스
 
             # 송수신처리
-            task.append(self.handler(reader, writer))
+            tasks.append(self.handler(reader, writer, chinfo))
 
             # ACTIVE 처리
             if self.bzActive is not None:
                 avtive_dict = {**chinfo, **self.bzActive}
-                task.append(self.active(avtive_dict))
+                tasks.append(self.active(avtive_dict))
 
             # KEEP 처리
             if self.bzKeep is not None:
                 combined_dict = {**chinfo, **self.bzKeep}
-                task.append(self.keep(combined_dict))
+                tasks.append(self.keep(combined_dict))
 
             # 함수 일괄 실행
-            await asyncio.gather(*task)
+            await asyncio.gather(*tasks)
+
 
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -150,6 +152,8 @@ class ClientAsync(Client):
 
         finally:
             self.logger.info('TCP CLIENT disconnected : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
+            for task in tasks:
+                task.close()
 
             if conn_list in moduleData.runChannels:
                 moduleData.runChannels.remove(conn_list)
@@ -179,27 +183,54 @@ class ClientAsync(Client):
             self.logger.info(f'keep')
 
 
-    async def handler(self, reader, socket):
+    async def handler(self, reader, socket, chinfo):
         buffer = bytearray()
-
-        try:
-            socket.write('test'.encode())
-
-            while self.isRun:
-                response = await reader.read(100)  # 서버의 응답을 기다림
-                self.logger.info(f'reader :{reader}')
-                if not response:
-                    # 서버가 연결을 닫았을 때 종료
+        while reader:
+            try:
+                reciveBytes = await reader.read(self.initData.get('MAX_LENGTH'))  # 서버의 응답을 기다림
+                if not reciveBytes:
                     break
+                buffer.extend(reciveBytes)
 
-                self.logger.info(f"{self.skId} Received: {response.decode()}")
-                # self.logger.info(f"Received: {type(response)}")
-                buffer.extend(response)  # 응답을 버퍼에 추가
-        except:
-            print('ssss')
+                if (self.initData['MIN_LENGTH'] > len(buffer)):
+                    continue
 
-        finally:
-            await asyncio.sleep(1)
+                while self.isRun:
+
+                    readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
+                    if readBytesCnt == 0:
+                        break
+                    elif readBytesCnt > len(buffer):
+                        break
+                    readByte = buffer[:readBytesCnt]
+                    try:
+                        if self.skLogYn:
+                            decimal_string = ' '.join(str(byte) for byte in readByte)
+                            self.logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} recive_string:[{str(readByte)}] decimal_string : [{decimal_string}]')
+
+                        copybytes = readByte.copy()
+                        data = self.codec.decodeRecieData(readByte)
+                        data['TOTAL_BYTES'] = copybytes
+
+                        reciveObj = {**chinfo, **data}
+                        self.logger.info(f'reciveObj  {reciveObj}')
+
+                        instance = BzActivator(reciveObj)
+                        await asyncio.gather(instance.run())
+                        # await instance.run()
+                        # loop = asyncio.get_event_loop()  # main loop 취득
+                        # asyncio.run_coroutine_threadsafe(instance.run(), self.reciveLoop)
+
+                    except:
+                        print(f'ClientAsync handler decode exception :: {traceback.format_exc()} ')
+                    finally:
+                        del buffer[0:readBytesCnt]
+
+            except:
+                print(f'ClientAsync handler exception :: {traceback.format_exc()} ')
+                self.isRun = False
+            finally:
+                await asyncio.sleep(1)
 
 
     async def sendBytesToAllChannels(self, msgBytes):

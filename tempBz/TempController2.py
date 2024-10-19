@@ -40,6 +40,20 @@ class TempController2:
             print('')
 
 
+    def recive9999(self, reciveObj):
+        try:
+            skLogger = reciveObj['LOGGER']
+            skId = reciveObj['SK_ID']
+            skLogger.info(f'{skId} :recive9999 ------------- ')
+            Channel = reciveObj['CHANNEL']
+            thread = reciveObj['THREAD']
+            # 1. self.sendHandler.sendSkId(skId, msgId, data)
+            thread.sendBytesToChannel(Channel, '002001ssss'.encode('utf-8'))
+
+        except Exception as e:
+            self.logger.error(f'active error :: {e}')
+
+
     async def active(self, reciveObj):
         try:
             skLogger = reciveObj['LOGGER']

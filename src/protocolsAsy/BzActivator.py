@@ -16,6 +16,7 @@ class BzActivator():
 
     async def run(self):
         try:
+
             if (self.bzInfo.get('BZ_METHOD') is not None):
                 bzClass = self.bzInfo.get('BZ_METHOD')
                 classNm = bzClass.split('.')[0]

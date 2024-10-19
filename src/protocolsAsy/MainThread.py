@@ -18,8 +18,6 @@ class MainThread(threading.Thread):
 
     def __init__(self, mainLayout):
         super().__init__()
-
-
         self.mainLayout = mainLayout
 
 
@@ -37,12 +35,7 @@ class MainThread(threading.Thread):
                 skClientTy = item['SK_CLIENT_TYPE']
                 tasks.append(self.runSk(item,skTy,skConTy,skClientTy))
                 self.mainLayout.handlPop.ui.combo_sk_list.addItem(item['SK_ID'])
-                # if task is not None:
-                #     self.mainLoop.get(task)  # 코루틴 실행
 
-            # self.mainLoop.gather()
-            # asyncio.gather()
-            # self.mainLoop.run_until_complete(asyncio.gather(tasks))
             if tasks:  # tasks가 비어 있지 않은 경우에만 실행
                 self.mainLoop.run_until_complete(asyncio.gather(*tasks))
 
