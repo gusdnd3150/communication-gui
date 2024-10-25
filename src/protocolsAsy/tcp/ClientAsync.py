@@ -185,7 +185,8 @@ class ClientAsync(Client):
 
     async def handler(self, reader, socket, chinfo):
         buffer = bytearray()
-        while reader:
+        # while reader:
+        while self.isRun:
             try:
                 reciveBytes = await reader.read(self.initData.get('MAX_LENGTH'))  # 서버의 응답을 기다림
                 if not reciveBytes:

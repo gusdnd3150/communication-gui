@@ -64,7 +64,7 @@ class InitClass(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         logger.info('application start')
-        self.setWindowTitle('application')
+        self.setWindowTitle('application (made by KHW)')
         self.ui.btn_settings.clicked.connect(self.open_settings)
 
         self.workThread = WorkThread()

@@ -35,7 +35,7 @@ class ClientThread2(threading.Thread, Client):
     bzIdleRead = None
     logger = None
     bzSchList = []
-    executor = ThreadPoolExecutor(max_workers=30)
+    executor = ThreadPoolExecutor(max_workers=200)
     skclientTy = ''
 
     def __init__(self, data):

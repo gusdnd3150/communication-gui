@@ -70,7 +70,7 @@ class TempController:
 
             returnJson = {}
             skId = reciveObj['SK_ID']
-
+            thread.sendBytesToChannel(channel, '002000010010    00  '.encode('utf-8'))
         except Exception as e:
             skLogger.error(f'TempController.recive9999() Exception :: {e}')
 

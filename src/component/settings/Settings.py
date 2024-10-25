@@ -22,6 +22,8 @@ class Settings(QMainWindow):
     addMsgDtList = []  # 추가할 row index를 저장
     curMsg = ''
 
+    inList = []
+
     def __init__(self, initData):
         super(Settings, self).__init__()
         self.initData = initData
@@ -47,6 +49,7 @@ class Settings(QMainWindow):
         self.ui.btn_addIn.clicked.connect(self.addIn)
         self.ui.btn_delIn.clicked.connect(self.delIn)
         self.ui.btn_saveIn.clicked.connect(self.saveIn)
+
 
         # 메시지 탭 이벤트 설정
         self.ui.msg_search.clicked.connect(self.searchMsg)
@@ -208,8 +211,8 @@ class Settings(QMainWindow):
             self.ui.list_in.setRowCount(0)  # Table의 행을 설정, list의 길이
             self.ui.list_in.setColumnCount(7)
             self.ui.list_in.setHorizontalHeaderLabels(headers)
-            inList = selectQuery(selectSocketInList(None, None, None))
-            for i, inItem in enumerate(inList):
+            self.inList = selectQuery(selectSocketInList(None, None, None))
+            for i, inItem in enumerate(self.inList):
                 row_count = self.ui.list_in.rowCount()
                 self.ui.list_in.insertRow(row_count)
                 for j, hd in enumerate(headers):
@@ -217,8 +220,44 @@ class Settings(QMainWindow):
                         self.ui.list_in.setItem(row_count, j, QTableWidgetItem(str(inItem[hd])))
             self.ui.list_in.cellClicked.connect(self.selectInRow)
             self.ui.list_in.currentCellChanged.connect(self.selectInRow)
+            self.ui.list_in.itemChanged.connect(self.onChangInSkTable)
         except Exception as e:
             logger.info(f'createGrid exception : {traceback.format_exc()}')
+
+    def onChangInSkTable(self,item):
+        try:
+            row = item.row()
+            column = item.column()
+            value = item.text()
+
+            key = self.ui.list_in.horizontalHeaderItem(column).text()
+            value = self.ui.list_in.item(row, column).text()
+            actualRow = self.inList[row]
+            actualVal = str(actualRow[key])
+            if actualVal == value:
+                return
+
+            # logger.info(f'key :{key} ,val {value},  actualRow:{actualRow}')
+
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Information)  # 아이콘 유형: 정보
+            msg_box.setWindowTitle("Alert")  # 팝업 창 제목
+            # msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)  # 버튼 추가
+            if key == 'IN_SK_ID' or key == 'SK_IN_SEQ' or key == 'PKG_ID':
+                self.ui.list_in.setItem(row, column, QTableWidgetItem(str(actualRow[key])))
+                msg_box.setText(f"{key}는 수정할 수 없습니다.")  # 팝업 메시지
+                result = msg_box.exec()
+            else:
+                logger.info(f' row update')
+                actualRow[key] = value
+                queryExecute(saveIn(actualRow['PKG_ID'], actualRow['IN_SK_ID'], actualRow['SK_IN_SEQ'], actualRow))
+                msg_box.setText(f"{key} update completed")  # 팝업 메시지
+                result = msg_box.exec()
+
+
+        except:
+            logger.error(f'onChangInSkTable exception :: {traceback.format_exc()}')
+
 
     def addIn(self):
         self.contInFlag = 'ins'
