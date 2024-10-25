@@ -23,6 +23,7 @@ class Settings(QMainWindow):
     curMsg = ''
 
     inList = []
+    skList = []
 
     def __init__(self, initData):
         super(Settings, self).__init__()
@@ -112,8 +113,8 @@ class Settings(QMainWindow):
             self.ui.list_sk.setRowCount(0)  # Table의 행을 설정, list의 길이
             self.ui.list_sk.setColumnCount(13)
             self.ui.list_sk.setHorizontalHeaderLabels(headers)
-            skList = selectQuery(selectSocketList(None, None, None))
-            for i, skItem in enumerate(skList):
+            self.skList = selectQuery(selectSocketList(None, None, None))
+            for i, skItem in enumerate(self.skList):
                 row_count = self.ui.list_sk.rowCount()
                 self.ui.list_sk.insertRow(row_count)
                 for j, hd in enumerate(headers):
@@ -121,9 +122,49 @@ class Settings(QMainWindow):
                         self.ui.list_sk.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
             self.ui.list_sk.cellClicked.connect(self.selectRow)
             self.ui.list_sk.currentCellChanged.connect(self.selectRow)
+            self.ui.list_sk.itemChanged.connect(self.onChangSkTable)
 
         except Exception as e:
             logger.info(f'createGrid exception : {traceback.format_exc()}')
+
+
+    def onChangSkTable(self,item):
+        try:
+            row = item.row()
+            column = item.column()
+            value = item.text()
+
+            key = self.ui.list_sk.horizontalHeaderItem(column).text()
+            value = self.ui.list_sk.item(row, column).text()
+            actualRow = self.skList[row]
+            actualVal = str(actualRow[key])
+            if actualVal == value:
+                return
+
+            # logger.info(f'key :{key} ,val {value},  actualRow:{actualRow}')
+
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Information)  # 아이콘 유형: 정보
+            msg_box.setWindowTitle("Alert")  # 팝업 창 제목
+            # msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)  # 버튼 추가
+            if key == 'PKG_ID' or key == 'SK_ID':
+                self.ui.list_sk.setItem(row, column, QTableWidgetItem(str(actualRow[key])))
+                msg_box.setText(f"{key}는 수정할 수 없습니다.")  # 팝업 메시지
+                result = msg_box.exec()
+            else:
+                logger.info(f' row update')
+                newObj = {
+                    key:value
+                }
+                queryExecute(saveSk(actualRow['PKG_ID'], actualRow['SK_ID'], newObj))
+
+                msg_box.setText(f"{key} update completed")  # 팝업 메시지
+                result = msg_box.exec()
+
+
+        except:
+            logger.error(f'onChangInSkTable exception :: {traceback.format_exc()}')
+
 
 
     def selectRow(self,row, column):
