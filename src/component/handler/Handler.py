@@ -4,6 +4,9 @@ from PySide6.QtGui import QColor, QBrush
 import sys
 import os
 import src.protocols.SendHandler as SendHandler
+
+import base64
+
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
 import traceback
@@ -144,6 +147,13 @@ class Handler(QMainWindow):
 
                 elif item['VAL_TYPE'] == 'BYTE' or item['VAL_TYPE'] == 'BYTES':
                     resultObj[item['MSG_DT_VAL_ID']] = item['VALUE']
+
+                elif item['VAL_TYPE'] == 'BASE64_DECMALS':
+                    test = item['VALUE']
+                    numbers = list(map(int, test.split()))
+                    byte_array = bytearray(numbers)
+                    base64_encoded = base64.b64encode(byte_array)
+                    resultObj[item['MSG_DT_VAL_ID']] = base64_encoded
 
             skId = self.ui.combo_sk_list.currentText()
 

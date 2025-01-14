@@ -84,7 +84,7 @@ class FreeCodec():
                     inMid = inMsgVal
 
                 msgKeyVal = encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE'])
-                logger.info(f' {msgKeyVal}:{inMid}')
+                # logger.info(f' {msgKeyVal}:{inMid}')
                 if inMid is not None:
                     if inMid == msgKeyVal:
                         inMsgId = inData['IN_MSG_ID']

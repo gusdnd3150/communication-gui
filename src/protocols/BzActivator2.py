@@ -15,6 +15,7 @@ class BzActivator2():
 
     def run(self):
         try:
+
             if (self.bzInfo.get('BZ_METHOD') is not None):
                 bzClass = self.bzInfo.get('BZ_METHOD')
                 classNm = bzClass.split('.')[0]
@@ -26,11 +27,11 @@ class BzActivator2():
                         # self.logger.info(f" BzActivator run : {classNm}.{methdNm} ")
                         method(self.bzInfo)
                     else:
-                        self.logger.error(f" {methdNm} is not callable.")
+                        self.logger.error(f"{self.bzInfo['SK_ID']} {methdNm} is not callable.")
                 else:
-                    self.logger.error(f'Class {classNm} not found.')
+                    self.logger.error(f'{self.bzInfo['SK_ID']} Class {classNm} not found.')
             else:
-                self.logger.error(f' BZ_METHOD INFO is Null :')
+                self.logger.error(f'{self.bzInfo['SK_ID']} BZ_METHOD INFO is Null :')
                 return
             # else:
             #     self.logger.error(f' BZ_INFO INFO is Null :')

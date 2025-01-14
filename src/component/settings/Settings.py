@@ -1,5 +1,4 @@
 from PySide6.QtGui import QBrush, QColor
-from PySide6.QtUiTools import QUiLoader
 from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView , QCheckBox, QWidget, QHBoxLayout, QMessageBox
 import sys
 import os
@@ -109,7 +108,7 @@ class Settings(QMainWindow):
 
             self.ui.list_sk.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
             self.ui.list_sk.verticalHeader().setVisible(False)
-
+            self.ui.list_sk.setSortingEnabled(True)
             self.ui.list_sk.setRowCount(0)  # Table의 행을 설정, list의 길이
             self.ui.list_sk.setColumnCount(13)
             self.ui.list_sk.setHorizontalHeaderLabels(headers)
@@ -249,6 +248,7 @@ class Settings(QMainWindow):
             self.ui.list_in.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
             self.ui.list_in.verticalHeader().setVisible(False)
 
+            self.ui.list_in.setSortingEnabled(True)
             self.ui.list_in.setRowCount(0)  # Table의 행을 설정, list의 길이
             self.ui.list_in.setColumnCount(7)
             self.ui.list_in.setHorizontalHeaderLabels(headers)
