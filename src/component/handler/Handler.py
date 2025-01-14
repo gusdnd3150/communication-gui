@@ -153,7 +153,7 @@ class Handler(QMainWindow):
                     numbers = list(map(int, test.split()))
                     byte_array = bytearray(numbers)
                     base64_encoded = base64.b64encode(byte_array)
-                    resultObj[item['MSG_DT_VAL_ID']] = base64_encoded
+                    resultObj[item['MSG_DT_VAL_ID']] = base64_encoded.decode('utf-8')
 
             skId = self.ui.combo_sk_list.currentText()
 

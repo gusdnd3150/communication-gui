@@ -206,7 +206,8 @@ class WebSkClientThread(threading.Thread):
 
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in reciveBytes)
-                        self.logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+                        self.logger.info(
+                            f'SK_ID:{self.skId} read length : {readBytesCnt} recive_string:[{str(reciveBytes)}] decimal_string : [{decimal_string}]')
 
                     data = self.codec.decodeRecieData(reciveBytes)
                     data['TOTAL_BYTES'] = reciveBytes

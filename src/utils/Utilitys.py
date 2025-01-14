@@ -63,7 +63,7 @@ def encodeDataToBytes(data, type, length, pad=' '):
             shortValue = data & 0xffff
             return shortValue.to_bytes(2, byteorder='big', signed=True)
 
-        elif type == 'BYTE' or type == 'VARIABLE_LENGTH' or type == 'BYTES':
+        elif type == 'BYTE' or type == 'VARIABLE_LENGTH' or type == 'BYTES' or type == 'BASE64_DECMALS':
            return data
 
         elif type == 'DOUBLE':
