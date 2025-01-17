@@ -120,21 +120,25 @@ class WebSkClientThread(threading.Thread):
             logging.getLogger(self.skId).handlers = []
 
             self.isShutdown = True
-            self.isRun = False
-            self.loop.stop()
             async def cancel_all_tasks(websocket):
                 try:
-                    for skid, sk, thread in self.client_list:
-                        if sk in moduleData.runChannels:
-                            moduleData.runChannels.remove(sk)
+                    for skInfo in enumerate(self.client_list):
+                        if skInfo in moduleData.runChannels:
+                            moduleData.runChannels.remove(skInfo)
                     self.client_list.clear()
-                    await socket.close()
+                    moduleData.mainInstance.updateConnList()
+                    try:
+                        await websocket.close()
+                    except:
+                        print(f'ddd : {traceback.print_exc()}')
                 except:
-                    logger.error(f'sssss')
+                    print(f'ddd : {traceback.print_exc()}')
                 finally:
+                    self.isRun = False
+                    self.loop.run_until_complete(self.loop.shutdown_asyncgens())
                     self.loop.close()
+
             asyncio.run(cancel_all_tasks(self.socket))
-            # self.loop.run_until_complete(cancel_all_tasks(self.websocket))
         except Exception as e:
             self.logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
         finally:
