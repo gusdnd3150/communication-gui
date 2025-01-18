@@ -232,6 +232,12 @@ class Settings(QMainWindow):
             , 'SK_DELIMIT_TYPE': self.ui.sk_SK_DELIMIT_TYPE.text()
             , 'SK_DESC': self.ui.sk_SK_DESC.toPlainText()
         }
+
+        if row_data['SK_TYPE'] == 'WEBSK' and row_data['SK_CONN_TYPE'] == 'SERVER':
+            self.alertPop(f'{row_data['SK_TYPE']} {row_data["SK_CONN_TYPE"]}은 준비중입니다 . ')
+            return
+
+
         if self.contFlag == 'ins':
             row_data['SK_ID'] = self.ui.sk_SK_ID.text()
             row_data['PKG_ID'] = self.ui.sk_PKG_ID.text()
@@ -739,10 +745,21 @@ class Settings(QMainWindow):
             logger.error(f'selectSchRow exception : {traceback.format_exc()} ')
 
 
+
+  ###################################################################  알람 팝업
     def checkPop(self, title ,msg):
         reply = QMessageBox.question(self,title, msg,QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
             return True
         else:
             return False
+
+
+    def alertPop(self, msg):
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Information)  # 아이콘 유형: 정보
+        msg_box.setWindowTitle("Alert")  # 팝업 창 제목
+        # msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)  # 버튼 추가
+        msg_box.setText(msg)  # 팝업 메시지
+        result = msg_box.exec()
 
