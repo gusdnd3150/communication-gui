@@ -714,7 +714,11 @@ class Settings(QMainWindow):
             , 'USE_YN': self.ui.sch_USE_YN.currentText()
             , 'SCH_DESC': self.ui.sch_SCH_DESC.toPlainText()
         }
-        logger.info(f' row : {row_data}')
+
+        if row_data['SCH_JOB_TYPE'] == 'CRON':
+            self.alertPop(f'{row_data['SCH_JOB_TYPE']}은 준비중입니다. ')
+            return
+
         if self.contSchFlag == 'ins':
             queryExecute(insertTable(row_data,'TB_SK_PKG_SCH'))
         else :
