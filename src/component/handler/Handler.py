@@ -137,16 +137,28 @@ class Handler(QMainWindow):
 
             for index, item in enumerate(data):
                 if item['VAL_TYPE'] == 'STRING':
-                    resultObj[item['MSG_DT_VAL_ID']] = str(item['VALUE'])
+                    tempVal = str(item['VALUE'])
+                    if tempVal is None:
+                        tempVal =  str('').rjust(int(item['VALUE_LEN']), ' ')
+                    resultObj[item['MSG_DT_VAL_ID']] = tempVal
 
                 elif item['VAL_TYPE'] == 'INT':
-                    resultObj[item['MSG_DT_VAL_ID']] = int(item['VALUE'])
+                    tempVal = int(item['VALUE'])
+                    if tempVal is None:
+                        tempVal = 0
+                    resultObj[item['MSG_DT_VAL_ID']] = tempVal
 
                 elif item['VAL_TYPE'] == 'DOUBLE' or item['VAL_TYPE'] == 'FLOAT':
-                    resultObj[item['MSG_DT_VAL_ID']] = float(item['VALUE'])
+                    tempVal = float(item['VALUE'])
+                    if tempVal is None:
+                        tempVal = 0.0
+                    resultObj[item['MSG_DT_VAL_ID']] = tempVal
 
                 elif item['VAL_TYPE'] == 'BYTE' or item['VAL_TYPE'] == 'BYTES':
-                    resultObj[item['MSG_DT_VAL_ID']] = item['VALUE']
+                    tempVal = item['VALUE']
+                    if tempVal is None:
+                        tempVal = str('').rjust(int(item['VALUE_LEN']), ' ')
+                    resultObj[item['MSG_DT_VAL_ID']] = tempVal
 
                 elif item['VAL_TYPE'] == 'BASE64_DECMALS':
                     test = item['VALUE']
@@ -157,7 +169,7 @@ class Handler(QMainWindow):
 
             skId = self.ui.combo_sk_list.currentText()
 
-            logger.info(f' skId: {skId}, msgId:{self.msgId} resultObj : {resultObj}')
+            logger.info(f'Handler.sendMsg() skId: {skId}, msgId:{self.msgId} resultObj : {resultObj}')
             SendHandler.sendSkId(self,skId,self.msgId,resultObj)
         except:
             logger.error(f'sendMsg error : {traceback.format_exc()}')

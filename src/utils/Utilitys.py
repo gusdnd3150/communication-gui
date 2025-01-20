@@ -42,7 +42,7 @@ def encodeToBytes(data, type):
 
 def encodeDataToBytes(data, type, length, pad=' '):
     try:
-        print(f'encodeDataToBytes {data},{type},{length}')
+        # print(f'encodeDataToBytes {data},{type},{length}')
         if data is None:
             if type == 'STRING':
                 data = ''
@@ -60,10 +60,12 @@ def encodeDataToBytes(data, type, length, pad=' '):
                 length = 4
             elif type == 'SHORT':
                 length = 2
+            elif type == 'DOUBLE':
+                length = 6
 
 
         if type == 'STRING':
-            padded_string = str(data).rjust(length, pad)
+            padded_string = str(data).ljust(length, pad)
             return padded_string.encode('utf-8')
 
         elif type == 'INT':
