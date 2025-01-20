@@ -42,6 +42,7 @@ def encodeToBytes(data, type):
 
 def encodeDataToBytes(data, type, length, pad=' '):
     try:
+        print(f'encodeDataToBytes {data},{type},{length}')
         if data is None:
             if type == 'STRING':
                 data = ''
@@ -51,6 +52,15 @@ def encodeDataToBytes(data, type, length, pad=' '):
                 data = bytearray([0x20] * length)
             elif type == 'BYTES': # 공백으로 초기화
                 data = bytearray([0x20] * length)
+
+        if length is None:
+            if type == 'STRING':
+                length = len(data)
+            elif type == 'INT':
+                length = 4
+            elif type == 'SHORT':
+                length = 2
+
 
         if type == 'STRING':
             padded_string = str(data).rjust(length, pad)
