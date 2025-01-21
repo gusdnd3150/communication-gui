@@ -93,8 +93,7 @@ class Log(QMainWindow):
         try:
             if "recive_string" in msg:
                 self.ui.log_text_log.append(f'<span style="color:blue">{msg} <span/>')
-
-            if "send_string" in msg:
+            elif "send_string" in msg:
                 self.ui.log_text_log.append(f'<span style="color:green">{msg} <span/>')
             else:
                 self.ui.log_text_log.append(f'<span>{msg} <span/>')
