@@ -55,6 +55,7 @@ def selectSocketList(skId , useYn, pkgId='CORE'):
     query.append('	FROM TB_SK_MSG_HD    ')
     query.append(')B                     ')
     query.append('ON A.HD_ID = B.HD_ID   ')
+    query.append('ORDER BY PKG_ID , SK_CONN_TYPE, SK_ID')
 
     return " ".join(query)
 
@@ -289,6 +290,7 @@ def selectSocketMSgList(msgId , mid):
     query.append('	,MSG_KEY_TYPE     ')
     query.append('	,MSG_KEY_VAL      ')
     query.append('	,MSG_DESC         ')
+    query.append('	,MSG_KEY_LENGTH         ')
     query.append('from TB_SK_MSG_BODY A ')
     query.append('WHERE 1=1			   ')
     if msgId is not None and msgId != '':
@@ -596,6 +598,7 @@ def updateMsgBody(params ):
     query.append(f'	MSG_KEY_TYPE  = "{params["MSG_KEY_TYPE"]}"          ')
     query.append(f'	,MSG_KEY_VAL  = "{params["MSG_KEY_VAL"]}"          ')
     query.append(f'	,MSG_DESC  = "{params["MSG_DESC"]}"          ')
+    query.append(f'	,MSG_KEY_LENGTH  = "{params["MSG_KEY_LENGTH"]}"          ')
     query.append('WHERE 1=1                 ')
     query.append(f'AND MSG_ID = "{key}"           ')
     return " ".join(query)

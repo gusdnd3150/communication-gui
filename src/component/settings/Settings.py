@@ -108,7 +108,7 @@ class Settings(QMainWindow):
 
             self.ui.list_sk.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
             self.ui.list_sk.verticalHeader().setVisible(False)
-            self.ui.list_sk.setSortingEnabled(True)
+            self.ui.list_sk.setSortingEnabled(False)
             self.ui.list_sk.setRowCount(0)  # Table의 행을 설정, list의 길이
             self.ui.list_sk.setColumnCount(13)
             self.ui.list_sk.setHorizontalHeaderLabels(headers)
@@ -254,7 +254,7 @@ class Settings(QMainWindow):
             self.ui.list_in.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
             self.ui.list_in.verticalHeader().setVisible(False)
 
-            self.ui.list_in.setSortingEnabled(True)
+            self.ui.list_in.setSortingEnabled(False)
             self.ui.list_in.setRowCount(0)  # Table의 행을 설정, list의 길이
             self.ui.list_in.setColumnCount(7)
             self.ui.list_in.setHorizontalHeaderLabels(headers)
@@ -384,10 +384,10 @@ class Settings(QMainWindow):
 
     def createMsgGrid(self, msg, mid):
         try:
-            headers = ['MSG_ID','MSG_KEY_TYPE','MSG_KEY_VAL','MSG_DESC' ]
+            headers = ['MSG_ID','MSG_KEY_TYPE','MSG_KEY_VAL','MSG_DESC','MSG_KEY_LENGTH' ]
             self.ui.msg_list.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
             self.ui.msg_list.setRowCount(0)  # Table의 행을 설정, list의 길이
-            self.ui.msg_list.setColumnCount(4)
+            self.ui.msg_list.setColumnCount(5)
             self.ui.msg_list.setHorizontalHeaderLabels(headers)
             skList = selectQuery(selectSocketMSgList(msg, mid))
             for i, skItem in enumerate(skList):
