@@ -131,6 +131,10 @@ class ClientEventThread(threading.Thread):
             sockets = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sockets.connect((self.skIp, int(self.skPort)))
             sockets.sendall(self.sendData)
+            if self.skLogYn:
+                decimal_string = ' '.join(str(byte) for byte in self.sendData)
+                self.logger.info(f'SK_ID:{self.skId} send length : {len(self.sendData)} send_string:[{str(self.sendData)}] decimal_string : [{decimal_string}]')
+
             isRun = True
 
             chinfo = {

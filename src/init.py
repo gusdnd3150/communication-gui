@@ -449,8 +449,6 @@ class InitClass(QMainWindow):
             # self.treeModel.setHorizontalHeaderLabels(["SK_ID", "Description"])  # 헤더 다시 설정
             self.treeModel.setHorizontalHeaderLabels(["connection Info"])  # 헤더 다시 설정
             self.root_node = self.treeModel.invisibleRootItem()
-
-
             for index, item in enumerate(moduleData.sokcetList):
                 skItem = QStandardItem( item['SK_ID'] )
                 description_item = QStandardItem( item['SK_CONN_TYPE'])
@@ -458,7 +456,6 @@ class InitClass(QMainWindow):
                     if skId == item['SK_ID']:
                         # skItem.appendRow([QStandardItem(str(client)), QStandardItem(str(thread))])
                         skItem.appendRow([QStandardItem(f'{str(client)} -- {thread}')])
-
                 # 루트 노드에 부모 항목 추가 (여러 열)
                 # self.root_node.appendRow([skItem, description_item])
                 self.root_node.appendRow([skItem])

@@ -91,8 +91,13 @@ class Log(QMainWindow):
     @Slot(str)
     def showLog(self, msg):
         try:
-            # logger.info(f'showLog : {msg}')
-            self.ui.log_text_log.append(msg)
+            if "recive_string" in msg:
+                self.ui.log_text_log.append(f'<span style="color:blue">{msg} <span/>')
+
+            if "send_string" in msg:
+                self.ui.log_text_log.append(f'<span style="color:green">{msg} <span/>')
+            else:
+                self.ui.log_text_log.append(f'<span>{msg} <span/>')
         except:
             logger.error(f'showLog error : {traceback.format_exc()}')
 
