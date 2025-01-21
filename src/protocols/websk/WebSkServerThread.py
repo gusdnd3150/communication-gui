@@ -10,7 +10,7 @@ from src.protocols.BzActivator2 import BzActivator2
 import asyncio
 import websockets
 from concurrent.futures import ThreadPoolExecutor
-
+from functools import partial
 import time
 from datetime import datetime
 
@@ -89,8 +89,39 @@ class WebSkServerThread(threading.Thread):
     def __del__(self):
         self.logger.info(f'Thread {self.skId} is deleted')
 
+
+
     def run(self):
-        self.initServer()
+        moduleData.mainInstance.addServerRow(self.initData)
+        try:
+            # self.loop.run_until_complete()
+            # self.loop.run_forever()
+
+            asyncio.run(self.initServer())
+        except :
+            print(traceback.format_exc())
+            # self.loop.run_until_complete(self.loop.shutdown_asyncgens())
+            # self.loop.close()
+            moduleData.mainInstance.updateConnList()
+
+    async def initServer(self):
+        try:
+
+            async def handle_client(websocket, path):
+                print(f"Client connected: {websocket.remote_address}")
+                try:
+                    async for message in websocket:
+                        print(f"Received: {message}")
+                        await websocket.send(f"Echo: {message}")
+                except websockets.ConnectionClosed:
+                    print(f"Client disconnected: {websocket.remote_address}")
+
+            self.server = await websockets.serve(handle_client, self.skIp, self.skPort)
+            logger.info(f"WebSocket server started on ws://{self.skIp}:{self.skPort}")
+            await self.server.wait_closed()
+        except:
+            self.logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
+
 
     def stop(self):
         try:
@@ -125,88 +156,98 @@ class WebSkServerThread(threading.Thread):
             moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
             self.loop.close()
 
-    def initServer(self):
+
+
+
+
+
+    async def websocket_handler(self,websocket, path):
+        print(f"New client connected from {websocket.remote_address}")
         try:
-            moduleData.mainInstance.addServerRow(self.initData)
-            async def runServer():
-                self.server = await websockets.serve(self.websocket_handler, self.skIp, self.skPort)
-                await asyncio.gather(
-                    asyncio.Future(),  # Run forever
-                )
-            self.loop.run_until_complete(runServer())
-            self.loop.run_forever()
-        except Exception:
-            moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
-            self.logger.error(f'WEB SOCKET SERVER Bind exception : SK_ID={self.skId}  : {traceback.format_exc()}')
+            # 클라이언트로부터 메시지 수신 및 처리
+            async for message in websocket:
+                print(f"Received: {message}")
 
-    async def websocket_handler(self, wesk, path):
-        bzSch = None
-        chinfo = {
-            'SK_ID': self.skId
-            , 'SK_GROUP': self.skGrp
-            , 'CHANNEL': wesk
-            , 'LOGGER': self.logger
-            , 'THREAD': self
-            , 'PATH': path  # 웹소켓 한해 접속 URL 을 포함
-        }
-        client_info = (self.skId, wesk, self)
-        self.client_list.append(client_info)
-        moduleData.runChannels.append(client_info)
-        moduleData.mainInstance.updateConnList()
+                # 메시지를 클라이언트에게 다시 전송
+                response = f"Echo: {message}"
+                await websocket.send(response)
+                print(f"Sent: {response}")
 
-        client_ip, client_port = wesk.remote_address
-        logger.info(f"SK_ID:{self.skId} Client connected: IP={client_ip}, Port={client_port}")
-
-        # ACTIVE 이벤트처리
-        if self.bzActive is not None:
-            avtive_dict = {**chinfo, **self.bzActive}
-            self.logger.info(f'{self.skId} : [ACTIVE CHANNEL EVENT START]')
-            self.threadPoolExcutor(BzActivator2(avtive_dict))
-
-        # KEEP 처리
-        if self.bzKeep is not None:
-            keep_dict = {**chinfo, **self.bzKeep}
-            self.logger.info(f'{self.skId} : [KEEP CHANNEL EVENT START]')
-            bzSch = BzSchedule2(keep_dict)
-            bzSch.daemon = True
-            bzSch.start()
-            self.bzSchList.append(bzSch)
-
-        try:
-            async for message in wesk:
-                reciveBytes = message.encode('utf-8')
-                try:
-                    readBytesCnt = self.codec.concyctencyCheck(reciveBytes)
-                    if readBytesCnt == 0:
-                        self.logger.info(f'concyctence error : {reciveBytes}')
-                        continue
-
-                    if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in reciveBytes)
-                        self.logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
-
-                    data = self.codec.decodeRecieData(reciveBytes)
-                    data['TOTAL_BYTES'] = reciveBytes
-                    reciveObj = {**chinfo, **data}
-                    self.threadPoolExcutor(BzActivator2(reciveObj))
-                except:
-                    self.logger.error(f'websocket_handler error : {traceback.format_exc()}')
-        except:
-            self.logger.error(f'websocket_handler error : {traceback.format_exc()}')
+        except websockets.ConnectionClosed as e:
+            print(f"Connection closed: {e}")
         finally:
-            if bzSch is not None:
-                bzSch.stop()
-                bzSch.join()
+            print(f"Client disconnected: {websocket.remote_address}")
 
-            # self.bzSchList.remove(bzSch)
-            if bzSch in self.bzSchList:
-                self.bzSchList.remove(bzSch)
 
-            if client_info in self.client_list:
-                self.client_list.remove(client_info)
-            if client_info in moduleData.runChannels:
-                moduleData.runChannels.remove(client_info)
-            moduleData.mainInstance.updateConnList()
+    # async def websocket_handler(self, wesk, path):
+    #     logger.info(f"SK_ID:{self.skId} Client --")
+    #     bzSch = None
+    #     chinfo = {
+    #         'SK_ID': self.skId
+    #         , 'SK_GROUP': self.skGrp
+    #         , 'CHANNEL': wesk
+    #         , 'LOGGER': self.logger
+    #         , 'THREAD': self
+    #         , 'PATH': path  # 웹소켓 한해 접속 URL 을 포함
+    #     }
+    #     client_info = (self.skId, wesk, self)
+    #     self.client_list.append(client_info)
+    #     moduleData.runChannels.append(client_info)
+    #     moduleData.mainInstance.updateConnList()
+    #
+    #     client_ip, client_port = wesk.remote_address
+    #     logger.info(f"SK_ID:{self.skId} Client connected: IP={client_ip}, Port={client_port}")
+    #
+    #     # ACTIVE 이벤트처리
+    #     if self.bzActive is not None:
+    #         avtive_dict = {**chinfo, **self.bzActive}
+    #         self.logger.info(f'{self.skId} : [ACTIVE CHANNEL EVENT START]')
+    #         self.threadPoolExcutor(BzActivator2(avtive_dict))
+    #
+    #     # KEEP 처리
+    #     if self.bzKeep is not None:
+    #         keep_dict = {**chinfo, **self.bzKeep}
+    #         self.logger.info(f'{self.skId} : [KEEP CHANNEL EVENT START]')
+    #         bzSch = BzSchedule2(keep_dict)
+    #         bzSch.daemon = True
+    #         bzSch.start()
+    #         self.bzSchList.append(bzSch)
+    #
+    #     try:
+    #         async for message in wesk:
+    #             reciveBytes = message.encode('utf-8')
+    #             try:
+    #                 readBytesCnt = self.codec.concyctencyCheck(reciveBytes)
+    #                 if readBytesCnt == 0:
+    #                     self.logger.info(f'concyctence error : {reciveBytes}')
+    #                     continue
+    #
+    #                 if self.skLogYn:
+    #                     decimal_string = ' '.join(str(byte) for byte in reciveBytes)
+    #                     self.logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+    #
+    #                 data = self.codec.decodeRecieData(reciveBytes)
+    #                 data['TOTAL_BYTES'] = reciveBytes
+    #                 reciveObj = {**chinfo, **data}
+    #                 self.threadPoolExcutor(BzActivator2(reciveObj))
+    #             except:
+    #                 self.logger.error(f'websocket_handler error : {traceback.format_exc()}')
+    #     except:
+    #         self.logger.error(f'websocket_handler error : {traceback.format_exc()}')
+    #     finally:
+    #         if bzSch is not None:
+    #             bzSch.stop()
+    #             bzSch.join()
+    #
+    #         # self.bzSchList.remove(bzSch)
+    #         if bzSch in self.bzSchList:
+    #             self.bzSchList.remove(bzSch)
+    #
+    #         if client_info in self.client_list:
+    #             self.client_list.remove(client_info)
+    #         if client_info in moduleData.runChannels:
+    #             moduleData.runChannels.remove(client_info)
+    #         moduleData.mainInstance.updateConnList()
 
 
     def sendBytesToChannel(self, channel ,bytes):

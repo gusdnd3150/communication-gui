@@ -33,7 +33,7 @@ with open(file_path, 'r') as f:
 
 dbInstance = sqlite3.connect('core.db') # socket system DB
 useYnCombo = ['Y','N']
-skTypeCombo = ['TCP','UDP','WEBSK']
+skTypeCombo = ['TCP','UDP','WEBSK','PLC']
 skConnCombo = ['SERVER','CLIENT']
 skClientCombo = ['KEEP','EVENT']
 jobTypeCombo = ['SEC','MIN','HOUR','CRON']

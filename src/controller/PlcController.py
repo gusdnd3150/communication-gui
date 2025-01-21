@@ -3,7 +3,7 @@ from conf.logconfig import logger
 from src.protocols.SendHandler import SendHandler
 import conf.skModule as initData
 
-class SchController():
+class PlcController():
 
     # guide
     # 데이터 전송 방법
@@ -15,6 +15,7 @@ class SchController():
     # 3. thread.sendMsgToChannel(channel, map) // map 안    MSG_ID    키: 값이    있어야함
 
     sendHandler = None
+
     def __init__(self):
         logger.info('init schController')
         self.sendHandler = SendHandler()

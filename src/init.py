@@ -209,6 +209,12 @@ class InitClass(QMainWindow):
                     elif (skConTy == 'CLIENT'):
                         threadInfo = BlueToothClientThread(item)
 
+                elif (skTy == 'PLC'):
+                    if (skConTy == 'SERVER'):
+                        threadInfo = ServerUdpThread(item)
+                    elif (skConTy == 'CLIENT'):
+                        threadInfo = ClientUdpThread(item)
+
                 else:
                     logger.info(f'None condition')
                     continue

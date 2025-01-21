@@ -2,8 +2,7 @@
 import traceback
 from conf.logconfig import logger
 import conf.skModule as moduleData
-import asyncio
-
+from src.utils.Utilitys import *
 
 class SendHandler():
 
@@ -31,40 +30,3 @@ class SendHandler():
                     break
         except Exception as e:
             logger.info(f'sendSkId() Exception SK_ID:{skId} , MSG_ID:{msgId}, DATA:{data} -- {traceback.format_exc()}')
-
-    # def sendChannelMsg(self, channel, msgId, data):
-    #     try:
-    #         data['MSG_ID'] = msgId
-    #         for skId, ch, thread in moduleData.runChannels:
-    #             if ch == channel:
-    #                 logger.info(f'thread ty : {thread.skclientTy}')
-    #                 thread.sendMsgToChannel(channel,data)
-    #                 # for i, sk in enumerate(moduleData.sokcetList):
-    #                 #     if sk['SK_ID'] == skId:
-    #                 #         skThread = sk['SK_THREAD']
-    #                 #         skThread.sendMsgToChannel(channel,data)
-    #                 #         break
-    #                 break
-    #     except Exception as e:
-    #
-    #         logger.info(f'sendChannelMsg() Exception :: {traceback.format_exc()}')
-    #
-    #
-    # def sendChannelBytes(self, channel, bytes):
-    #     try:
-    #         for skId, ch, thread in moduleData.runChannels:
-    #             if ch == channel:
-    #                 logger.info(f'thread ty : {thread.skclientTy}')
-    #                 thread.sendBytesToChannel(channel, bytes)
-    #                 # for i, sk in enumerate(moduleData.sokcetList):
-    #                 #     if sk['SK_ID'] == skId:
-    #                 #         skThread = sk['SK_THREAD']
-    #                 #         skThread.sendBytesToChannel(channel,bytes)
-    #                 #         break
-    #                 break
-    #     except Exception as e:
-    #         logger.info(f'sendChannelMsg() Exception :: {traceback.format_exc()}')
-
-    async def send_webSk_message(self, thread, returnBytes):
-        await thread.sendBytes(returnBytes)
-

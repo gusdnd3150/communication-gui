@@ -4,6 +4,9 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 from src.init import InitClass
 
 if __name__ == '__main__':
+
+    print(f'sys.implementation.name  :: {sys.implementation.name}')
+
     app = QApplication(sys.argv)
     window = InitClass()
     window.show()
