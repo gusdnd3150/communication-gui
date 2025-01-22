@@ -12,7 +12,6 @@ import logging
 program_directory = os.path.dirname(program_path)
 from src.component.settings.Settings import Settings
 from src.component.handler.Handler import Handler
-from src.component.log.Log import Log
 import conf.skModule as moduleData
 from conf.logconfig import logger
 from src.protocols.udp.ServerUdpThread import ServerUdpThread
@@ -26,13 +25,8 @@ from src.protocols.bluetooth.BlueToothClientThread import BlueToothClientThread
 from PySide6.QtCore import QThread, Signal, Slot
 from src.WorkThread import WorkThread
 from src.LogThread import LogThread
-import time
-from datetime import datetime
+from src.protocols.plc.PlcClientThread import PlcClientThread
 from ui.ui_main import Ui_MainWindow
-
-from src.protocolsAsy.tcp.ClientAsync import ClientAsync
-from src.protocolsAsy.MainThread import MainThread
-
 
 pkgCombo = [
     'CORE'
@@ -187,7 +181,15 @@ class InitClass(QMainWindow):
         self.ui.btn_start.setDisabled(True)
 
         try:
-            logger.info(f' Run Cnt : {len(moduleData.sokcetList)}')
+
+            logger.info(f'start_sk() Plc Run Cnt : {len(moduleData.plcList)}')
+            for i, plc in enumerate(moduleData.plcList):
+                threadPlc = PlcClientThread(plc)
+                threadPlc.daemon = True
+                threadPlc.start()
+
+
+            logger.info(f'start_sk() Socket Run Cnt : {len(moduleData.sokcetList)}')
             for i , item in enumerate(moduleData.sokcetList):
                 threadInfo = None
                 skTy = item['SK_TYPE']
@@ -250,27 +252,7 @@ class InitClass(QMainWindow):
             self.isRunSk = True
         except Exception as e:
             traceback.print_exc()
-            logger.info(f'Init.start_sk() Exception :: {traceback.format_exc()}')
-            # traceback.print_exc()
-
-    # def start_sk(self):
-    #
-    #     pkg = self.ui.combo_pkg.currentText()
-    #     # 기준정보 로드
-    #     moduleData.initPkgData(pkg)
-    #
-    #     self.handlPop.ui.combo_sk_list.clear()
-    #     self.ui.combo_pkg.setDisabled(True)
-    #     self.ui.btn_start.setDisabled(True)
-    #     try:
-    #         # time.sleep(3)
-    #         main = MainThread(self)
-    #         main.daemon = True
-    #         main.start()
-    #     except:
-    #         logger.error(f'start_sk error')
-
-
+            logger.error(f'Init.start_sk() Exception :: {traceback.format_exc()}')
 
 
 

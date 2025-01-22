@@ -39,7 +39,12 @@ skClientCombo = ['KEEP','EVENT']
 jobTypeCombo = ['SEC','MIN','HOUR','CRON']
 eventTypeCombo = ['ACTIVE','KEEP','IDLE_READ','INACTIVE']
 hdCombo = ['LENGTH_STR_8B','LENGTH_STR_20B','LENGTH_20B','COPCO_STR_20B','FREE','JSON']
+
+plcType = ['Mitsubishi']
+plcProtocol = ['MC','MODBUS']
+
 sokcetList = []
+plcList = []
 socketHd = []
 socketHdDt = []
 socketBody = []
@@ -70,6 +75,16 @@ def resource_path(relative_path):
 
 relative_path = resource_path('')
 logger.info(f'relative_path :: {relative_path}')
+
+
+
+
+def getPlcList(pkgId):
+    list = selectQuery(selectPlcList(None, 'Y', pkgId))
+    for plc in list:
+        pkgId, plcId = plc['PKG_ID'], plc['PLC_ID']
+        plc['ADDR_LIST'] = selectQuery(selectPlcAddrList(pkgId,plcId))
+    return list
 
 
 def getsokcetList(pkgId):
@@ -161,7 +176,9 @@ def initPkgData(pkgId):
     systemGlobals['sokcetList'] = None
     systemGlobals['sokcetSch'] = None
     systemGlobals['sokcetIn'] = None
+    systemGlobals['plcList'] = None
 
+    plcList = getPlcList(pkgId)
     sokcetList = getsokcetList(pkgId)
     sokcetIn = getsokcetIn(pkgId)
     sokcetSch = getsokcetSch(pkgId)
@@ -172,6 +189,7 @@ def initPkgData(pkgId):
     # systemGlobals['TestController'] = TestController(handler)
     # logger.info(f'------------------- ------------------')
 
+    logger.info(f'plcList size : {len(plcList)}')
     logger.info(f'sokcetList size : {len(sokcetList)}')
     logger.info(f'sokcetSch size : {len(sokcetSch)}')
     logger.info(f'socketBody size : {len(socketBody)}')
@@ -180,6 +198,7 @@ def initPkgData(pkgId):
 
     # 비즈니스로직 처리 컨트롤러 지정
     systemGlobals['sokcetList'] = sokcetList
+    systemGlobals['plcList'] = plcList
     systemGlobals['socketBody'] = socketBody
     systemGlobals['sokcetIn'] = sokcetIn
     systemGlobals['sokcetSch'] = sokcetSch

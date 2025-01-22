@@ -1,5 +1,53 @@
 
 
+def selectPlcAddrList(pkgId, plcId):
+    query = []
+    query.append('SELECT             ')
+    query.append(' PKG_ID    ')
+    query.append(',PLC_ID   ')
+    query.append(',ADDR     ')
+    query.append(',POS      ')
+    query.append(',LENGTH   ')
+    query.append(',USE_YN   ')
+    query.append(',ADDR_DESC')
+    query.append('FROM TB_SK_PKG_PLC_ADDR ')
+    query.append('WHERE 1=1 ')
+    query.append(f'AND USE_YN = "Y" ')
+    if (pkgId is not None):
+        query.append(f'AND PKG_ID = "{pkgId}"')
+    if (plcId is not None):
+        query.append(f'AND PLC_ID = "{plcId}"')
+
+    return " ".join(query)
+
+
+def selectPlcList(skId , useYn, pkgId='CORE'):
+
+    query = []
+    query.append('SELECT             ')
+    query.append(' PKG_ID         ')
+    query.append(' ,PLC_ID         ')
+    query.append(' ,USE_YN         ')
+    query.append(' ,PLC_MAKER      ')
+    query.append(' ,PLC_PTOROTOCOL ')
+    query.append(' ,SLOT           ')
+    query.append(' ,PLC_PORT       ')
+    query.append(' ,PLC_IP         ')
+    query.append(' ,BASE_SK_IP     ')
+    query.append(' ,BASE_SK_PORT   ')
+    query.append(' ,PLC_DESC       ')
+    query.append(' ,SK_LOG         ')
+    query.append('FROM TB_SK_PKG_PLC ')
+    query.append('WHERE 1=1 ')
+    if (pkgId is not None):
+        query.append(f'AND PKG_ID = "{pkgId}"')
+    if (skId is not None):
+        query.append(f'AND PLC_ID = "{skId}"')
+    if (useYn is not None):
+        query.append(f'AND USE_YN = "{useYn}"')
+
+    return " ".join(query)
+
 
 def selectSocketList(skId , useYn, pkgId='CORE'):
 
