@@ -25,6 +25,7 @@ from src.protocols.bluetooth.BlueToothServerThread import BlueToothServerThread
 from src.protocols.bluetooth.BlueToothClientThread import BlueToothClientThread
 from PySide6.QtCore import QThread, Signal, Slot
 from src.WorkThread import WorkThread
+from src.LogThread import LogThread
 import time
 from datetime import datetime
 from ui.ui_main import Ui_MainWindow
@@ -56,7 +57,7 @@ class InitClass(QMainWindow):
     treeModel = None
     root_node = None
     workThread = None # 실시간성 GUI 수정작업을 스레드를 통해 진행
-
+    logThread = None
     mainLoop = None
 
     def __init__(self):
@@ -65,16 +66,28 @@ class InitClass(QMainWindow):
         self.ui.setupUi(self)
         logger.info('application start')
         self.setWindowTitle('application (made by KHW)')
-        self.ui.btn_settings.clicked.connect(self.open_settings)
 
         self.workThread = WorkThread()
         self.workThread.updateConnList.connect(self.workUpdateConnList)
+        self.ui.btn_start.clicked.connect(self.start_sk)  # 시작버튼
+        self.ui.btn_stop.clicked.connect(self.stop_sk)   # 종료버튼
+
+        self.logThread = LogThread(self)
+        self.logThread.updateLog.connect(self.insertLog)
+
+        self.ui.log_btn_clear.clicked.connect(self.clickClear)
+        # self.ui.btn_settings.clicked.connect(self.open_settings)
+        # self.ui.btn_handler.clicked.connect(self.open_handler)
+        # self.ui.btn_show_log.clicked.connect(self.open_logger)
 
 
-        self.ui.btn_start.clicked.connect(self.start_sk)
-        self.ui.btn_stop.clicked.connect(self.stop_sk)
-        self.ui.btn_handler.clicked.connect(self.open_handler)
-        self.ui.btn_show_log.clicked.connect(self.open_logger)
+
+        self.ui.action_settings.triggered.connect(self.open_settings)  # 설정 오픈
+        self.ui.action_test.triggered.connect(self.open_handler)  # 핸들러 오픈
+        self.ui.actionOpen_log_folder.triggered.connect(self.openFolder) # 폴더 오픈
+        
+        # self.ui.btn_show_log.clicked.connect(self.open_logger)
+
 
         moduleData.mainLayout = self.ui
         moduleData.mainInstance = self
@@ -84,7 +97,7 @@ class InitClass(QMainWindow):
         # 설정팝업
         self.popup = Settings(self.initData)
         self.handlPop = Handler(self.initData)
-        self.logPop = Log(self.initData)
+        # self.logPop = Log(self.initData)
 
 
 
@@ -105,7 +118,7 @@ class InitClass(QMainWindow):
             self.stop_sk()
             self.popup.close()
             self.handlPop.close()
-            self.logPop.close()
+            # self.logPop.close()
 
             event.accept()  # 창을 닫음
         else:
@@ -471,12 +484,29 @@ class InitClass(QMainWindow):
         except:
             logger.error(f'updateConnList exception: {traceback.format_exc()}')
 
-
-    def insertLog(self, skId, bytes, flag):
+    @Slot(str)
+    def insertLog(self,msg):
         try:
-            pass
-            # if self.ui.chkbox_show_log.isChecked():
-            #     logTm = datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-            #     self.ui.list_log.appendPlainText(f'SK_ID : {skId} [{logTm}] {flag} --- [{bytes.decode("ascii")}] \n')
+            if "recive_string" in msg:
+                self.ui.log_text_log.append(f'<span style="color:blue">{msg} <span/>')
+            elif "send_string" in msg:
+                self.ui.log_text_log.append(f'<span style="color:green">{msg} <span/>')
+            else:
+                self.ui.log_text_log.append(f'<span>{msg} <span/>')
         except:
-            logger.error(f'insertLog exception: {traceback.format_exc()}')
+            logger.error(f'showLog error : {traceback.format_exc()}')
+
+
+    def clickClear(self):
+        self.ui.log_text_log.clear()
+
+    def openFolder(self):
+        try:
+            # 열고 싶은 경로
+            path = r"../logs/"
+            current_path = os.getcwd()
+            # logger.info(f'path : {current_path}')
+            # 경로 열기
+            os.startfile(f'{current_path}/logs')
+        except:
+            traceback.format_exc()
