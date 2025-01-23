@@ -16,7 +16,7 @@ from src.protocols.sch.BzSchedule2 import BzSchedule2
 from concurrent.futures import ThreadPoolExecutor
 from pymcprotocol import Type3E
 
-class PlcClientThread(threading.Thread):
+class PlcMitubishiThread(threading.Thread):
 
     initData = None
     socket = None
@@ -27,6 +27,11 @@ class PlcClientThread(threading.Thread):
     logger = None
     delimiter = b''
     bzSchList = []
+    plcMaker = None
+    commTy = None
+    cpuTy = None
+    plcIp = None
+    plcPort = None
     executor = ThreadPoolExecutor(max_workers=60)
     #[('D30', 0, 10, bytearray(b'')), ('D60', 0, 10, bytearray(b''))]  (메모리,pos,length, 바이트)
     plcBuffer = []
@@ -35,18 +40,25 @@ class PlcClientThread(threading.Thread):
         self.initData = data
         self.plcId = data['PLC_ID']
         self.logger = setup_sk_logger(self.plcId)
-        self.logger.info(f'PLC_ID:{self.plcId} - initData : {data}')
+        self.plcIP = data['PLC_IP']
+        self.plcPort = data['PLC_PORT']
+        self.cpuTy = data['CPU_TY']
 
         if len(data.get('ADDR_LIST')) > 0 :
             for addr in data.get('ADDR_LIST'):
                 self.plcBuffer.append((addr['ADDR'], addr['POS'],addr['LENGTH'],bytearray()))
 
-        self.logger.info(f'{self.plcId} plcBuffer :{self.plcBuffer} ')
+        if data.get('COMM_TY') is not None:
+            # "binary" or "ascii"
+            self.commTy = data.get('COMM_TY')
+
 
         if (data.get('SK_LOG') is not None and data.get('SK_LOG') == 'Y'):
             self.skLogYn = True
+        else:
+            self.skLogYn = False
 
-        super(PlcClientThread, self).__init__()
+        super(PlcMitubishiThread, self).__init__()
         self._stop_event = threading.Event()
 
 
@@ -80,15 +92,15 @@ class PlcClientThread(threading.Thread):
 
 
     def initClient(self):
-        buffer = bytearray()
         try:
-
             # MC 프로토콜 인스턴스 생성
             # plctype(str): connect PLC type. "Q", "L", "QnA", "iQ-L", "iQ-R"  , default = Q
-            mc = Type3E()
+
+            self.logger.info(f' {self.cpuTy}----{self.commTy}')
+            mc = Type3E(self.cpuTy)
             # PLC 연결 설정
             # commtype =  "binary" or "ascii".(Default: "binary")
-            mc.setaccessopt(commtype='binary')  # Binary 모드 사용
+            mc.setaccessopt(commtype=self.commTy)  # Binary 모드 사용
 
             mc.connect("192.168.0.154", 1200)  # PLC의 IP 주소와 포트
             mc.timer = 30
@@ -126,8 +138,12 @@ class PlcClientThread(threading.Thread):
 
 
         except:
-
             self.logger.error(f'{self.plcId} initClient Exception : {traceback.format_exc()}')
+
+            if self.isShutdown == False:
+                self.initClient()
+
+
 
 
 

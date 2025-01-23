@@ -37,6 +37,8 @@ def selectPlcList(skId , useYn, pkgId='CORE'):
     query.append(' ,BASE_SK_PORT   ')
     query.append(' ,PLC_DESC       ')
     query.append(' ,SK_LOG         ')
+    query.append(' ,COMM_TY        ')
+    query.append(' ,CPU_TY        ')
     query.append('FROM TB_SK_PKG_PLC ')
     query.append('WHERE 1=1 ')
     if (pkgId is not None):

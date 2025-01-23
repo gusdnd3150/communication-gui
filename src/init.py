@@ -25,7 +25,7 @@ from src.protocols.bluetooth.BlueToothClientThread import BlueToothClientThread
 from PySide6.QtCore import QThread, Signal, Slot
 from src.WorkThread import WorkThread
 from src.LogThread import LogThread
-from src.protocols.plc.PlcClientThread import PlcClientThread
+from src.protocols.plc.PlcMitubishiThread import PlcMitubishiThread
 from ui.ui_main import Ui_MainWindow
 
 pkgCombo = [
@@ -184,9 +184,14 @@ class InitClass(QMainWindow):
 
             logger.info(f'start_sk() Plc Run Cnt : {len(moduleData.plcList)}')
             for i, plc in enumerate(moduleData.plcList):
-                threadPlc = PlcClientThread(plc)
-                threadPlc.daemon = True
-                threadPlc.start()
+                threadPlc = None
+                if plc['PLC_MAKER'] == 'Mitsubishi':
+                    threadPlc = PlcMitubishiThread(plc)
+
+                if threadPlc:
+                    threadPlc.daemon = True
+                    threadPlc.start()
+
 
 
             logger.info(f'start_sk() Socket Run Cnt : {len(moduleData.sokcetList)}')
