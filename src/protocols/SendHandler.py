@@ -12,7 +12,7 @@ class SendHandler():
     def sendSkId(self, skId, msgId, data):
         try:
             data['MSG_ID'] = msgId
-            for i, sk in enumerate(moduleData.sokcetList):
+            for  sk in moduleData.sokcetList:
                 if sk['SK_ID'] == skId:
                     skThread = sk['SK_THREAD']
                     if sk['SK_CLIENT_TYPE'] == 'EVENT':
@@ -21,11 +21,6 @@ class SendHandler():
                         newTh.daemon = True
                         newTh.start()
                         break
-                    # if sk['SK_TYPE'] == 'WEBSK':
-                    #     returnBytes = skThread.codec.encodeSendData(data)
-                    #     loop = skThread.loop
-                    #     asyncio.run_coroutine_threadsafe(self.send_webSk_message(skThread, returnBytes), loop)
-                    #     break
                     skThread.sendMsgToAllChannels(data)
                     break
         except Exception as e:
