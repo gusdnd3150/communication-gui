@@ -85,6 +85,8 @@ class InitClass(QMainWindow):
 
         moduleData.mainLayout = self.ui
         moduleData.mainInstance = self
+
+
         self.bindData()
         self.setGrid()
 
@@ -117,9 +119,18 @@ class InitClass(QMainWindow):
             event.accept()  # 창을 닫음
         else:
             event.ignore()  # 창 닫기 무시
+
+
     def bindData(self):
-        for i in range(0, len(pkgCombo)):
-            self.ui.combo_pkg.addItem(pkgCombo[i])
+        list = moduleData.setCombos()
+        logger.info(f'combo init :: {list}')
+        for comKey in list.keys():
+            if comKey == 'PKG_LIST':
+                for item in list[comKey]:
+                    self.ui.combo_pkg.addItem(item['PKG_ID'])
+
+        # for i in range(0, len(pkgCombo)):
+        #     self.ui.combo_pkg.addItem(pkgCombo[i])
 
     def stop_sk(self):
         try:

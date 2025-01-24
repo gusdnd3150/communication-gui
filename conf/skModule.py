@@ -3,6 +3,7 @@ from conf.sql.SystemQueryString import *
 from src.controller.TestController import TestController
 from src.controller.SchController import SchController
 from src.controller.AtlasCopco import AtlasCopco
+
 from src.protocols.SendHandler import SendHandler
 import sys,os ,json, sqlite3, importlib, traceback
 import inspect
@@ -77,6 +78,13 @@ relative_path = resource_path('')
 logger.info(f'relative_path :: {relative_path}')
 
 
+
+
+def setCombos():
+    data = {}
+    data['PKG_LIST'] = selectQuery(selectPkgCombo())
+
+    return data
 
 
 def getPlcList(pkgId):

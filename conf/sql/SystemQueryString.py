@@ -1,5 +1,13 @@
 
 
+def selectPkgCombo():
+    query = []
+    query.append('SELECT PKG_ID    ')
+    query.append('from TB_SK_PKG_SK')
+    query.append('group by PKG_ID  ')
+    return " ".join(query)
+
+
 def selectPlcAddrList(pkgId, plcId):
     query = []
     query.append('SELECT             ')

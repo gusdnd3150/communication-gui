@@ -54,8 +54,7 @@ class ClientThread2(threading.Thread, Client):
         self.logger = setup_sk_logger(self.skId)
         self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
 
-        if (data.get('SK_GROUP') is not None):
-            self.skGrp = data['SK_GROUP']
+        self.skGrp = data.get('SK_GROUP',None)
 
         if (self.initData['HD_TYPE'] == 'FREE'):
             self.codec = FreeCodec(self.initData)

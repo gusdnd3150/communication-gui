@@ -16,7 +16,7 @@ from src.protocols.sch.BzSchedule2 import BzSchedule2
 from concurrent.futures import ThreadPoolExecutor
 from pymcprotocol import Type3E
 
-class PlcMitubishiThread(threading.Thread):
+class PlcSimensThread(threading.Thread):
 
     initData = None
     socket = None
@@ -48,17 +48,14 @@ class PlcMitubishiThread(threading.Thread):
             for addr in data.get('ADDR_LIST'):
                 self.plcBuffer.append((addr['ADDR'], addr['POS'],addr['LENGTH'],bytearray()))
 
-        if data.get('COMM_TY') is not None:
-            # "binary" or "ascii"
-            self.commTy = data.get('COMM_TY')
-
+        self.commTy = data.get('COMM_TY','binary')
 
         if (data.get('SK_LOG') is not None and data.get('SK_LOG') == 'Y'):
             self.skLogYn = True
         else:
             self.skLogYn = False
 
-        super(PlcMitubishiThread, self).__init__()
+        super(PlcSimensThread, self).__init__()
         self._stop_event = threading.Event()
 
 
