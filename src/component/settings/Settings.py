@@ -1,8 +1,6 @@
 from PySide6.QtGui import QBrush, QColor
-from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView , QCheckBox, QWidget, QHBoxLayout, QMessageBox
-import sys
-import os
-import traceback
+from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView ,QMessageBox
+
 from conf.skModule import *
 from conf.sql.SystemQueryString import *
 from ui.ui_settings import Ui_Settings

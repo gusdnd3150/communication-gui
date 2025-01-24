@@ -4,7 +4,8 @@ import traceback
 import os
 from PySide6.QtWidgets import QMainWindow,  QTableWidgetItem, QHeaderView, QMessageBox
 from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Slot, Qt
+
 from src.protocols.tcp.ServerThread2 import ServerThread2
 from src.protocols.tcp.ClientThread2 import ClientThread2
 program_path = sys.argv[0]
@@ -22,7 +23,7 @@ from src.protocols.websk.WebSkClientThread import WebSkClientThread
 from src.protocols.sch.Schedule import Schedule
 from src.protocols.bluetooth.BlueToothServerThread import BlueToothServerThread
 from src.protocols.bluetooth.BlueToothClientThread import BlueToothClientThread
-from PySide6.QtCore import QThread, Signal, Slot
+
 from src.WorkThread import WorkThread
 from src.LogThread import LogThread
 from src.protocols.plc.PlcMitubishiThread import PlcMitubishiThread

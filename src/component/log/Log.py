@@ -1,8 +1,6 @@
 
-from PySide6.QtUiTools import QUiLoader
-from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView
-from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit, QVBoxLayout, QWidget
-from PySide6.QtCore import QSize
+from PySide6.QtWidgets import QMainWindow
+
 
 import sys
 import os
