@@ -1,7 +1,6 @@
 
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QPushButton
-from PySide6.QtCore import QThread, Signal, Slot
-import time
+from PySide6.QtCore import QThread, Signal
+
 
 
 class WorkThread(QThread):

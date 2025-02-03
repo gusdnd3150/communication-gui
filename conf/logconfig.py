@@ -5,8 +5,8 @@ import os
 # 로그 파일 경로 설정
 log_file = './logs/appslog.log'
 
-# 로그 파일 크기 제한 (6 메가바이트)
-max_log_size = 6 * 1024 * 1024
+# 로그 파일 크기 제한 (100 메가바이트)
+max_log_size = 100 * 1024 * 1024
 
 def setup_sk_logger(skId):
     loggingLevl = logging.INFO
@@ -23,7 +23,7 @@ def setup_sk_logger(skId):
     logger.addHandler(console_handler)
 
     # 파일 핸들러 생성
-    file_handler = logging.handlers.RotatingFileHandler(f'./logs/{skId}', maxBytes=max_log_size, backupCount=1)
+    file_handler = logging.handlers.RotatingFileHandler(f'./logs/{skId}', maxBytes=max_log_size, backupCount=2)
     file_handler.setFormatter(log_format)
     # 로거에 파일 핸들러 추가
     logger.addHandler(file_handler)

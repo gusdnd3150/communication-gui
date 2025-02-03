@@ -29,12 +29,6 @@ from src.LogThread import LogThread
 from src.protocols.plc.PlcMitubishiThread import PlcMitubishiThread
 from ui.ui_main import Ui_MainWindow
 
-pkgCombo = [
-    'CORE'
-    ,'TOOL'
-    ,'MES'
-]
-
 # 네이밍
 # 1. btn_?, popup_?, input_?,
 
