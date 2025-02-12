@@ -28,6 +28,7 @@ from src.WorkThread import WorkThread
 from src.LogThread import LogThread
 from src.protocols.plc.PlcMitubishiThread import PlcMitubishiThread
 from ui.ui_main import Ui_MainWindow
+from src.component.utility.Utility import Utility
 
 # 네이밍
 # 1. btn_?, popup_?, input_?,
@@ -42,6 +43,7 @@ class InitClass(QMainWindow):
     initData = None # 초기데이터 초기화 클래스
     reactor = None
     handlPop =None
+    utilityPop =None
     isRunSk = False
     treeModel = None
     root_node = None
@@ -84,6 +86,7 @@ class InitClass(QMainWindow):
         # 설정팝업
         self.popup = Settings(self.initData)
         self.handlPop = Handler(self.initData)
+        self.utilityPop = Utility(self.initData)
         # self.logPop = Log(self.initData)
 
 
@@ -421,12 +424,12 @@ class InitClass(QMainWindow):
 
 
     def open_util(self):
-        if self.popup.isVisible():
+        if self.utilityPop.isVisible():
             # self.popup.instance.hide()
-            self.popup.hide()
+            self.utilityPop.hide()
         else:
             # self.popup.instance.show()
-            self.popup.show()
+            self.utilityPop.show()
 
 
     def open_settings(self):
