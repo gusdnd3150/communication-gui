@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>699</width>
-    <height>505</height>
+    <width>687</width>
+    <height>512</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -52,10 +52,13 @@
     <item row="0" column="1">
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <layout class="QGridLayout" name="gridLayout"/>
-      </item>
-      <item row="1" column="0">
        <widget class="QTabWidget" name="tabWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -279,10 +282,16 @@ p, li { white-space: pre-wrap; }
     <item row="0" column="0">
      <widget class="QScrollArea" name="scrollArea">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+       <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>75</width>
+        <height>0</height>
+       </size>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
@@ -295,8 +304,8 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>69</width>
-         <height>442</height>
+         <width>73</width>
+         <height>449</height>
         </rect>
        </property>
        <widget class="QPushButton" name="btn_stop">
@@ -304,7 +313,7 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>70</y>
-          <width>61</width>
+          <width>71</width>
           <height>22</height>
          </rect>
         </property>
@@ -348,7 +357,7 @@ QPushButton:hover {
          <rect>
           <x>0</x>
           <y>40</y>
-          <width>61</width>
+          <width>71</width>
           <height>22</height>
          </rect>
         </property>
@@ -388,7 +397,7 @@ QPushButton:hover {
          <rect>
           <x>0</x>
           <y>10</y>
-          <width>61</width>
+          <width>71</width>
           <height>24</height>
          </rect>
         </property>
@@ -421,7 +430,7 @@ QPushButton:hover {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>699</width>
+     <width>687</width>
      <height>22</height>
     </rect>
    </property>
@@ -431,6 +440,7 @@ QPushButton:hover {
     </property>
     <addaction name="action_settings"/>
     <addaction name="action_test"/>
+    <addaction name="action_util"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -455,6 +465,11 @@ QPushButton:hover {
   <action name="action_test">
    <property name="text">
     <string>Socket Test</string>
+   </property>
+  </action>
+  <action name="action_util">
+   <property name="text">
+    <string>Utility</string>
    </property>
   </action>
  </widget>

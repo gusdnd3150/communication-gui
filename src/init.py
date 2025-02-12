@@ -69,18 +69,14 @@ class InitClass(QMainWindow):
         # self.ui.btn_handler.clicked.connect(self.open_handler)
         # self.ui.btn_show_log.clicked.connect(self.open_logger)
 
-
-
+        self.ui.action_util.triggered.connect(self.open_util) # 유틸
         self.ui.action_settings.triggered.connect(self.open_settings)  # 설정 오픈
         self.ui.action_test.triggered.connect(self.open_handler)  # 핸들러 오픈
         self.ui.actionOpen_log_folder.triggered.connect(self.openFolder) # 폴더 오픈
         
         # self.ui.btn_show_log.clicked.connect(self.open_logger)
-
-
         moduleData.mainLayout = self.ui
         moduleData.mainInstance = self
-
 
         self.bindData()
         self.setGrid()
@@ -422,6 +418,15 @@ class InitClass(QMainWindow):
             return headers.index(column_name)
         except ValueError:
             return -1
+
+
+    def open_util(self):
+        if self.popup.isVisible():
+            # self.popup.instance.hide()
+            self.popup.hide()
+        else:
+            # self.popup.instance.show()
+            self.popup.show()
 
 
     def open_settings(self):
