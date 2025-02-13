@@ -96,7 +96,7 @@ def getPlcList(pkgId):
 
 
 def getsokcetList(pkgId):
-    skList = selectQuery(selectSocketList(None,'Y',pkgId))
+    skList = selectQuery(selectInitSocketList(None,'Y',pkgId))
     for index, sk in enumerate(skList):
         # 해더정보 처리
         hdList = selectQuery(selectTbSkMsgHdDt().format(sk.get('HD_ID')))

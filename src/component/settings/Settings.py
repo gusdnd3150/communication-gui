@@ -42,12 +42,15 @@ class Settings(QMainWindow):
         self.ui.btn_addSk.clicked.connect(self.addSk)
         self.ui.btn_delSk.clicked.connect(self.delSk)
         self.ui.btn_saveSk.clicked.connect(self.saveSk)
+        self.ui.sk_search_pkg.textChanged.connect(self.searchSk)
+        self.ui.sk_search_sk.textChanged.connect(self.searchSk)
 
         # In 탭 이벤트 설정
         self.ui.btn_addIn.clicked.connect(self.addIn)
         self.ui.btn_delIn.clicked.connect(self.delIn)
         self.ui.btn_saveIn.clicked.connect(self.saveIn)
-
+        self.ui.in_search_pkg.textChanged.connect(self.searchIn)
+        self.ui.in_search_sk.textChanged.connect(self.searchIn)
 
         # 메시지 탭 이벤트 설정
         self.ui.msg_search.clicked.connect(self.searchMsg)
@@ -110,7 +113,9 @@ class Settings(QMainWindow):
             self.ui.list_sk.setRowCount(0)  # Table의 행을 설정, list의 길이
             self.ui.list_sk.setColumnCount(13)
             self.ui.list_sk.setHorizontalHeaderLabels(headers)
-            self.skList = selectQuery(selectSocketList(None, None, None))
+            pkg = self.ui.sk_search_pkg.text()
+            skId = self.ui.sk_search_sk.text()
+            self.skList = selectQuery(selectSocketList(skId, None, pkg))
             for i, skItem in enumerate(self.skList):
                 row_count = self.ui.list_sk.rowCount()
                 self.ui.list_sk.insertRow(row_count)
@@ -245,6 +250,12 @@ class Settings(QMainWindow):
         self.createSkGrid()
         logger.info(f'{row_data}')
 
+    def searchSk(self):
+        try:
+            self.createSkGrid()
+        except Exception as e:
+            logger.error(f'searchMsg exception : {traceback.format_exc()}')
+
 #################################################################### 소켓 IN
     def createInGrid(self):
         try:
@@ -256,7 +267,9 @@ class Settings(QMainWindow):
             self.ui.list_in.setRowCount(0)  # Table의 행을 설정, list의 길이
             self.ui.list_in.setColumnCount(7)
             self.ui.list_in.setHorizontalHeaderLabels(headers)
-            self.inList = selectQuery(selectSocketInList(None, None, None))
+            pkg = self.ui.in_search_pkg.text()
+            skId = self.ui.in_search_sk.text()
+            self.inList = selectQuery(selectSocketInList(skId, None, pkg))
             for i, inItem in enumerate(self.inList):
                 row_count = self.ui.list_in.rowCount()
                 self.ui.list_in.insertRow(row_count)
@@ -369,6 +382,13 @@ class Settings(QMainWindow):
 
         except Exception as e :
             logger.error(f'selectRow exception : {traceback.format_exc()} ')
+
+
+    def searchIn(self):
+        try:
+            self.createInGrid()
+        except Exception as e:
+            logger.error(f'searchMsg exception : {traceback.format_exc()}')
 #################################################################### 메시지
 
     def searchMsg(self):

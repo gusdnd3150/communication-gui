@@ -37,7 +37,6 @@
   <property name="font">
    <font>
     <family>맑은 고딕</family>
-    <weight>75</weight>
     <bold>true</bold>
    </font>
   </property>
@@ -49,7 +48,7 @@
     <item row="1" column="1">
      <widget class="Line" name="line">
       <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <enum>Qt::Orientation::Horizontal</enum>
       </property>
      </widget>
     </item>
@@ -245,16 +244,15 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>40</y>
           <width>801</width>
-          <height>501</height>
+          <height>461</height>
          </rect>
         </property>
         <property name="font">
          <font>
           <family>맑은 고딕</family>
           <pointsize>9</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -268,13 +266,59 @@
          <bool>false</bool>
         </property>
         <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
+         <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
         </property>
         <column>
          <property name="text">
           <string>새 행</string>
          </property>
         </column>
+       </widget>
+       <widget class="QLabel" name="label_4">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>53</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>PKG</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="sk_search_pkg">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>10</y>
+          <width>71</width>
+          <height>22</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_5">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>10</y>
+          <width>41</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>SK_ID</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="sk_search_sk">
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>10</y>
+          <width>111</width>
+          <height>22</height>
+         </rect>
+        </property>
        </widget>
       </widget>
       <widget class="QWidget" name="tab_5">
@@ -285,16 +329,15 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>40</y>
           <width>801</width>
-          <height>501</height>
+          <height>461</height>
          </rect>
         </property>
         <property name="font">
          <font>
           <family>맑은 고딕</family>
           <pointsize>9</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -308,7 +351,7 @@
          <bool>false</bool>
         </property>
         <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
+         <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
         </property>
         <column>
          <property name="text">
@@ -435,6 +478,52 @@
          </item>
         </layout>
        </widget>
+       <widget class="QLabel" name="label_73">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>10</y>
+          <width>61</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>IN_SK_ID</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="in_search_pkg">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>10</y>
+          <width>71</width>
+          <height>22</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_74">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>53</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>PKG</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="in_search_sk">
+        <property name="geometry">
+         <rect>
+          <x>180</x>
+          <y>10</y>
+          <width>111</width>
+          <height>22</height>
+         </rect>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -520,10 +609,10 @@
          </rect>
         </property>
         <property name="selectionMode">
-         <enum>QAbstractItemView::SingleSelection</enum>
+         <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
         </property>
         <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
+         <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
         </property>
         <property name="sortingEnabled">
          <bool>true</bool>
@@ -539,10 +628,10 @@
          </rect>
         </property>
         <property name="selectionMode">
-         <enum>QAbstractItemView::SingleSelection</enum>
+         <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
         </property>
         <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
+         <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
         </property>
        </widget>
        <widget class="QPushButton" name="msg_dt_add">
@@ -594,7 +683,7 @@
          </rect>
         </property>
         <property name="orientation">
-         <enum>Qt::Vertical</enum>
+         <enum>Qt::Orientation::Vertical</enum>
         </property>
        </widget>
        <widget class="QPushButton" name="msg_save">
@@ -667,7 +756,6 @@
          <font>
           <family>맑은 고딕</family>
           <pointsize>9</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -675,7 +763,7 @@
          <bool>true</bool>
         </property>
         <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
+         <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
         </property>
         <column>
          <property name="text">
@@ -820,7 +908,6 @@
          <font>
           <family>맑은 고딕</family>
           <pointsize>9</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -828,7 +915,7 @@
          <bool>true</bool>
         </property>
         <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
+         <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
         </property>
         <column>
          <property name="text">
@@ -966,7 +1053,7 @@
      <x>0</x>
      <y>0</y>
      <width>1150</width>
-     <height>22</height>
+     <height>33</height>
     </rect>
    </property>
   </widget>

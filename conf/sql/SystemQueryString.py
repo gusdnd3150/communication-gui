@@ -59,6 +59,64 @@ def selectPlcList(skId , useYn, pkgId='CORE'):
     return " ".join(query)
 
 
+def selectInitSocketList(skId , useYn, pkgId='CORE'):
+
+    query = []
+    query.append('SELECT				 ')
+    query.append('	A.PKG_ID             ')
+    query.append('	, A.SK_ID            ')
+    query.append('	, A.SK_GROUP         ')
+    query.append('	, A.USE_YN           ')
+    query.append('	, A.SK_CONN_TYPE     ')
+    query.append('	, A.SK_TYPE          ')
+    query.append('	, A.SK_CLIENT_TYPE   ')
+    query.append('	, A.HD_ID            ')
+    query.append('	, A.SK_PORT          ')
+    query.append('	, A.SK_IP            ')
+    query.append('	, A.SK_DELIMIT_TYPE  ')
+    query.append('	, A.RELATION_VAL     ')
+    query.append('	, A.SK_LOG           ')
+    query.append('	, B.HD_TYPE          ')
+    query.append('	, B.MSG_CLASS        ')
+    query.append('	, B.MAX_LENGTH       ')
+    query.append('	, B.MIN_LENGTH       ')
+    query.append('FROM (                 ')
+    query.append('	SELECT               ')
+    query.append('		PKG_ID           ')
+    query.append('		, SK_ID          ')
+    query.append('		, SK_GROUP       ')
+    query.append('		, USE_YN         ')
+    query.append('		, SK_CONN_TYPE   ')
+    query.append('		, SK_TYPE        ')
+    query.append('		, SK_CLIENT_TYPE ')
+    query.append('		, HD_ID          ')
+    query.append('		, SK_PORT        ')
+    query.append('		, SK_IP          ')
+    query.append('		, SK_DELIMIT_TYPE')
+    query.append('		, RELATION_VAL   ')
+    query.append('		, SK_LOG         ')
+    query.append('	FROM TB_SK_PKG_SK    ')
+    query.append('WHERE 1=1    ')
+    if(pkgId is not None and pkgId != ''):
+        query.append(f'AND PKG_ID = "{pkgId}"')
+    if(skId is not None and skId != ''):
+        query.append(f'AND SK_ID = "{skId}"')
+    if (useYn is not None):
+        query.append(f'AND USE_YN = "{useYn}"')
+    query.append(')A LEFT OUTER JOIN (   ')
+    query.append('	SELECT               ')
+    query.append('		HD_ID            ')
+    query.append('		, HD_TYPE        ')
+    query.append('		, MSG_CLASS      ')
+    query.append('		, MAX_LENGTH     ')
+    query.append('		, MIN_LENGTH     ')
+    query.append('	FROM TB_SK_MSG_HD    ')
+    query.append(')B                     ')
+    query.append('ON A.HD_ID = B.HD_ID   ')
+    query.append('ORDER BY PKG_ID , SK_CONN_TYPE, SK_ID')
+
+    return " ".join(query)
+
 def selectSocketList(skId , useYn, pkgId='CORE'):
 
     query = []
@@ -97,10 +155,10 @@ def selectSocketList(skId , useYn, pkgId='CORE'):
     query.append('		, SK_LOG         ')
     query.append('	FROM TB_SK_PKG_SK    ')
     query.append('WHERE 1=1    ')
-    if(pkgId is not None):
-        query.append(f'AND PKG_ID = "{pkgId}"')
-    if(skId is not None):
-        query.append(f'AND SK_ID = "{skId}"')
+    if(pkgId is not None and pkgId != ''):
+        query.append(f'AND PKG_ID LIKE "%{pkgId}%"')
+    if(skId is not None and skId != ''):
+        query.append(f'AND SK_ID LIKE "%{skId}%"')
     if (useYn is not None):
         query.append(f'AND USE_YN = "{useYn}"')
     query.append(')A LEFT OUTER JOIN (   ')
@@ -132,10 +190,10 @@ def selectSocketInList(skId , useYn, pkgId='CORE'):
     query.append('	,UPD_ID            ')
     query.append('FROM TB_SK_PKG_SK_IN ')
     query.append('WHERE 1=1            ')
-    if(pkgId is not None):
-        query.append(f'AND PKG_ID = "{pkgId}"')
-    if(skId is not None):
-        query.append(f'AND IN_SK_ID = "{skId}"')
+    if(pkgId is not None and pkgId != ''):
+        query.append(f'AND PKG_ID like "%{pkgId}%"')
+    if(skId is not None and skId != ''):
+        query.append(f'AND IN_SK_ID like "%{skId}%"')
     if (useYn is not None):
         query.append(f'AND USE_YN = "{useYn}"')
     query.append(' ORDER BY PKG_ID, SK_IN_SEQ ')
