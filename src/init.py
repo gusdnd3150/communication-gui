@@ -108,7 +108,7 @@ class InitClass(QMainWindow):
             self.stop_sk()
             self.popup.close()
             self.handlPop.close()
-            # self.logPop.close()
+            self.utilityPop.close()
 
             event.accept()  # 창을 닫음
         else:
@@ -187,16 +187,15 @@ class InitClass(QMainWindow):
 
         try:
 
-            logger.info(f'start_sk() Plc Run Cnt : {len(moduleData.plcList)}')
-            for i, plc in enumerate(moduleData.plcList):
-                threadPlc = None
-                if plc['PLC_MAKER'] == 'Mitsubishi':
-                    threadPlc = PlcMitubishiThread(plc)
-
-                if threadPlc:
-                    threadPlc.daemon = True
-                    threadPlc.start()
-
+            # logger.info(f'start_sk() Plc Run Cnt : {len(moduleData.plcList)}')
+            # for i, plc in enumerate(moduleData.plcList):
+            #     threadPlc = None
+            #     if plc['PLC_MAKER'] == 'Mitsubishi':
+            #         threadPlc = PlcMitubishiThread(plc)
+            #
+            #     if threadPlc:
+            #         threadPlc.daemon = True
+            #         threadPlc.start()
 
 
             logger.info(f'start_sk() Socket Run Cnt : {len(moduleData.sokcetList)}')

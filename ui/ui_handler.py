@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'handler.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.2
+## Created by: Qt User Interface Compiler version 6.8.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -26,7 +26,7 @@ class Ui_Handler(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.setEnabled(True)
-        MainWindow.resize(1119, 518)
+        MainWindow.resize(692, 603)
         MainWindow.setBaseSize(QSize(1000, 0))
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
@@ -63,30 +63,15 @@ class Ui_Handler(object):
 
         self.gridLayout_2 = QGridLayout()
         self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.btn_handle_send = QPushButton(self.centralwidget)
-        self.btn_handle_send.setObjectName(u"btn_handle_send")
+        self.list_handle_body = QTableWidget(self.centralwidget)
+        self.list_handle_body.setObjectName(u"list_handle_body")
 
-        self.gridLayout_2.addWidget(self.btn_handle_send, 6, 0, 1, 1)
-
-        self.combo_sk_list = QComboBox(self.centralwidget)
-        self.combo_sk_list.setObjectName(u"combo_sk_list")
-
-        self.gridLayout_2.addWidget(self.combo_sk_list, 1, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.list_handle_body, 4, 0, 1, 1)
 
         self.label = QLabel(self.centralwidget)
         self.label.setObjectName(u"label")
 
         self.gridLayout_2.addWidget(self.label, 3, 0, 1, 1)
-
-        self.label_2 = QLabel(self.centralwidget)
-        self.label_2.setObjectName(u"label_2")
-
-        self.gridLayout_2.addWidget(self.label_2, 0, 0, 1, 1)
-
-        self.list_handle_body = QTableWidget(self.centralwidget)
-        self.list_handle_body.setObjectName(u"list_handle_body")
-
-        self.gridLayout_2.addWidget(self.list_handle_body, 4, 0, 1, 1)
 
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
@@ -98,6 +83,21 @@ class Ui_Handler(object):
 
         self.gridLayout_2.addLayout(self.horizontalLayout_3, 5, 0, 1, 1)
 
+        self.btn_handle_send = QPushButton(self.centralwidget)
+        self.btn_handle_send.setObjectName(u"btn_handle_send")
+
+        self.gridLayout_2.addWidget(self.btn_handle_send, 8, 0, 1, 1)
+
+        self.combo_sk_list = QComboBox(self.centralwidget)
+        self.combo_sk_list.setObjectName(u"combo_sk_list")
+
+        self.gridLayout_2.addWidget(self.combo_sk_list, 7, 0, 1, 1)
+
+        self.label_2 = QLabel(self.centralwidget)
+        self.label_2.setObjectName(u"label_2")
+
+        self.gridLayout_2.addWidget(self.label_2, 6, 0, 1, 1)
+
 
         self.horizontalLayout.addLayout(self.gridLayout_2)
 
@@ -107,7 +107,7 @@ class Ui_Handler(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1119, 22))
+        self.menubar.setGeometry(QRect(0, 0, 692, 22))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -122,9 +122,9 @@ class Ui_Handler(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.btn_handle_search.setText(QCoreApplication.translate("MainWindow", u"\uac80\uc0c9", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"\uba54\uc2dc\uc9c0 \ub9ac\uc2a4\ud2b8", None))
-        self.btn_handle_send.setText(QCoreApplication.translate("MainWindow", u"Send", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"\uba54\uc2dc\uc9c0 BODY", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"\uc18c\ucf13 \uc544\uc774\ub514", None))
         self.btn_save_dt_val.setText(QCoreApplication.translate("MainWindow", u"save Default", None))
+        self.btn_handle_send.setText(QCoreApplication.translate("MainWindow", u"Send", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"\uc18c\ucf13 \uc544\uc774\ub514", None))
     # retranslateUi
 
