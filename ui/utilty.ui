@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>756</width>
-    <height>639</height>
+    <width>783</width>
+    <height>702</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -57,7 +57,7 @@
              <x>0</x>
              <y>0</y>
              <width>98</width>
-             <height>533</height>
+             <height>585</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -92,7 +92,80 @@
             <item>
              <widget class="QPushButton" name="btn_util_ascii">
               <property name="text">
-               <string>ascii</string>
+               <string>ascii (문자)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_short_big">
+              <property name="text">
+               <string>Short B (2)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_double_big">
+              <property name="text">
+               <string>Double B (8)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_int_big">
+              <property name="text">
+               <string>int B(4)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_float_big">
+              <property name="text">
+               <string>Float B(4)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line_2">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_short_little">
+              <property name="text">
+               <string>Short L (2)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_double_little">
+              <property name="text">
+               <string>Double L (8)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_int_little">
+              <property name="styleSheet">
+               <string notr="true"/>
+              </property>
+              <property name="text">
+               <string>int L(4)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_float_little">
+              <property name="text">
+               <string>Float L(4)</string>
               </property>
              </widget>
             </item>
@@ -111,8 +184,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>756</width>
-     <height>22</height>
+     <width>783</width>
+     <height>33</height>
     </rect>
    </property>
   </widget>

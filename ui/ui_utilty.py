@@ -15,16 +15,16 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QGridLayout, QMainWindow,
-    QMenuBar, QPushButton, QScrollArea, QSizePolicy,
-    QStatusBar, QTabWidget, QTextEdit, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGridLayout,
+    QMainWindow, QMenuBar, QPushButton, QScrollArea,
+    QSizePolicy, QStatusBar, QTabWidget, QTextEdit,
+    QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(756, 639)
+        MainWindow.resize(783, 702)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout_2 = QGridLayout(self.centralwidget)
@@ -61,7 +61,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 98, 533))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 98, 585))
         self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.btn_util_hex = QPushButton(self.scrollAreaWidgetContents)
@@ -89,6 +89,61 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.btn_util_ascii)
 
+        self.line = QFrame(self.scrollAreaWidgetContents)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.Shape.HLine)
+        self.line.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.verticalLayout.addWidget(self.line)
+
+        self.btn_short_big = QPushButton(self.scrollAreaWidgetContents)
+        self.btn_short_big.setObjectName(u"btn_short_big")
+
+        self.verticalLayout.addWidget(self.btn_short_big)
+
+        self.btn_double_big = QPushButton(self.scrollAreaWidgetContents)
+        self.btn_double_big.setObjectName(u"btn_double_big")
+
+        self.verticalLayout.addWidget(self.btn_double_big)
+
+        self.btn_int_big = QPushButton(self.scrollAreaWidgetContents)
+        self.btn_int_big.setObjectName(u"btn_int_big")
+
+        self.verticalLayout.addWidget(self.btn_int_big)
+
+        self.btn_float_big = QPushButton(self.scrollAreaWidgetContents)
+        self.btn_float_big.setObjectName(u"btn_float_big")
+
+        self.verticalLayout.addWidget(self.btn_float_big)
+
+        self.line_2 = QFrame(self.scrollAreaWidgetContents)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShape(QFrame.Shape.HLine)
+        self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.verticalLayout.addWidget(self.line_2)
+
+        self.btn_short_little = QPushButton(self.scrollAreaWidgetContents)
+        self.btn_short_little.setObjectName(u"btn_short_little")
+
+        self.verticalLayout.addWidget(self.btn_short_little)
+
+        self.btn_double_little = QPushButton(self.scrollAreaWidgetContents)
+        self.btn_double_little.setObjectName(u"btn_double_little")
+
+        self.verticalLayout.addWidget(self.btn_double_little)
+
+        self.btn_int_little = QPushButton(self.scrollAreaWidgetContents)
+        self.btn_int_little.setObjectName(u"btn_int_little")
+        self.btn_int_little.setStyleSheet(u"")
+
+        self.verticalLayout.addWidget(self.btn_int_little)
+
+        self.btn_float_little = QPushButton(self.scrollAreaWidgetContents)
+        self.btn_float_little.setObjectName(u"btn_float_little")
+
+        self.verticalLayout.addWidget(self.btn_float_little)
+
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
         self.gridLayout.addWidget(self.scrollArea, 0, 1, 2, 1)
@@ -100,7 +155,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 756, 22))
+        self.menubar.setGeometry(QRect(0, 0, 783, 33))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -120,7 +175,15 @@ class Ui_MainWindow(object):
         self.btn_util_decimal.setText(QCoreApplication.translate("MainWindow", u"decimal", None))
         self.btn_util_binuary.setText(QCoreApplication.translate("MainWindow", u"biunary", None))
         self.btn_util_base64.setText(QCoreApplication.translate("MainWindow", u"base64", None))
-        self.btn_util_ascii.setText(QCoreApplication.translate("MainWindow", u"ascii", None))
+        self.btn_util_ascii.setText(QCoreApplication.translate("MainWindow", u"ascii (\ubb38\uc790)", None))
+        self.btn_short_big.setText(QCoreApplication.translate("MainWindow", u"Short B (2)", None))
+        self.btn_double_big.setText(QCoreApplication.translate("MainWindow", u"Double B (8)", None))
+        self.btn_int_big.setText(QCoreApplication.translate("MainWindow", u"int B(4)", None))
+        self.btn_float_big.setText(QCoreApplication.translate("MainWindow", u"Float B(4)", None))
+        self.btn_short_little.setText(QCoreApplication.translate("MainWindow", u"Short L (2)", None))
+        self.btn_double_little.setText(QCoreApplication.translate("MainWindow", u"Double L (8)", None))
+        self.btn_int_little.setText(QCoreApplication.translate("MainWindow", u"int L(4)", None))
+        self.btn_float_little.setText(QCoreApplication.translate("MainWindow", u"Float L(4)", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"\ubcc0\ud658\uae30", None))
     # retranslateUi
 

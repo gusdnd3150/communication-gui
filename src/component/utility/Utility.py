@@ -6,6 +6,7 @@ import os
 import src.protocols.SendHandler as SendHandler
 
 import base64
+import struct
 
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
@@ -37,8 +38,19 @@ class Utility(QMainWindow):
         self.ui.btn_util_binuary.clicked.connect(self.btnBinary)
         self.ui.btn_util_base64.clicked.connect(self.btnBase64)
         self.ui.btn_util_ascii.clicked.connect(self.btnAscii)
-
         self.ui.util_combo.addItems(self.combos)
+
+        self.ui.btn_short_big.clicked.connect(self.shortB)
+        self.ui.btn_short_little.clicked.connect(self.shortL)
+
+        self.ui.btn_double_big.clicked.connect(self.doubleB)
+        self.ui.btn_double_little.clicked.connect(self.doubleL)
+
+        self.ui.btn_int_big.clicked.connect(self.intB)
+        self.ui.btn_int_little.clicked.connect(self.intL)
+
+        self.ui.btn_float_big.clicked.connect(self.floatB)
+        self.ui.btn_float_little.clicked.connect(self.floatL)
 
 
 
@@ -159,5 +171,222 @@ class Utility(QMainWindow):
                 elif type == 'binary':
                     byte_data = bytes(int(b, 2) for b in text.split())
                     self.ui.util_encode.setText(byte_data.decode('utf-8'))
+        except:
+            self.ui.util_encode.setText(traceback.format_exc())
+
+
+
+    def shortB(self):
+        try:
+            text = self.ui.util_text.toPlainText()
+            type = self.ui.util_combo.currentText()
+            if text:
+                if type == 'decimal':
+                    byte_data = bytes(int(num) for num in text.split())
+                    value = int.from_bytes(byte_data, byteorder="big")
+                    self.ui.util_encode.setText(str(value))
+                elif type == 'hex':
+                    byte_data = bytes(int(num, 16) for num in text.split())
+                    value = int.from_bytes(byte_data, byteorder="big")
+                    self.ui.util_encode.setText(str(value))
+
+                elif type== 'base64':
+                    byte_data = base64.b64decode(text)
+                    value = int.from_bytes(byte_data, byteorder="big")
+                    self.ui.util_encode.setText(str(value))
+                elif type == 'binary':
+                    byte_data = bytes(int(b, 2) for b in text.split())
+                    value = int.from_bytes(byte_data, byteorder="big")
+                    self.ui.util_encode.setText(str(value))
+        except:
+            self.ui.util_encode.setText(traceback.format_exc())
+
+
+    def shortL(self):
+        try:
+            text = self.ui.util_text.toPlainText()
+            type = self.ui.util_combo.currentText()
+            if text:
+                if type == 'decimal':
+                    byte_data = bytes(int(num) for num in text.split())
+                    value = int.from_bytes(byte_data, byteorder="little")
+                    self.ui.util_encode.setText(str(value))
+                elif type == 'hex':
+                    byte_data = bytes(int(num, 16) for num in text.split())
+                    value = int.from_bytes(byte_data, byteorder="little")
+                    self.ui.util_encode.setText(str(value))
+
+                elif type == 'base64':
+                    byte_data = base64.b64decode(text)
+                    value = int.from_bytes(byte_data, byteorder="little")
+                    self.ui.util_encode.setText(str(value))
+
+                elif type == 'binary':
+                    byte_data = bytes(int(b, 2) for b in text.split())
+                    value = int.from_bytes(byte_data, byteorder="little")
+                    self.ui.util_encode.setText(str(value))
+        except:
+            self.ui.util_encode.setText(traceback.format_exc())
+
+    def doubleB(self):
+        try:
+            text = self.ui.util_text.toPlainText()
+            type = self.ui.util_combo.currentText()
+            if text:
+                if type == 'decimal':
+                    byte_data = bytes(int(num) for num in text.split())
+                    big_endian_value = struct.unpack(">d", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+
+                elif type == 'hex':
+                    byte_data = bytes(int(num, 16) for num in text.split())
+                    big_endian_value = struct.unpack(">d", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+
+                elif type == 'base64':
+                    byte_data = base64.b64decode(text)
+                    big_endian_value = struct.unpack(">d", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+
+                elif type == 'binary':
+                    byte_data = bytes(int(b, 2) for b in text.split())
+                    big_endian_value = struct.unpack(">d", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+        except:
+            self.ui.util_encode.setText(traceback.format_exc())
+
+    def doubleL(self):
+        try:
+            text = self.ui.util_text.toPlainText()
+            type = self.ui.util_combo.currentText()
+            if text:
+                if type == 'decimal':
+                    byte_data = bytes(int(num) for num in text.split())
+                    big_endian_value = struct.unpack("<d", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+
+                elif type == 'hex':
+                    byte_data = bytes(int(num, 16) for num in text.split())
+                    big_endian_value = struct.unpack("<d", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+
+                elif type == 'base64':
+                    byte_data = base64.b64decode(text)
+                    big_endian_value = struct.unpack("<d", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+
+                elif type == 'binary':
+                    byte_data = bytes(int(b, 2) for b in text.split())
+                    big_endian_value = struct.unpack("<d", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+        except:
+            self.ui.util_encode.setText(traceback.format_exc())
+
+
+    def intB(self):
+        try:
+            text = self.ui.util_text.toPlainText()
+            type = self.ui.util_combo.currentText()
+            if text:
+                if type == 'decimal':
+                    byte_data = bytes(int(num) for num in text.split())
+                    int_value = int.from_bytes(byte_data, byteorder="big", signed=True)
+                    self.ui.util_encode.setText(str(int_value))
+
+                elif type == 'hex':
+                    byte_data = bytes(int(num, 16) for num in text.split())
+                    int_value = int.from_bytes(byte_data, byteorder="big", signed=True)
+                    self.ui.util_encode.setText(str(int_value))
+
+                elif type == 'base64':
+                    byte_data = base64.b64decode(text)
+                    int_value = int.from_bytes(byte_data, byteorder="big", signed=True)
+                    self.ui.util_encode.setText(str(int_value))
+
+                elif type == 'binary':
+                    byte_data = bytes(int(b, 2) for b in text.split())
+                    int_value = int.from_bytes(byte_data, byteorder="big", signed=True)
+                    self.ui.util_encode.setText(str(int_value))
+        except:
+            self.ui.util_encode.setText(traceback.format_exc())
+
+    def intL(self):
+        try:
+            text = self.ui.util_text.toPlainText()
+            type = self.ui.util_combo.currentText()
+            if text:
+                if type == 'decimal':
+                    byte_data = bytes(int(num) for num in text.split())
+                    int_value = int.from_bytes(byte_data, byteorder="little", signed=True)
+                    self.ui.util_encode.setText(str(int_value))
+
+                elif type == 'hex':
+                    byte_data = bytes(int(num, 16) for num in text.split())
+                    int_value = int.from_bytes(byte_data, byteorder="little", signed=True)
+                    self.ui.util_encode.setText(str(int_value))
+
+                elif type == 'base64':
+                    byte_data = base64.b64decode(text)
+                    int_value = int.from_bytes(byte_data, byteorder="little", signed=True)
+                    self.ui.util_encode.setText(str(int_value))
+
+                elif type == 'binary':
+                    byte_data = bytes(int(b, 2) for b in text.split())
+                    int_value = int.from_bytes(byte_data, byteorder="little", signed=True)
+                    self.ui.util_encode.setText(str(int_value))
+        except:
+            self.ui.util_encode.setText(traceback.format_exc())
+
+    def floatB(self):
+        try:
+            text = self.ui.util_text.toPlainText()
+            type = self.ui.util_combo.currentText()
+            if text:
+                if type == 'decimal':
+                    byte_data = bytes(int(num) for num in text.split())
+                    big_endian_value = struct.unpack(">f", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+
+                elif type == 'hex':
+                    byte_data = bytes(int(num, 16) for num in text.split())
+                    big_endian_value = struct.unpack(">f", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+
+                elif type == 'base64':
+                    byte_data = base64.b64decode(text)
+                    big_endian_value = struct.unpack(">f", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+
+                elif type == 'binary':
+                    byte_data = bytes(int(b, 2) for b in text.split())
+                    big_endian_value = struct.unpack(">f", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+        except:
+            self.ui.util_encode.setText(traceback.format_exc())
+
+    def floatL(self):
+        try:
+            text = self.ui.util_text.toPlainText()
+            type = self.ui.util_combo.currentText()
+            if text:
+                if type == 'decimal':
+                    byte_data = bytes(int(num) for num in text.split())
+                    big_endian_value = struct.unpack("<f", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+
+                elif type == 'hex':
+                    byte_data = bytes(int(num, 16) for num in text.split())
+                    big_endian_value = struct.unpack("<f", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+
+                elif type == 'base64':
+                    byte_data = base64.b64decode(text)
+                    big_endian_value = struct.unpack("<f", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
+
+                elif type == 'binary':
+                    byte_data = bytes(int(b, 2) for b in text.split())
+                    big_endian_value = struct.unpack("<f", byte_data)[0]
+                    self.ui.util_encode.setText(str(big_endian_value))
         except:
             self.ui.util_encode.setText(traceback.format_exc())
