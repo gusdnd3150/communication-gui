@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>783</width>
-    <height>702</height>
+    <width>1129</width>
+    <height>715</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_2">
+   <layout class="QGridLayout" name="gridLayout_3">
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
@@ -25,16 +25,7 @@
         <string>변환기</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="2" rowspan="2">
-         <widget class="QTextEdit" name="util_encode"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QTextEdit" name="util_text"/>
-        </item>
-        <item row="0" column="0">
-         <widget class="QComboBox" name="util_combo"/>
-        </item>
-        <item row="0" column="1" rowspan="2">
+        <item row="0" column="1" rowspan="3">
          <widget class="QScrollArea" name="scrollArea">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -57,7 +48,7 @@
              <x>0</x>
              <y>0</y>
              <width>98</width>
-             <height>585</height>
+             <height>605</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -173,6 +164,39 @@
           </widget>
          </widget>
         </item>
+        <item row="0" column="0">
+         <widget class="QComboBox" name="util_combo"/>
+        </item>
+        <item row="1" column="0" rowspan="2">
+         <widget class="QTextEdit" name="util_text"/>
+        </item>
+        <item row="0" column="2" rowspan="3">
+         <widget class="QTabWidget" name="tabWidget_2">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="text">
+           <attribute name="title">
+            <string>text</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="0" column="0">
+             <widget class="QTextEdit" name="util_encode"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_3">
+           <attribute name="title">
+            <string>table</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <item row="0" column="0">
+             <widget class="QTableWidget" name="util_encode_table"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
@@ -184,8 +208,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>783</width>
-     <height>33</height>
+     <width>1129</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>

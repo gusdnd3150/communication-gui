@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'utilty.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.0
+## Created by: Qt User Interface Compiler version 6.7.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -16,40 +16,26 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGridLayout,
-    QMainWindow, QMenuBar, QPushButton, QScrollArea,
-    QSizePolicy, QStatusBar, QTabWidget, QTextEdit,
-    QVBoxLayout, QWidget)
+    QHeaderView, QMainWindow, QMenuBar, QPushButton,
+    QScrollArea, QSizePolicy, QStatusBar, QTabWidget,
+    QTableWidget, QTableWidgetItem, QTextEdit, QVBoxLayout,
+    QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(783, 702)
+        MainWindow.resize(1129, 715)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.gridLayout_2 = QGridLayout(self.centralwidget)
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.gridLayout_3 = QGridLayout(self.centralwidget)
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
         self.tabWidget = QTabWidget(self.centralwidget)
         self.tabWidget.setObjectName(u"tabWidget")
         self.tab = QWidget()
         self.tab.setObjectName(u"tab")
         self.gridLayout = QGridLayout(self.tab)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.util_encode = QTextEdit(self.tab)
-        self.util_encode.setObjectName(u"util_encode")
-
-        self.gridLayout.addWidget(self.util_encode, 0, 2, 2, 1)
-
-        self.util_text = QTextEdit(self.tab)
-        self.util_text.setObjectName(u"util_text")
-
-        self.gridLayout.addWidget(self.util_text, 1, 0, 1, 1)
-
-        self.util_combo = QComboBox(self.tab)
-        self.util_combo.setObjectName(u"util_combo")
-
-        self.gridLayout.addWidget(self.util_combo, 0, 0, 1, 1)
-
         self.scrollArea = QScrollArea(self.tab)
         self.scrollArea.setObjectName(u"scrollArea")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
@@ -61,7 +47,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 98, 585))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 98, 605))
         self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.btn_util_hex = QPushButton(self.scrollAreaWidgetContents)
@@ -146,16 +132,51 @@ class Ui_MainWindow(object):
 
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
-        self.gridLayout.addWidget(self.scrollArea, 0, 1, 2, 1)
+        self.gridLayout.addWidget(self.scrollArea, 0, 1, 3, 1)
+
+        self.util_combo = QComboBox(self.tab)
+        self.util_combo.setObjectName(u"util_combo")
+
+        self.gridLayout.addWidget(self.util_combo, 0, 0, 1, 1)
+
+        self.util_text = QTextEdit(self.tab)
+        self.util_text.setObjectName(u"util_text")
+
+        self.gridLayout.addWidget(self.util_text, 1, 0, 2, 1)
+
+        self.tabWidget_2 = QTabWidget(self.tab)
+        self.tabWidget_2.setObjectName(u"tabWidget_2")
+        self.text = QWidget()
+        self.text.setObjectName(u"text")
+        self.gridLayout_2 = QGridLayout(self.text)
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.util_encode = QTextEdit(self.text)
+        self.util_encode.setObjectName(u"util_encode")
+
+        self.gridLayout_2.addWidget(self.util_encode, 0, 0, 1, 1)
+
+        self.tabWidget_2.addTab(self.text, "")
+        self.tab_3 = QWidget()
+        self.tab_3.setObjectName(u"tab_3")
+        self.gridLayout_4 = QGridLayout(self.tab_3)
+        self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.util_encode_table = QTableWidget(self.tab_3)
+        self.util_encode_table.setObjectName(u"util_encode_table")
+
+        self.gridLayout_4.addWidget(self.util_encode_table, 0, 0, 1, 1)
+
+        self.tabWidget_2.addTab(self.tab_3, "")
+
+        self.gridLayout.addWidget(self.tabWidget_2, 0, 2, 3, 1)
 
         self.tabWidget.addTab(self.tab, "")
 
-        self.gridLayout_2.addWidget(self.tabWidget, 0, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.tabWidget, 0, 0, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 783, 33))
+        self.menubar.setGeometry(QRect(0, 0, 1129, 22))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -164,6 +185,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.tabWidget.setCurrentIndex(0)
+        self.tabWidget_2.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -184,6 +206,8 @@ class Ui_MainWindow(object):
         self.btn_double_little.setText(QCoreApplication.translate("MainWindow", u"Double L (8)", None))
         self.btn_int_little.setText(QCoreApplication.translate("MainWindow", u"int L(4)", None))
         self.btn_float_little.setText(QCoreApplication.translate("MainWindow", u"Float L(4)", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.text), QCoreApplication.translate("MainWindow", u"text", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_3), QCoreApplication.translate("MainWindow", u"table", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"\ubcc0\ud658\uae30", None))
     # retranslateUi
 
