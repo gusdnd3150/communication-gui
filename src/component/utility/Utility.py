@@ -45,7 +45,10 @@ class Utility(QMainWindow):
             for i, skItem in enumerate(result):
                 row_count = self.ui.util_encode_table.rowCount()
                 self.ui.util_encode_table.insertRow(row_count)
-                self.ui.util_encode_table.setItem(row_count, 0, QTableWidgetItem(str(i)))
+                item = QTableWidgetItem(str(i))
+                # item.setBackground(QColor("green"))
+                item.setForeground(QColor("green"))
+                self.ui.util_encode_table.setItem(row_count, 0, item)
                 self.ui.util_encode_table.setItem(row_count, 1, QTableWidgetItem(str(skItem)))
         except:
             logger.info(f'convertTableData except : {traceback.format_exc()}')
@@ -202,25 +205,26 @@ class Utility(QMainWindow):
             if text:
                 if type == 'decimal':
                     byte_data = bytes(int(num) for num in text.split())
-                    data = byte_data.decode('utf-8')
+                    data = byte_data.decode('utf-8', errors='replace')
+
                     self.ui.util_encode.setText(data)
                     self.convertTableData(" ".join(data))
 
                 elif type == 'hex':
                     byte_data = bytes(int(num, 16) for num in text.split())
-                    data = byte_data.decode('utf-8')
+                    data = byte_data.decode('utf-8', errors='replace')
                     self.ui.util_encode.setText(data)
                     self.convertTableData(" ".join(data))
 
                 elif type== 'base64':
                     byte_data = base64.b64decode(text)
-                    data = byte_data.decode('utf-8')
+                    data = byte_data.decode('utf-8', errors='replace')
                     self.ui.util_encode.setText(data)
                     self.convertTableData(" ".join(data))
 
                 elif type == 'binary':
                     byte_data = bytes(int(b, 2) for b in text.split())
-                    data = byte_data.decode('utf-8')
+                    data = byte_data.decode('utf-8', errors='replace')
                     self.ui.util_encode.setText(data)
                     self.convertTableData(" ".join(data))
         except:
