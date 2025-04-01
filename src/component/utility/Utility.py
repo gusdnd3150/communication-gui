@@ -3,9 +3,6 @@ from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView
 from PySide6.QtGui import QColor, QBrush
 import sys
 import os
-import src.protocols.SendHandler as SendHandler
-
-import base64
 import struct
 
 program_path = sys.argv[0]

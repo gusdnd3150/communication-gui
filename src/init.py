@@ -29,6 +29,7 @@ from src.LogThread import LogThread
 from src.protocols.plc.PlcMitubishiThread import PlcMitubishiThread
 from ui.ui_main import Ui_MainWindow
 from src.component.utility.Utility import Utility
+from src.protocols.http.HttpServerThread import  HttpServerThread
 
 # 네이밍
 # 1. btn_?, popup_?, input_?,
@@ -238,6 +239,10 @@ class InitClass(QMainWindow):
                         threadInfo = ServerUdpThread(item)
                     elif (skConTy == 'CLIENT'):
                         threadInfo = ClientUdpThread(item)
+
+                elif (skTy == 'HTTP(S)'):
+                    if (skConTy == 'SERVER'):
+                        threadInfo = HttpServerThread(item)
 
                 else:
                     logger.info(f'None condition')
