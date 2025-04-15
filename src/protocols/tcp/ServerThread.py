@@ -14,7 +14,7 @@ from src.protocols.Server import Server
 from concurrent.futures import ThreadPoolExecutor
 import time
 from datetime import datetime
-
+import weakref
 class ServerThread(threading.Thread, Server):
 
     initData = None
@@ -161,13 +161,15 @@ class ServerThread(threading.Thread, Server):
         moduleData.mainInstance.updateConnList()  # 연결 트리에 연결정보 추가
         # moduleData.insertConnHis(self.skId,client_info,'connected')
 
+
+
         bzSch = None
         chinfo = {
             'SK_ID': self.skId
             ,'SK_GROUP': self.skGrp
             , 'CHANNEL': clientsocket
             , 'LOGGER': self.logger
-            , 'THREAD': self
+            , 'THREAD': weakref.ref(self)
         }
         self.logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
 

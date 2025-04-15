@@ -14,6 +14,7 @@ from src.protocols.sch.BzSchedule2 import BzSchedule2
 from concurrent.futures import ThreadPoolExecutor
 import time
 from datetime import datetime
+import weakref
 
 class ClientEventThread(threading.Thread):
 
@@ -141,7 +142,7 @@ class ClientEventThread(threading.Thread):
                 'SK_ID': self.skId
                 , 'SK_GROUP': self.skGrp
                 , 'CHANNEL': sockets
-                , 'THREAD': self
+                , 'THREAD': weakref.ref(self)
                 , 'LOGGER': self.logger
             }
             client_info = (self.skId, self.socket, self)
@@ -232,6 +233,7 @@ class ClientEventThread(threading.Thread):
 
             if client_info in moduleData.runChannels:
                 moduleData.runChannels.remove(client_info)
+
             moduleData.mainInstance.updateConnList()
             if bzSch is not None:
                 bzSch.stop()

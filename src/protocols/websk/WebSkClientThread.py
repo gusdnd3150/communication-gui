@@ -13,7 +13,7 @@ import asyncio
 import websockets
 from aiohttp import web
 from concurrent.futures import ThreadPoolExecutor
-
+import weakref
 import time
 from datetime import datetime
 
@@ -168,12 +168,16 @@ class WebSkClientThread(threading.Thread):
 
     async def websocket_handler(self):
         bzSch = None
+
+
+
+
         chinfo = {
             'SK_ID': self.skId
             , 'SK_GROUP': self.skGrp
             , 'CHANNEL': self.socket
             , 'LOGGER': self.logger
-            , 'THREAD': self
+            , 'THREAD': weakref.ref(self)
             # , 'PATH': path  # 웹소켓 한해 접속 URL 을 포함
         }
         client_info = (self.skId, self.socket, self)

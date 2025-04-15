@@ -14,7 +14,7 @@ import conf.skModule as moduleData
 from datetime import datetime
 from src.protocols.sch.BzSchedule2 import BzSchedule2
 from concurrent.futures import ThreadPoolExecutor
-
+import weakref
 
 
 
@@ -150,7 +150,7 @@ class ClientThread(threading.Thread, Client):
                 'SK_ID': self.skId
                 , 'SK_GROUP': self.skGrp
                 , 'CHANNEL': self.socket
-                , 'THREAD': self
+                , 'THREAD': weakref.ref(self)
                 , 'LOGGER': self.logger
             }
             conn_list = (self.skId, self.socket, self)
