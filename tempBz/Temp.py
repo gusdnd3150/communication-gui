@@ -23,24 +23,25 @@ class Temp:
 
 
     def recive(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
-        channel = reciveObj['CHANNEL']
-        thread = reciveObj['THREAD']
-        skId = reciveObj['SK_ID']
         try:
-            skLogger.info(f'recive data  {skId}  : {reciveObj['TOTAL_BYTES']}')
+            skLogger = reciveObj['LOGGER']
+            channel = reciveObj['CHANNEL']
+            thread = reciveObj['THREAD']
+            skId = reciveObj['SK_ID']
+            #skLogger.info(f'recive data  {skId}  : {reciveObj['TOTAL_BYTES']}')
             #thread.sendMsgToChannel(channel, returnJson)
         except Exception as e:
             skLogger.error(f'TempController.recive0061() Exception :: {e}')
 
-    def sch(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
-        schId = reciveObj['SCH_ID']
+
+    def idleClose(self, reciveObj):
         try:
-            skLogger.info(f' SCH_ID: {schId} ')
-
-            response = self.sendHandler.requestPost('http://localhost:8100',reciveObj)
-
+            skLogger = reciveObj['LOGGER']
+            channel = reciveObj['CHANNEL']
+            thread = reciveObj['THREAD']
+            skId = reciveObj['SK_ID']
+            #skLogger.info(f'recive data  {skId}  : {reciveObj['TOTAL_BYTES']}')
+            #thread.sendMsgToChannel(channel, returnJson)
+            channel.close()
         except Exception as e:
-            skLogger.error(f'Temp.sch() Exception :: {e}')
-
+            skLogger.error(f'TempController.recive0061() Exception :: {e}')

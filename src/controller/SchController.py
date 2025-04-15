@@ -30,11 +30,11 @@ class SchController():
             # objgraph.show_most_common_types(limit=20)
             skLogger.info(f' 스케줄 테스트 ')
 
-            client_threads = self.get_instances_by_class_name("ClientThread2")
-            print(f"Found {len(client_threads)} ClientThread2 instances")
+            client_threads = self.get_instances_by_class_name("ClientThread")
+            print(f"Found {len(client_threads)} ClientThread instances")
 
-            client_threads = self.get_instances_by_class_name("ServerThread2")
-            print(f"Found {len(client_threads)} ServerThread2 instances")
+            client_threads = self.get_instances_by_class_name("ServerThread")
+            print(f"Found {len(client_threads)} ServerThread instances")
 
             client_threads = self.get_instances_by_class_name("ThreadPoolExecutor")
             print(f"Found {len(client_threads)} ThreadPoolExecutor instances")

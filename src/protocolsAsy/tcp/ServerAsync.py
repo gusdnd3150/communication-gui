@@ -85,7 +85,7 @@ class ServerAsync(threading.Thread, Server):
                 elif bz.get('BZ_TYPE') == 'INACTIVE':
                     self.bzInActive = bz
 
-        super(ServerThread2,self).__init__()
+        super(ServerThread,self).__init__()
         self._stop_event = threading.Event()
 
     def __del__(self):

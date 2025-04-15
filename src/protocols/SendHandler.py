@@ -16,8 +16,8 @@ class SendHandler():
                 if sk['SK_ID'] == skId:
                     skThread = sk['SK_THREAD']
                     if sk['SK_CLIENT_TYPE'] == 'EVENT':
-                        from src.protocols.tcp.ClientEventThread2 import ClientEventThread2
-                        newTh = ClientEventThread2(sk, data)
+                        from src.protocols.tcp.ClientEventThread import ClientEventThread
+                        newTh = ClientEventThread(sk, data)
                         newTh.daemon = True
                         newTh.start()
                         break
