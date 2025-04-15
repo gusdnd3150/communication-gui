@@ -34,7 +34,7 @@ class ServerThread2(threading.Thread, Server):
     bzIdleRead = None
     bzSchList = []
     logger = None
-    executor = ThreadPoolExecutor(max_workers=200)
+    executor = ThreadPoolExecutor(max_workers=10)
     skclientTy = ''
 
 

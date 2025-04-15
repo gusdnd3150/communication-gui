@@ -64,6 +64,8 @@ class JSONCodec():
             if (start_index > -1 and end_index > -1):
                 result = end_index
 
+        copyBytes.clear()
+
         return result
 
 

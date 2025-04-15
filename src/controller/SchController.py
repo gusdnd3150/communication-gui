@@ -1,7 +1,11 @@
 
 from conf.logconfig import logger
 from src.protocols.SendHandler import SendHandler
-import conf.skModule as initData
+# from conf.skModule import runChannels
+import conf.skModule as modules
+import gc
+import objgraph
+
 
 class SchController():
 
@@ -23,7 +27,30 @@ class SchController():
         skLogger = reciveObj['LOGGER']
         returnJson = {}
         try:
+            # objgraph.show_most_common_types(limit=20)
             skLogger.info(f' 스케줄 테스트 ')
-            self.sendHandler.sendSkId('SSSSS', 'PLC_WRITE', returnJson)
+
+            client_threads = self.get_instances_by_class_name("ClientThread2")
+            print(f"Found {len(client_threads)} ClientThread2 instances")
+
+            client_threads = self.get_instances_by_class_name("ServerThread2")
+            print(f"Found {len(client_threads)} ServerThread2 instances")
+
+            client_threads = self.get_instances_by_class_name("ThreadPoolExecutor")
+            print(f"Found {len(client_threads)} ThreadPoolExecutor instances")
+
+            client_threads = self.get_instances_by_class_name("BzActivator2")
+            print(f"Found {len(client_threads)} BzActivator2 instances")
+
+            client_threads = self.get_instances_by_class_name("BzSchedule2")
+            print(f"Found {len(client_threads)} BzSchedule2 instances")
+
+            print(f"Found {len(modules.runChannels)} runChannels cnt")
+
+            # self.sendHandler.sendSkId('SSSSS', 'PLC_WRITE', returnJson)
         except Exception as e:
             skLogger.error(f'SchController.test() Exception :: {e}')
+
+
+    def get_instances_by_class_name(self,class_name: str):
+        return [obj for obj in gc.get_objects() if type(obj).__name__ == class_name]

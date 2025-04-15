@@ -15,6 +15,9 @@ from datetime import datetime
 from src.protocols.sch.BzSchedule2 import BzSchedule2
 from concurrent.futures import ThreadPoolExecutor
 
+
+
+
 class ClientThread2(threading.Thread, Client):
 
     initData = None
@@ -35,7 +38,7 @@ class ClientThread2(threading.Thread, Client):
     bzIdleRead = None
     logger = None
     bzSchList = []
-    executor = ThreadPoolExecutor(max_workers=200)
+    executor = ThreadPoolExecutor(max_workers=1)
     skclientTy = ''
 
     def __init__(self, data):
@@ -88,6 +91,9 @@ class ClientThread2(threading.Thread, Client):
 
     def __del__(self):
         logger.info(f'Thread {self.skId} is deleted')
+        self.cleanup()
+
+
 
     def run(self):
         moduleData.mainInstance.addClientRow(self.initData)
@@ -95,6 +101,8 @@ class ClientThread2(threading.Thread, Client):
 
     def stop(self):
         try:
+            self.isShutdown = True
+
             logger = logging.getLogger(self.skId)
             # 모든 핸들러 제거
             handlers = logger.handlers[:]
@@ -103,7 +111,7 @@ class ClientThread2(threading.Thread, Client):
                 logger.removeHandler(handler)
             # 로거 제거
             logging.getLogger(self.skId).handlers = []
-
+            
             if len(self.bzSchList) > 0:
                 for item in self.bzSchList:
                     item.stop()
@@ -115,9 +123,14 @@ class ClientThread2(threading.Thread, Client):
             self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
         finally:
             self.isRun = False
-            self.isShutdown = True
             self._stop_event.set()
             moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_client')
+
+
+    def cleanup(self):
+        for key in list(self.__dict__.keys()):
+            # logger.info(f'{key}')
+            self.__dict__[key] = None
 
 
     def initClient(self):
@@ -141,8 +154,8 @@ class ClientThread2(threading.Thread, Client):
                 , 'LOGGER': self.logger
             }
             conn_list = (self.skId, self.socket, self)
-            moduleData.runChannels.append(conn_list)
-            moduleData.mainInstance.updateConnList()
+            moduleData.runChannels.append(conn_list) # 참조
+            moduleData.mainInstance.updateConnList() 
 
             #2. 여기에 active 이벤트 처리
             if self.bzActive is not None:
@@ -233,19 +246,22 @@ class ClientThread2(threading.Thread, Client):
 
             moduleData.mainInstance.updateConnList()
 
-            if bzSch is not None:
-                bzSch.stop()
-                bzSch.join()
-                bzSch = None
-
             if bzSch in self.bzSchList:
                 self.bzSchList.remove(bzSch)
 
+            if bzSch is not None:
+                bzSch.stop()
+                bzSch.join()
+
             if self.socket:
                 self.socket.close()
-                self.socket = None
 
             if self.isShutdown == False:
+                bzSch = None
+                conn_list = None
+                chinfo = None
+                buffer = None
+                self.socket = None
                 time.sleep(5)  # 5초 대기 후 재시도
                 self.initClient()
 

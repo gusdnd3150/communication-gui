@@ -46,6 +46,7 @@ class LengthCodec():
                 if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
                     result = int(decodeBytesToType(read, hd['DT_TYPE']))
                 del copyBytes[0:hd['DT_LEN']]
+        copyBytes.clear()
 
         return result
 

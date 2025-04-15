@@ -46,6 +46,7 @@ class FreeCodec():
         else:
             result = len(copyBytes)
 
+        copyBytes.clear()
         return result
 
 
