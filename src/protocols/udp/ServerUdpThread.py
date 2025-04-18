@@ -167,11 +167,6 @@ class ServerUdpThread(threading.Thread):
             # start_time = time.time()
             futures = self.executor.submit(instance.run)
             # result = futures.result() #다른 스레드에 영향을 미침
-
-            # 운영시 비권장 futures의 블락을 우회하기위해 스레드 선언
-            # result_thread = threading.Thread(target=self.process_result, args=(futures, msg, start_time,))
-            # result_thread.daemon = True
-            # result_thread.start()
         except:
             self.logger.info(f'threadPoolExcutor exception : SK_ID:{self.skId} - {traceback.format_exc()}')
 

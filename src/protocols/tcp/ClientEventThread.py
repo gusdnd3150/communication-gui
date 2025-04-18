@@ -125,7 +125,7 @@ class ClientEventThread(threading.Thread):
         sockets = None
 
         client_info = None
-        chinfo = None
+        channelInfo = None
         bzSch = None
         try:
             # 서버에 연결합니다.
@@ -138,27 +138,27 @@ class ClientEventThread(threading.Thread):
 
             isRun = True
 
-            chinfo = {
+            channelInfo = {
                 'SK_ID': self.skId
                 , 'SK_GROUP': self.skGrp
                 , 'CHANNEL': sockets
                 , 'THREAD': weakref.ref(self)
                 , 'LOGGER': self.logger
             }
-            client_info = (self.skId, self.socket, self)
+            client_info = (self.skId, self.socket, weakref.ref(self))
             moduleData.runChannels.append(client_info)
             moduleData.mainInstance.updateConnList()
 
             #2. 여기에 active 이벤트 처리
             if self.bzActive is not None:
-                avtive_dict = {**chinfo, **self.bzActive}
+                avtive_dict = {**channelInfo, **self.bzActive}
                 self.logger.info(f'{self.skId} : [ACTIVE CHANNEL EVENT START]')
                 self.threadPoolExcutor(BzActivator2(avtive_dict))
 
 
                 # KEEP 처리
             if self.bzKeep is not None:
-                combined_dict = {**chinfo, **self.bzKeep}
+                combined_dict = {**channelInfo, **self.bzKeep}
                 self.logger.info(f'{self.skId} : [KEEP CHANNEL EVENT START]')
                 bzSch = BzSchedule2(combined_dict)
                 bzSch.daemon = True
@@ -200,7 +200,7 @@ class ClientEventThread(threading.Thread):
                                 data = self.codec.decodeRecieData(readByte)
                                 data['TOTAL_BYTES'] = copybytes
 
-                                reciveObj = {**chinfo, **data}
+                                reciveObj = {**channelInfo, **data}
                                 self.threadPoolExcutor(BzActivator2(reciveObj))
                             except Exception as e:
                                 traceback.print_exc()
@@ -211,7 +211,7 @@ class ClientEventThread(threading.Thread):
                     except socket.timeout:
                         self.logger.error(f'SK_ID:{self.skId} - IDLE READ exception')
                         if self.bzIdleRead is not None:
-                            idle_dict = {**chinfo, **self.bzIdleRead}
+                            idle_dict = {**channelInfo, **self.bzIdleRead}
                             self.logger.info(f'{self.skId} : [IDLE CHANNEL EVENT START]')
                             self.threadPoolExcutor(BzActivator2(idle_dict))
                         continue
@@ -227,7 +227,7 @@ class ClientEventThread(threading.Thread):
 
 
             if self.bzInActive is not None:
-                inav_dict = {**chinfo, **self.bzInActive}
+                inav_dict = {**channelInfo, **self.bzInActive}
                 self.logger.info(f'{self.skId} : [INACTIVE CHANNEL EVENT START]')
                 self.threadPoolExcutor(BzActivator2(inav_dict))
 

@@ -4,7 +4,6 @@ from src.protocols.SendHandler import SendHandler
 # from conf.skModule import runChannels
 import conf.skModule as modules
 import gc
-import objgraph
 
 
 class SchController():
@@ -15,8 +14,8 @@ class SchController():
     # Channel = reciveObj['CHANNEL']
     # thread = reciveObj['THREAD']
     # 1. SendHandler.sendSkId(skId, msgId, data)
-    # 2. thread.sendBytesToChannel(channel, '00200105000000000000'.encode('utf-8'))
-    # 3. thread.sendMsgToChannel(channel, map) // map 안    MSG_ID    키: 값이    있어야함
+    # 2. thread().sendBytesToChannel(channel, '00200105000000000000'.encode('utf-8'))
+    # 3. thread().sendMsgToChannel(channel, map) // map 안    MSG_ID    키: 값이    있어야함
 
     sendHandler = None
     def __init__(self):

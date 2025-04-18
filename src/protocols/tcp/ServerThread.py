@@ -154,16 +154,13 @@ class ServerThread(threading.Thread, Server):
     def client_handler(self,clientsocket, address):
         buffer = bytearray()
         # 공통  sk_id, channel, codec, thread
-        client_info = (self.skId, clientsocket , self)
-        self.conn_list.append(client_info) # 해당 소켓의 연결된 리스트
+        channelInfo = (self.skId, clientsocket , weakref.ref(self))
+        self.conn_list.append(channelInfo) # 해당 소켓의 연결된 리스트
 
-        moduleData.runChannels.append(client_info) # 전체
+        moduleData.runChannels.append(channelInfo) # 전체
         moduleData.mainInstance.updateConnList()  # 연결 트리에 연결정보 추가
-        # moduleData.insertConnHis(self.skId,client_info,'connected')
-
-
-
         bzSch = None
+
         chinfo = {
             'SK_ID': self.skId
             ,'SK_GROUP': self.skGrp
@@ -258,15 +255,14 @@ class ServerThread(threading.Thread, Server):
                 bzSch.stop()
                 bzSch.join()
 
-            # self.bzSchList.remove(bzSch)
-            if bzSch in self.bzSchList:
+            if bzSch in self.bzSchList: # 클라이언트별로 다르기때문
                 self.bzSchList.remove(bzSch)
 
             if clientsocket:
-                if client_info in self.conn_list:
-                    self.conn_list.remove(client_info)
-                if client_info in moduleData.runChannels:
-                    moduleData.runChannels.remove(client_info)
+                if channelInfo in self.conn_list:
+                    self.conn_list.remove(channelInfo)
+                if channelInfo in moduleData.runChannels:
+                    moduleData.runChannels.remove(channelInfo)
 
                 self.logger.info(f'moduleData.runChannels : {moduleData.runChannels}')
                 self.logger.info(f'SK_ID:{self.skId} remain Clients count {len(self.conn_list)})')
@@ -278,10 +274,10 @@ class ServerThread(threading.Thread, Server):
                 clientsocket.close()
 
         finally:
-                if client_info in self.conn_list:
-                    self.conn_list.remove(client_info)
-                if client_info in moduleData.runChannels:
-                    moduleData.runChannels.remove(client_info)
+                if channelInfo in self.conn_list:
+                    self.conn_list.remove(channelInfo)
+                if channelInfo in moduleData.runChannels:
+                    moduleData.runChannels.remove(channelInfo)
                 moduleData.mainInstance.updateConnList()
 
     def sendBytesToAllChannels(self, bytes):
@@ -347,10 +343,6 @@ class ServerThread(threading.Thread, Server):
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in sendBytes)
                 self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
-
-                # moduleData.mainInstance.insertLog(self.skId, sendBytes)
-                # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
-
         except Exception as e:
             self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
@@ -358,10 +350,8 @@ class ServerThread(threading.Thread, Server):
 
     def threadPoolExcutor(self, instance):
         try:
-            # start_time = time.time()
             futures = self.executor.submit(instance.run)
             # result = futures.result() #다른 스레드에 영향을 미침
-            
             # 운영시 비권장 futures의 블락을 우회하기위해 스레드 선언
             # result_thread = threading.Thread(target=self.process_result, args=(futures ,msg, start_time,))
             # result_thread.daemon = True

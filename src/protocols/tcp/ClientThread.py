@@ -39,26 +39,19 @@ class ClientThread(threading.Thread, Client):
     logger = None
     bzSchList = []
     executor = ThreadPoolExecutor(max_workers=1)
-    skclientTy = ''
 
     def __init__(self, data):
         # {'PKG_ID': 'CORE', 'SK_ID': 'SERVER2', 'SK_GROUP': None, 'USE_YN': 'Y', 'SK_CONN_TYPE': 'SERVER',
         #  'SK_TYPE': 'TCP', 'SK_CLIENT_TYPE': 'KEEP', 'HD_ID': 'HD_FREE', 'SK_PORT': 5556, 'SK_IP': '0.0.0.0',
         #  'SK_DELIMIT_TYPE': '0x00', 'RELATION_VAL': None, 'SK_LOG': 'Y', 'HD_TYPE': 'FREE', 'MSG_CLASS': '',
         #  'MAX_LENGTH': 1024, 'MIN_LENGTH': 4, 'HD_LEN': 0}
-        # logger.info(f' ClientThread initData : {data}')
         self.initData = data
         self.skId = data['SK_ID']
-        # self.name = data['SK_ID'] + '-thread'  # 스레드 이름 설정
         self.skIp = data['SK_IP']
         self.skPort = int(data['SK_PORT'])
-        self.skclientTy = data['SK_CLIENT_TYPE']
-
         self.logger = setup_sk_logger(self.skId)
         self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
-
         self.skGrp = data.get('SK_GROUP',None)
-
         if (self.initData['HD_TYPE'] == 'FREE'):
             self.codec = FreeCodec(self.initData)
         elif (self.initData['HD_TYPE'] == 'LENGTH'):
@@ -85,7 +78,6 @@ class ClientThread(threading.Thread, Client):
                     self.bzIdleRead = bz
                 elif bz.get('BZ_TYPE') == 'INACTIVE':
                     self.bzInActive = bz
-        # super().__init__()
         super(ClientThread, self).__init__()
         self._stop_event = threading.Event()
 
@@ -138,7 +130,7 @@ class ClientThread(threading.Thread, Client):
         
         bzSch = None
         conn_list = None
-        chinfo = None
+        channelInfo = None
 
         try:
             # 서버에 연결합니다.
@@ -146,31 +138,31 @@ class ClientThread(threading.Thread, Client):
             self.socket.connect((self.skIp, int(self.skPort)))
             self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
 
-            chinfo = {
+            channelInfo = {
                 'SK_ID': self.skId
                 , 'SK_GROUP': self.skGrp
                 , 'CHANNEL': self.socket
                 , 'THREAD': weakref.ref(self)
                 , 'LOGGER': self.logger
             }
-            conn_list = (self.skId, self.socket, self)
+            conn_list = (self.skId, self.socket, weakref.ref(self))
             moduleData.runChannels.append(conn_list) # 참조
             moduleData.mainInstance.updateConnList() 
 
             #2. 여기에 active 이벤트 처리
             if self.bzActive is not None:
-                avtive_dict = {**chinfo, **self.bzActive}
+                avtive_dict = {**channelInfo, **self.bzActive}
                 self.logger.info(f'{self.skId} : [ACTIVE CHANNEL EVENT START]')
                 self.threadPoolExcutor(BzActivator2(avtive_dict))
 
                 # KEEP 처리
             if self.bzKeep is not None:
-                combined_dict = {**chinfo, **self.bzKeep}
+                combined_dict = {**channelInfo, **self.bzKeep}
                 self.logger.info(f'{self.skId} : [KEEP CHANNEL EVENT START]')
                 bzSch = BzSchedule2(combined_dict)
                 bzSch.daemon = True
                 bzSch.start()
-                # self.bzSchList.append(bzSch)
+                self.bzSchList.append(bzSch)
 
             # 1. IDLE 타임아웃 설정 (예: 5초)
             if self.bzIdleRead is not None:
@@ -188,6 +180,11 @@ class ClientThread(threading.Thread, Client):
 
                         if (self.initData['MIN_LENGTH'] > len(buffer)):
                             continue
+                        elif (self.initData['MAX_LENGTH'] < len(buffer)):
+                            self.logger.info(f'maxLength reached {len(buffer)}')
+                            buffer.clear()
+                            continue
+
 
                         while self.socket:
                             readBytesCnt = self.codec.concyctencyCheck(buffer.copy())
@@ -208,7 +205,7 @@ class ClientThread(threading.Thread, Client):
                                 data = self.codec.decodeRecieData(readByte)
                                 data['TOTAL_BYTES'] = copybytes
 
-                                reciveObj = {**chinfo, **data}
+                                reciveObj = {**channelInfo, **data}
                                 self.threadPoolExcutor(BzActivator2(reciveObj))
 
                             except Exception as e:
@@ -220,7 +217,7 @@ class ClientThread(threading.Thread, Client):
                     except socket.timeout:
                         self.logger.error(f'SK_ID:{self.skId} - IDLE READ exception')
                         if self.bzIdleRead is not None:
-                            idle_dict = {**chinfo, **self.bzIdleRead}
+                            idle_dict = {**channelInfo, **self.bzIdleRead}
                             self.logger.info(f'{self.skId} : [IDLE CHANNEL EVENT START]')
                             self.threadPoolExcutor(BzActivator2(idle_dict))
                         continue
@@ -236,30 +233,31 @@ class ClientThread(threading.Thread, Client):
             buffer.clear()
 
             if self.bzInActive is not None:
-                inav_dict = {**chinfo, **self.bzInActive}
+                inav_dict = {**channelInfo, **self.bzInActive}
                 self.logger.info(f'{self.skId} : [INACTIVE CHANNEL EVENT START]')
                 self.threadPoolExcutor(BzActivator2(inav_dict))
 
 
             if conn_list in moduleData.runChannels:
                 moduleData.runChannels.remove(conn_list)
-
             moduleData.mainInstance.updateConnList()
 
-            if bzSch in self.bzSchList:
-                self.bzSchList.remove(bzSch)
 
             if bzSch is not None:
                 bzSch.stop()
                 bzSch.join()
 
+            if bzSch in self.bzSchList:
+                self.bzSchList.remove(bzSch)
+
             if self.socket:
                 self.socket.close()
+                self.socket = None
 
             if self.isShutdown == False:
                 bzSch = None
                 conn_list = None
-                chinfo = None
+                channelInfo = None
                 buffer = None
                 self.socket = None
                 time.sleep(5)  # 5초 대기 후 재시도
