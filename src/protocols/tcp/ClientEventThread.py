@@ -123,10 +123,10 @@ class ClientEventThread(threading.Thread):
         isRun = False
         buffer = bytearray()
         sockets = None
-
         client_info = None
         channelInfo = None
         bzSch = None
+
         try:
             # 서버에 연결합니다.
             sockets = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -154,7 +154,6 @@ class ClientEventThread(threading.Thread):
                 avtive_dict = {**channelInfo, **self.bzActive}
                 self.logger.info(f'{self.skId} : [ACTIVE CHANNEL EVENT START]')
                 self.threadPoolExcutor(BzActivator2(avtive_dict))
-
 
                 # KEEP 처리
             if self.bzKeep is not None:
@@ -204,42 +203,36 @@ class ClientEventThread(threading.Thread):
                                 self.threadPoolExcutor(BzActivator2(reciveObj))
                             except Exception as e:
                                 traceback.print_exc()
-                                self.logger.error(f'SK_ID:{self.skId} Msg convert Exception : {e}  {str(buffer)}')
+                                self.logger.error(f'SK_ID:{self.skId} Message parsing Exception : buffer= {str(buffer)} {e}  ')
                             finally:
                                 del buffer[0:readBytesCnt]
 
                     except socket.timeout:
-                        self.logger.error(f'SK_ID:{self.skId} - IDLE READ exception')
                         if self.bzIdleRead is not None:
                             idle_dict = {**channelInfo, **self.bzIdleRead}
                             self.logger.info(f'{self.skId} : [IDLE CHANNEL EVENT START]')
                             self.threadPoolExcutor(BzActivator2(idle_dict))
                         continue
                     except Exception as e:
+                        self.logger.error(f'SK_ID={self.skId} connection exception : {traceback.format_exc()}')
                         isRun = False
-                        traceback.print_exc()
                         break
         except Exception as e:
             isRun = False
-            self.logger.error(f'TCP CLIENT SK_ID={self.skId}  exception : {e}')
+            self.logger.error(f'SK_ID={self.skId}  TCP CLIENT try to connect exception : {e}')
         finally:
             buffer.clear()
-
-
             if self.bzInActive is not None:
                 inav_dict = {**channelInfo, **self.bzInActive}
                 self.logger.info(f'{self.skId} : [INACTIVE CHANNEL EVENT START]')
                 self.threadPoolExcutor(BzActivator2(inav_dict))
-
             if client_info in moduleData.runChannels:
                 moduleData.runChannels.remove(client_info)
-
             moduleData.mainInstance.updateConnList()
             if bzSch is not None:
                 bzSch.stop()
                 bzSch.join()
                 bzSch = None
-
             if sockets:
                 sockets.close()
                 sockets = None
