@@ -1,20 +1,21 @@
-import traceback
-from conf.logconfig import *
-import threading
-
 import socket
-from src.protocols.msg.FreeCodec import FreeCodec
-from src.protocols.msg.LengthCodec import LengthCodec
-from src.protocols.msg.JSONCodec import JSONCodec
-import conf.skModule as moduleData
+import threading
+import time
+import traceback
+import weakref
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 
-from src.protocols.sch.BzSchedule2 import BzSchedule2
+import conf.skModule as moduleData
+from conf.logconfig import *
 from src.protocols.BzActivator2 import BzActivator2
 from src.protocols.Server import Server
-from concurrent.futures import ThreadPoolExecutor
-import time
-from datetime import datetime
-import weakref
+from src.protocols.msg.FreeCodec import FreeCodec
+from src.protocols.msg.JSONCodec import JSONCodec
+from src.protocols.msg.LengthCodec import LengthCodec
+from src.protocols.sch.BzSchedule2 import BzSchedule2
+
+
 class ServerThread(threading.Thread, Server):
 
     initData = None

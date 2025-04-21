@@ -1,12 +1,13 @@
-import traceback
-from conf.logconfig import *
-import threading
 import socket
-from src.protocols.msg.FreeCodec import FreeCodec
-from src.protocols.msg.LengthCodec import LengthCodec
-from src.protocols.msg.JSONCodec import JSONCodec
+import threading
+
 import conf.skModule as moduleData
+from conf.logconfig import *
 from src.protocols.Client import Client
+from src.protocols.msg.FreeCodec import FreeCodec
+from src.protocols.msg.JSONCodec import JSONCodec
+from src.protocols.msg.LengthCodec import LengthCodec
+
 
 class ClientUdpThread(threading.Thread,Client):
 
