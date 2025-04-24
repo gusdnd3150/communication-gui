@@ -1,13 +1,14 @@
-import asyncio
+import os
 import sys
 import traceback
-import os
-from PySide6.QtWidgets import QMainWindow,  QTableWidgetItem, QHeaderView, QMessageBox
-from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem
-from PySide6.QtCore import Slot, Qt
 
-from src.protocols.tcp.ServerThread import ServerThread
+from PySide6.QtCore import Slot, Qt
+from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem
+from PySide6.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QMessageBox
+
 from src.protocols.tcp.ClientThread import ClientThread
+from src.protocols.tcp.ServerThread import ServerThread
+
 program_path = sys.argv[0]
 import logging
 program_directory = os.path.dirname(program_path)
@@ -26,7 +27,6 @@ from src.protocols.bluetooth.BlueToothClientThread import BlueToothClientThread
 
 from src.WorkThread import WorkThread
 from src.LogThread import LogThread
-from src.protocols.plc.PlcMitubishiThread import PlcMitubishiThread
 from ui.ui_main import Ui_MainWindow
 from src.component.utility.Utility import Utility
 from src.protocols.http.HttpServerThread import  HttpServerThread
