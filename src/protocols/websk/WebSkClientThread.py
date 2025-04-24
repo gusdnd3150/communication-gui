@@ -36,7 +36,6 @@ class WebSkClientThread(threading.Thread):
     bzInActive = None
     bzIdleRead = None
     bzSch = None
-    logger = None
     skGrp = None
     executor = ThreadPoolExecutor(max_workers=20)
     bzSchList = []
@@ -47,9 +46,6 @@ class WebSkClientThread(threading.Thread):
         self.skId = data['SK_ID']
         self.skIp = data['SK_IP']
         self.skPort = int(data['SK_PORT'])
-
-        self.logger = setup_sk_logger(self.skId)
-        self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
 
         # self.loop = asyncio.get_event_loop()
         self.loop = asyncio.new_event_loop()
@@ -92,7 +88,7 @@ class WebSkClientThread(threading.Thread):
 
 
     def __del__(self):
-        self.logger.info(f'Thread {self.skId} is deleted')
+        logger.info(f'Thread {self.skId} is deleted')
 
     def run(self):
         moduleData.mainInstance.addClientRow(self.initData)
@@ -140,7 +136,7 @@ class WebSkClientThread(threading.Thread):
 
             asyncio.run(cancel_all_tasks(self.socket))
         except Exception as e:
-            self.logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
+            logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
         finally:
             moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_client')
             self.loop.close()
@@ -153,10 +149,10 @@ class WebSkClientThread(threading.Thread):
             url = f'ws://{self.skIp}:{self.skPort}'
             self.isRun = True
             self.socket = await websockets.connect(url)
-            self.logger.info(f"Connected to server at {url}")
+            logger.info(f"Connected to server at {url}")
         except Exception as e:
             self.isRun = False
-            self.logger.error(f"Failed to connect to {url}: {e}")
+            logger.error(f"Failed to connect to {url}: {e}")
 
             if self.isShutdown == False:
                 await self.initClient()
@@ -176,11 +172,10 @@ class WebSkClientThread(threading.Thread):
             'SK_ID': self.skId
             , 'SK_GROUP': self.skGrp
             , 'CHANNEL': self.socket
-            , 'LOGGER': self.logger
             , 'THREAD': weakref.ref(self)
             # , 'PATH': path  # 웹소켓 한해 접속 URL 을 포함
         }
-        client_info = (self.skId, self.socket, self)
+        client_info = (self.skId, self.socket, weakref.ref(self))
         self.client_list.append(client_info)
         moduleData.runChannels.append(client_info)
         moduleData.mainInstance.updateConnList()
@@ -191,13 +186,13 @@ class WebSkClientThread(threading.Thread):
         # ACTIVE 이벤트처리
         if self.bzActive is not None:
             avtive_dict = {**chinfo, **self.bzActive}
-            self.logger.info(f'{self.skId} : [ACTIVE CHANNEL EVENT START]')
+            logger.info(f'{self.skId} : [ACTIVE CHANNEL EVENT START]')
             self.threadPoolExcutor(BzActivator2(avtive_dict))
 
         # KEEP 처리
         if self.bzKeep is not None:
             keep_dict = {**chinfo, **self.bzKeep}
-            self.logger.info(f'{self.skId} : [KEEP CHANNEL EVENT START]')
+            logger.info(f'{self.skId} : [KEEP CHANNEL EVENT START]')
             bzSch = BzSchedule2(keep_dict)
             bzSch.daemon = True
             bzSch.start()
@@ -209,12 +204,12 @@ class WebSkClientThread(threading.Thread):
                     reciveBytes = message.encode('utf-8')
                     readBytesCnt = self.codec.concyctencyCheck(reciveBytes)
                     if readBytesCnt == 0:
-                        self.logger.info(f'concyctence error : {reciveBytes}')
+                        logger.info(f'concyctence error : {reciveBytes}')
                         return
 
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in reciveBytes)
-                        self.logger.info(
+                        logger.info(
                             f'SK_ID:{self.skId} read length : {readBytesCnt} recive_string:[{str(reciveBytes)}] decimal_string : [{decimal_string}]')
 
                     data = self.codec.decodeRecieData(reciveBytes)
@@ -222,7 +217,7 @@ class WebSkClientThread(threading.Thread):
                     reciveObj = {**chinfo, **data}
                     self.threadPoolExcutor(BzActivator2(reciveObj))
         except:
-            self.logger.error(f'websocket_handler error : {traceback.format_exc()}')
+            logger.error(f'websocket_handler error : {traceback.format_exc()}')
             moduleData.mainInstance.updateConnList()
             self.isRun = False
         finally:
@@ -256,12 +251,12 @@ class WebSkClientThread(threading.Thread):
                     await channel.send(bytes)  # await 키워드를 사용하여 비동기 호출
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in bytes)
-                        self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
+                        logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
                 except Exception:
-                    self.logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
+                    logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
             asyncio.run_coroutine_threadsafe(send(self, channel, bytes),self.loop)
         except:
-            self.logger.error(f'sendBytesToChannel exception :: {traceback.format_exc()}')
+            logger.error(f'sendBytesToChannel exception :: {traceback.format_exc()}')
 
     def sendBytesToAllChannels(self, bytes):
         try:
@@ -270,13 +265,13 @@ class WebSkClientThread(threading.Thread):
                     await self.socket.send(bytes)  # await 키워드를 사용하여 비동기 호출
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in bytes)
-                        self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
+                        logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
                 except Exception:
-                    self.logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
+                    logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
 
             asyncio.run_coroutine_threadsafe(send(self, bytes), self.loop)
         except:
-            self.logger.error(f'sendBytesToAllChannels exception :: {traceback.format_exc()}')
+            logger.error(f'sendBytesToAllChannels exception :: {traceback.format_exc()}')
 
 
     def sendMsgToChannel(self, channel, obj):
@@ -287,12 +282,12 @@ class WebSkClientThread(threading.Thread):
                     await channel.send(sendBytes.decode('utf-8'))
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                        self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                        logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
                 except Exception:
-                    self.logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
+                    logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
             asyncio.run_coroutine_threadsafe(send(self), self.loop)
         except:
-            self.logger.error(f'sendMsgToChannel exception :: {traceback.format_exc()}')
+            logger.error(f'sendMsgToChannel exception :: {traceback.format_exc()}')
 
 
 
@@ -305,16 +300,16 @@ class WebSkClientThread(threading.Thread):
                         await self.socket.send(sendBytes.decode('utf-8'))
                         if self.skLogYn:
                             decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                            self.logger.info(
+                            logger.info(
                                 f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{sendBytes}]')
                     else:
-                        self.logger.error(f'{self.skId} has no Connection')
+                        logger.error(f'{self.skId} has no Connection')
                 except Exception:
-                    self.logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
+                    logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
 
             asyncio.run_coroutine_threadsafe(send(self), self.loop)
         except:
-            self.logger.error(f'sendMsgToAllChannels exception :: {traceback.format_exc()}')
+            logger.error(f'sendMsgToAllChannels exception :: {traceback.format_exc()}')
 
 
 
@@ -331,7 +326,7 @@ class WebSkClientThread(threading.Thread):
             #     result_thread.daemon = True
             #     result_thread.start()
         except:
-            self.logger.info(f'threadPoolExcutor exception : SK_ID:{self.skId} - {traceback.format_exc()}')
+            logger.info(f'threadPoolExcutor exception : SK_ID:{self.skId} - {traceback.format_exc()}')
 
     def process_result(self, future, msg, start_time):
         try:
@@ -340,7 +335,7 @@ class WebSkClientThread(threading.Thread):
             start = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
             end = datetime.fromtimestamp(end_time).strftime('%Y-%m-%d %H:%M:%S')
             # logger.info(f"----------- SK_ID: {self.skId} future Result: {result} and remain thread Que : {self.executor._work_queue}")
-            self.logger.info(
+            logger.info(
                 f'----------- SK_ID: {self.skId} - {msg} begin:{start} end:{end} total time: {round(end_time - start_time, 4)}------------')
         except Exception as e:
-            self.logger(f"Exception while processing result: {e}")
+            logger(f"Exception while processing result: {e}")

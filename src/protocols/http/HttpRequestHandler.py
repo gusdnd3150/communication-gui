@@ -7,9 +7,7 @@ class HttpRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         server_instance = self.server
-        logger = server_instance.httpThread.logger # HttpServer 의 인스턴스
-        # logger.info(server_instance.httpThread)
-        logger.info(f'sss')
+
 
         self.send_response(200)
         self.send_header("Content-type", "text/html")
@@ -22,7 +20,6 @@ class HttpRequestHandler(BaseHTTPRequestHandler):
 
         content_length = int(self.headers["Content-Length"])
         post_data = self.rfile.read(content_length)  # 바디 데이터 읽기
-        print(f"Received POST data: {post_data.decode()}")
 
         self.send_response(200)
         self.send_header("Content-type", "text/plain")

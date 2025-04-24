@@ -31,7 +31,6 @@ class ServerUdpThread(threading.Thread):
     bzInActive = None
     bzIdleRead = None
     bzSch = None
-    logger = None
     connCnt = 0
     executor = ThreadPoolExecutor(max_workers=20)
     skclientTy = ''
@@ -50,8 +49,6 @@ class ServerUdpThread(threading.Thread):
         self.skPort = int(data['SK_PORT'])
         self.skclientTy = data['SK_CLIENT_TYPE']
 
-        self.logger = setup_sk_logger(self.skId)
-        self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
         if (data.get('SK_GROUP') is not None):
             self.skGrp = data['SK_GROUP']
 
@@ -93,21 +90,12 @@ class ServerUdpThread(threading.Thread):
 
     def stop(self):
         try:
-            logger = logging.getLogger(self.skId)
-            # 모든 핸들러 제거
-            handlers = logger.handlers[:]
-            for handler in handlers:
-                handler.close()
-                logger.removeHandler(handler)
-            # 로거 제거
-            logging.getLogger(self.skId).handlers = []
-
-
+           
             if self.socket:
                 self.socket.close()
 
         except Exception as e:
-            self.logger.error(f'SK_ID:{self.skId} Stop fail')
+            logger.error(f'SK_ID:{self.skId} Stop fail')
         finally:
             self.isRun = False
             self._stop_event.set()
@@ -118,7 +106,7 @@ class ServerUdpThread(threading.Thread):
         try:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             self.socket.bind((self.skIp, self.skPort))
-            self.logger.info(f'UDP SERVER Start : SK_ID= {self.skId}, IP= {self.skIp}:{self.skPort} :: Thread ')
+            logger.info(f'UDP SERVER Start : SK_ID= {self.skId}, IP= {self.skIp}:{self.skPort} :: Thread ')
             self.isRun = True
 
             # 서버 테이블 인설트
@@ -131,25 +119,24 @@ class ServerUdpThread(threading.Thread):
                 t.daemon = True
                 t.start()
         except Exception as e:
-            self.logger.error(f'UDP SERVER Bind exception : SK_ID={self.skId}  : {traceback.format_exc()}')
+            logger.error(f'UDP SERVER Bind exception : SK_ID={self.skId}  : {traceback.format_exc()}')
 
 
 
     def client_handler(self,message,  address):
         try:
-            self.logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
+            logger.info(f' {self.skId} - CLIENT connected  IP/PORT : {address}')
 
             chinfo = {
                 'SK_ID': self.skId
                 , 'SK_GROUP': self.skGrp
                 , 'CHANNEL': address
-                , 'LOGGER': self.logger
                 , 'THREAD': self
             }
 
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in message)
-                self.logger.info(f'SK_ID:{self.skId} read length : {len(message)} recive_string:[{str(message)}] decimal_string : [{decimal_string}]')
+                logger.info(f'SK_ID:{self.skId} read length : {len(message)} recive_string:[{str(message)}] decimal_string : [{decimal_string}]')
                 # moduleData.mainInstance.insertLog(self.skId, message, 'IN')
 
             copyButes = message.copy()
@@ -159,7 +146,7 @@ class ServerUdpThread(threading.Thread):
             reciveObj = {**chinfo, **data}
             self.threadPoolExcutor(BzActivator2(reciveObj))
         except Exception as e:
-            self.logger.info(f'UDP client_handler exception :  {traceback.format_exc()}')
+            logger.info(f'UDP client_handler exception :  {traceback.format_exc()}')
 
 
     def threadPoolExcutor(self, instance):
@@ -168,7 +155,7 @@ class ServerUdpThread(threading.Thread):
             futures = self.executor.submit(instance.run)
             # result = futures.result() #다른 스레드에 영향을 미침
         except:
-            self.logger.info(f'threadPoolExcutor exception : SK_ID:{self.skId} - {traceback.format_exc()}')
+            logger.info(f'threadPoolExcutor exception : SK_ID:{self.skId} - {traceback.format_exc()}')
 
     def process_result(self, future, msg, start_time):
         try:
@@ -179,7 +166,7 @@ class ServerUdpThread(threading.Thread):
                 start = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
                 end = datetime.fromtimestamp(end_time).strftime('%Y-%m-%d %H:%M:%S')
                 # logger.info(f"----------- SK_ID: {self.skId} future Result: {result} and remain thread Que : {self.executor._work_queue}")
-                self.logger.info(
+                logger.info(
                     f'----------- SK_ID: {self.skId} - {msg} begin:{start} end:{end} total time: {round(end_time - start_time, 4)}------------')
         except Exception as e:
-            self.logger(f"Exception while processing result: {e}")
+            logger(f"Exception while processing result: {e}")

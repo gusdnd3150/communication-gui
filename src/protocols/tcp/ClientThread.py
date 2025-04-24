@@ -36,7 +36,7 @@ class ClientThread(threading.Thread, Client):
     bzActive = None
     bzInActive = None
     bzIdleRead = None
-    logger = None
+
     bzSchList = []
     executor = ThreadPoolExecutor(max_workers=1)
 
@@ -49,8 +49,6 @@ class ClientThread(threading.Thread, Client):
         self.skId = data['SK_ID']
         self.skIp = data['SK_IP']
         self.skPort = int(data['SK_PORT'])
-        self.logger = setup_sk_logger(self.skId)
-        self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
         self.skGrp = data.get('SK_GROUP',None)
         if (self.initData['HD_TYPE'] == 'FREE'):
             self.codec = FreeCodec(self.initData)
@@ -94,16 +92,6 @@ class ClientThread(threading.Thread, Client):
     def stop(self):
         try:
             self.isShutdown = True
-
-            logger = logging.getLogger(self.skId)
-            # 모든 핸들러 제거
-            handlers = logger.handlers[:]
-            for handler in handlers:
-                handler.close()
-                logger.removeHandler(handler)
-            # 로거 제거
-            logging.getLogger(self.skId).handlers = []
-            
             if len(self.bzSchList) > 0:
                 for item in self.bzSchList:
                     item.stop()
@@ -112,7 +100,7 @@ class ClientThread(threading.Thread, Client):
             if self.socket:
                 self.socket.close()
         except Exception as e:
-            self.logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
+            logger.error(f'SK_ID:{self.skId} Stop fail : {traceback.format_exc()}')
         finally:
             self.isRun = False
             self._stop_event.set()
@@ -136,14 +124,13 @@ class ClientThread(threading.Thread, Client):
             # 서버에 연결합니다.
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.connect((self.skIp, int(self.skPort)))
-            self.logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
+            logger.info('TCP CLIENT Start : SK_ID={}, IP={}, PORT={}'.format(self.skId, self.skIp, self.skPort))
 
             channelInfo = {
                 'SK_ID': self.skId
                 , 'SK_GROUP': self.skGrp
                 , 'CHANNEL': self.socket
                 , 'THREAD': weakref.ref(self)
-                , 'LOGGER': self.logger
             }
             conn_list = (self.skId, self.socket, weakref.ref(self))
             moduleData.runChannels.append(conn_list) # 참조
@@ -152,13 +139,13 @@ class ClientThread(threading.Thread, Client):
             #2. 여기에 active 이벤트 처리
             if self.bzActive is not None:
                 avtive_dict = {**channelInfo, **self.bzActive}
-                self.logger.info(f'{self.skId} : [ACTIVE CHANNEL EVENT START]')
+                logger.info(f'{self.skId} : [ACTIVE CHANNEL EVENT START]')
                 self.threadPoolExcutor(BzActivator2(avtive_dict))
 
                 # KEEP 처리
             if self.bzKeep is not None:
                 combined_dict = {**channelInfo, **self.bzKeep}
-                self.logger.info(f'{self.skId} : [KEEP CHANNEL EVENT START]')
+                logger.info(f'{self.skId} : [KEEP CHANNEL EVENT START]')
                 bzSch = BzSchedule2(combined_dict)
                 bzSch.daemon = True
                 bzSch.start()
@@ -181,7 +168,7 @@ class ClientThread(threading.Thread, Client):
                         if (self.initData['MIN_LENGTH'] > len(buffer)):
                             continue
                         elif (self.initData['MAX_LENGTH'] < len(buffer)):
-                            self.logger.info(f'maxLength reached {len(buffer)}')
+                            logger.info(f'maxLength reached {len(buffer)}')
                             buffer.clear()
                             continue
 
@@ -196,7 +183,7 @@ class ClientThread(threading.Thread, Client):
                             try:
                                 if self.skLogYn:
                                     decimal_string = ' '.join(str(byte) for byte in readByte)
-                                    self.logger.info(f'SK_ID:{self.skId} recive_string:[{str(readByte)}] decimal_string : [{decimal_string}] read length : {readBytesCnt} ')
+                                    logger.info(f'SK_ID:{self.skId} recive_string:[{str(readByte)}] decimal_string : [{decimal_string}] read length : {readBytesCnt} ')
 
                                 copybytes = readByte.copy()
                                 data = self.codec.decodeRecieData(readByte)
@@ -205,29 +192,29 @@ class ClientThread(threading.Thread, Client):
                                 reciveObj = {**channelInfo, **data}
                                 self.threadPoolExcutor(BzActivator2(reciveObj))
                             except Exception as e:
-                                self.logger.error(f'SK_ID:{self.skId} Message parsing Exception : buffer= {str(buffer)} {e}  ')
+                                logger.error(f'SK_ID:{self.skId} Message parsing Exception : buffer= {str(buffer)} {e}  ')
                             finally:
                                 del buffer[0:readBytesCnt]
 
                     except socket.timeout:
                         if self.bzIdleRead is not None:
                             idle_dict = {**channelInfo, **self.bzIdleRead}
-                            self.logger.info(f'{self.skId} : [IDLE CHANNEL EVENT START]')
+                            logger.info(f'{self.skId} : [IDLE CHANNEL EVENT START]')
                             self.threadPoolExcutor(BzActivator2(idle_dict))
                         continue
                     except Exception as e:
-                        self.logger.error(f'SK_ID={self.skId} connection exception : {traceback.format_exc()}')
+                        logger.error(f'SK_ID={self.skId} connection exception : {traceback.format_exc()}')
                         self.isRun = False
                         break
         except Exception as e:
             self.isRun = False
-            self.logger.error(f'SK_ID={self.skId}  TCP CLIENT try to connect exception : {e}')
+            logger.error(f'SK_ID={self.skId}  TCP CLIENT try to connect exception : {e}')
 
         finally:
             buffer.clear()
             if self.bzInActive is not None:
                 inav_dict = {**channelInfo, **self.bzInActive}
-                self.logger.info(f'{self.skId} : [INACTIVE CHANNEL EVENT START]')
+                logger.info(f'{self.skId} : [INACTIVE CHANNEL EVENT START]')
                 self.threadPoolExcutor(BzActivator2(inav_dict))
 
             if conn_list in moduleData.runChannels:
@@ -262,13 +249,13 @@ class ClientThread(threading.Thread, Client):
                 self.socket.sendall(msgBytes)
                 if self.skLogYn:
                     decimal_string = ' '.join(str(byte) for byte in msgBytes)
-                    self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(msgBytes)} send_string:[{str(msgBytes)}] decimal_string : [{decimal_string}]')
+                    logger.info(f'SK_ID:{self.skId} send bytes length : {len(msgBytes)} send_string:[{str(msgBytes)}] decimal_string : [{decimal_string}]')
                     # moduleData.mainInstance.insertLog(self.skId, msgBytes, 'OUT')
             else:
-                self.logger.info(f'SK_ID:{self.skId}- can"t send  sendToAllChannels  SERVER is None')
+                logger.info(f'SK_ID:{self.skId}- can"t send  sendToAllChannels  SERVER is None')
 
         except Exception as e:
-            self.logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+            logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
 
     def sendBytesToChannel(self,channel, bytes):
@@ -277,10 +264,10 @@ class ClientThread(threading.Thread, Client):
             channel.sendall(sendBytes)
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
 
         except:
-            self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {traceback.format_exc()}')
+            logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {traceback.format_exc()}')
 
 
 
@@ -292,12 +279,12 @@ class ClientThread(threading.Thread, Client):
                 self.socket.sendall(sendBytes)
                 if self.skLogYn:
                     decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                    self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                    logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
                     # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
             else:
-                self.logger.info(f'SK_ID:{self.skId} has no connection')
+                logger.info(f'SK_ID:{self.skId} has no connection')
         except Exception as e:
-            self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {traceback.format_exc()}')
+            logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {traceback.format_exc()}')
 
     def sendMsgToChannel(self, channel, obj):
         try:
@@ -308,12 +295,12 @@ class ClientThread(threading.Thread, Client):
 
                 if self.skLogYn:
                     decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                    self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                    logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
                     # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
             else:
-                self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel has no Server')
+                logger.info(f'SK_ID:{self.skId}- sendMsgToChannel has no Server')
         except Exception as e:
-            self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
+            logger.info(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
 
     def threadPoolExcutor(self, instance):
         try:
@@ -326,7 +313,7 @@ class ClientThread(threading.Thread, Client):
             # result_thread.daemon = True
             # result_thread.start()
         except:
-            self.logger.info(f'threadPoolExcutor exception : SK_ID:{self.skId} - {traceback.format_exc()}')
+            logger.info(f'threadPoolExcutor exception : SK_ID:{self.skId} - {traceback.format_exc()}')
 
     def process_result(self, future, msg, start_time):
         try:
@@ -337,7 +324,7 @@ class ClientThread(threading.Thread, Client):
                 start = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
                 end = datetime.fromtimestamp(end_time).strftime('%Y-%m-%d %H:%M:%S')
                 # logger.info(f"----------- SK_ID: {self.skId} future Result: {result} and remain thread Que : {self.executor._work_queue}")
-                self.logger.info(
+                logger.info(
                     f'----------- SK_ID: {self.skId} - {msg} begin:{start} end:{end} total time: {round(end_time - start_time, 4)}------------')
         except Exception as e:
-            self.logger(f"Exception while processing result: {e}")
+            logger(f"Exception while processing result: {e}")

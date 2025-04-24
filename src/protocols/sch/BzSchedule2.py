@@ -11,7 +11,6 @@ class BzSchedule2(threading.Thread):
 
     bzInfo = None
     interval = None # 시간 간격 (초단위)
-    logger = None
     isRun = False
     times = time
     executor = ThreadPoolExecutor(max_workers=10)
@@ -21,8 +20,7 @@ class BzSchedule2(threading.Thread):
         # {'PKG_ID': 'CORE', 'SK_GROUP': 'TEST', 'BZ_TYPE': 'KEEP', 'USE_YN': 'Y', 'BZ_METHOD': 'TestController.test', 'SEC': None, 'BZ_DESC': None, 'CHANNEL':''}
         self.bzInfo = bzInfo
         self.interval = bzInfo['SEC']
-        self.logger = bzInfo['LOGGER']
-        self.logger.info(f'BzSchedule initData :{bzInfo}')
+        logger.info(f'BzSchedule initData :{bzInfo}')
 
         self.schedule = schedule
         super(BzSchedule2, self).__init__()
@@ -37,7 +35,7 @@ class BzSchedule2(threading.Thread):
     def runSchedule(self):
         try:
             self.isRun = True
-            self.logger.info(f'BzSchedule start : SK_GROUP = {self.bzInfo["SK_GROUP"]} ')
+            logger.info(f'BzSchedule start : SK_GROUP = {self.bzInfo["SK_GROUP"]} ')
             self.schedule.every(self.interval).seconds.do(self.task)
             while self.isRun:
                 time.sleep(1)
@@ -49,14 +47,14 @@ class BzSchedule2(threading.Thread):
             if self.schedule is not None:
                 self.schedule.clear()
 
-            self.logger.error(f'BzSchedule Exception :: {traceback.format_exc()}')
+            logger.error(f'BzSchedule Exception :: {traceback.format_exc()}')
 
     def task(self):
         try:
             if self.isRun:
                 futures = self.executor.submit(BzActivator2(self.bzInfo).run)
         except:
-            self.logger.info(f'threadPoolExcutor exception :  {self.bzInfo["SK_GROUP"]}- {traceback.format_exc()}')
+            logger.info(f'threadPoolExcutor exception :  {self.bzInfo["SK_GROUP"]}- {traceback.format_exc()}')
 
 
 
@@ -68,7 +66,7 @@ class BzSchedule2(threading.Thread):
             self.isRun = False
             # self.executor.shutdown()
         except:
-            self.logger.error(f'stop schedulse exception : {traceback.format_exc()}')
+            logger.error(f'stop schedulse exception : {traceback.format_exc()}')
 
 
 

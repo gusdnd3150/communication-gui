@@ -1,14 +1,14 @@
+from conf.logconfig import *
 
 class TempController:
 
     sendHandler = None
-    logger = None
     dbInstance = None
     classNm = 'TempController'
     accept0001Ch = []
 
     # 데이터 전송 방법
-    # skLogger = reciveObj['LOGGER']
+    # 
     # Channel = reciveObj['CHANNEL']
     # thread = reciveObj['THREAD']
     # 1. self.sendHandler.sendSkId(skId, msgId, data)
@@ -19,16 +19,14 @@ class TempController:
         logger.info(f'TempController init')
         self.sendHandler = sendHandler
         self.dbInstance = dbHandler
-        self.logger = logger
 
     def sample(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
         Channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         returnJson = {}
         returnJson['MSG_ID'] = ''
         try:
-            skLogger.info(f'recive data : {reciveObj}')
+            logger.info(f'recive data : {reciveObj}')
             returnJson['LINE_SIGN'] = '2'
             self.sendHandler.sendSkId('TEST', 'TEST_MSG', returnJson)
             thread.sendBytesToChannel(Channel, 'sss'.encode('utf-8'))
@@ -39,7 +37,7 @@ class TempController:
             print('')
 
     def sendKeepAlive(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
+        
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         skId = reciveObj['SK_ID']
@@ -52,12 +50,12 @@ class TempController:
             thread().sendMsgToChannel(channel, returnMap)
             # thread().sendBytesToChannel(channel, '002099990010    00  '.encode('utf-8'))
         except Exception as e:
-            skLogger.error(f'TempController.sendKeepAlive() Exception :: {e}')
+            logger.error(f'TempController.sendKeepAlive() Exception :: {e}')
 
 
 
     def active(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
+        
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         skId = reciveObj['SK_ID']
@@ -70,20 +68,20 @@ class TempController:
             thread().sendMsgToChannel(channel, returnMap)
             # thread().sendBytesToChannel(channel, '002000010010    00  '.encode('utf-8'))
         except Exception as e:
-            skLogger.error(f'TempController.active() Exception :: {e}')
+            logger.error(f'TempController.active() Exception :: {e}')
 
     def recive9999(self, reciveObj):
         try:
-            skLogger = reciveObj['LOGGER']
+            
             channel = reciveObj['CHANNEL']
             thread = reciveObj['THREAD']
         except Exception as e:
-            skLogger.error(f'TempController.recive9999() Exception :: {e}')
+            logger.error(f'TempController.recive9999() Exception :: {e}')
 
 
     # '00570002001 0000    010000020003                         '
     def recive0002(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
+        
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         skId = reciveObj['SK_ID']
@@ -102,26 +100,26 @@ class TempController:
                 # thread().sendBytesToChannel(channel, '002000600010        '.encode('utf-8'))
 
         except Exception as e:
-            skLogger.error(f'TempController.recive0002() Exception :: {e}')
+            logger.error(f'TempController.recive0002() Exception :: {e}')
 
 
     def idle(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
+        
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         skId = reciveObj['SK_ID']
         try:
             channel.close()
         except Exception as e:
-            skLogger.error(f'TempController.idle() Exception :: {e}')
+            logger.error(f'TempController.idle() Exception :: {e}')
 
     #  ''
     def recive0061(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
+        
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         skId = reciveObj['SK_ID']
-        skLogger.info(f'recive0061 SK_ID:{skId} , data :{reciveObj}')
+        logger.info(f'recive0061 SK_ID:{skId} , data :{reciveObj}')
         returnJson = {}
         returnJson['MSG_ID'] = 'ATL_TOOL_RSLT_RES_0062'
         returnJson['REV'] = '001'
@@ -129,27 +127,27 @@ class TempController:
         try:
             thread().sendMsgToChannel(channel, returnJson)
         except Exception as e:
-            skLogger.error(f'TempController.recive0061() Exception :: {e}')
+            logger.error(f'TempController.recive0061() Exception :: {e}')
 
 
 
     # '002400050010    00  0060'
     def recive0005(self, reciveObj):
-        skLogger = reciveObj['LOGGER']
+        
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         resMid = reciveObj['MSG_MID']
         skId = reciveObj['SK_ID']
         model = reciveObj['SK_ID'].split('_')[1]
 
-        skLogger.info(f'TempController.recive0005 {skId} MID :: {resMid}')
+        logger.info(f'TempController.recive0005 {skId} MID :: {resMid}')
         try:
             returnJson = {}
             returnJson['REV'] = '001'
             returnJson['SPARE'] = '0    00  '
 
             if resMid == '0060':  # 구독신청 완료
-                skLogger.info(f' SK_ID:{skId} , 0005 MID_RES : {resMid} subscribe OK and request Job Info')
+                logger.info(f' SK_ID:{skId} , 0005 MID_RES : {resMid} subscribe OK and request Job Info')
                 if (model == 'PF'):
                     # 잡구독 파라소닉은 없음
                     returnJson['MSG_ID'] = 'ATL_JOB_SUBC_0034'
@@ -166,15 +164,15 @@ class TempController:
             #     jobId = '01'  # 임시
             #     thread().sendBytesToChannel(channel, ('002200380010    00  ' + jobId).encode('utf-8'))
             # elif resMid == '0038':  # job 세팅 결과 응답
-            #     skLogger.info(f'{skId} job setting OK')
+            #     logger.info(f'{skId} job setting OK')
             # elif resMid == '0052':  # 컨트롤러에서 인식한 바디번호 수신
             #     pass
             else:
-                skLogger.info(f' SK_ID:{skId} , 0005 MID_RES : {resMid} None handle')
+                logger.info(f' SK_ID:{skId} , 0005 MID_RES : {resMid} None handle')
 
             # self.sendHandler.sendChannelMsg(channel, 'TOOL_ATL_RES_0005', returnJson)
         except Exception as e:
-            skLogger.error(f'TempController.recive0005() Exception :: {e}')
+            logger.error(f'TempController.recive0005() Exception :: {e}')
 
 
 
@@ -182,23 +180,23 @@ class TempController:
 
     # '05380106            01060201030008177966040105LH Tire Wheel       062024-10-10:16:56:52070108Mode 01             09110011                                        1205130114115116117137.8991848.525519150.00020110.00021500.00022       130214115116117136.3491847.201319150.00020110.00021500.00022       130314115116117135.9581850.285019150.00020110.00021500.00022       130414115116117135.7501854.940119150.00020110.00021500.00022       130514115116117135.7501848.146719150.00020110.00021500.00022       2301Data No Station     I 100000037015'
     # def recive0106(self, reciveObj):
-    #     skLogger = reciveObj['LOGGER']
+    #     
     #     channel = reciveObj['CHANNEL']
     #     thread = reciveObj['THREAD']
     #     skId = reciveObj['SK_ID']
     #     try:
     #         thread().sendBytesToChannel(channel, '002101080000000000001'.encode('utf-8'))
     #     except Exception as e:
-    #         skLogger.error(f'TempController.recive0106() Exception :: {e}')
+    #         logger.error(f'TempController.recive0106() Exception :: {e}')
     #
     #
     # def recive0107(self, reciveObj):
-    #     skLogger = reciveObj['LOGGER']
+    #     
     #     channel = reciveObj['CHANNEL']
     #     thread = reciveObj['THREAD']
     #     skId = reciveObj['SK_ID']
     #     try:
     #         thread().sendBytesToChannel(channel, '002101080000000000000'.encode('utf-8'))
     #     except Exception as e:
-    #         skLogger.error(f'TempController.recive0107() Exception :: {e}')
+    #         logger.error(f'TempController.recive0107() Exception :: {e}')
     #

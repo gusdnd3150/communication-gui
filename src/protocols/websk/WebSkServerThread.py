@@ -32,7 +32,6 @@ class WebSkServerThread(threading.Thread):
     bzInActive = None
     bzIdleRead = None
     bzSch = None
-    logger = None
     skGrp = None
     executor = ThreadPoolExecutor(max_workers=20)
     bzSchList = []
@@ -43,9 +42,6 @@ class WebSkServerThread(threading.Thread):
         self.skId = data['SK_ID']
         self.skIp = data['SK_IP']
         self.skPort = int(data['SK_PORT'])
-
-        self.logger = setup_sk_logger(self.skId)
-        self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
 
         self.loop = asyncio.new_event_loop()
 
@@ -87,7 +83,7 @@ class WebSkServerThread(threading.Thread):
 
 
     def __del__(self):
-        self.logger.info(f'Thread {self.skId} is deleted')
+        logger.info(f'Thread {self.skId} is deleted')
 
 
 
@@ -120,7 +116,7 @@ class WebSkServerThread(threading.Thread):
             logger.info(f"WebSocket server started on ws://{self.skIp}:{self.skPort}")
             await self.server.wait_closed()
         except:
-            self.logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
+            logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
 
 
     def stop(self):
@@ -141,7 +137,7 @@ class WebSkServerThread(threading.Thread):
                     self.loop.stop()
 
                     for task in asyncio.all_tasks(self.loop):
-                        self.logger.info(f'task = {task}')
+                        logger.info(f'task = {task}')
                         task.cancel()
                 except:
                     logger.error(f'stop Server exception: {traceback.format_exc()}')
@@ -150,7 +146,7 @@ class WebSkServerThread(threading.Thread):
 
             asyncio.run(closeServer())
         except Exception as e:
-            self.logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
+            logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
         finally:
             self._stop_event.set()
             moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
@@ -186,7 +182,7 @@ class WebSkServerThread(threading.Thread):
     #         'SK_ID': self.skId
     #         , 'SK_GROUP': self.skGrp
     #         , 'CHANNEL': wesk
-    #         , 'LOGGER': self.logger
+    #         , 'LOGGER': logger
     #         , 'THREAD': self
     #         , 'PATH': path  # 웹소켓 한해 접속 URL 을 포함
     #     }
@@ -201,13 +197,13 @@ class WebSkServerThread(threading.Thread):
     #     # ACTIVE 이벤트처리
     #     if self.bzActive is not None:
     #         avtive_dict = {**chinfo, **self.bzActive}
-    #         self.logger.info(f'{self.skId} : [ACTIVE CHANNEL EVENT START]')
+    #         logger.info(f'{self.skId} : [ACTIVE CHANNEL EVENT START]')
     #         self.threadPoolExcutor(BzActivator2(avtive_dict))
     #
     #     # KEEP 처리
     #     if self.bzKeep is not None:
     #         keep_dict = {**chinfo, **self.bzKeep}
-    #         self.logger.info(f'{self.skId} : [KEEP CHANNEL EVENT START]')
+    #         logger.info(f'{self.skId} : [KEEP CHANNEL EVENT START]')
     #         bzSch = BzSchedule2(keep_dict)
     #         bzSch.daemon = True
     #         bzSch.start()
@@ -219,21 +215,21 @@ class WebSkServerThread(threading.Thread):
     #             try:
     #                 readBytesCnt = self.codec.concyctencyCheck(reciveBytes)
     #                 if readBytesCnt == 0:
-    #                     self.logger.info(f'concyctence error : {reciveBytes}')
+    #                     logger.info(f'concyctence error : {reciveBytes}')
     #                     continue
     #
     #                 if self.skLogYn:
     #                     decimal_string = ' '.join(str(byte) for byte in reciveBytes)
-    #                     self.logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
+    #                     logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
     #
     #                 data = self.codec.decodeRecieData(reciveBytes)
     #                 data['TOTAL_BYTES'] = reciveBytes
     #                 reciveObj = {**chinfo, **data}
     #                 self.threadPoolExcutor(BzActivator2(reciveObj))
     #             except:
-    #                 self.logger.error(f'websocket_handler error : {traceback.format_exc()}')
+    #                 logger.error(f'websocket_handler error : {traceback.format_exc()}')
     #     except:
-    #         self.logger.error(f'websocket_handler error : {traceback.format_exc()}')
+    #         logger.error(f'websocket_handler error : {traceback.format_exc()}')
     #     finally:
     #         if bzSch is not None:
     #             bzSch.stop()
@@ -257,18 +253,18 @@ class WebSkServerThread(threading.Thread):
                     await channel.send(bytes)  # await 키워드를 사용하여 비동기 호출
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in bytes)
-                        self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
+                        logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
                 except Exception:
-                    self.logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
+                    logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
             asyncio.run_coroutine_threadsafe(send(self, channel, bytes),self.loop)
         except:
-            self.logger.error(f'sendBytesToChannel exception :: {traceback.format_exc()}')
+            logger.error(f'sendBytesToChannel exception :: {traceback.format_exc()}')
 
     def sendBytesToAllChannels(self, bytes):
         try:
             pass
         except:
-            self.logger.error(f'sendBytesToAllChannels exception :: {traceback.format_exc()}')
+            logger.error(f'sendBytesToAllChannels exception :: {traceback.format_exc()}')
 
 
     def sendMsgToChannel(self, channel, obj):
@@ -279,12 +275,12 @@ class WebSkServerThread(threading.Thread):
                     await channel.send(sendBytes.decode('utf-8'))
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                        self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                        logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
                 except Exception:
-                    self.logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
+                    logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
             asyncio.run_coroutine_threadsafe(send(self), self.loop)
         except:
-            self.logger.error(f'sendMsgToChannel exception :: {traceback.format_exc()}')
+            logger.error(f'sendMsgToChannel exception :: {traceback.format_exc()}')
 
 
 
@@ -297,14 +293,14 @@ class WebSkServerThread(threading.Thread):
                         await channel.send(sendBytes.decode('utf-8'))
                         if self.skLogYn:
                             decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                            self.logger.info(
+                            logger.info(
                                 f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{sendBytes}]')
                 except Exception:
-                    self.logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
+                    logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
 
             asyncio.run_coroutine_threadsafe(send(self), self.loop)
         except:
-            self.logger.error(f'sendMsgToAllChannels exception :: {traceback.format_exc()}')
+            logger.error(f'sendMsgToAllChannels exception :: {traceback.format_exc()}')
 
 
 
@@ -320,7 +316,7 @@ class WebSkServerThread(threading.Thread):
             # result_thread.daemon = True
             # result_thread.start()
         except:
-            self.logger.info(f'threadPoolExcutor exception : SK_ID:{self.skId} - {traceback.format_exc()}')
+            logger.info(f'threadPoolExcutor exception : SK_ID:{self.skId} - {traceback.format_exc()}')
 
     def process_result(self, future, msg, start_time):
         try:
@@ -331,7 +327,7 @@ class WebSkServerThread(threading.Thread):
                 start = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
                 end = datetime.fromtimestamp(end_time).strftime('%Y-%m-%d %H:%M:%S')
                 # logger.info(f"----------- SK_ID: {self.skId} future Result: {result} and remain thread Que : {self.executor._work_queue}")
-                self.logger.info(
+                logger.info(
                     f'----------- SK_ID: {self.skId} - {msg} begin:{start} end:{end} total time: {round(end_time - start_time, 4)}------------')
         except Exception as e:
-            self.logger(f"Exception while processing result: {e}")
+            logger(f"Exception while processing result: {e}")

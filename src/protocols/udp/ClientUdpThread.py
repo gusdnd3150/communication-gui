@@ -28,7 +28,6 @@ class ClientUdpThread(threading.Thread,Client):
     bzInActive = None
     bzIdleRead = None
     bzSch = None
-    logger = None
     connCnt = 0
     sendBytes = bytearray
 
@@ -45,8 +44,6 @@ class ClientUdpThread(threading.Thread,Client):
         self.skIp = data['SK_IP']
         self.skPort = int(data['SK_PORT'])
 
-        self.logger = setup_sk_logger(self.skId)
-        self.logger.info(f'SK_ID:{self.skId} - initData : {data}')
         if (data.get('SK_GROUP') is not None):
             self.skGrp = data['SK_GROUP']
 
@@ -89,21 +86,11 @@ class ClientUdpThread(threading.Thread,Client):
 
     def stop(self):
         try:
-            logger = logging.getLogger(self.skId)
-            # 모든 핸들러 제거
-            handlers = logger.handlers[:]
-            for handler in handlers:
-                handler.close()
-                logger.removeHandler(handler)
-            # 로거 제거
-            logging.getLogger(self.skId).handlers = []
-
-
             if self.socket:
                 self.socket.close()
 
         except Exception as e:
-            self.logger.error(f'SK_ID:{self.skId} Stop fail')
+            logger.error(f'SK_ID:{self.skId} Stop fail')
         finally:
             self.isRun = False
             self._stop_event.set()
@@ -114,14 +101,14 @@ class ClientUdpThread(threading.Thread,Client):
         try:
             pass
         except Exception as e:
-            self.logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+            logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
 
     def sendBytesToChannel(self,channel, bytes):
         try:
             pass
         except:
-            self.logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
+            logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
 
 
 
@@ -129,17 +116,17 @@ class ClientUdpThread(threading.Thread,Client):
 
         try:
             sendBytes = self.codec.encodeSendData(obj)
-            self.logger.info(f'UDP CLIENT Start : SK_ID= {self.skId}, IP= {self.skIp}:{self.skPort} :: Thread ')
+            logger.info(f'UDP CLIENT Start : SK_ID= {self.skId}, IP= {self.skIp}:{self.skPort} :: Thread ')
             udpClient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             sent = udpClient.sendto(sendBytes, (self.skIp, self.skPort))
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                self.logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
         except Exception as e:
-            self.logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+            logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 
     def sendMsgToChannel(self, channel, obj):
         try:
             pass
         except Exception as e:
-            self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')
+            logger.info(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {e}')

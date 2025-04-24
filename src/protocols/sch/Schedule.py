@@ -15,7 +15,6 @@ class Schedule(threading.Thread):
     schJob = None
     schjobTy = None
     times = time
-    logger = None
     schedule = None
     executor = ThreadPoolExecutor(max_workers=10)
 
@@ -31,10 +30,6 @@ class Schedule(threading.Thread):
         if sch.get('SCH_JOB_TYPE') is not None:
             self.schjobTy = sch['SCH_JOB_TYPE']
 
-        self.logger = setup_sk_logger(sch['SCH_ID'])
-        self.bzInfo['LOGGER'] = self.logger
-
-        self.logger.info(f'init sch :{sch}')
         self.schedule = schedule
 
         super(Schedule, self).__init__()
@@ -58,13 +53,13 @@ class Schedule(threading.Thread):
             self.schedule = None
             self.isRun = False
         except Exception as e:
-            self.logger.error(f'SCH_ID:{self.schId} Stop fail')
+            logger.error(f'SCH_ID:{self.schId} Stop fail')
         finally:
             self._stop_event.set()
             # moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_server')
 
     def __del__(self):
-        self.logger.info('system schedules deleted')
+        logger.info('system schedules deleted')
 
     def runSchedule(self):
         try:
@@ -89,7 +84,7 @@ class Schedule(threading.Thread):
             if self.schedule is not None:
                 self.schedule.clear()
 
-            self.logger.error(f'system runSchedule Exception :: {traceback.format_exc()}')
+            logger.error(f'system runSchedule Exception :: {traceback.format_exc()}')
 
 
     def task(self):
@@ -104,5 +99,5 @@ class Schedule(threading.Thread):
             # result_thread.daemon = True
             # result_thread.start()
         except:
-            self.logger.info(f'threadPoolExcutor exception :  {self.bzInfo["SK_GROUP"]}- {traceback.format_exc()}')
+            logger.info(f'threadPoolExcutor exception :  {self.bzInfo["SK_GROUP"]}- {traceback.format_exc()}')
 
