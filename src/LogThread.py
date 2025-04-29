@@ -3,16 +3,17 @@ import logging
 from PySide6.QtCore import QThread, Signal, Slot
 import weakref
 from collections import deque
+import conf.skModule as moduleData
 
 class LogThread(QThread):
     # 데이터를 수정하는 신호 정의
     updateLog = Signal(str)  # str
     msgQue = deque([])
 
-    def __init__(self, mainUi):
+    def __init__(self):
         super().__init__()
 
-        text_edit_handler = QTextEditLogger(weakref.ref(self), mainUi)
+        text_edit_handler = QTextEditLogger(weakref.ref(self))
         text_edit_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
         logging.getLogger().addHandler(text_edit_handler)
 
@@ -27,16 +28,14 @@ class LogThread(QThread):
 
 
 class QTextEditLogger(logging.Handler):
-    mainUi = None
     thread = None
 
-    def __init__(self, thread, mainUi):
+    def __init__(self, thread):
         super().__init__()
-        self.mainUi = mainUi
         self.thread = thread
 
     def emit(self, record):
-        if self.mainUi().ui.log_chk_showlog.isChecked():
+        if moduleData.mainLayout.log_chk_showlog.isChecked():
             msg = self.format(record)
             self.thread().setMsg(msg)
             self.thread().start()

@@ -65,7 +65,7 @@ class InitClass(QMainWindow):
         self.ui.btn_start.clicked.connect(self.start_sk)  # 시작버튼
         self.ui.btn_stop.clicked.connect(self.stop_sk)   # 종료버튼
 
-        self.logThread = LogThread(weakref.ref(self))
+        self.logThread = LogThread()
         self.logThread.updateLog.connect(self.insertLog)
 
         self.ui.log_btn_clear.clicked.connect(self.clickClear)
