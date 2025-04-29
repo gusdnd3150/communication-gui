@@ -140,7 +140,6 @@ class ClientEventThread(threading.Thread):
                 , 'SK_GROUP': self.skGrp
                 , 'CHANNEL': sockets
                 , 'THREAD': weakref.ref(self)
-                
             }
             client_info = (self.skId, self.socket, weakref.ref(self))
             moduleData.runChannels.append(client_info)

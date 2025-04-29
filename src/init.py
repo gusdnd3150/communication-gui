@@ -9,7 +9,7 @@ from PySide6.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QMessa
 
 from src.protocols.tcp.ClientThread import ClientThread
 from src.protocols.tcp.ServerThread import ServerThread
-
+import weakref
 program_path = sys.argv[0]
 import logging
 program_directory = os.path.dirname(program_path)
@@ -65,7 +65,7 @@ class InitClass(QMainWindow):
         self.ui.btn_start.clicked.connect(self.start_sk)  # 시작버튼
         self.ui.btn_stop.clicked.connect(self.stop_sk)   # 종료버튼
 
-        self.logThread = LogThread(self)
+        self.logThread = LogThread(weakref.ref(self))
         self.logThread.updateLog.connect(self.insertLog)
 
         self.ui.log_btn_clear.clicked.connect(self.clickClear)

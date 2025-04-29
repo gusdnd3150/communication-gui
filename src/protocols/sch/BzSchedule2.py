@@ -13,7 +13,7 @@ class BzSchedule2(threading.Thread):
     interval = None # 시간 간격 (초단위)
     isRun = False
     times = time
-    executor = ThreadPoolExecutor(max_workers=10)
+    executor = ThreadPoolExecutor(max_workers=1)
     schedule = None
 
     def __init__(self, bzInfo):

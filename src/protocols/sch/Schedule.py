@@ -16,7 +16,7 @@ class Schedule(threading.Thread):
     schjobTy = None
     times = time
     schedule = None
-    executor = ThreadPoolExecutor(max_workers=10)
+    executor = ThreadPoolExecutor(max_workers=1)
 
     # {'PKG_ID': 'CORE', 'SCH_ID': 'TEST', 'BZ_METHOD': 'TestController.sch', 'SCH_DESC': None, 'USE_YN': 'Y',
     #  'SCH_JOB': '2', 'SCH_JOB_TYPE': 'SEC'}

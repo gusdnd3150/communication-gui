@@ -11,6 +11,8 @@ class BzActivator2():
     def __init__(self, bzInfo):
         self.bzInfo = bzInfo
 
+    # def __del__(self):
+    #     print("BzActivator2 delete")
 
     def run(self):
         try:
