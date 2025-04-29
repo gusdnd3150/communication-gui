@@ -32,7 +32,7 @@ class ServerUdpThread(threading.Thread):
     bzIdleRead = None
     bzSch = None
     connCnt = 0
-    executor = ThreadPoolExecutor(max_workers=20)
+    executor = ThreadPoolExecutor(max_workers=1)
     skclientTy = ''
 
     def __init__(self, data):

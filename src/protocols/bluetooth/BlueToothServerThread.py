@@ -8,7 +8,6 @@ from src.protocols.msg.LengthCodec import LengthCodec
 from src.protocols.msg.JSONCodec import JSONCodec
 import conf.skModule as moduleData
 
-from src.protocols.sch.BzSchedule import BzSchedule
 from src.protocols.sch.BzSchedule2 import BzSchedule2
 from src.protocols.BzActivator2 import BzActivator2
 from src.protocols.Server import Server

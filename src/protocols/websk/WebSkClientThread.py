@@ -37,7 +37,7 @@ class WebSkClientThread(threading.Thread):
     bzIdleRead = None
     bzSch = None
     skGrp = None
-    executor = ThreadPoolExecutor(max_workers=20)
+    executor = ThreadPoolExecutor(max_workers=1)
     bzSchList = []
     CLIENT = None
 
