@@ -165,9 +165,6 @@ class WebSkClientThread(threading.Thread):
     async def websocket_handler(self):
         bzSch = None
 
-
-
-
         chinfo = {
             'SK_ID': self.skId
             , 'SK_GROUP': self.skGrp

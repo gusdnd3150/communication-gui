@@ -28,7 +28,7 @@ class HttpServerThread(threading.Thread):
     skLogYn = False
     codec = None
     logger = None
-    executor = ThreadPoolExecutor(max_workers=200)
+    executor = ThreadPoolExecutor(max_workers=1)
 
 
     def __init__(self, data):

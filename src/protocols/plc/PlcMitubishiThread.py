@@ -32,7 +32,7 @@ class PlcMitubishiThread(threading.Thread):
     cpuTy = None
     plcIp = None
     plcPort = None
-    executor = ThreadPoolExecutor(max_workers=60)
+    executor = ThreadPoolExecutor(max_workers=1)
     #[('D30', 0, 10, bytearray(b'')), ('D60', 0, 10, bytearray(b''))]  (메모리,pos,length, 바이트)
     plcBuffer = []
 
