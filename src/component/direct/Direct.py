@@ -123,7 +123,8 @@ class Direct(QMainWindow):
         try:
             print(f'data : {data}, skId : {skId}')
             # logger.info(f'Direct.sendMsg() skId: {skId}, msgId:{self.msgId} resultObj : {resultObj}')
-            SendHandler.sendSkIdBytes(self,skId,self.byteData)
+            sendData = self.byteData.copy()
+            SendHandler.sendSkIdBytes(self,skId,sendData)
         except:
             self.ui.dir_buffer.setPlainText(f'exception {traceback.format_exc()}')
         finally:

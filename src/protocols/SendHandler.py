@@ -26,17 +26,16 @@ class SendHandler():
 
     def sendSkIdBytes(self, skId,byteData):
         try:
-            print(f'sssssssssssss {skId}')
             for  sk in moduleData.sokcetList:
                 if sk['SK_ID'] == skId:
                     skThread = sk['SK_THREAD']
-                    # if sk['SK_CLIENT_TYPE'] == 'EVENT':
-                    #     from src.protocols.tcp.ClientEventThread import ClientEventThread
-                    #     newTh = ClientEventThread(sk, data)
-                    #     newTh.daemon = True
-                    #     newTh.start()
-                    #     break
+                    if sk['SK_CLIENT_TYPE'] == 'EVENT':
+                        from src.protocols.tcp.ClientEventThread import ClientEventThread
+                        newTh = ClientEventThread(sk, byteData)
+                        newTh.daemon = True
+                        newTh.start()
+                        break
                     skThread.sendBytesToAllChannels(byteData)
                     break
         except Exception as e:
-            logger.info(f'sendSkId() Exception SK_ID:{skId} , MSG_ID:{msgId}, DATA:{byteData} -- {traceback.format_exc()}')
+            logger.info(f'sendSkId() Exception SK_ID:{skId} , DATA:{byteData} -- {traceback.format_exc()}')

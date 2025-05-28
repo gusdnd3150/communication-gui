@@ -38,7 +38,7 @@ class ClientEventThread(threading.Thread):
     bzSch = None
     conCnt = 0
     skclientTy = ''
-    sendData = bytearray
+    sendData = None
     bzSchList = []
     executor = ThreadPoolExecutor(max_workers=1)
 
@@ -85,7 +85,11 @@ class ClientEventThread(threading.Thread):
                 elif bz.get('BZ_TYPE') == 'INACTIVE':
                     self.bzInActive = bz
 
-        self.sendData = self.codec.encodeSendData(msgData)
+        if isinstance(msgData, bytearray):
+            self.sendData = msgData + self.delimiter
+        else:
+            self.sendData = self.codec.encodeSendData(msgData)
+
         super(ClientEventThread, self).__init__()
         self._stop_event = threading.Event()
 

@@ -246,7 +246,7 @@ class ClientThread(threading.Thread, Client):
     def sendBytesToAllChannels(self, msgBytes):
         try:
             if self.socket is not None:
-                self.socket.sendall(msgBytes)
+                self.socket.sendall(msgBytes+self.delimiter)
                 if self.skLogYn:
                     decimal_string = ' '.join(str(byte) for byte in msgBytes)
                     logger.info(f'SK_ID:{self.skId} send bytes length : {len(msgBytes)} send_string:[{str(msgBytes)}] decimal_string : [{decimal_string}]')

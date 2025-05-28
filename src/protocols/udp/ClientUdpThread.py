@@ -99,9 +99,14 @@ class ClientUdpThread(threading.Thread,Client):
 
     def sendBytesToAllChannels(self, msgBytes):
         try:
-            pass
+            logger.info(f'UDP CLIENT Start : SK_ID= {self.skId}, IP= {self.skIp}:{self.skPort} :: Thread ')
+            udpClient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sent = udpClient.sendto(msgBytes+self.delimiter, (self.skIp, self.skPort))
+            if self.skLogYn:
+                decimal_string = ' '.join(str(byte) for byte in msgBytes)
+                logger.info(f'SK_ID:{self.skId} send bytes length : {len(msgBytes)} send_string:[{str(msgBytes)}] decimal_string : [{decimal_string}]')
         except Exception as e:
-            logger.error(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
+            logger.info(f'SK_ID:{self.skId}- sendBytesToAllChannels Exception :: {e}')
 
 
     def sendBytesToChannel(self,channel, bytes):

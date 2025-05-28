@@ -276,7 +276,7 @@ class ServerThread(threading.Thread, Server):
                 return
             for skId, client, codec in self.conn_list:
                 if skId == self.skId:
-                    client.sendall(bytes)
+                    client.sendall(bytes+self.delimiter)
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in bytes)
                         logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{decimal_string}]')
