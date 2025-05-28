@@ -1,4 +1,4 @@
-
+import struct
 from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView
 from PySide6.QtGui import QColor, QBrush
 import sys
@@ -37,42 +37,83 @@ class Direct(QMainWindow):
         self.ui.dir_buffer.setReadOnly(True) # 수정불가
 
 
+    def setText(self):
+        try:
+            # 각각을 10진수 문자열로 변환
+            decimal_strs = [str(b) for b in self.byteData]
+            decimal_str = ' '.join(decimal_strs)
+            text_str =  (f'데시멀 : [{decimal_str}]\n\r'
+                         f'문자열 : [{self.byteData.decode('ascii', errors='replace')}]  \n\r'
+                         f'총길이 : [{len(self.byteData)}] bytes'
+                         )
+
+            self.ui.dir_buffer.setPlainText(text_str)
+        except:
+            logger.error(f'setText error : {traceback.format_exc()}')
+
 
     def addString(self):
         try:
             data = self.ui.dir_input.toPlainText()
             if data is None or data != '':
                 self.byteData.extend(data.encode('utf-8'))
-                self.ui.dir_buffer.setPlainText(str(self.byteData))
+                self.ui.dir_input.clear()
+                self.setText()
         except:
             logger.error(f'sendBytes error : {traceback.format_exc()}')
 
     def addFloat(self):
         try:
-            print('addString')
+            data = self.ui.dir_input.toPlainText()
+            float_val = float(data)
+            if data is None or data != '':
+                self.ui.dir_input.clear()
+                self.byteData.extend(struct.pack('>f', float_val))
+                self.setText()
         except:
             logger.error(f'sendBytes error : {traceback.format_exc()}')
 
     def addInt(self):
         try:
-            print('addString')
+            data = self.ui.dir_input.toPlainText()
+            val = int(data)
+            if data is None or data != '':
+                self.ui.dir_input.clear()
+                self.byteData.extend(struct.pack('>i', val))
+                self.setText()
         except:
             logger.error(f'sendBytes error : {traceback.format_exc()}')
+
     def addDouble(self):
         try:
-            print('addString')
+            data = self.ui.dir_input.toPlainText()
+            float_val = float(data)
+            if data is None or data != '':
+                self.ui.dir_input.clear()
+                self.byteData.extend(struct.pack('>d', float_val))
+                self.setText()
         except:
             logger.error(f'sendBytes error : {traceback.format_exc()}')
 
     def addDecimal(self):
         try:
-            print('addString')
+            data = self.ui.dir_input.toPlainText()
+            if data is None or data != '':
+                self.ui.dir_input.clear()
+                self.byteData.append(int(data))
+                self.setText()
         except:
             logger.error(f'sendBytes error : {traceback.format_exc()}')
 
     def addDecimals(self):
         try:
-            print('addString')
+            data = self.ui.dir_input.toPlainText()
+            if data is None or data != '':
+                arr = data.split(' ')
+                for dec in arr:
+                    self.byteData.append(int(dec))
+                self.ui.dir_input.clear()
+                self.setText()
         except:
             logger.error(f'sendBytes error : {traceback.format_exc()}')
 
@@ -82,12 +123,10 @@ class Direct(QMainWindow):
         try:
             print(f'data : {data}, skId : {skId}')
             # logger.info(f'Direct.sendMsg() skId: {skId}, msgId:{self.msgId} resultObj : {resultObj}')
-            # SendHandler.sendSkIdBytes(self,skId)
-
-
-            self.byteData.clear()
-            self.ui.dir_buffer.clear()
+            SendHandler.sendSkIdBytes(self,skId,self.byteData)
         except:
+            self.ui.dir_buffer.setPlainText(f'exception {traceback.format_exc()}')
+        finally:
             self.byteData.clear()
             self.ui.dir_buffer.clear()
-            self.ui.dir_buffer.setPlainText(f'exception {traceback.format_exc()}')
+

@@ -78,7 +78,6 @@ class InitClass(QMainWindow):
 
         self.ui.action_util.triggered.connect(self.open_util) # 유틸
         self.ui.action_settings.triggered.connect(self.open_settings)  # 설정 오픈
-        self.ui.action_settings.triggered.connect(self.open_settings)  # 설정 오픈
         self.ui.action_test.triggered.connect(self.open_handler)  # 핸들러 오픈
         self.ui.actionOpen_log_folder.triggered.connect(self.openFolder) # 폴더 오픈
         self.ui.action_dirMessage.triggered.connect(self.open_direct)
@@ -444,18 +443,14 @@ class InitClass(QMainWindow):
 
     def open_direct(self):
         if self.directPop.isVisible():
-            # self.popup.instance.hide()
             self.directPop.hide()
         else:
-            # self.popup.instance.show()
             self.directPop.show()
 
     def open_settings(self):
         if self.popup.isVisible():
-            # self.popup.instance.hide()
             self.popup.hide()
         else:
-            # self.popup.instance.show()
             self.popup.show()
 
     def open_handler(self):
