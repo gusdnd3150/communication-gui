@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(687, 512)
+        MainWindow.resize(733, 480)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -48,20 +48,93 @@ class Ui_MainWindow(object):
         self.action_test.setObjectName(u"action_test")
         self.action_util = QAction(MainWindow)
         self.action_util.setObjectName(u"action_util")
+        self.action_dirMessage = QAction(MainWindow)
+        self.action_dirMessage.setObjectName(u"action_dirMessage")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout_3 = QGridLayout(self.centralwidget)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.scrollArea = QScrollArea(self.centralwidget)
+        self.scrollArea.setObjectName(u"scrollArea")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.scrollArea.sizePolicy().hasHeightForWidth())
+        self.scrollArea.setSizePolicy(sizePolicy1)
+        self.scrollArea.setMinimumSize(QSize(75, 0))
+        self.scrollArea.setFrameShadow(QFrame.Raised)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 73, 417))
+        self.btn_stop = QPushButton(self.scrollAreaWidgetContents)
+        self.btn_stop.setObjectName(u"btn_stop")
+        self.btn_stop.setGeometry(QRect(0, 70, 71, 22))
+        self.btn_stop.setMaximumSize(QSize(200, 16777215))
+        font1 = QFont()
+        font1.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
+        font1.setPointSize(10)
+        font1.setBold(True)
+        font1.setUnderline(False)
+        font1.setStrikeOut(False)
+        self.btn_stop.setFont(font1)
+        self.btn_stop.setStyleSheet(u"/* \uc77c\ubc18 \ubc84\ud2bc \uc2a4\ud0c0\uc77c */\n"
+"QPushButton {\n"
+"    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(250, 90, 90, 255), stop:1 rgba(232, 81, 81, 255));\n"
+"    border: none;\n"
+"    border-radius: 4px;\n"
+"    color: white;\n"
+"    padding: 2px\n"
+"}\n"
+"\n"
+"/* Hover \uc0c1\ud0dc\uc5d0\uc11c \ubc30\uacbd\uc0c9 \ubcc0\uacbd */\n"
+"QPushButton:hover {\n"
+"    background-color: #E35252;\n"
+"}")
+        self.btn_start = QPushButton(self.scrollAreaWidgetContents)
+        self.btn_start.setObjectName(u"btn_start")
+        self.btn_start.setGeometry(QRect(0, 40, 71, 22))
+        self.btn_start.setMaximumSize(QSize(200, 16777215))
+        font2 = QFont()
+        font2.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
+        font2.setPointSize(10)
+        font2.setBold(True)
+        self.btn_start.setFont(font2)
+        self.btn_start.setStyleSheet(u"QPushButton {\n"
+"    background-color: #22e117;\n"
+"    border: none;\n"
+"    border-radius: 4px;\n"
+"    color: white;\n"
+"    padding: 2px\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: #33c12b;\n"
+"}")
+        self.combo_pkg = QComboBox(self.scrollAreaWidgetContents)
+        self.combo_pkg.setObjectName(u"combo_pkg")
+        self.combo_pkg.setGeometry(QRect(0, 10, 71, 24))
+        self.combo_pkg.setMaximumSize(QSize(200, 16777215))
+        font3 = QFont()
+        font3.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
+        font3.setPointSize(10)
+        self.combo_pkg.setFont(font3)
+        self.combo_pkg.setAcceptDrops(False)
+        self.combo_pkg.setStyleSheet(u"")
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+
+        self.gridLayout_3.addWidget(self.scrollArea, 0, 0, 1, 1)
+
         self.gridLayout_2 = QGridLayout()
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.tabWidget = QTabWidget(self.centralwidget)
         self.tabWidget.setObjectName(u"tabWidget")
         sizePolicy.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
         self.tabWidget.setSizePolicy(sizePolicy)
-        font1 = QFont()
-        font1.setPointSize(10)
-        font1.setBold(False)
-        self.tabWidget.setFont(font1)
+        font4 = QFont()
+        font4.setPointSize(10)
+        font4.setBold(False)
+        self.tabWidget.setFont(font4)
         self.tab_2 = QWidget()
         self.tab_2.setObjectName(u"tab_2")
         self.gridLayout_5 = QGridLayout(self.tab_2)
@@ -69,12 +142,12 @@ class Ui_MainWindow(object):
         self.list_run_server = QTableWidget(self.tab_2)
         self.list_run_server.setObjectName(u"list_run_server")
         self.list_run_server.setMaximumSize(QSize(16777215, 16777215))
-        font2 = QFont()
-        font2.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
-        font2.setPointSize(9)
-        font2.setBold(False)
-        font2.setItalic(False)
-        self.list_run_server.setFont(font2)
+        font5 = QFont()
+        font5.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
+        font5.setPointSize(9)
+        font5.setBold(False)
+        font5.setItalic(False)
+        self.list_run_server.setFont(font5)
         self.list_run_server.setAcceptDrops(False)
         self.list_run_server.setAutoFillBackground(True)
         self.list_run_server.setStyleSheet(u"font: 9pt \"\ub9d1\uc740 \uace0\ub515\";")
@@ -96,7 +169,7 @@ class Ui_MainWindow(object):
         self.list_run_client = QTableWidget(self.tab_3)
         self.list_run_client.setObjectName(u"list_run_client")
         self.list_run_client.setMaximumSize(QSize(16777215, 16777215))
-        self.list_run_client.setFont(font2)
+        self.list_run_client.setFont(font5)
         self.list_run_client.setAutoFillBackground(True)
         self.list_run_client.setStyleSheet(u"font: 9pt \"\ub9d1\uc740 \uace0\ub515\";")
         self.list_run_client.setTabKeyNavigation(True)
@@ -115,9 +188,9 @@ class Ui_MainWindow(object):
         self.list_conn.setObjectName(u"list_conn")
         self.list_conn.setEnabled(True)
         self.list_conn.setMaximumSize(QSize(16777215, 16777215))
-        font3 = QFont()
-        font3.setPointSize(8)
-        self.list_conn.setFont(font3)
+        font6 = QFont()
+        font6.setPointSize(8)
+        self.list_conn.setFont(font6)
         self.list_conn.setStyleSheet(u"QTreeView{\n"
 "	background-color: white;\n"
 "	color:black\n"
@@ -183,81 +256,10 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addLayout(self.gridLayout_2, 0, 1, 1, 1)
 
-        self.scrollArea = QScrollArea(self.centralwidget)
-        self.scrollArea.setObjectName(u"scrollArea")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.scrollArea.sizePolicy().hasHeightForWidth())
-        self.scrollArea.setSizePolicy(sizePolicy1)
-        self.scrollArea.setMinimumSize(QSize(75, 0))
-        self.scrollArea.setFrameShadow(QFrame.Raised)
-        self.scrollArea.setWidgetResizable(True)
-        self.scrollAreaWidgetContents = QWidget()
-        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 73, 449))
-        self.btn_stop = QPushButton(self.scrollAreaWidgetContents)
-        self.btn_stop.setObjectName(u"btn_stop")
-        self.btn_stop.setGeometry(QRect(0, 70, 71, 22))
-        self.btn_stop.setMaximumSize(QSize(200, 16777215))
-        font4 = QFont()
-        font4.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
-        font4.setPointSize(10)
-        font4.setBold(True)
-        font4.setUnderline(False)
-        font4.setStrikeOut(False)
-        self.btn_stop.setFont(font4)
-        self.btn_stop.setStyleSheet(u"/* \uc77c\ubc18 \ubc84\ud2bc \uc2a4\ud0c0\uc77c */\n"
-"QPushButton {\n"
-"    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(250, 90, 90, 255), stop:1 rgba(232, 81, 81, 255));\n"
-"    border: none;\n"
-"    border-radius: 4px;\n"
-"    color: white;\n"
-"    padding: 2px\n"
-"}\n"
-"\n"
-"/* Hover \uc0c1\ud0dc\uc5d0\uc11c \ubc30\uacbd\uc0c9 \ubcc0\uacbd */\n"
-"QPushButton:hover {\n"
-"    background-color: #E35252;\n"
-"}")
-        self.btn_start = QPushButton(self.scrollAreaWidgetContents)
-        self.btn_start.setObjectName(u"btn_start")
-        self.btn_start.setGeometry(QRect(0, 40, 71, 22))
-        self.btn_start.setMaximumSize(QSize(200, 16777215))
-        font5 = QFont()
-        font5.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
-        font5.setPointSize(10)
-        font5.setBold(True)
-        self.btn_start.setFont(font5)
-        self.btn_start.setStyleSheet(u"QPushButton {\n"
-"    background-color: #22e117;\n"
-"    border: none;\n"
-"    border-radius: 4px;\n"
-"    color: white;\n"
-"    padding: 2px\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: #33c12b;\n"
-"}")
-        self.combo_pkg = QComboBox(self.scrollAreaWidgetContents)
-        self.combo_pkg.setObjectName(u"combo_pkg")
-        self.combo_pkg.setGeometry(QRect(0, 10, 71, 24))
-        self.combo_pkg.setMaximumSize(QSize(200, 16777215))
-        font6 = QFont()
-        font6.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
-        font6.setPointSize(10)
-        self.combo_pkg.setFont(font6)
-        self.combo_pkg.setAcceptDrops(False)
-        self.combo_pkg.setStyleSheet(u"")
-        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-
-        self.gridLayout_3.addWidget(self.scrollArea, 0, 0, 1, 1)
-
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 687, 22))
+        self.menubar.setGeometry(QRect(0, 0, 733, 22))
         self.menu = QMenu(self.menubar)
         self.menu.setObjectName(u"menu")
         self.menu_2 = QMenu(self.menubar)
@@ -271,12 +273,13 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu_2.menuAction())
         self.menu.addAction(self.action_settings)
         self.menu.addAction(self.action_test)
+        self.menu.addAction(self.action_dirMessage)
         self.menu.addAction(self.action_util)
         self.menu_2.addAction(self.actionOpen_log_folder)
 
         self.retranslateUi(MainWindow)
 
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(3)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -286,8 +289,11 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.action_settings.setText(QCoreApplication.translate("MainWindow", u"Socket settings", None))
         self.actionOpen_log_folder.setText(QCoreApplication.translate("MainWindow", u"Open log folder", None))
-        self.action_test.setText(QCoreApplication.translate("MainWindow", u"Socket Test", None))
+        self.action_test.setText(QCoreApplication.translate("MainWindow", u"Send Message", None))
         self.action_util.setText(QCoreApplication.translate("MainWindow", u"Utility", None))
+        self.action_dirMessage.setText(QCoreApplication.translate("MainWindow", u"Send Direct Message", None))
+        self.btn_stop.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
+        self.btn_start.setText(QCoreApplication.translate("MainWindow", u"run", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Server", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QCoreApplication.translate("MainWindow", u"Client", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), QCoreApplication.translate("MainWindow", u"Connection List", None))
@@ -299,8 +305,6 @@ class Ui_MainWindow(object):
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Gulim'; font-size:9pt;\"><br /></p></body></html>", None))
         self.log_btn_clear.setText(QCoreApplication.translate("MainWindow", u"clear", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Log", None))
-        self.btn_stop.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
-        self.btn_start.setText(QCoreApplication.translate("MainWindow", u"run", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\uc124\uc815", None))
         self.menu_2.setTitle(QCoreApplication.translate("MainWindow", u"\ud30c\uc77c", None))
     # retranslateUi

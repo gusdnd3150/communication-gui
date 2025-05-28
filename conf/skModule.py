@@ -30,6 +30,7 @@ with open(file_path, 'r') as f:
     if useYn == 'Y':
         dbHandler = Dbhandler(data)
 
+print("Current Working Directory:", os.getcwd())
 
 
 dbInstance = sqlite3.connect('core.db') # socket system DB

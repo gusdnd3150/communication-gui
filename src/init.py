@@ -29,6 +29,7 @@ from src.protocols.bluetooth.BlueToothClientThread import BlueToothClientThread
 from src.WorkThread import WorkThread
 from src.LogThread import LogThread
 from ui.ui_main import Ui_MainWindow
+from src.component.direct.Direct import Direct
 from src.component.utility.Utility import Utility
 from src.protocols.http.HttpServerThread import  HttpServerThread
 
@@ -52,6 +53,8 @@ class InitClass(QMainWindow):
     workThread = None # 실시간성 GUI 수정작업을 스레드를 통해 진행
     logThread = None
     mainLoop = None
+    directPop =None
+
 
     def __init__(self):
         super(InitClass, self).__init__()
@@ -75,9 +78,10 @@ class InitClass(QMainWindow):
 
         self.ui.action_util.triggered.connect(self.open_util) # 유틸
         self.ui.action_settings.triggered.connect(self.open_settings)  # 설정 오픈
+        self.ui.action_settings.triggered.connect(self.open_settings)  # 설정 오픈
         self.ui.action_test.triggered.connect(self.open_handler)  # 핸들러 오픈
         self.ui.actionOpen_log_folder.triggered.connect(self.openFolder) # 폴더 오픈
-        
+        self.ui.action_dirMessage.triggered.connect(self.open_direct)
         # self.ui.btn_show_log.clicked.connect(self.open_logger)
         moduleData.mainLayout = self.ui
         moduleData.mainInstance = self
@@ -89,6 +93,7 @@ class InitClass(QMainWindow):
         self.popup = Settings(self.initData)
         self.handlPop = Handler(self.initData)
         self.utilityPop = Utility(self.initData)
+        self.directPop = Direct(self.initData)
         # self.logPop = Log(self.initData)
 
 
@@ -184,13 +189,11 @@ class InitClass(QMainWindow):
         # 기준정보 로드
         moduleData.initPkgData(pkg)
 
-
         self.handlPop.ui.combo_sk_list.clear()
         self.ui.combo_pkg.setDisabled(True)
         self.ui.btn_start.setDisabled(True)
-
+        
         try:
-
             # logger.info(f'start_sk() Plc Run Cnt : {len(moduleData.plcList)}')
             # for i, plc in enumerate(moduleData.plcList):
             #     threadPlc = None
@@ -253,6 +256,7 @@ class InitClass(QMainWindow):
 
                 item['SK_THREAD'] = threadInfo
                 self.handlPop.ui.combo_sk_list.addItem(item['SK_ID'])
+                self.directPop.ui.dir_sk.addItem(item['SK_ID'])
 
                 # KEEP일때만 실행 EVENT 방식일땐 상황에 맞춰 실행
                 if skClientTy == 'KEEP':
@@ -438,6 +442,13 @@ class InitClass(QMainWindow):
             # self.popup.instance.show()
             self.utilityPop.show()
 
+    def open_direct(self):
+        if self.directPop.isVisible():
+            # self.popup.instance.hide()
+            self.directPop.hide()
+        else:
+            # self.popup.instance.show()
+            self.directPop.show()
 
     def open_settings(self):
         if self.popup.isVisible():
