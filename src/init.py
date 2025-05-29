@@ -189,6 +189,7 @@ class InitClass(QMainWindow):
         moduleData.initPkgData(pkg)
 
         self.handlPop.ui.combo_sk_list.clear()
+        self.directPop.ui.dir_sk.clear()
         self.ui.combo_pkg.setDisabled(True)
         self.ui.btn_start.setDisabled(True)
         
