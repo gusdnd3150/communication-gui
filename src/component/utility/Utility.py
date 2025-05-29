@@ -43,7 +43,6 @@ class Utility(QMainWindow):
                 row_count = self.ui.util_encode_table.rowCount()
                 self.ui.util_encode_table.insertRow(row_count)
                 item = QTableWidgetItem(str(i))
-                # item.setBackground(QColor("green"))
                 item.setForeground(QColor("green"))
                 self.ui.util_encode_table.setItem(row_count, 0, item)
                 self.ui.util_encode_table.setItem(row_count, 1, QTableWidgetItem(str(skItem)))
@@ -203,27 +202,30 @@ class Utility(QMainWindow):
                 if type == 'decimal':
                     byte_data = bytes(int(num) for num in text.split())
                     data = byte_data.decode('utf-8', errors='replace')
-
+                    new_text = data.replace(" ", ".")
                     self.ui.util_encode.setText(data)
-                    self.convertTableData(" ".join(data))
+                    self.convertTableData(" ".join(new_text))
 
                 elif type == 'hex':
                     byte_data = bytes(int(num, 16) for num in text.split())
                     data = byte_data.decode('utf-8', errors='replace')
+                    new_text = data.replace(" ", ".")
                     self.ui.util_encode.setText(data)
-                    self.convertTableData(" ".join(data))
+                    self.convertTableData(" ".join(new_text))
 
                 elif type== 'base64':
                     byte_data = base64.b64decode(text)
                     data = byte_data.decode('utf-8', errors='replace')
+                    new_text = data.replace(" ", ".")
                     self.ui.util_encode.setText(data)
-                    self.convertTableData(" ".join(data))
+                    self.convertTableData(" ".join(new_text))
 
                 elif type == 'binary':
                     byte_data = bytes(int(b, 2) for b in text.split())
                     data = byte_data.decode('utf-8', errors='replace')
+                    new_text = data.replace(" ", ".")
                     self.ui.util_encode.setText(data)
-                    self.convertTableData(" ".join(data))
+                    self.convertTableData(" ".join(new_text))
         except:
             self.ui.util_encode.setText(traceback.format_exc())
 
