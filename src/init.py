@@ -1,15 +1,12 @@
 import os
 import sys
 import traceback
-import time
-import psutil
 from PySide6.QtCore import Slot, Qt
 from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem
 from PySide6.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QMessageBox
-
 from src.protocols.tcp.ClientThread import ClientThread
 from src.protocols.tcp.ServerThread import ServerThread
-import weakref
+from src.MsgHandler import MsgHandler
 program_path = sys.argv[0]
 import logging
 program_directory = os.path.dirname(program_path)
@@ -28,7 +25,10 @@ from src.protocols.bluetooth.BlueToothClientThread import BlueToothClientThread
 
 from src.WorkThread import WorkThread
 from src.LogThread import LogThread
-from ui.ui_main import Ui_MainWindow
+# from ui.ui_main import Ui_MainWindow
+from ui.ui_main_new import Ui_MainWindow
+
+
 from src.component.direct.Direct import Direct
 from src.component.utility.Utility import Utility
 from src.protocols.http.HttpServerThread import  HttpServerThread
@@ -54,6 +54,7 @@ class InitClass(QMainWindow):
     logThread = None
     mainLoop = None
     directPop =None
+    msgHandler= None
 
 
     def __init__(self):
@@ -81,10 +82,11 @@ class InitClass(QMainWindow):
         self.ui.action_test.triggered.connect(self.open_handler)  # 핸들러 오픈
         self.ui.actionOpen_log_folder.triggered.connect(self.openFolder) # 폴더 오픈
         self.ui.action_dirMessage.triggered.connect(self.open_direct)
-        # self.ui.btn_show_log.clicked.connect(self.open_logger)
+
         moduleData.mainLayout = self.ui
         moduleData.mainInstance = self
 
+        self.msgHandler = MsgHandler(self.ui)
         self.bindData()
         self.setGrid()
 
@@ -190,6 +192,7 @@ class InitClass(QMainWindow):
 
         self.handlPop.ui.combo_sk_list.clear()
         self.directPop.ui.dir_sk.clear()
+        self.ui.main_combo_sk_list.clear()
         self.ui.combo_pkg.setDisabled(True)
         self.ui.btn_start.setDisabled(True)
         
@@ -256,6 +259,7 @@ class InitClass(QMainWindow):
 
                 item['SK_THREAD'] = threadInfo
                 self.handlPop.ui.combo_sk_list.addItem(item['SK_ID'])
+                self.ui.main_combo_sk_list.addItem(item['SK_ID'])
                 self.directPop.ui.dir_sk.addItem(item['SK_ID'])
 
                 # KEEP일때만 실행 EVENT 방식일땐 상황에 맞춰 실행
