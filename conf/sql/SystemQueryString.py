@@ -763,3 +763,4 @@ def insertMsgVal(params):
     result = " ".join(query)
     print(f'rs : {result}')
     return result
+

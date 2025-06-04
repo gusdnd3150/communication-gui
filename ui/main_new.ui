@@ -638,7 +638,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="action_test">
    <property name="text">
-    <string>Send Message</string>
+    <string>Sql Executor</string>
    </property>
   </action>
   <action name="action_util">

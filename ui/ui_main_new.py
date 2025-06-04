@@ -406,7 +406,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.action_settings.setText(QCoreApplication.translate("MainWindow", u"Socket settings", None))
         self.actionOpen_log_folder.setText(QCoreApplication.translate("MainWindow", u"Open log folder", None))
-        self.action_test.setText(QCoreApplication.translate("MainWindow", u"Send Message", None))
+        self.action_test.setText(QCoreApplication.translate("MainWindow", u"Sql Executor", None))
         self.action_util.setText(QCoreApplication.translate("MainWindow", u"Utility", None))
         self.action_dirMessage.setText(QCoreApplication.translate("MainWindow", u"Send Direct Message", None))
         self.btn_stop.setText(QCoreApplication.translate("MainWindow", u"Stop", None))

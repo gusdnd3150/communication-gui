@@ -4,6 +4,8 @@ import traceback
 from PySide6.QtCore import Slot, Qt
 from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem
 from PySide6.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QMessageBox
+
+from src.component.sql.SqlHandler import SqlHandler
 from src.protocols.tcp.ClientThread import ClientThread
 from src.protocols.tcp.ServerThread import ServerThread
 from src.MsgHandler import MsgHandler
@@ -55,6 +57,7 @@ class InitClass(QMainWindow):
     mainLoop = None
     directPop =None
     msgHandler= None
+    sqlHandler = None
 
 
     def __init__(self):
@@ -95,6 +98,7 @@ class InitClass(QMainWindow):
         self.handlPop = Handler(self.initData)
         self.utilityPop = Utility(self.initData)
         self.directPop = Direct(self.initData)
+        self.sqlHandler = SqlHandler(self.initData)
         # self.logPop = Log(self.initData)
 
 
@@ -459,10 +463,17 @@ class InitClass(QMainWindow):
             self.popup.show()
 
     def open_handler(self):
-        if self.handlPop.isVisible():
-            self.handlPop.hide()
+        # if self.handlPop.isVisible():
+        #     self.handlPop.hide()
+        # else:
+        #     self.handlPop.show()
+
+        if self.sqlHandler.isVisible():
+            self.sqlHandler.hide()
         else:
-            self.handlPop.show()
+            self.sqlHandler.show()
+
+
     def open_logger(self):
         # 열고 싶은 경로
         # path = r"../logs/"
