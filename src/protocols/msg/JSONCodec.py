@@ -90,7 +90,7 @@ class JSONCodec():
                 #  'MSG_KEY_TYPE': 'STRING', 'MSG_KEY_VAL': 'MC05', 'BZ_METHOD': 'TestController.test', 'IN_DESC': None,
                 #  'USE_YN': 'Y'}
                 inMid = inMsgVal
-                msgKeyVal = encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE'])
+                msgKeyVal = decodeMsgKeyVal(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE'])
                 # logger.info(f' {msgKeyVal}:{inMid}')
                 if inMid is not None:
                     if inMid == msgKeyVal:

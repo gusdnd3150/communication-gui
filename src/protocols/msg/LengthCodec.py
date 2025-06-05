@@ -95,7 +95,7 @@ class LengthCodec():
                 else:
                    inMid = inMsgVal
 
-                msgKeyVal = encodeToBytes(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE'])
+                msgKeyVal = decodeMsgKeyVal(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE'])
                 # logger.info(f'inMid:{inMid}  msgKeyVal:{msgKeyVal}')
                 if inMid is not None:
                     if inMid == msgKeyVal:

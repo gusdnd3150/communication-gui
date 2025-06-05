@@ -130,7 +130,7 @@ class MsgHandler():
                         tempVal =  str('').rjust(int(item['VALUE_LEN']), ' ')
                     resultObj[item['MSG_DT_VAL_ID']] = tempVal
 
-                elif item['VAL_TYPE'] == 'INT':
+                elif item['VAL_TYPE'] == 'INT' or item['VAL_TYPE'] == 'SHORT':
                     tempVal = int(item['VALUE'])
                     if tempVal is None:
                         tempVal = 0
