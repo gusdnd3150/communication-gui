@@ -77,7 +77,7 @@ def encodeDataToBytes(data, type, length, pad=' '):
 
 
         if type == 'STRING':
-            padded_string = str(data).ljust(length, pad)
+            padded_string = str(data).rjust(length, pad)
             return padded_string.encode('utf-8')
 
         elif type == 'INT':
