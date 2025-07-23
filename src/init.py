@@ -20,20 +20,20 @@ from src.protocols.udp.ServerUdpThread import ServerUdpThread
 from src.protocols.udp.ClientUdpThread import ClientUdpThread
 from src.protocols.websk.WebSkServerThread import WebSkServerThread
 from src.protocols.websk.WebSkClientThread import WebSkClientThread
-
 from src.protocols.sch.Schedule import Schedule
 from src.protocols.bluetooth.BlueToothServerThread import BlueToothServerThread
 from src.protocols.bluetooth.BlueToothClientThread import BlueToothClientThread
-
 from src.WorkThread import WorkThread
 from src.LogThread import LogThread
-# from ui.ui_main import Ui_MainWindow
 from ui.ui_main_new import Ui_MainWindow
 
 
 from src.component.direct.Direct import Direct
 from src.component.utility.Utility import Utility
 from src.protocols.http.HttpServerThread import  HttpServerThread
+
+from src.protocols.asyncPro.AsyncSocket import AsyncSocket
+
 
 # 네이밍
 # 1. btn_?, popup_?, input_?,
@@ -201,82 +201,75 @@ class InitClass(QMainWindow):
         self.ui.btn_start.setDisabled(True)
         
         try:
-            # logger.info(f'start_sk() Plc Run Cnt : {len(moduleData.plcList)}')
-            # for i, plc in enumerate(moduleData.plcList):
-            #     threadPlc = None
-            #     if plc['PLC_MAKER'] == 'Mitsubishi':
-            #         threadPlc = PlcMitubishiThread(plc)
-            #
-            #     if threadPlc:
-            #         threadPlc.daemon = True
-            #         threadPlc.start()
-
 
             logger.info(f'start_sk() Socket Run Cnt : {len(moduleData.sokcetList)}')
-            for i , item in enumerate(moduleData.sokcetList):
-                threadInfo = None
-                skTy = item['SK_TYPE']
-                skConTy = item['SK_CONN_TYPE']
-                skClientTy = item['SK_CLIENT_TYPE']
-
-
-                if(skTy == 'TCP'):
-                    if(skConTy=='SERVER'):
-                        # threadInfo = ServerThread(item)
-                        threadInfo = ServerThread(item)
-                    elif (skConTy == 'CLIENT'):
-                        if skClientTy == 'KEEP':
-                            # threadInfo = ClientThread(item)
-                            threadInfo = ClientThread(item)
-
-                elif (skTy == 'UDP'):
-                    if (skConTy == 'SERVER'):
-                        threadInfo = ServerUdpThread(item)
-                    elif (skConTy == 'CLIENT'):
-                        threadInfo = ClientUdpThread(item)
-
-                elif (skTy == 'WEBSK'):
-                    if (skConTy == 'SERVER'):
-                        threadInfo = WebSkServerThread(item)
-                    elif (skConTy == 'CLIENT'):
-                        threadInfo = WebSkClientThread(item)
-
-                elif (skTy == 'BLUETOOTH'):
-                    if (skConTy == 'SERVER'):
-                        threadInfo = BlueToothServerThread(item)
-                    elif (skConTy == 'CLIENT'):
-                        threadInfo = BlueToothClientThread(item)
-
-                elif (skTy == 'PLC'):
-                    if (skConTy == 'SERVER'):
-                        threadInfo = ServerUdpThread(item)
-                    elif (skConTy == 'CLIENT'):
-                        threadInfo = ClientUdpThread(item)
-
-                elif (skTy == 'HTTP(S)'):
-                    if (skConTy == 'SERVER'):
-                        threadInfo = HttpServerThread(item)
-
-                else:
-                    logger.info(f'None condition')
-                    continue
-
-                item['SK_THREAD'] = threadInfo
-                self.handlPop.ui.combo_sk_list.addItem(item['SK_ID'])
-                self.ui.main_combo_sk_list.addItem(item['SK_ID'])
-                self.directPop.ui.dir_sk.addItem(item['SK_ID'])
-
-                # KEEP일때만 실행 EVENT 방식일땐 상황에 맞춰 실행
-                if skClientTy == 'KEEP':
-                    threadInfo.daemon = True
-                    threadInfo.start()
-
-
-            for index, sch in enumerate(moduleData.sokcetSch):
-                schThread = Schedule(sch)
-                schThread.damon = True
-                schThread.start()
-                sch['SK_THREAD'] = schThread
+            thread = AsyncSocket()
+            thread.daemon = True
+            thread.start()
+            # for i , item in enumerate(moduleData.sokcetList):
+            #     threadInfo = None
+            #     skTy = item['SK_TYPE']
+            #     skConTy = item['SK_CONN_TYPE']
+            #     skClientTy = item['SK_CLIENT_TYPE']
+            #
+            #
+            #     if(skTy == 'TCP'):
+            #         if(skConTy=='SERVER'):
+            #             # threadInfo = ServerThread(item)
+            #             threadInfo = ServerThread(item)
+            #         elif (skConTy == 'CLIENT'):
+            #             if skClientTy == 'KEEP':
+            #                 # threadInfo = ClientThread(item)
+            #                 threadInfo = ClientThread(item)
+            #
+            #     elif (skTy == 'UDP'):
+            #         if (skConTy == 'SERVER'):
+            #             threadInfo = ServerUdpThread(item)
+            #         elif (skConTy == 'CLIENT'):
+            #             threadInfo = ClientUdpThread(item)
+            #
+            #     elif (skTy == 'WEBSK'):
+            #         if (skConTy == 'SERVER'):
+            #             threadInfo = WebSkServerThread(item)
+            #         elif (skConTy == 'CLIENT'):
+            #             threadInfo = WebSkClientThread(item)
+            #
+            #     elif (skTy == 'BLUETOOTH'):
+            #         if (skConTy == 'SERVER'):
+            #             threadInfo = BlueToothServerThread(item)
+            #         elif (skConTy == 'CLIENT'):
+            #             threadInfo = BlueToothClientThread(item)
+            #
+            #     elif (skTy == 'PLC'):
+            #         if (skConTy == 'SERVER'):
+            #             threadInfo = ServerUdpThread(item)
+            #         elif (skConTy == 'CLIENT'):
+            #             threadInfo = ClientUdpThread(item)
+            #
+            #     elif (skTy == 'HTTP(S)'):
+            #         if (skConTy == 'SERVER'):
+            #             threadInfo = HttpServerThread(item)
+            #
+            #     else:
+            #         logger.info(f'None condition')
+            #         continue
+            #
+            #     item['SK_THREAD'] = threadInfo
+            #     self.handlPop.ui.combo_sk_list.addItem(item['SK_ID'])
+            #     self.ui.main_combo_sk_list.addItem(item['SK_ID'])
+            #     self.directPop.ui.dir_sk.addItem(item['SK_ID'])
+            #
+            #     # KEEP일때만 실행 EVENT 방식일땐 상황에 맞춰 실행
+            #     if skClientTy == 'KEEP':
+            #         threadInfo.daemon = True
+            #         threadInfo.start()
+            #
+            #
+            # for index, sch in enumerate(moduleData.sokcetSch):
+            #     schThread = Schedule(sch)
+            #     schThread.damon = True
+            #     schThread.start()
+            #     sch['SK_THREAD'] = schThread
 
             self.isRunSk = True
         except Exception as e:
