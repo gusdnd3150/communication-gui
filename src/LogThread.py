@@ -19,11 +19,19 @@ class LogThread(QThread):
 
 
     def setMsg(self, msg):
-        self.msgQue.append(msg)
+        try:
+            self.msgQue.append(msg)
+        except:
+            self.msgQue.append('log setMsg error')
 
     def run(self): # 백그라운드 작업 실행
-        while self.msgQue:  # 배열이 비어있지 않은 동안 반복
-            self.updateLog.emit(self.msgQue.popleft())
+        try:
+            while self.msgQue:  # 배열이 비어있지 않은 동안 반복
+                self.updateLog.emit(self.msgQue.popleft())
+        except:
+            self.msgQue.clear()
+
+
 
 
 
