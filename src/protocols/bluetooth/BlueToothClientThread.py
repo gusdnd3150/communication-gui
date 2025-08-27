@@ -209,7 +209,7 @@ class BlueToothClientThread(threading.Thread, Client):
                                 if self.skLogYn:
                                     decimal_string = ' '.join(str(byte) for byte in readByte)
                                     self.logger.info(
-                                        f'SK_ID:{self.skId} read length : {readBytesCnt} recive_string:[{str(readByte)}] decimal_string : [{decimal_string}]')
+                                        f'SK_ID:{self.skId} read length : {readBytesCnt} recive_string:[{readByte.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                                     # moduleData.mainInstance.insertLog(self.skId, readByte, 'OUT')
 
                                 copybytes = readByte.copy()
@@ -307,7 +307,7 @@ class BlueToothClientThread(threading.Thread, Client):
                 if self.skLogYn:
                     decimal_string = ' '.join(str(byte) for byte in sendBytes)
                     self.logger.info \
-                        (f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                        (f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                     # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
             else:
                 self.logger.info(f'SK_ID:{self.skId} has no connection')
@@ -324,7 +324,7 @@ class BlueToothClientThread(threading.Thread, Client):
                 if self.skLogYn:
                     decimal_string = ' '.join(str(byte) for byte in sendBytes)
                     self.logger.info \
-                        (f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                        (f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                     # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
             else:
                 self.logger.info(f'SK_ID:{self.skId}- sendMsgToChannel has no Server')

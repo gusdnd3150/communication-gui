@@ -202,7 +202,7 @@ class ServerThread(threading.Thread, Server):
                             try:
                                 if self.skLogYn:
                                     decimal_string = ' '.join(str(byte) for byte in readByte)
-                                    logger.info(f'SK_ID:{self.skId} read length : {len(readByte)} recive_string:[{str(readByte)}] decimal_string : [{decimal_string}]')
+                                    logger.info(f'SK_ID:{self.skId} read length : {len(readByte)} recive_string:[{readByte.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                                     # moduleData.mainInstance.insertLog(self.skId, readByte ,'IN')
 
                                 copybytes = readByte.copy()
@@ -293,7 +293,7 @@ class ServerThread(threading.Thread, Server):
             channel.sendall(sendBytes)
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
 
             # moduleData.mainInstance.insertLog(self.skId, bytes, 'OUT')
         except:
@@ -315,7 +315,7 @@ class ServerThread(threading.Thread, Server):
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in sendBytes)
                         logger.info(
-                            f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                            f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                         # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
 
         except Exception as e:
@@ -331,7 +331,7 @@ class ServerThread(threading.Thread, Server):
             channel.sendall(sendBytes)
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
         except Exception as e:
             logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')
 

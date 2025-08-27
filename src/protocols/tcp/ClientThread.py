@@ -183,7 +183,7 @@ class ClientThread(threading.Thread, Client):
                             try:
                                 if self.skLogYn:
                                     decimal_string = ' '.join(str(byte) for byte in readByte)
-                                    logger.info(f'SK_ID:{self.skId} recive_string:[{str(readByte)}] decimal_string : [{decimal_string}] read length : {readBytesCnt} ')
+                                    logger.info(f'SK_ID:{self.skId} recive_string:[{readByte.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}] read length : {readBytesCnt} ')
 
                                 copybytes = readByte.copy()
                                 data = self.codec.decodeRecieData(readByte)
@@ -264,7 +264,7 @@ class ClientThread(threading.Thread, Client):
             channel.sendall(sendBytes)
             if self.skLogYn:
                 decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
 
         except:
             logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {traceback.format_exc()}')
@@ -279,7 +279,7 @@ class ClientThread(threading.Thread, Client):
                 self.socket.sendall(sendBytes)
                 if self.skLogYn:
                     decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                    logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                    logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                     # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
             else:
                 logger.info(f'SK_ID:{self.skId} has no connection')
@@ -295,7 +295,7 @@ class ClientThread(threading.Thread, Client):
 
                 if self.skLogYn:
                     decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                    logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                    logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                     # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
             else:
                 logger.info(f'SK_ID:{self.skId}- sendMsgToChannel has no Server')

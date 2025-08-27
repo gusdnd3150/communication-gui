@@ -279,7 +279,7 @@ class WebSkClientThread(threading.Thread):
                     await channel.send(sendBytes.decode('utf-8'))
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in sendBytes)
-                        logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{decimal_string}]')
+                        logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                 except Exception:
                     logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
             asyncio.run_coroutine_threadsafe(send(self), self.loop)
@@ -298,7 +298,7 @@ class WebSkClientThread(threading.Thread):
                         if self.skLogYn:
                             decimal_string = ' '.join(str(byte) for byte in sendBytes)
                             logger.info(
-                                f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{str(sendBytes)}] decimal_string : [{sendBytes}]')
+                                f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{sendBytes}]')
                     else:
                         logger.error(f'{self.skId} has no Connection')
                 except Exception:
