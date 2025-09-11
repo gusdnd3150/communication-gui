@@ -52,7 +52,6 @@ def decodeMsgKeyVal(data, type):
 # SEND BODY 로 전송되는 타입/길이 바탕으로 전문 파싱
 def encodeDataToBytes(data, type, length, pad=' '):
     try:
-        # print(f'encodeDataToBytes {data},{type},{length}')
         if data is None:
             if type == 'STRING':
                 data = ''
@@ -74,6 +73,8 @@ def encodeDataToBytes(data, type, length, pad=' '):
                 length = 8
             elif type == 'FLOAT':
                 length = 4
+
+        length = int(length)
 
 
         if type == 'STRING':
