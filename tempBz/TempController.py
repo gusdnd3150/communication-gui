@@ -12,38 +12,23 @@ class TempController:
     # Channel = reciveObj['CHANNEL']
     # thread = reciveObj['THREAD']
     # 1. self.sendHandler.sendSkId(skId, msgId, data)
-    # 2. thread.sendBytesToChannel(channel, '00200105000000000000'.encode('utf-8'))
-    # 3. thread.sendMsgToChannel(channel, map) // map 안    MSG_ID    키: 값이    있어야함
+    # 2. thread().sendBytesToChannel(channel, '00200105000000000000'.encode('utf-8'))
+    # 3. thread().sendMsgToChannel(channel, map) // map 안    MSG_ID    키: 값이    있어야함
 
     def __init__(self, logger, sendHandler, dbHandler=None):
         logger.info(f'TempController init')
         self.sendHandler = sendHandler
         self.dbInstance = dbHandler
 
-    def sample(self, reciveObj):
-        Channel = reciveObj['CHANNEL']
-        thread = reciveObj['THREAD']
-        returnJson = {}
-        returnJson['MSG_ID'] = ''
-        try:
-            logger.info(f'recive data : {reciveObj}')
-            returnJson['LINE_SIGN'] = '2'
-            self.sendHandler.sendSkId('TEST', 'TEST_MSG', returnJson)
-            thread.sendBytesToChannel(Channel, 'sss'.encode('utf-8'))
-            returnJson2 = {}
-            returnJson2['MSG_ID'] = 'TEST_MSG'
-            thread.sendMsgToChannel(Channel, returnJson2)
-        except:
-            print('')
+
 
     def sendKeepAlive(self, reciveObj):
         
         channel = reciveObj['CHANNEL']
         thread = reciveObj['THREAD']
         skId = reciveObj['SK_ID']
-        returnMap ={}
-
         try:
+            returnMap ={}
             returnMap['MSG_ID'] = 'ATL_KEEPALIVE_9999'
             returnMap['REV'] = '001'
             returnMap['SPARE'] = '0    00  '
