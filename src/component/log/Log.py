@@ -109,9 +109,11 @@ class QTextEditLogger(logging.Handler):
         self.log = log
 
     def emit(self, record):
-        if self.log.isChk:
-            msg = self.format(record)
-            self.log.logThread.setMsg(msg)
-            self.log.logThread.start()
-        # self.text_edit.append(msg)
+        try:
+            if self.log.isChk:
+                msg = self.format(record)
+                self.log.logThread.setMsg(msg)
+                self.log.logThread.start()
+        except:
+            logger.info(f'QTextEditLogger emit error : {traceback.format_exc()}')
 
