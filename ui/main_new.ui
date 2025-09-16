@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>931</width>
+    <width>1154</width>
     <height>711</height>
    </rect>
   </property>
@@ -74,8 +74,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>73</width>
-         <height>648</height>
+         <width>100</width>
+         <height>640</height>
         </rect>
        </property>
        <widget class="QPushButton" name="btn_stop">
@@ -104,11 +104,12 @@
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">/* 일반 버튼 스타일 */
+         <string notr="true">			
+			/* 일반 버튼 스타일 */
 QPushButton {
     background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(250, 90, 90, 255), stop:1 rgba(232, 81, 81, 255));
     border: none;
-    border-radius: 4px;
+    border-radius: 10px;
     color: white;
     padding: 2px
 }
@@ -147,19 +148,21 @@ QPushButton:hover {
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton {
-    background-color: #22e117;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    padding: 2px
-}
-
-QPushButton:hover {
-    background-color: #33c12b;
-}</string>
+                background-color: #2d8cf0;
+                color: white;
+                border-radius: 8px;
+                padding: 2px;
+				height:10px
+            }
+            QPushButton:hover {
+                background-color: #1a73e8;
+            }
+            QPushButton:pressed {
+                background-color: #145dbf;
+            }</string>
         </property>
         <property name="text">
-         <string>run</string>
+         <string>Run</string>
         </property>
        </widget>
        <widget class="QComboBox" name="combo_pkg">
@@ -181,6 +184,8 @@ QPushButton:hover {
          <font>
           <family>맑은 고딕</family>
           <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="acceptDrops">
@@ -205,6 +210,7 @@ QPushButton:hover {
         </property>
         <property name="font">
          <font>
+          <family>맑은 고딕</family>
           <pointsize>10</pointsize>
           <weight>50</weight>
           <bold>false</bold>
@@ -310,6 +316,16 @@ QPushButton:hover {
              <enum>QAbstractItemView::SelectRows</enum>
             </property>
            </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_5">
+         <attribute name="title">
+          <string>PLC</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QTableWidget" name="list_run_plc"/>
           </item>
          </layout>
         </widget>
@@ -603,8 +619,8 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>931</width>
-     <height>22</height>
+     <width>1154</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -612,6 +628,7 @@ p, li { white-space: pre-wrap; }
      <string>설정</string>
     </property>
     <addaction name="action_settings"/>
+    <addaction name="actionPlc_settings"/>
     <addaction name="action_test"/>
     <addaction name="action_dirMessage"/>
     <addaction name="action_util"/>
@@ -649,6 +666,11 @@ p, li { white-space: pre-wrap; }
   <action name="action_dirMessage">
    <property name="text">
     <string>Send Direct Message</string>
+   </property>
+  </action>
+  <action name="actionPlc_settings">
+   <property name="text">
+    <string>PLC settings</string>
    </property>
   </action>
  </widget>

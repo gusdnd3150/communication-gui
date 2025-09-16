@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'main_new.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.0
+## Created by: Qt User Interface Compiler version 6.9.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -28,7 +28,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(931, 711)
+        MainWindow.resize(1154, 711)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -52,6 +52,8 @@ class Ui_MainWindow(object):
         self.action_util.setObjectName(u"action_util")
         self.action_dirMessage = QAction(MainWindow)
         self.action_dirMessage.setObjectName(u"action_dirMessage")
+        self.actionPlc_settings = QAction(MainWindow)
+        self.actionPlc_settings.setObjectName(u"actionPlc_settings")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout_8 = QGridLayout(self.centralwidget)
@@ -68,7 +70,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 73, 648))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 100, 640))
         self.btn_stop = QPushButton(self.scrollAreaWidgetContents)
         self.btn_stop.setObjectName(u"btn_stop")
         self.btn_stop.setGeometry(QRect(0, 70, 71, 22))
@@ -80,11 +82,12 @@ class Ui_MainWindow(object):
         font1.setUnderline(False)
         font1.setStrikeOut(False)
         self.btn_stop.setFont(font1)
-        self.btn_stop.setStyleSheet(u"/* \uc77c\ubc18 \ubc84\ud2bc \uc2a4\ud0c0\uc77c */\n"
+        self.btn_stop.setStyleSheet(u"			\n"
+"			/* \uc77c\ubc18 \ubc84\ud2bc \uc2a4\ud0c0\uc77c */\n"
 "QPushButton {\n"
 "    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(250, 90, 90, 255), stop:1 rgba(232, 81, 81, 255));\n"
 "    border: none;\n"
-"    border-radius: 4px;\n"
+"    border-radius: 10px;\n"
 "    color: white;\n"
 "    padding: 2px\n"
 "}\n"
@@ -103,24 +106,23 @@ class Ui_MainWindow(object):
         font2.setBold(True)
         self.btn_start.setFont(font2)
         self.btn_start.setStyleSheet(u"QPushButton {\n"
-"    background-color: #22e117;\n"
-"    border: none;\n"
-"    border-radius: 4px;\n"
-"    color: white;\n"
-"    padding: 2px\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: #33c12b;\n"
-"}")
+"                background-color: #2d8cf0;\n"
+"                color: white;\n"
+"                border-radius: 8px;\n"
+"                padding: 2px;\n"
+"				height:10px\n"
+"            }\n"
+"            QPushButton:hover {\n"
+"                background-color: #1a73e8;\n"
+"            }\n"
+"            QPushButton:pressed {\n"
+"                background-color: #145dbf;\n"
+"            }")
         self.combo_pkg = QComboBox(self.scrollAreaWidgetContents)
         self.combo_pkg.setObjectName(u"combo_pkg")
         self.combo_pkg.setGeometry(QRect(0, 10, 71, 24))
         self.combo_pkg.setMaximumSize(QSize(200, 16777215))
-        font3 = QFont()
-        font3.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
-        font3.setPointSize(10)
-        self.combo_pkg.setFont(font3)
+        self.combo_pkg.setFont(font2)
         self.combo_pkg.setAcceptDrops(False)
         self.combo_pkg.setStyleSheet(u"")
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
@@ -133,10 +135,11 @@ class Ui_MainWindow(object):
         self.tabWidget.setObjectName(u"tabWidget")
         sizePolicy.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
         self.tabWidget.setSizePolicy(sizePolicy)
-        font4 = QFont()
-        font4.setPointSize(10)
-        font4.setBold(False)
-        self.tabWidget.setFont(font4)
+        font3 = QFont()
+        font3.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
+        font3.setPointSize(10)
+        font3.setBold(False)
+        self.tabWidget.setFont(font3)
         self.tab_2 = QWidget()
         self.tab_2.setObjectName(u"tab_2")
         self.gridLayout_5 = QGridLayout(self.tab_2)
@@ -144,12 +147,12 @@ class Ui_MainWindow(object):
         self.list_run_server = QTableWidget(self.tab_2)
         self.list_run_server.setObjectName(u"list_run_server")
         self.list_run_server.setMaximumSize(QSize(16777215, 16777215))
-        font5 = QFont()
-        font5.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
-        font5.setPointSize(9)
-        font5.setBold(False)
-        font5.setItalic(False)
-        self.list_run_server.setFont(font5)
+        font4 = QFont()
+        font4.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
+        font4.setPointSize(9)
+        font4.setBold(False)
+        font4.setItalic(False)
+        self.list_run_server.setFont(font4)
         self.list_run_server.setAcceptDrops(False)
         self.list_run_server.setAutoFillBackground(True)
         self.list_run_server.setStyleSheet(u"font: 9pt \"\ub9d1\uc740 \uace0\ub515\";")
@@ -171,7 +174,7 @@ class Ui_MainWindow(object):
         self.list_run_client = QTableWidget(self.tab_3)
         self.list_run_client.setObjectName(u"list_run_client")
         self.list_run_client.setMaximumSize(QSize(16777215, 16777215))
-        self.list_run_client.setFont(font5)
+        self.list_run_client.setFont(font4)
         self.list_run_client.setAutoFillBackground(True)
         self.list_run_client.setStyleSheet(u"font: 9pt \"\ub9d1\uc740 \uace0\ub515\";")
         self.list_run_client.setTabKeyNavigation(True)
@@ -182,6 +185,16 @@ class Ui_MainWindow(object):
         self.gridLayout_6.addWidget(self.list_run_client, 0, 0, 1, 1)
 
         self.tabWidget.addTab(self.tab_3, "")
+        self.tab_5 = QWidget()
+        self.tab_5.setObjectName(u"tab_5")
+        self.gridLayout_4 = QGridLayout(self.tab_5)
+        self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.list_run_plc = QTableWidget(self.tab_5)
+        self.list_run_plc.setObjectName(u"list_run_plc")
+
+        self.gridLayout_4.addWidget(self.list_run_plc, 0, 0, 1, 1)
+
+        self.tabWidget.addTab(self.tab_5, "")
         self.tab_4 = QWidget()
         self.tab_4.setObjectName(u"tab_4")
         self.gridLayout_7 = QGridLayout(self.tab_4)
@@ -190,9 +203,9 @@ class Ui_MainWindow(object):
         self.list_conn.setObjectName(u"list_conn")
         self.list_conn.setEnabled(True)
         self.list_conn.setMaximumSize(QSize(16777215, 16777215))
-        font6 = QFont()
-        font6.setPointSize(8)
-        self.list_conn.setFont(font6)
+        font5 = QFont()
+        font5.setPointSize(8)
+        self.list_conn.setFont(font5)
         self.list_conn.setStyleSheet(u"QTreeView{\n"
 "	background-color: white;\n"
 "	color:black\n"
@@ -376,7 +389,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 931, 22))
+        self.menubar.setGeometry(QRect(0, 0, 1154, 26))
         self.menu = QMenu(self.menubar)
         self.menu.setObjectName(u"menu")
         self.menu_2 = QMenu(self.menubar)
@@ -389,6 +402,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu.menuAction())
         self.menubar.addAction(self.menu_2.menuAction())
         self.menu.addAction(self.action_settings)
+        self.menu.addAction(self.actionPlc_settings)
         self.menu.addAction(self.action_test)
         self.menu.addAction(self.action_dirMessage)
         self.menu.addAction(self.action_util)
@@ -409,10 +423,12 @@ class Ui_MainWindow(object):
         self.action_test.setText(QCoreApplication.translate("MainWindow", u"Sql Executor", None))
         self.action_util.setText(QCoreApplication.translate("MainWindow", u"Utility", None))
         self.action_dirMessage.setText(QCoreApplication.translate("MainWindow", u"Send Direct Message", None))
+        self.actionPlc_settings.setText(QCoreApplication.translate("MainWindow", u"PLC settings", None))
         self.btn_stop.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
-        self.btn_start.setText(QCoreApplication.translate("MainWindow", u"run", None))
+        self.btn_start.setText(QCoreApplication.translate("MainWindow", u"Run", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Server", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QCoreApplication.translate("MainWindow", u"Client", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_5), QCoreApplication.translate("MainWindow", u"PLC", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), QCoreApplication.translate("MainWindow", u"Connection List", None))
         self.log_chk_showlog.setText(QCoreApplication.translate("MainWindow", u"show log", None))
         self.log_btn_clear.setText(QCoreApplication.translate("MainWindow", u"clear", None))
