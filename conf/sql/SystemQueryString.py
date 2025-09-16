@@ -17,7 +17,7 @@ def selectPlcAddrList(pkgId, plcId):
     query.append(',POS      ')
     query.append(',LENGTH   ')
     query.append(',USE_YN   ')
-    query.append(',ADDR_DESC')
+    query.append(',ADDR_ALIAS')
     query.append('FROM TB_SK_PKG_PLC_ADDR ')
     query.append('WHERE 1=1 ')
     query.append(f'AND USE_YN = "Y" ')
@@ -47,6 +47,7 @@ def selectPlcList(skId , useYn, pkgId='CORE'):
     query.append(' ,SK_LOG         ')
     query.append(' ,COMM_TY        ')
     query.append(' ,CPU_TY        ')
+    query.append(' ,RACK        ')
     query.append('FROM TB_SK_PKG_PLC ')
     query.append('WHERE 1=1 ')
     if (pkgId is not None):

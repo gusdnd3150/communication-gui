@@ -6,6 +6,7 @@ from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem
 from PySide6.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QMessageBox
 
 from src.component.sql.SqlHandler import SqlHandler
+from src.protocols.plc.PlcSimensThread import PlcSimensThread
 from src.protocols.tcp.ClientThread import ClientThread
 from src.protocols.tcp.ServerThread import ServerThread
 from src.MsgHandler import MsgHandler
@@ -163,6 +164,12 @@ class InitClass(QMainWindow):
                 except:
                     logger.error(f'stop_sk exception {item["SK_ID"]}')
 
+            for i, item in enumerate(moduleData.plcList):
+                thread = item['PLC_THREAD']
+                if thread is not None:
+                    thread.stop()
+                    thread.join()
+                    item['PLC_THREAD'] = None
 
             for i, item in enumerate(moduleData.sokcetSch):
                 runThread = item['SK_THREAD']
@@ -202,8 +209,21 @@ class InitClass(QMainWindow):
         
         try:
 
-            logger.info(f'start_sk() Socket Run Cnt : {len(moduleData.sokcetList)}')
+            logger.info(f'start_sk() PLC Run Cnt : {moduleData.plcList}')
+            for i, item in enumerate(moduleData.plcList):
+                threadPlcInfo = None
+                if item['PLC_MAKER'] == 'SIMENS':
+                    threadPlcInfo = PlcSimensThread(item)
 
+
+                if threadPlcInfo is not None:
+                    threadPlcInfo.daemon = True
+                    threadPlcInfo.start()
+
+                item['PLC_THREAD'] = threadPlcInfo
+
+
+            logger.info(f'start_sk() Socket Run Cnt : {len(moduleData.sokcetList)}')
             for i , item in enumerate(moduleData.sokcetList):
                 threadInfo = None
                 skTy = item['SK_TYPE']

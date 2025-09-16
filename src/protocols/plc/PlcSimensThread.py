@@ -4,17 +4,11 @@ from conf.logconfig import *
 import threading
 import time
 import traceback
-import socket
-from src.protocols.msg.FreeCodec import FreeCodec
-from src.protocols.msg.LengthCodec import LengthCodec
-from src.protocols.msg.JSONCodec import JSONCodec
-from src.protocols.BzActivator2 import BzActivator2
-from src.protocols.Client import Client
-import conf.skModule as moduleData
 from datetime import datetime
 from src.protocols.sch.BzSchedule2 import BzSchedule2
 from concurrent.futures import ThreadPoolExecutor
-from pymcprotocol import Type3E
+import snap7
+
 
 class PlcSimensThread(threading.Thread):
 
@@ -24,14 +18,13 @@ class PlcSimensThread(threading.Thread):
     isRun = False
     isShutdown =  False
     skLogYn = False
-    logger = None
-    delimiter = b''
-    bzSchList = []
     plcMaker = None
     commTy = None
+    addrAlias = None
     cpuTy = None
     plcIp = None
     plcPort = None
+    client = None
     executor = ThreadPoolExecutor(max_workers=1)
     #[('D30', 0, 10, bytearray(b'')), ('D60', 0, 10, bytearray(b''))]  (메모리,pos,length, 바이트)
     plcBuffer = []
@@ -39,14 +32,16 @@ class PlcSimensThread(threading.Thread):
     def __init__(self, data):
         self.initData = data
         self.plcId = data['PLC_ID']
-        self.logger = setup_sk_logger(self.plcId)
         self.plcIp = data['PLC_IP']
         self.plcPort = int(data['PLC_PORT'])
         self.cpuTy = data['CPU_TY']
+        self.slot = int(data['SLOT'])
+        self.rack = int(data['RACK'])
+        self.client = snap7.client.Client()
 
         if len(data.get('ADDR_LIST')) > 0 :
             for addr in data.get('ADDR_LIST'):
-                self.plcBuffer.append((addr['ADDR'], addr['POS'],addr['LENGTH'],bytearray()))
+                self.plcBuffer.append((addr['ADDR'], addr['POS'],addr['LENGTH'],addr['ADDR_ALIAS'],bytearray()))
 
         self.commTy = data.get('COMM_TY','binary')
 
@@ -69,77 +64,43 @@ class PlcSimensThread(threading.Thread):
 
     def stop(self):
         try:
-            logger = logging.getLogger(self.plcId)
-            # 모든 핸들러 제거
-            handlers = logger.handlers[:]
-            for handler in handlers:
-                handler.close()
-                logger.removeHandler(handler)
-            # 로거 제거
-            logging.getLogger(self.plcId).handlers = []
-
-
+            self.isRun = False
+            self.isShutdown = True
         except Exception as e:
             self.logger.error(f'PLC_ID:{self.plcId} Stop fail : {traceback.format_exc()}')
         finally:
-            self.isRun = False
-            self.isShutdown = True
             self._stop_event.set()
             # moduleData.mainInstance.deleteTableRow(self.plcId, 'list_run_client')
 
 
     def initClient(self):
-        try:
-            # MC 프로토콜 인스턴스 생성
-            # plctype(str): connect PLC type. "Q", "L", "QnA", "iQ-L", "iQ-R"  , default = Q
+        logger.info(f'PLC id:{self.plcId}  {self.plcIp}, {self.rack}, {self.slot}, {self.plcPort}')
+        while not self.isShutdown:
+            try:
+                # MC 프로토콜 인스턴스 생성
+                # plctype(str): connect PLC type. "Q", "L", "QnA", "iQ-L", "iQ-R"  , default = Q
+                if not self.client.get_connected():
+                    self.client.connect(self.plcIp, self.rack, self.slot, self.plcPort) # 기본은 102 포트
 
-            self.logger.info(f' {self.cpuTy}----{self.commTy}')
-            mc = Type3E(self.cpuTy)
-            # PLC 연결 설정
-            # commtype =  "binary" or "ascii".(Default: "binary")
-            mc.setaccessopt(commtype=self.commTy)  # Binary 모드 사용
+                for (addr, startId, endId ,alias, data) in self.plcBuffer:
+                    logger.info(f'{self.plcId} read data : {addr} {startId} {endId} {data} {alias}')
+                    data = self.client.db_read(db_number=addr, start=startId, size=endId)
 
-            mc.connect(self.plcIp, self.plcPort)  # PLC의 IP 주소와 포트
-            mc.timer = 30
-            isCon = True
-            writ = True
-            # 쓰기
-            while writ:
-                try:
-                    byte_data = 'tt'.encode('utf-8')
-                    print("write data :", byte_data)
-                    decimal_codes = [byte for byte in byte_data]
-                    print("write 십진수 (from_bytes):", decimal_codes)
-                    # 각 바이트를 8비트 이진수로 변환하여 리스트로 저장
-                    binary_representation = [format(byte, '08b') for byte in byte_data]
-                    # 이진수 문자열로 결합
-                    binary_string = ''.join(binary_representation)
-                    print("이진수 표현:", binary_string)
-                    mc.batchwrite_wordunits(headdevice="B1B85", values=decimal_codes)
-                    writ = False
-                except:
-                    time.sleep(2)
+                # db_data = self.client.db_read(1, 0, 8)                       # DB1
+                # m_data  = self.client.read_area(Areas.MK, 0, 0, 4)           # M 영역
+                # i_data  = self.client.read_area(Areas.PE, 0, 0, 1)           # 입력(I)
+                # q_data  = self.client.read_area(Areas.PA, 0, 0, 1)           # 출력(Q)
 
-            # 읽기
-            while isCon:
-                try:
-                    # D100번지부터 10개의 워드를 읽음
-                    result = mc.batchread_wordunits(headdevice="B1B85", readsize=2)
-                    byte_data_alt = b''.join(word.to_bytes(2, byteorder='big') for word in result)
-                    print("read 십진수 (to_bytes):", str(byte_data_alt))
-                    ascii_chars = [chr(num) for num in result]
-                    print("read 데이터 (to_ascii):", str(ascii_chars))
-                    isCon = False
-                except:
-                    time.sleep(2)
+            except:
+                logger.error(f'{self.plcId} initClient Exception : {traceback.format_exc()}')
+
+            finally:
+                time.sleep(0.3)
 
 
-        except:
-            self.logger.error(f'{self.plcId} initClient Exception : {traceback.format_exc()}')
 
-            if self.isShutdown == False:
-                time.sleep(4)
-                self.initClient()
+
+
 
 
 

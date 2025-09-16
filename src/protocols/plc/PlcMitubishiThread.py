@@ -4,17 +4,9 @@ from conf.logconfig import *
 import threading
 import time
 import traceback
-import socket
-from src.protocols.msg.FreeCodec import FreeCodec
-from src.protocols.msg.LengthCodec import LengthCodec
-from src.protocols.msg.JSONCodec import JSONCodec
-from src.protocols.BzActivator2 import BzActivator2
-from src.protocols.Client import Client
-import conf.skModule as moduleData
 from datetime import datetime
-from src.protocols.sch.BzSchedule2 import BzSchedule2
 from concurrent.futures import ThreadPoolExecutor
-from pymcprotocol import Type3E
+
 
 class PlcMitubishiThread(threading.Thread):
 
@@ -32,7 +24,7 @@ class PlcMitubishiThread(threading.Thread):
     cpuTy = None
     plcIp = None
     plcPort = None
-    executor = ThreadPoolExecutor(max_workers=1)
+    executor = ThreadPoolExecutor(max_workers=10)
     #[('D30', 0, 10, bytearray(b'')), ('D60', 0, 10, bytearray(b''))]  (메모리,pos,length, 바이트)
     plcBuffer = []
 
