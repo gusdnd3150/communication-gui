@@ -6,6 +6,7 @@ from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem
 from PySide6.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QMessageBox
 
 from src.component.sql.SqlHandler import SqlHandler
+from src.protocols.plc.PlcMisubisiThread import PlcMisubisiThread
 from src.protocols.plc.PlcSimensThread import PlcSimensThread
 from src.protocols.tcp.ClientThread import ClientThread
 from src.protocols.tcp.ServerThread import ServerThread
@@ -216,6 +217,8 @@ class InitClass(QMainWindow):
                 threadPlcInfo = None
                 if item['PLC_MAKER'] == 'Simens':
                     threadPlcInfo = PlcSimensThread(item)
+                elif item['PLC_MAKER'] == 'Misubisi':
+                    threadPlcInfo = PlcMisubisiThread(item)
 
                 if threadPlcInfo is not None:
                     threadPlcInfo.daemon = True

@@ -5,12 +5,10 @@ import threading
 import time
 import traceback
 from datetime import datetime
-from src.protocols.sch.BzSchedule2 import BzSchedule2
 from concurrent.futures import ThreadPoolExecutor
-import snap7
+from pymcprotocol import Type3E
 
-
-class PlcSimensThread(threading.Thread):
+class PlcMisubisiThread(threading.Thread):
 
     initData = None
     socket = None
@@ -37,7 +35,7 @@ class PlcSimensThread(threading.Thread):
         self.cpuTy = data['CPU_TY']
         self.slot = int(data['SLOT'])
         self.rack = int(data['RACK'])
-        self.client = snap7.client.Client()
+        self.client = Type3E(self.cpuTy) # default Q
 
         if len(data.get('ADDR_LIST')) > 0 :
             for addr in data.get('ADDR_LIST'):
@@ -50,7 +48,7 @@ class PlcSimensThread(threading.Thread):
         else:
             self.logYn = False
 
-        super(PlcSimensThread, self).__init__()
+        super(PlcMisubisiThread, self).__init__()
         self._stop_event = threading.Event()
 
 
@@ -80,23 +78,22 @@ class PlcSimensThread(threading.Thread):
         logger.info(f'PLC id:{self.plcId}  {self.plcIp}, {self.rack}, {self.slot}, {self.plcPort}')
         while not self.isShutdown:
             try:
-
-                if not self.client.get_connected():
-                    self.client.connect(self.plcIp, self.rack, self.slot, self.plcPort) # 기본은 102 포트
+                # MC 프로토콜 인스턴스 생성
+                # plctype(str): connect PLC type. "Q", "L", "QnA", "iQ-L", "iQ-R"  , default = Q
+                if not self.isRun:
+                    # self.client.connect(self.plcIp, self.plcPort) # 기본은 102 포트
+                    self.client.connect(self.plcIp, self.plcPort)
                     self.isRun = True
 
-                for i, (addr, startId, endId ,alias, data) in self.plcBuffer:
+                for i,(addr, startId, endId ,alias, data) in self.plcBuffer:
                     if self.logYn:
                         logger.info(f'{self.plcId} read_data : {addr} {startId} {endId}  {alias} {data}')
-                    read_data = self.client.db_read(db_number=addr, start=startId, size=endId)
+                    read_data = self.client.batch_read_wordunits(addr, endId)
                     self.plcBuffer[i] = (addr, startId, endId, alias, bytearray(read_data))
-                # db_data = self.client.db_read(1, 0, 8)                       # DB1
-                # m_data  = self.client.read_area(Areas.MK, 0, 0, 4)           # M 영역
-                # i_data  = self.client.read_area(Areas.PE, 0, 0, 1)           # 입력(I)
-                # q_data  = self.client.read_area(Areas.PA, 0, 0, 1)           # 출력(Q)
+
             except:
-                logger.error(f'{self.plcId} initClient Exception : {traceback.format_exc()}')
                 self.isRun = False
+                logger.error(f'{self.plcId} initClient Exception : {traceback.format_exc()}')
             finally:
                 time.sleep(0.3)
 
