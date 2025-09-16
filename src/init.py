@@ -9,7 +9,7 @@ from src.component.sql.SqlHandler import SqlHandler
 from src.protocols.plc.PlcSimensThread import PlcSimensThread
 from src.protocols.tcp.ClientThread import ClientThread
 from src.protocols.tcp.ServerThread import ServerThread
-from src.MsgHandler import MsgHandler
+from src.thread.MsgHandler import MsgHandler
 program_path = sys.argv[0]
 import logging
 program_directory = os.path.dirname(program_path)
@@ -24,16 +24,14 @@ from src.protocols.websk.WebSkClientThread import WebSkClientThread
 from src.protocols.sch.Schedule import Schedule
 from src.protocols.bluetooth.BlueToothServerThread import BlueToothServerThread
 from src.protocols.bluetooth.BlueToothClientThread import BlueToothClientThread
-from src.WorkThread import WorkThread
-from src.LogThread import LogThread
+from src.thread.WorkThread import WorkThread
+from src.thread.LogThread import LogThread
 from ui.ui_main_new import Ui_MainWindow
 
 
 from src.component.direct.Direct import Direct
 from src.component.utility.Utility import Utility
 from src.protocols.http.HttpServerThread import  HttpServerThread
-
-from src.protocols.asyncPro.AsyncSocket import AsyncSocket
 
 
 # 네이밍
@@ -68,14 +66,15 @@ class InitClass(QMainWindow):
         logger.info('application start')
         self.setWindowTitle('application (made by KHW)')
 
+        # thread
         self.workThread = WorkThread()
         self.workThread.updateConnList.connect(self.workUpdateConnList)
-        self.ui.btn_start.clicked.connect(self.start_sk)  # 시작버튼
-        self.ui.btn_stop.clicked.connect(self.stop_sk)   # 종료버튼
-
         self.logThread = LogThread()
         self.logThread.updateLog.connect(self.insertLog)
 
+        # button
+        self.ui.btn_start.clicked.connect(self.start_sk)  # 시작버튼
+        self.ui.btn_stop.clicked.connect(self.stop_sk)   # 종료버튼
         self.ui.log_btn_clear.clicked.connect(self.clickClear)
         # self.ui.btn_settings.clicked.connect(self.open_settings)
         # self.ui.btn_handler.clicked.connect(self.open_handler)
@@ -215,15 +214,13 @@ class InitClass(QMainWindow):
             logger.info(f'start_sk() PLC Run Cnt : {moduleData.plcList}')
             for i, item in enumerate(moduleData.plcList):
                 threadPlcInfo = None
-                if item['PLC_MAKER'] == 'SIMENS':
+                if item['PLC_MAKER'] == 'Simens':
                     threadPlcInfo = PlcSimensThread(item)
-
 
                 if threadPlcInfo is not None:
                     threadPlcInfo.daemon = True
                     threadPlcInfo.start()
-
-                item['PLC_THREAD'] = threadPlcInfo
+                    item['PLC_THREAD'] = threadPlcInfo
 
 
             logger.info(f'start_sk() Socket Run Cnt : {len(moduleData.sokcetList)}')

@@ -42,8 +42,8 @@ jobTypeCombo = ['SEC','MIN','HOUR','CRON']
 eventTypeCombo = ['ACTIVE','KEEP','IDLE_READ','INACTIVE']
 hdCombo = ['LENGTH_STR_8B','LENGTH_STR_20B','LENGTH_20B','COPCO_STR_20B','FREE','JSON']
 
-plcType = ['Mitsubishi']
-plcProtocol = ['MC','MODBUS']
+plcType = ['Mitsubishi','Simens']
+plcProtocol = ['MC','MODBUS','S7']
 
 sokcetList = []
 plcList = []

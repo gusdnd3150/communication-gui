@@ -30,7 +30,7 @@ class Settings(QMainWindow):
         self.setWindowTitle('설정')
         self.setEvent()
         self.createSkGrid() # 소켓 그리드
-        self.createInGrid()# 소켓 In 그리드
+        self.createInGrid() # 소켓 In 그리드
         self.createBzGrid()
         self.createSchGrid()
         self.createMsgGrid(None,None)# 메시지 그리드
