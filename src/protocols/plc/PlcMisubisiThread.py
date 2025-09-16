@@ -35,13 +35,14 @@ class PlcMisubisiThread(threading.Thread):
         self.cpuTy = data['CPU_TY']
         self.slot = int(data['SLOT'])
         self.rack = int(data['RACK'])
-        self.client = Type3E(self.cpuTy) # default Q
-
         if len(data.get('ADDR_LIST')) > 0 :
             for addr in data.get('ADDR_LIST'):
                 self.plcBuffer.append((addr['ADDR'], addr['POS'],addr['LENGTH'],addr['ADDR_ALIAS'],bytearray()))
 
         self.commTy = data.get('COMM_TY','binary')
+
+        ascii_mode = True if self.commTy.lower() == 'ascii' else False
+        self.client = Type3E(ascii=ascii_mode)
 
         if (data.get('LOG_YN') is not None and data.get('LOG_YN') == 'Y'):
             self.logYn = True
