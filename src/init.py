@@ -42,6 +42,7 @@ class InitClass(QMainWindow):
 
     mainLayOut = None
     popup = None # 설정 팝업
+    plc_popup = None # 설정 팝업
     saveSkWindow = None
     qLoader = None
     list_table = None
@@ -82,6 +83,7 @@ class InitClass(QMainWindow):
         # self.ui.btn_show_log.clicked.connect(self.open_logger)
 
         self.ui.action_util.triggered.connect(self.open_util) # 유틸
+        self.ui.actionPlc_settings.triggered.connect(self.open_plc_settings) # 유틸
         self.ui.action_settings.triggered.connect(self.open_settings)  # 설정 오픈
         self.ui.action_test.triggered.connect(self.open_handler)  # 핸들러 오픈
         self.ui.actionOpen_log_folder.triggered.connect(self.openFolder) # 폴더 오픈
@@ -96,6 +98,7 @@ class InitClass(QMainWindow):
 
         # 설정팝업
         self.popup = Settings(self.initData)
+        self.plc_popup = Settings(self.initData)
         self.handlPop = Handler(self.initData)
         self.utilityPop = Utility(self.initData)
         self.directPop = Direct(self.initData)
@@ -302,7 +305,6 @@ class InitClass(QMainWindow):
     def setGrid(self):
         self.ui.list_run_server.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.ui.list_run_server.verticalHeader().setVisible(False)  # 행 번호 헤더 숨기기
-        # self.ui.list_run_server.horizontalHeader().setVisible(False)  # 열 번호 헤더 숨기기
         self.ui.list_run_server.setRowCount(0)  # Table의 행을 설정, list의 길이
         self.ui.list_run_server.setColumnCount(9)
         self.ui.list_run_server.setHorizontalHeaderLabels(
@@ -346,6 +348,29 @@ class InitClass(QMainWindow):
         self.root_node = self.treeModel.invisibleRootItem()
 
 
+        # --- 테이블 설정 ---
+        self.ui.list_run_plc.setRowCount(0)
+        self.ui.list_run_plc.setColumnCount(4)
+        self.ui.list_run_plc.setHorizontalHeaderLabels(
+            ["PLC_ID", "UPD_DT", "ADDR", "DATA"]
+        )
+
+        # 행 번호 헤더 숨기기
+        self.ui.list_run_plc.verticalHeader().setVisible(False)
+
+        # 컬럼 헤더
+        header = self.ui.list_run_plc.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.Fixed)   # 모든 칼럼을 고정모드로
+
+        # 각 칼럼 너비 지정
+        self.ui.list_run_plc.setColumnWidth(0, 100)   # PLC_ID
+        self.ui.list_run_plc.setColumnWidth(1, 80)   # UPD_DT
+        self.ui.list_run_plc.setColumnWidth(2, 80)   # ADDR
+
+        header.setSectionResizeMode(0, QHeaderView.Fixed)
+        header.setSectionResizeMode(1, QHeaderView.Fixed)
+        header.setSectionResizeMode(2, QHeaderView.Fixed)
+        header.setSectionResizeMode(3, QHeaderView.Stretch)
 
 
 
@@ -455,6 +480,13 @@ class InitClass(QMainWindow):
         except ValueError:
             return -1
 
+    def open_plc_settings(self):
+        if self.plc_popup.isVisible():
+            # self.popup.instance.hide()
+            self.plc_popup.hide()
+        else:
+            # self.popup.instance.show()
+            self.plc_popup.show()
 
     def open_util(self):
         if self.utilityPop.isVisible():
