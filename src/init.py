@@ -167,9 +167,12 @@ class InitClass(QMainWindow):
             for i, item in enumerate(moduleData.plcList):
                 thread = item['PLC_THREAD']
                 if thread is not None:
-                    thread.stop()
-                    thread.join()
-                    item['PLC_THREAD'] = None
+                    try:
+                        thread.stop()
+                        thread.join()
+                        item['PLC_THREAD'] = None
+                    except:
+                        logger.error(f'stop_sk exception {item["PLC_ID"]}')
 
             for i, item in enumerate(moduleData.sokcetSch):
                 runThread = item['SK_THREAD']

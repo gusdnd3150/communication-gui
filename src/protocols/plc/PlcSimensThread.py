@@ -25,6 +25,7 @@ class PlcSimensThread(threading.Thread):
     plcIp = None
     plcPort = None
     client = None
+    logYn = None
     executor = ThreadPoolExecutor(max_workers=1)
     #[('D30', 0, 10, bytearray(b'')), ('D60', 0, 10, bytearray(b''))]  (메모리,pos,length, 바이트)
     plcBuffer = []
@@ -35,6 +36,7 @@ class PlcSimensThread(threading.Thread):
         self.plcIp = data['PLC_IP']
         self.plcPort = int(data['PLC_PORT'])
         self.cpuTy = data['CPU_TY']
+        self.logYn = data['LOG_YN']
         self.slot = int(data['SLOT'])
         self.rack = int(data['RACK'])
         self.client = snap7.client.Client()
@@ -83,28 +85,17 @@ class PlcSimensThread(threading.Thread):
                     self.client.connect(self.plcIp, self.rack, self.slot, self.plcPort) # 기본은 102 포트
 
                 for (addr, startId, endId ,alias, data) in self.plcBuffer:
-                    logger.info(f'{self.plcId} read data : {addr} {startId} {endId} {data} {alias}')
+                    if self.logYn == 'Y':
+                        logger.info(f'{self.plcId} read_data : {addr} {startId} {endId}  {alias} {data}')
                     data = self.client.db_read(db_number=addr, start=startId, size=endId)
-
                 # db_data = self.client.db_read(1, 0, 8)                       # DB1
                 # m_data  = self.client.read_area(Areas.MK, 0, 0, 4)           # M 영역
                 # i_data  = self.client.read_area(Areas.PE, 0, 0, 1)           # 입력(I)
                 # q_data  = self.client.read_area(Areas.PA, 0, 0, 1)           # 출력(Q)
-
             except:
                 logger.error(f'{self.plcId} initClient Exception : {traceback.format_exc()}')
-
             finally:
                 time.sleep(0.3)
-
-
-
-
-
-
-
-
-
 
 
     def threadPoolExcutor(self, instance):
@@ -113,6 +104,7 @@ class PlcSimensThread(threading.Thread):
             # result = futures.result() #다른 스레드에 영향을 미침
         except:
             self.logger.info(f'threadPoolExcutor exception : PLC_ID:{self.plcId} - {traceback.format_exc()}')
+
 
     def process_result(self, future, msg, start_time):
         try:
