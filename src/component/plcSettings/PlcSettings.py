@@ -4,6 +4,8 @@ from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView ,QMessa
 from conf.skModule import *
 from conf.sql.SystemQueryString import *
 from ui.ui_plc_settings import Ui_PLC_Settings
+from src.component.plcSettings.TapPlc import TapPlc
+from src.component.plcSettings.TapAddr import TapAddr
 
 class PlcSettings(QMainWindow):
 
@@ -28,6 +30,8 @@ class PlcSettings(QMainWindow):
         self.ui = Ui_PLC_Settings()
         self.ui.setupUi(self)
         self.setWindowTitle('PLC')
+        TapPlc(initData, self.ui)
+        TapAddr(initData, self.ui)
         # self.setEvent()
         # self.createSkGrid() # 소켓 그리드
         # self.createInGrid() # 소켓 In 그리드
