@@ -16,6 +16,8 @@ import logging
 program_directory = os.path.dirname(program_path)
 from src.component.settings.Settings import Settings
 from src.component.handler.Handler import Handler
+from src.component.plcSettings.PlcSettings import PlcSettings
+
 import conf.skModule as moduleData
 from conf.logconfig import logger
 from src.protocols.udp.ServerUdpThread import ServerUdpThread
@@ -98,7 +100,7 @@ class InitClass(QMainWindow):
 
         # 설정팝업
         self.popup = Settings(self.initData)
-        self.plc_popup = Settings(self.initData)
+        self.plc_popup = PlcSettings(self.initData)
         self.handlPop = Handler(self.initData)
         self.utilityPop = Utility(self.initData)
         self.directPop = Direct(self.initData)
