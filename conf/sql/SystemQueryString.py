@@ -51,11 +51,11 @@ def selectPlcList(skId , useYn, pkgId='CORE'):
     query.append(' ,LOG_YN        ')
     query.append('FROM TB_SK_PKG_PLC ')
     query.append('WHERE 1=1 ')
-    if (pkgId is not None):
-        query.append(f'AND PKG_ID = "{pkgId}"')
-    if (skId is not None):
-        query.append(f'AND PLC_ID = "{skId}"')
-    if (useYn is not None):
+    if (pkgId is not None and pkgId != ''):
+        query.append(f'AND PKG_ID LIKE "%{pkgId}%"')
+    if (skId is not None and skId != ''):
+        query.append(f'AND PLC_ID LIKE "%{skId}%"')
+    if (useYn is not None and useYn != ''):
         query.append(f'AND USE_YN = "{useYn}"')
 
     return " ".join(query)
@@ -440,6 +440,61 @@ def selectSocketMSgDtList(msgId ):
     return " ".join(query)
 
 
+def saveTable(tableName, condition_cols, params):
+    """
+    동적으로 UPDATE 쿼리를 생성하는 함수
+    :param tableName: 업데이트할 테이블 이름
+    :param condition_cols: WHERE 조건에 사용할 컬럼 리스트 (예: ['PKG_ID', 'PLC_ID'])
+    :param params: 업데이트할 데이터 딕셔너리
+    :return: 생성된 SQL 문자열
+    """
+
+    # SET 절 생성
+    set_clauses = []
+    for key, value in params.items():
+        # 조건 컬럼은 SET에서 제외
+        if key not in condition_cols:
+            set_clauses.append(f'"{key}" = "{value}"')
+
+    set_str = ", ".join(set_clauses)
+
+    # WHERE 절 생성
+    where_clauses = [f'"{col}" = "{params[col]}"' for col in condition_cols]
+    where_str = " AND ".join(where_clauses)
+
+    # 최종 쿼리
+    query = f'UPDATE {tableName} SET {set_str} WHERE {where_str}'
+
+    print(f'Generated SQL: {query}')
+    return query
+
+
+def deleteTable(tableName, condition_cols, params):
+    """
+    동적으로 DELETE 쿼리를 생성하는 함수
+    :param tableName: 삭제할 테이블 이름
+    :param condition_cols: WHERE 조건에 사용할 컬럼 리스트 (예: ['PKG_ID', 'PLC_ID'])
+    :param params: 조건값을 가진 딕셔너리
+    :return: 생성된 SQL 문자열
+    """
+    # WHERE 절 생성
+    where_clauses = []
+    for col in condition_cols:
+        if col in params:
+            where_clauses.append(f'"{col}" = "{params[col]}"')
+        else:
+            raise ValueError(f"조건 컬럼 '{col}' 이 params에 없습니다.")
+
+    where_str = " AND ".join(where_clauses)
+
+    # 최종 DELETE 쿼리
+    query = f'DELETE FROM {tableName} WHERE {where_str}'
+
+    print(f'Generated SQL: {query}')
+    return query
+
+
+
 def saveSk(pkgId, skId, params):
 
     query = []
@@ -456,6 +511,7 @@ def saveSk(pkgId, skId, params):
     result = " ".join(query)
     print(f'rs : {result}')
     return result
+
 
 
 def insertSK(params):

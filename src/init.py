@@ -222,7 +222,7 @@ class InitClass(QMainWindow):
                 threadPlcInfo = None
                 if item['PLC_MAKER'] == 'Simens':
                     threadPlcInfo = PlcSimensThread(item)
-                elif item['PLC_MAKER'] == 'Misubisi':
+                elif item['PLC_MAKER'] == 'Mitsubishi':
                     threadPlcInfo = PlcMisubisiThread(item)
 
                 if threadPlcInfo is not None:

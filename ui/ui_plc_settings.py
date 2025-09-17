@@ -113,72 +113,72 @@ class Ui_PLC_Settings(object):
         self.label_12 = QLabel(self.formLayoutWidget_2)
         self.label_12.setObjectName(u"label_12")
 
-        self.formLayout_2.setWidget(4, QFormLayout.ItemRole.LabelRole, self.label_12)
+        self.formLayout_2.setWidget(5, QFormLayout.ItemRole.LabelRole, self.label_12)
 
         self.PLC_CPU_TY = QComboBox(self.formLayoutWidget_2)
         self.PLC_CPU_TY.setObjectName(u"PLC_CPU_TY")
 
-        self.formLayout_2.setWidget(4, QFormLayout.ItemRole.FieldRole, self.PLC_CPU_TY)
+        self.formLayout_2.setWidget(5, QFormLayout.ItemRole.FieldRole, self.PLC_CPU_TY)
 
         self.label_13 = QLabel(self.formLayoutWidget_2)
         self.label_13.setObjectName(u"label_13")
 
-        self.formLayout_2.setWidget(5, QFormLayout.ItemRole.LabelRole, self.label_13)
+        self.formLayout_2.setWidget(6, QFormLayout.ItemRole.LabelRole, self.label_13)
 
         self.PLC_SLOT = QComboBox(self.formLayoutWidget_2)
         self.PLC_SLOT.setObjectName(u"PLC_SLOT")
 
-        self.formLayout_2.setWidget(5, QFormLayout.ItemRole.FieldRole, self.PLC_SLOT)
+        self.formLayout_2.setWidget(6, QFormLayout.ItemRole.FieldRole, self.PLC_SLOT)
 
         self.label_14 = QLabel(self.formLayoutWidget_2)
         self.label_14.setObjectName(u"label_14")
 
-        self.formLayout_2.setWidget(6, QFormLayout.ItemRole.LabelRole, self.label_14)
+        self.formLayout_2.setWidget(7, QFormLayout.ItemRole.LabelRole, self.label_14)
 
         self.PLC_RACK = QComboBox(self.formLayoutWidget_2)
         self.PLC_RACK.setObjectName(u"PLC_RACK")
 
-        self.formLayout_2.setWidget(6, QFormLayout.ItemRole.FieldRole, self.PLC_RACK)
+        self.formLayout_2.setWidget(7, QFormLayout.ItemRole.FieldRole, self.PLC_RACK)
 
         self.label_18 = QLabel(self.formLayoutWidget_2)
         self.label_18.setObjectName(u"label_18")
 
-        self.formLayout_2.setWidget(7, QFormLayout.ItemRole.LabelRole, self.label_18)
+        self.formLayout_2.setWidget(8, QFormLayout.ItemRole.LabelRole, self.label_18)
 
         self.PLC_COMM_TY = QComboBox(self.formLayoutWidget_2)
         self.PLC_COMM_TY.setObjectName(u"PLC_COMM_TY")
 
-        self.formLayout_2.setWidget(7, QFormLayout.ItemRole.FieldRole, self.PLC_COMM_TY)
+        self.formLayout_2.setWidget(8, QFormLayout.ItemRole.FieldRole, self.PLC_COMM_TY)
 
         self.label_16 = QLabel(self.formLayoutWidget_2)
         self.label_16.setObjectName(u"label_16")
 
-        self.formLayout_2.setWidget(8, QFormLayout.ItemRole.LabelRole, self.label_16)
+        self.formLayout_2.setWidget(9, QFormLayout.ItemRole.LabelRole, self.label_16)
 
         self.PLC_PLC_IP = QLineEdit(self.formLayoutWidget_2)
         self.PLC_PLC_IP.setObjectName(u"PLC_PLC_IP")
 
-        self.formLayout_2.setWidget(8, QFormLayout.ItemRole.FieldRole, self.PLC_PLC_IP)
+        self.formLayout_2.setWidget(9, QFormLayout.ItemRole.FieldRole, self.PLC_PLC_IP)
 
         self.label_15 = QLabel(self.formLayoutWidget_2)
         self.label_15.setObjectName(u"label_15")
 
-        self.formLayout_2.setWidget(9, QFormLayout.ItemRole.LabelRole, self.label_15)
+        self.formLayout_2.setWidget(10, QFormLayout.ItemRole.LabelRole, self.label_15)
 
         self.PLC_PLC_PORT = QLineEdit(self.formLayoutWidget_2)
         self.PLC_PLC_PORT.setObjectName(u"PLC_PLC_PORT")
 
-        self.formLayout_2.setWidget(9, QFormLayout.ItemRole.FieldRole, self.PLC_PLC_PORT)
+        self.formLayout_2.setWidget(10, QFormLayout.ItemRole.FieldRole, self.PLC_PLC_PORT)
 
         self.label_11 = QLabel(self.formLayoutWidget_2)
         self.label_11.setObjectName(u"label_11")
 
-        self.formLayout_2.setWidget(10, QFormLayout.ItemRole.LabelRole, self.label_11)
+        self.formLayout_2.setWidget(11, QFormLayout.ItemRole.LabelRole, self.label_11)
 
         self.PLC_LOG_YN = QComboBox(self.formLayoutWidget_2)
         self.PLC_LOG_YN.setObjectName(u"PLC_LOG_YN")
 
-        self.formLayout_2.setWidget(10, QFormLayout.ItemRole.FieldRole, self.PLC_LOG_YN)
+        self.formLayout_2.setWidget(11, QFormLayout.ItemRole.FieldRole, self.PLC_LOG_YN)
 
         self.PLC_USE_YN = QComboBox(self.formLayoutWidget_2)
         self.PLC_USE_YN.setObjectName(u"PLC_USE_YN")
@@ -190,18 +190,30 @@ class Ui_PLC_Settings(object):
 
         self.formLayout_2.setWidget(2, QFormLayout.ItemRole.LabelRole, self.label_10)
 
+        self.label_24 = QLabel(self.formLayoutWidget_2)
+        self.label_24.setObjectName(u"label_24")
+
+        self.formLayout_2.setWidget(4, QFormLayout.ItemRole.LabelRole, self.label_24)
+
+        self.PLC_PROTOCOL = QComboBox(self.formLayoutWidget_2)
+        self.PLC_PROTOCOL.setObjectName(u"PLC_PROTOCOL")
+
+        self.formLayout_2.setWidget(4, QFormLayout.ItemRole.FieldRole, self.PLC_PROTOCOL)
+
         self.list_plc = QTableWidget(self.tab)
         if (self.list_plc.columnCount() < 1):
             self.list_plc.setColumnCount(1)
         __qtablewidgetitem = QTableWidgetItem()
         self.list_plc.setHorizontalHeaderItem(0, __qtablewidgetitem)
         self.list_plc.setObjectName(u"list_plc")
+        self.list_plc.setEnabled(True)
         self.list_plc.setGeometry(QRect(0, 40, 801, 451))
         font1 = QFont()
         font1.setFamilies([u"\ub9d1\uc740 \uace0\ub515"])
         font1.setPointSize(9)
         font1.setBold(True)
         self.list_plc.setFont(font1)
+        self.list_plc.setEditTriggers(QAbstractItemView.DoubleClicked|QAbstractItemView.SelectedClicked)
         self.list_plc.setProperty(u"showDropIndicator", False)
         self.list_plc.setDragEnabled(False)
         self.list_plc.setDragDropOverwriteMode(False)
@@ -320,7 +332,7 @@ class Ui_PLC_Settings(object):
         self.list_addr.setProperty(u"showDropIndicator", False)
         self.list_addr.setDragEnabled(False)
         self.list_addr.setDragDropOverwriteMode(False)
-        self.list_addr.setSelectionBehavior(QAbstractItemView.SelectItems)
+        self.list_addr.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.addr_search_plc = QLineEdit(self.tab_3)
         self.addr_search_plc.setObjectName(u"addr_search_plc")
         self.addr_search_plc.setGeometry(QRect(190, 10, 111, 22))
@@ -360,7 +372,7 @@ class Ui_PLC_Settings(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tap_info.setCurrentIndex(1)
+        self.tap_info.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -383,6 +395,7 @@ class Ui_PLC_Settings(object):
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"\ud3ec\ud2b8", None))
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"\ub85c\uadf8 \ucd9c\ub825", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"\uc0ac\uc6a9\uc5ec\ubd80", None))
+        self.label_24.setText(QCoreApplication.translate("MainWindow", u"Protocol", None))
         ___qtablewidgetitem = self.list_plc.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"\uc0c8 \ud589", None));
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"PKG", None))

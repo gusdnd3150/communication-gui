@@ -37,6 +37,8 @@ class PlcSimensThread(threading.Thread):
         self.cpuTy = data['CPU_TY']
         self.slot = int(data['SLOT'])
         self.rack = int(data['RACK'])
+        
+        # 'S7300','S7400','S71200','S71500' 통합처리 가능
         self.client = snap7.client.Client()
 
         if len(data.get('ADDR_LIST')) > 0 :

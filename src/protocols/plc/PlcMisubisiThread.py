@@ -42,6 +42,8 @@ class PlcMisubisiThread(threading.Thread):
         self.commTy = data.get('COMM_TY','binary')
 
         ascii_mode = True if self.commTy.lower() == 'ascii' else False
+
+        # MC 프로토콜 기반, FX/Q/L 모두 Type3E 클래스로 처리 가능
         self.client = Type3E(ascii=ascii_mode)
 
         if (data.get('LOG_YN') is not None and data.get('LOG_YN') == 'Y'):

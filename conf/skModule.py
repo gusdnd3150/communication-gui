@@ -35,15 +35,23 @@ print("Current Working Directory:", os.getcwd())
 
 dbInstance = sqlite3.connect('core.db') # socket system DB
 useYnCombo = ['Y','N']
-skTypeCombo = ['TCP','UDP','WEBSK','PLC','HTTP(S)']
+skTypeCombo = ['TCP','UDP','WEBSK']
 skConnCombo = ['SERVER','CLIENT']
 skClientCombo = ['KEEP','EVENT']
 jobTypeCombo = ['SEC','MIN','HOUR','CRON']
 eventTypeCombo = ['ACTIVE','KEEP','IDLE_READ','INACTIVE']
 hdCombo = ['LENGTH_STR_8B','LENGTH_STR_20B','LENGTH_20B','COPCO_STR_20B','FREE','JSON']
 
-plcType = ['Mitsubishi','Simens']
-plcProtocol = ['MC','MODBUS','S7']
+plcMakerCombo = ['Mitsubishi','Simens']
+commTyCombo = ['binary','ascii']
+slotCombo = ['0','1','2','3']
+rackCombo = ['0','1','2','3']
+
+simenCpuTyCombo = ['S7300','S7400','S71200','S71500']
+simenProtocolCombo = ['S7']
+mitsuCpuTyCombo = ['FX3U','FX3G','QnA','QnC','L']
+mitsuProtocolCombo = ['MC']
+
 
 sokcetList = []
 plcList = []
@@ -77,7 +85,6 @@ def resource_path(relative_path):
 
 relative_path = resource_path('')
 logger.info(f'relative_path :: {relative_path}')
-
 
 
 
