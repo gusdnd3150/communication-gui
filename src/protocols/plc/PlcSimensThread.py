@@ -1,5 +1,6 @@
 
-
+import weakref
+import conf.skModule as moduleData
 from conf.logconfig import *
 import threading
 import time
@@ -80,9 +81,9 @@ class PlcSimensThread(threading.Thread):
 
     def initClient(self):
         logger.info(f'PLC id:{self.plcId}  {self.plcIp}, {self.rack}, {self.slot}, {self.plcPort}')
+
         while not self.isShutdown:
             try:
-
                 if not self.client.get_connected():
                     self.client.connect(self.plcIp, self.rack, self.slot, self.plcPort) # 기본은 102 포트
                     self.isRun = True

@@ -99,7 +99,7 @@ def getPlcList(pkgId):
     list = selectQuery(selectPlcList(None, 'Y', pkgId))
     for plc in list:
         pkgId, plcId = plc['PKG_ID'], plc['PLC_ID']
-        plc['ADDR_LIST'] = selectQuery(selectPlcAddrList(pkgId,plcId))
+        plc['ADDR_LIST'] = selectQuery(selectPlcAddrList(pkgId,plcId,'Y'))
     return list
 
 

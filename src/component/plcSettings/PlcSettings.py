@@ -12,11 +12,10 @@ class PlcSettings(QMainWindow):
     initData = None
     skRow = None
     contFlag = 'upd'
-    contInFlag = 'upd'
-    contBzFlag = 'upd'
-    contSchFlag = 'upd'
+    contAddrFlag = 'upd'
     curMsg = ''
     gridData = []
+    gridAddrData = []
 
     def __init__(self, initData):
         super(PlcSettings, self).__init__()
@@ -27,6 +26,7 @@ class PlcSettings(QMainWindow):
 
         self.setEvent()
         self.createGrid()
+        self.createAddrGrid()
         # TapPlc(initData, self.ui) 이벤트 전파가 하위레벨에서는 안되는 것으로 보임
         # TapAddr(initData, self.ui)
 
@@ -42,6 +42,7 @@ class PlcSettings(QMainWindow):
         for item in useYnCombo:
             self.ui.PLC_USE_YN.addItem(item)
             self.ui.PLC_LOG_YN.addItem(item)
+            self.ui.READ_USE_YN.addItem(item)
 
         for item in plcMakerCombo:
             self.ui.PLC_PLC_MAKER.addItem(item)
@@ -56,6 +57,15 @@ class PlcSettings(QMainWindow):
             self.ui.PLC_RACK.addItem(item)
 
         self.ui.PLC_PLC_MAKER.currentTextChanged.connect(self.onChangeMaker)
+
+        self.ui.list_addr.cellClicked.connect(self.selectAddrRow)
+        self.ui.btn_addAddr.clicked.connect(self.addAddr)
+        self.ui.btn_saveAddr.clicked.connect(self.saveAddr)
+        self.ui.btn_delAddr.clicked.connect(self.delAddr)
+        self.ui.addr_search_plc.textChanged.connect(self.searchAddr)
+        self.ui.addr_search_pkg.textChanged.connect(self.searchAddr)
+
+
 
     def onChangeMaker(self, text):
         self.ui.PLC_CPU_TY.clear()
@@ -197,5 +207,122 @@ class PlcSettings(QMainWindow):
     def searchPlc(self):
         try:
             self.createGrid()
+        except Exception as e:
+            logger.error(f'searchMsg exception : {traceback.format_exc()}')
+
+
+############################################################################
+
+
+    def selectAddrRow(self, row, column):
+        try:
+            self.contAddrFlag = 'upd'
+            col_count = self.ui.list_addr.columnCount()
+            row_data = {}
+            for col in range(col_count):
+                header_item = self.ui.list_addr.horizontalHeaderItem(col)
+                header = header_item.text() if header_item else f"col{col}"
+
+                item = self.ui.list_addr.item(row, col)
+                value = item.text() if item else ""
+                row_data[header] = value
+
+            self.ui.READ_PKG_ID.setText(row_data['PKG_ID'])
+            self.ui.READ_PKG_ID.setDisabled(True)
+            self.ui.READ_PLC_ID.setText(row_data['PLC_ID'])
+            self.ui.READ_PLC_ID.setDisabled(True)
+            self.ui.READ_ADDR.setText(row_data['ADDR'])
+            self.ui.READ_ADDR.setDisabled(True)
+            self.ui.READ_POS.setText(row_data['POS'])
+            self.ui.READ_LENGTH.setText(row_data['LENGTH'])
+            self.ui.READ_ALIAS.setText(row_data['ADDR_ALIAS'])
+            self.ui.READ_USE_YN.setCurrentText(row_data['USE_YN'])
+        except:
+            logger.error(f'select row error {traceback.format_exc()}')
+
+    def createAddrGrid(self):
+        try:
+            headers = ['PKG_ID','PLC_ID','ADDR','POS','LENGTH','USE_YN','ADDR_ALIAS']
+
+            self.ui.list_addr.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+            self.ui.list_addr.verticalHeader().setVisible(False)
+            self.ui.list_addr.setSortingEnabled(False)
+            self.ui.list_addr.setRowCount(0)  # Table의 행을 설정, list의 길이
+            self.ui.list_addr.setColumnCount(7)
+            self.ui.list_addr.setHorizontalHeaderLabels(headers)
+            pkg = self.ui.addr_search_pkg.text()
+            plcId = self.ui.addr_search_plc.text()
+            self.gridAddrData = selectQuery(selectPlcAddrList(pkg,plcId , None))
+            for i, skItem in enumerate(self.gridAddrData):
+                row_count = self.ui.list_addr.rowCount()
+                self.ui.list_addr.insertRow(row_count)
+                for j, hd in enumerate(headers):
+                    if skItem.get(hd) is not None:
+                        self.ui.list_addr.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
+
+        except Exception as e:
+            logger.info(f'createGrid exception : {traceback.format_exc()}')
+
+
+    def addAddr(self):
+        self.contAddrFlag = 'ins'
+        self.ui.READ_PKG_ID.setText('')
+        self.ui.READ_PKG_ID.setDisabled(False)
+        self.ui.READ_PLC_ID.setText('')
+        self.ui.READ_PLC_ID.setDisabled(False)
+        self.ui.READ_ADDR.setText('')
+        self.ui.READ_ADDR.setDisabled(False)
+        self.ui.READ_POS.setText('')
+        self.ui.READ_LENGTH.setText('')
+        self.ui.READ_ALIAS.setText('')
+        self.ui.READ_USE_YN.setCurrentText('Y')
+
+    def saveAddr(self):
+
+        pkgId = self.ui.READ_PKG_ID.text()
+        plcId = self.ui.READ_PLC_ID.text()
+        addr = self.ui.READ_ADDR.text()
+        pos = self.ui.READ_POS.text()
+        length = self.ui.READ_LENGTH.text()
+        alias = self.ui.READ_ALIAS.text()
+        useYn = self.ui.READ_USE_YN.currentText()
+
+        # plcId = self.ui.
+        row_data = {
+            'PLC_ID': plcId,
+            'PKG_ID': pkgId,
+            'USE_YN': useYn,
+            'ADDR': addr,
+            'POS': pos,
+            'LENGTH': length,
+            'ADDR_ALIAS': alias,
+        }
+
+        if self.contAddrFlag == 'ins':
+            queryExecute(insertTable(row_data, 'TB_SK_PKG_PLC_ADDR'))
+        else:
+            queryExecute(saveTable('TB_SK_PKG_PLC_ADDR', ['PKG_ID', 'PLC_ID','ADDR'], row_data))
+        self.createAddrGrid()
+
+
+
+    def delAddr(self):
+        pkgId = self.ui.READ_PKG_ID.text()
+        plcId = self.ui.READ_PLC_ID.text()
+        addr = self.ui.READ_ADDR.text()
+
+        if pkgId != '' or plcId != '':
+            row_data = {
+                'PLC_ID': plcId,
+                'ADDR': addr,
+                'PKG_ID': pkgId
+            }
+
+            queryExecute(deleteTable('TB_SK_PKG_PLC_ADDR',['PKG_ID','PLC_ID','ADDR'],row_data))
+            self.createAddrGrid()
+
+    def searchAddr(self):
+        try:
+            self.createAddrGrid()
         except Exception as e:
             logger.error(f'searchMsg exception : {traceback.format_exc()}')

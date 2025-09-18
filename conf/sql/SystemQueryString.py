@@ -8,7 +8,7 @@ def selectPkgCombo():
     return " ".join(query)
 
 
-def selectPlcAddrList(pkgId, plcId):
+def selectPlcAddrList(pkgId, plcId, useYn):
     query = []
     query.append('SELECT             ')
     query.append(' PKG_ID    ')
@@ -20,11 +20,12 @@ def selectPlcAddrList(pkgId, plcId):
     query.append(',ADDR_ALIAS')
     query.append('FROM TB_SK_PKG_PLC_ADDR ')
     query.append('WHERE 1=1 ')
-    query.append(f'AND USE_YN = "Y" ')
-    if (pkgId is not None):
-        query.append(f'AND PKG_ID = "{pkgId}"')
-    if (plcId is not None):
-        query.append(f'AND PLC_ID = "{plcId}"')
+    if (pkgId is not None and pkgId != ''):
+        query.append(f'AND PKG_ID LIKE "%{pkgId}%"')
+    if (plcId is not None and plcId != ''):
+        query.append(f'AND PLC_ID LIKE "%{plcId}%"')
+    if (useYn is not None and useYn != ''):
+        query.append(f'AND USE_YN = "{useYn}"')
 
     return " ".join(query)
 
