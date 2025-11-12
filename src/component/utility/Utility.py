@@ -70,6 +70,8 @@ class Utility(QMainWindow):
         self.ui.btn_float_big.clicked.connect(self.floatB)
         self.ui.btn_float_little.clicked.connect(self.floatL)
 
+        self.ui.run_divied.clicked.connect(self.run_divied)
+
 
 
     def btnHex(self):
@@ -445,3 +447,46 @@ class Utility(QMainWindow):
                     self.ui.util_encode.setText(str(big_endian_value))
         except:
             self.ui.util_encode.setText(traceback.format_exc())
+
+
+
+    def run_divied(self):
+        try:
+            targetText = self.ui.pre_text.toPlainText()
+            if targetText != '':
+                totalLen = self.ui.total_length.text()
+                diviedLen = self.ui.divied_length.text()
+                cleanedText = "".join(targetText.splitlines())
+                lenArr = []
+
+                if diviedLen != '':
+                    lenArr = list(map(int, diviedLen.split(',')))
+                if totalLen == '':
+                    totalLen = len(cleanedText)
+                else:
+                    totalLen = int(totalLen)
+
+                totalParts = [cleanedText[i:i+totalLen] for i in range(0, len(cleanedText), totalLen)]
+                self.ui.next_text.clear()
+
+                for index, packet in enumerate(totalParts):
+                    parts = []
+                    start = 0
+                    for point in lenArr:
+                        intel = int(point)
+                        next = start+intel
+                        if start < len(packet):
+                            parts.append(packet[start:next])
+                            start = next
+
+                    if start < len(packet):
+                        parts.append(packet[start:])
+                    # parts.append(packet[start:])  # 마지막 조각
+                    returnData  = f'index : {index} == {str(parts)}'
+                    self.ui.next_text.append(returnData)
+
+
+        except:
+            traceback.print_exc()
+
+

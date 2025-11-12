@@ -35,18 +35,21 @@ class PlcMisubisiThread(threading.Thread):
         self.cpuTy = data['CPU_TY']
         self.slot = int(data['SLOT'])
         self.rack = int(data['RACK'])
+        self.commTy = data.get('COMM_TY','binary')
+
         if len(data.get('ADDR_LIST')) > 0 :
             for addr in data.get('ADDR_LIST'):
                 self.plcBuffer.append((addr['ADDR'], addr['POS'],addr['LENGTH'],addr['ADDR_ALIAS'],bytearray()))
 
-        self.commTy = data.get('COMM_TY','binary')
-
-        ascii_mode = True if self.commTy.lower() == 'ascii' else False
+        # for (addr, startId, endId ,alias, buff) in self.plcBuffer:
+        #             logger.info(f'{self.plcId} read_data22 : {addr} {startId} {endId}  {alias} {buff}')
 
         # MC 프로토콜 기반, FX/Q/L 모두 Type3E 클래스로 처리 가능
-        self.client = Type3E(ascii=ascii_mode)
+        # self.client = Type3E(ascii=ascii_mode)
+        self.client = Type3E()
+        self.client.setaccessopt(commtype=self.commTy)
 
-        if (data.get('LOG_YN') is not None and data.get('LOG_YN') == 'Y'):
+        if (data.get('LOG_YN') is not None and data['LOG_YN'] == 'Y'):
             self.logYn = True
         else:
             self.logYn = False
@@ -85,15 +88,20 @@ class PlcMisubisiThread(threading.Thread):
                 # plctype(str): connect PLC type. "Q", "L", "QnA", "iQ-L", "iQ-R"  , default = Q
                 if not self.isRun:
                     # self.client.connect(self.plcIp, self.plcPort) # 기본은 102 포트
-                    self.client.connect(self.plcIp, self.plcPort)
+                    logger.info(f'{self.plcIp}:{self.plcPort} try to connect')
+                    self.client.connect(self.plcIp, int(self.plcPort))
                     self.isRun = True
 
-                for i,(addr, startId, endId ,alias, data) in self.plcBuffer:
-                    if self.logYn:
-                        logger.info(f'{self.plcId} read_data : {addr} {startId} {endId}  {alias} {data}')
-                    read_data = self.client.batch_read_wordunits(addr, endId)
-                    self.plcBuffer[i] = (addr, startId, endId, alias, bytearray(read_data))
+                # w_values = self.client.batchread_wordunits(headdevice=read_data, readsize=endId)
+                # logger.info(f'{self.plcId} read_data : {w_values}')
 
+                for (addr, startId, endId ,alias, data) in self.plcBuffer:
+                    if self.logYn:
+                        logger.info(f'{self.plcId} read_data22 : {addr} {startId} {endId}  {alias} {data}')
+                    read_data = self.client.batchread_wordunits(addr, endId)
+                    # self.plcBuffer[i] = (addr, startId, endId, alias, bytearray(read_data))
+                    data = read_data
+                    logger.info(f'{self.plcId} read_data22 : {data}')
             except:
                 self.isRun = False
                 logger.error(f'{self.plcId} initClient Exception : {traceback.format_exc()}')

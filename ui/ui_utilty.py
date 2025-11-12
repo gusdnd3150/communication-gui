@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'utilty.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.2
+## Created by: Qt User Interface Compiler version 6.10.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -16,16 +16,16 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGridLayout,
-    QHeaderView, QMainWindow, QMenuBar, QPushButton,
-    QScrollArea, QSizePolicy, QStatusBar, QTabWidget,
-    QTableWidget, QTableWidgetItem, QTextEdit, QVBoxLayout,
-    QWidget)
+    QHeaderView, QLabel, QLineEdit, QMainWindow,
+    QMenuBar, QPushButton, QScrollArea, QSizePolicy,
+    QStatusBar, QTabWidget, QTableWidget, QTableWidgetItem,
+    QTextEdit, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1129, 715)
+        MainWindow.resize(1129, 727)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout_3 = QGridLayout(self.centralwidget)
@@ -47,7 +47,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 98, 605))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 98, 623))
         self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.btn_util_hex = QPushButton(self.scrollAreaWidgetContents)
@@ -77,7 +77,7 @@ class Ui_MainWindow(object):
 
         self.line = QFrame(self.scrollAreaWidgetContents)
         self.line.setObjectName(u"line")
-        self.line.setFrameShape(QFrame.Shape.HLine)
+        self.line.setFrameShape(QFrame.Shape.VLine)
         self.line.setFrameShadow(QFrame.Shadow.Sunken)
 
         self.verticalLayout.addWidget(self.line)
@@ -104,7 +104,7 @@ class Ui_MainWindow(object):
 
         self.line_2 = QFrame(self.scrollAreaWidgetContents)
         self.line_2.setObjectName(u"line_2")
-        self.line_2.setFrameShape(QFrame.Shape.HLine)
+        self.line_2.setFrameShape(QFrame.Shape.VLine)
         self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
 
         self.verticalLayout.addWidget(self.line_2)
@@ -170,13 +170,63 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.tabWidget_2, 0, 2, 3, 1)
 
         self.tabWidget.addTab(self.tab, "")
+        self.tab_2 = QWidget()
+        self.tab_2.setObjectName(u"tab_2")
+        self.gridLayout_6 = QGridLayout(self.tab_2)
+        self.gridLayout_6.setObjectName(u"gridLayout_6")
+        self.verticalLayout_2 = QVBoxLayout()
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.pre_text = QTextEdit(self.tab_2)
+        self.pre_text.setObjectName(u"pre_text")
+
+        self.verticalLayout_2.addWidget(self.pre_text)
+
+        self.gridLayout_5 = QGridLayout()
+        self.gridLayout_5.setObjectName(u"gridLayout_5")
+        self.total_length = QLineEdit(self.tab_2)
+        self.total_length.setObjectName(u"total_length")
+
+        self.gridLayout_5.addWidget(self.total_length, 0, 1, 1, 1)
+
+        self.divied_length = QLineEdit(self.tab_2)
+        self.divied_length.setObjectName(u"divied_length")
+
+        self.gridLayout_5.addWidget(self.divied_length, 0, 3, 1, 1)
+
+        self.label_2 = QLabel(self.tab_2)
+        self.label_2.setObjectName(u"label_2")
+
+        self.gridLayout_5.addWidget(self.label_2, 0, 2, 1, 1)
+
+        self.label = QLabel(self.tab_2)
+        self.label.setObjectName(u"label")
+
+        self.gridLayout_5.addWidget(self.label, 0, 0, 1, 1)
+
+        self.run_divied = QPushButton(self.tab_2)
+        self.run_divied.setObjectName(u"run_divied")
+
+        self.gridLayout_5.addWidget(self.run_divied, 0, 4, 1, 1)
+
+
+        self.verticalLayout_2.addLayout(self.gridLayout_5)
+
+        self.next_text = QTextEdit(self.tab_2)
+        self.next_text.setObjectName(u"next_text")
+
+        self.verticalLayout_2.addWidget(self.next_text)
+
+
+        self.gridLayout_6.addLayout(self.verticalLayout_2, 0, 0, 1, 1)
+
+        self.tabWidget.addTab(self.tab_2, "")
 
         self.gridLayout_3.addWidget(self.tabWidget, 0, 0, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1129, 22))
+        self.menubar.setGeometry(QRect(0, 0, 1129, 21))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -209,5 +259,9 @@ class Ui_MainWindow(object):
         self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.text), QCoreApplication.translate("MainWindow", u"text", None))
         self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_3), QCoreApplication.translate("MainWindow", u"table", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"\ubcc0\ud658\uae30", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"\ud328\ud0b7 \ubcc4 \ubd84\ud560\uae38\uc774(, \uad6c\ubd84\uc790)", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"\ud328\ud0b7 \ud558\ub098\ub2f9 \ucd1d\uae38\uc774", None))
+        self.run_divied.setText(QCoreApplication.translate("MainWindow", u"\ubd84\ud560", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"\ubb38\uc790 \uae38\uc774 \ubd84\ud560\uae30", None))
     # retranslateUi
 

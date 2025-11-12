@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1129</width>
-    <height>715</height>
+    <height>727</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,7 +48,7 @@
              <x>0</x>
              <y>0</y>
              <width>98</width>
-             <height>605</height>
+             <height>623</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -90,7 +90,7 @@
             <item>
              <widget class="Line" name="line">
               <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
+               <enum>Qt::Vertical</enum>
               </property>
              </widget>
             </item>
@@ -125,7 +125,7 @@
             <item>
              <widget class="Line" name="line_2">
               <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
+               <enum>Qt::Vertical</enum>
               </property>
              </widget>
             </item>
@@ -199,6 +199,54 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>문자 길이 분할기</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QTextEdit" name="pre_text"/>
+          </item>
+          <item>
+           <layout class="QGridLayout" name="gridLayout_5">
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="total_length"/>
+            </item>
+            <item row="0" column="3">
+             <widget class="QLineEdit" name="divied_length"/>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>패킷 별 분할길이(, 구분자)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>패킷 하나당 총길이</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="4">
+             <widget class="QPushButton" name="run_divied">
+              <property name="text">
+               <string>분할</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QTextEdit" name="next_text"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -209,7 +257,7 @@
      <x>0</x>
      <y>0</y>
      <width>1129</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
