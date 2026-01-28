@@ -257,7 +257,6 @@ class ServerThread(threading.Thread, Server):
                 logger.info(f'SK_ID:{self.skId} remain Clients count {len(self.conn_list)})')
                 clientsocket.close()
         except:
-
             logger.error(f'SK_ID:{self.skId} excepton : {traceback.format_exc()}')
             if clientsocket:
                 clientsocket.close()

@@ -94,8 +94,9 @@ class WebSkClientThread(threading.Thread):
         moduleData.mainInstance.addClientRow(self.initData)
 
         try:
-            self.loop.run_until_complete(self.initClient())
-            self.loop.run_forever()
+            # self.loop.run_until_complete(self.initClient())
+            self.loop.run_until_complete(self.connection_loop())
+            # self.loop.run_forever()
         except KeyboardInterrupt:
             print("Client interrupted.")
         finally:
@@ -106,60 +107,74 @@ class WebSkClientThread(threading.Thread):
             print("Event loop closed.")
 
 
+    # def stop(self):
+    #     try:
+    #         logger = logging.getLogger(self.skId)
+    #         handlers = logger.handlers[:]
+    #         for handler in handlers:
+    #             handler.close()
+    #             logger.removeHandler(handler)
+    #         logging.getLogger(self.skId).handlers = []
+    #
+    #         self.isShutdown = True
+    #         async def cancel_all_tasks(websocket):
+    #             try:
+    #                 for skInfo in enumerate(self.client_list):
+    #                     if skInfo in moduleData.runChannels:
+    #                         moduleData.runChannels.remove(skInfo)
+    #                 self.client_list.clear()
+    #                 moduleData.mainInstance.updateConnList()
+    #                 try:
+    #                     await websocket.close()
+    #                 except:
+    #                     print(f'ddd : {traceback.print_exc()}')
+    #             except:
+    #                 print(f'ddd : {traceback.print_exc()}')
+    #             finally:
+    #                 self.isRun = False
+    #                 self.loop.run_until_complete(self.loop.shutdown_asyncgens())
+    #                 self.loop.close()
+    #
+    #         asyncio.run(cancel_all_tasks(self.socket))
+    #     except Exception as e:
+    #         logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
+    #     finally:
+    #         moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_client')
+    #         self.loop.close()
+    #         self._stop_event.set()
+
+
     def stop(self):
+        self.isShutdown = True
+        self.isRun = False
+
+        async def _shutdown():
+            try:
+                if self.socket is not None:
+                    await self.socket.close()
+            finally:
+                self.socket = None
+                # connection_loop가 while 조건 보고 빠지게 됨
+
+        # self.loop가 살아있을 때만 스케줄
         try:
-            logger = logging.getLogger(self.skId)
-            handlers = logger.handlers[:]
-            for handler in handlers:
-                handler.close()
-                logger.removeHandler(handler)
-            logging.getLogger(self.skId).handlers = []
-
-            self.isShutdown = True
-            async def cancel_all_tasks(websocket):
-                try:
-                    for skInfo in enumerate(self.client_list):
-                        if skInfo in moduleData.runChannels:
-                            moduleData.runChannels.remove(skInfo)
-                    self.client_list.clear()
-                    moduleData.mainInstance.updateConnList()
-                    try:
-                        await websocket.close()
-                    except:
-                        print(f'ddd : {traceback.print_exc()}')
-                except:
-                    print(f'ddd : {traceback.print_exc()}')
-                finally:
-                    self.isRun = False
-                    self.loop.run_until_complete(self.loop.shutdown_asyncgens())
-                    self.loop.close()
-
-            asyncio.run(cancel_all_tasks(self.socket))
-        except Exception as e:
-            logger.error(f'SK_ID:{self.skId} Stop fail exception : {traceback.format_exc()}')
-        finally:
-            moduleData.mainInstance.deleteTableRow(self.skId, 'list_run_client')
-            self.loop.close()
-            self._stop_event.set()
-
+            asyncio.run_coroutine_threadsafe(_shutdown(), self.loop)
+            self.loop.call_soon_threadsafe(self.loop.stop)  # run_forever 쓰는 경우
+        except Exception:
+            logger.error(f"stop schedule error: {traceback.format_exc()}")
 
     async def initClient(self):
-        """웹소켓 서버에 연결합니다."""
+        """웹소켓 서버에 연결합니다. 성공 True / 실패 False"""
+        url = f'ws://{self.skIp}:{self.skPort}'
         try:
-            url = f'ws://{self.skIp}:{self.skPort}'
-            self.isRun = True
             self.socket = await websockets.connect(url)
+            self.isRun = True
             logger.info(f"Connected to server at {url}")
+            return True
         except Exception as e:
             self.isRun = False
             logger.error(f"Failed to connect to {url}: {e}")
-
-            if self.isShutdown == False:
-                await self.initClient()
-            return
-        # 서버와의 통신 작업을 처리할 태스크를 이벤트 루프에 추가
-        self.loop.create_task(self.websocket_handler())
-
+            return False
 
 
     async def websocket_handler(self):
@@ -202,7 +217,7 @@ class WebSkClientThread(threading.Thread):
                     readBytesCnt = self.codec.concyctencyCheck(reciveBytes)
                     if readBytesCnt == 0:
                         logger.info(f'concyctence error : {reciveBytes}')
-                        return
+                        continue
 
                     if self.skLogYn:
                         decimal_string = ' '.join(str(byte) for byte in reciveBytes)
@@ -233,12 +248,40 @@ class WebSkClientThread(threading.Thread):
 
             moduleData.mainInstance.updateConnList()
 
-            if self.isShutdown == False:
-                await self.initClient()
-            else:
-                await self.socket.close()
-                self.socket = None
+            await self.socket.close()
+            self.socket = None
 
+            # if self.isShutdown == False:
+            #     await self.initClient()
+            # else:
+            #     await self.socket.close()
+            #     self.socket = None
+
+
+
+    async def connection_loop(self):
+        while not self.isShutdown:
+            ok = await self.initClient()
+            if not ok:
+                await asyncio.sleep(5)
+                continue
+            try:
+                # 여기서 핸들러를 "기다려"서 끊기면 다음 루프로
+                await self.websocket_handler()
+            except Exception:
+                logger.error(f"connection_loop handler error: {traceback.format_exc()}")
+            finally:
+                # 소켓 정리(중복 close 방지)
+                try:
+                    if self.socket is not None:
+                        await self.socket.close()
+                except:
+                    pass
+                self.socket = None
+                self.isRun = False
+
+                if not self.isShutdown:
+                    await asyncio.sleep(5)
 
 
     def sendBytesToChannel(self, channel ,bytes):

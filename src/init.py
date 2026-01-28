@@ -4,7 +4,7 @@ import traceback
 from PySide6.QtCore import Slot, Qt
 from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem
 from PySide6.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QMessageBox
-
+from src.utils.ExcelUtils import ExcelUtils
 from src.component.sql.SqlHandler import SqlHandler
 from src.protocols.plc.PlcMisubisiThread import PlcMisubisiThread
 from src.protocols.plc.PlcSimensThread import PlcSimensThread
@@ -107,6 +107,12 @@ class InitClass(QMainWindow):
         self.sqlHandler = SqlHandler(self.initData)
         # self.logPop = Log(self.initData)
 
+
+        # 테이블명세서 필요시
+        # db = moduleData.dbHandler
+        # testdata = db.getTables()
+        # test = ExcelUtils()
+        # test.makeTableList(testdata)
 
 
 
