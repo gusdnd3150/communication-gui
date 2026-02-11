@@ -116,7 +116,7 @@ def selectInitSocketList(skId , useYn, pkgId='CORE'):
     query.append('	FROM TB_SK_MSG_HD    ')
     query.append(')B                     ')
     query.append('ON A.HD_ID = B.HD_ID   ')
-    query.append('ORDER BY PKG_ID , SK_CONN_TYPE, SK_ID')
+    query.append('ORDER BY PKG_ID , SK_ID, SK_CONN_TYPE ')
 
     return " ".join(query)
 
@@ -174,7 +174,7 @@ def selectSocketList(skId , useYn, pkgId='CORE'):
     query.append('	FROM TB_SK_MSG_HD    ')
     query.append(')B                     ')
     query.append('ON A.HD_ID = B.HD_ID   ')
-    query.append('ORDER BY PKG_ID , SK_CONN_TYPE, SK_ID')
+    query.append('ORDER BY PKG_ID , SK_ID, SK_CONN_TYPE')
 
     return " ".join(query)
 

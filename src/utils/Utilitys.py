@@ -2,7 +2,6 @@ import traceback
 
 from conf.logconfig import logger
 import struct
-import requests
 
 
 # RECIVE BODY로 넘어오는 데이터를 타입/길이 바탕으로 파싱
