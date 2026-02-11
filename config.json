@@ -3,5 +3,5 @@
   "DB_DSN": "KH4SMTDBADM",
   "DB_PWD": "Rhdwjd!2xla",
   "DB_URL": "jdbc:tibero:thin:@dev.teia.co.kr:8629:tibero",
-  "USE_YN": "Y"
+  "USE_YN": "N"
 }
