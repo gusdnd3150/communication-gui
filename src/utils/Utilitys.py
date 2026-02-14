@@ -38,15 +38,26 @@ def decodeMsgKeyVal(data, type):
             int_data = int(data)
             return int_data
         elif type == 'BYTE':
-            byte_data = int(data, 16).to_bytes(1, byteorder='big')  # 16진수 문자열을 바이트로 변환
+            byte_data = strHexToByte(data)
             return bytes([byte_data])
         elif type == 'BYTES':
-            return bytes.fromhex(data)
+            return strHexToBytes(data)
         else:
             return None
     except Exception as e:
         logger.error(f'Utilitys decodeMsgKeyVal Exception : {e}')
         return None
+
+
+# 16진수 문자열을 바이트로 변환 '0x00'
+def strHexToByte(hexStr):
+    return int(hexStr, 16).to_bytes(1, byteorder='big')
+
+# 16진수 문자열을 바이트로 변환 '0x00 0x01 0x03' 등 hex문자열 공백기준 n개
+def strHexToBytes(hexStrs):
+    return bytes.fromhex(hexStrs)
+
+
 
 # SEND BODY 로 전송되는 타입/길이 바탕으로 전문 파싱
 def encodeDataToBytes(data, type, length, pad=' '):
@@ -55,7 +66,7 @@ def encodeDataToBytes(data, type, length, pad=' '):
             if type == 'STRING':
                 data = ''
             elif type == 'INT' or type == 'SHORT' or type == 'DOUBLE' or type == 'FLOAT':
-                data = 1
+                data = 0
             elif type == 'BYTE':
                 data = bytearray([0x20] * length)
             elif type == 'BYTES': # 공백으로 초기화
