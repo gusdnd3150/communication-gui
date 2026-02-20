@@ -41,12 +41,15 @@ skClientCombo = ['KEEP','EVENT']
 jobTypeCombo = ['SEC','MIN','HOUR','CRON']
 eventTypeCombo = ['ACTIVE','KEEP','IDLE_READ','INACTIVE']
 hdCombo = ['LENGTH_STR_8B','LENGTH_STR_20B','LENGTH_20B','COPCO_STR_20B','FREE','JSON']
-
-plcMakerCombo = ['Mitsubishi','Simens']
-commTyCombo = ['binary','ascii']
+#
+# plcMakerCombo = ['Mitsubishi','Simens']
+plcMakerCombo = ['LS']
+# commTyCombo = ['binary','ascii']
+commTyCombo = ['binary']
 slotCombo = ['0','1','2','3']
 rackCombo = ['0','1','2','3']
 
+lsCpuTyCombo = ['XGT']
 simenCpuTyCombo = ['S7300','S7400','S71200','S71500']
 simenProtocolCombo = ['S7']
 mitsuCpuTyCombo = ['FX3U','FX3G','QnA','QnC','L']

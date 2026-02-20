@@ -6,8 +6,7 @@ from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem
 from PySide6.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QMessageBox
 from src.utils.ExcelUtils import ExcelUtils
 from src.component.sql.SqlHandler import SqlHandler
-from src.protocols.plc.PlcMisubisiThread import PlcMisubisiThread
-from src.protocols.plc.PlcSimensThread import PlcSimensThread
+from src.protocols.plc.PlcLsThread import PlcLsThread
 from src.protocols.tcp.ClientThread import ClientThread
 from src.protocols.tcp.ServerThread import ServerThread
 from src.thread.MsgHandler import MsgHandler
@@ -226,10 +225,8 @@ class InitClass(QMainWindow):
             logger.info(f'start_sk() PLC Run Cnt : {moduleData.plcList}')
             for i, item in enumerate(moduleData.plcList):
                 threadPlcInfo = None
-                if item['PLC_MAKER'] == 'Simens':
-                    threadPlcInfo = PlcSimensThread(item)
-                elif item['PLC_MAKER'] == 'Mitsubishi':
-                    threadPlcInfo = PlcMisubisiThread(item)
+                if item['PLC_MAKER'] == 'LS':
+                    threadPlcInfo = PlcLsThread(item)
 
                 if threadPlcInfo is not None:
                     threadPlcInfo.daemon = True
@@ -546,7 +543,6 @@ class InitClass(QMainWindow):
 
     @Slot()
     def workUpdateConnList(self):
-
         try:
             self.treeModel.clear()  # 모델의 모든 항목 제거
             # self.treeModel.setHorizontalHeaderLabels(["SK_ID", "Description"])  # 헤더 다시 설정
@@ -562,6 +558,14 @@ class InitClass(QMainWindow):
                 # 루트 노드에 부모 항목 추가 (여러 열)
                 # self.root_node.appendRow([skItem, description_item])
                 self.root_node.appendRow([skItem])
+
+            for index, item in enumerate(moduleData.plcList):
+                skItem = QStandardItem( item['PLC_ID'] )
+                for skId, client, thread in moduleData.runChannels:
+                    if skId == item['PLC_ID']:
+                        skItem.appendRow([QStandardItem(f'{str(client)} -- {thread}')])
+                self.root_node.appendRow([skItem])
+
             self.ui.list_conn.setModel(self.treeModel)
             self.ui.list_conn.expandAll()
 
