@@ -102,25 +102,27 @@ class PlcLsThread(threading.Thread):
                 moduleData.mainInstance.updateConnList()
 
                 self.socket.settimeout(10)
-
                 self.isRun = True
+
+                self.activeSend()
+
                 with self.socket:
                     while self.socket:
                         try:
                             reciveBytes = self.socket.recv(9999)
                             try:
-                                if self.skLogYn:
+                                if self.logYn:
                                     decimal_string = ' '.join(str(byte) for byte in reciveBytes)
                                     logger.info(
-                                        f'PLC_ID:{self.plcId} recive_string:[{reciveBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}] read length : {reciveBytessCnt} ')
-                                # self.threadPoolExcutor(BzActivator2(reciveObj))
+                                        f'PLC_ID:{self.plcId} recive_string:[{reciveBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}] read length : {len(reciveBytes)} ')
+                                self.decodePlcData(reciveBytes)
                             except Exception as e:
                                 logger.error(f'PLC_ID:{self.plcId} Message parsing Exception : buffer= {str(buffer)} {e}')
 
                         except socket.timeout:
                             logger.info(f'{self.plcId} : [IDLE CHANNEL CLOSE]')
                             self.socket.close()
-                            continue
+                            break
                         except Exception as e:
                             logger.error(f'PLC_ID={self.plcId} connection exception : {traceback.format_exc()}')
                             self.isRun = False
@@ -128,7 +130,6 @@ class PlcLsThread(threading.Thread):
             except Exception as e:
                 self.isRun = False
                 logger.error(f'PLC_ID={self.plcId}  TCP CLIENT try to connect exception : {e}')
-
             finally:
                 if conn_list in moduleData.runChannels:
                     moduleData.runChannels.remove(conn_list)
@@ -158,7 +159,7 @@ class PlcLsThread(threading.Thread):
         try:
             result = future.result()
             # 결과를 처리하는 로직
-            if self.skLogYn:
+            if self.logYn:
                 end_time = time.time()
                 start = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
                 end = datetime.fromtimestamp(end_time).strftime('%Y-%m-%d %H:%M:%S')
@@ -167,3 +168,16 @@ class PlcLsThread(threading.Thread):
                     f'----------- PLC_ID: {self.plcId} - {msg} begin:{start} end:{end} total time: {round(end_time - start_time, 4)}------------')
         except Exception as e:
             self.logger(f"Exception while processing result: {e}")
+
+
+    def decodePlcData(self, bytesData):
+        try:
+            print(f'decodePlcData : {bytesData}')
+        except Exception as e:
+            logger.error(f'decodePlcData exception : {e}')
+
+    def activeSend(self):
+        try:
+            print(f'activeSend : ')
+        except Exception as e:
+            logger.error(f'activeSend exception : {e}')
