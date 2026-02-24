@@ -232,6 +232,7 @@ class InitClass(QMainWindow):
                     threadPlcInfo.daemon = True
                     threadPlcInfo.start()
                     item['PLC_THREAD'] = threadPlcInfo
+                    self.ui.main_combo_sk_list.addItem(f'PLC:{item['PLC_ID']}')
 
 
             logger.info(f'start_sk() Socket Run Cnt : {len(moduleData.sokcetList)}')

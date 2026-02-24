@@ -2,9 +2,16 @@
 
 def selectPkgCombo():
     query = []
-    query.append('SELECT PKG_ID    ')
-    query.append('from TB_SK_PKG_SK')
-    query.append('group by PKG_ID  ')
+    query.append('SELECT A.*          ')
+    query.append('FROM (              ')
+    query.append('	SELECT            ')
+    query.append('		PKG_ID        ')
+    query.append('	FROM TB_SK_PKG_SK ')
+    query.append('	UNION             ')
+    query.append('	SELECT            ')
+    query.append('		PKG_ID        ')
+    query.append('	FROM TB_SK_PKG_PLC')
+    query.append(') A                 ')
     return " ".join(query)
 
 
