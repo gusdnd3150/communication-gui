@@ -1,6 +1,6 @@
 
 from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView
-from PySide6.QtGui import QColor, QBrush
+from PySide6.QtGui import QColor, QBrush, QKeySequence, QShortcut
 import sys
 import os
 import src.protocols.SendHandler as SendHandler
@@ -33,6 +33,7 @@ class MsgHandler():
         self.ui.main_btn_handle_send.clicked.connect(self.sendMsg)
         self.ui.main_btn_save_dt_val.clicked.connect(self.saveDefaultVal)
         self.ui.main_handle_search.textChanged.connect(self.searchMsg)
+        QShortcut(QKeySequence("Ctrl+Return"), self.ui.centralwidget).activated.connect(self.sendMsg)
 
 
 

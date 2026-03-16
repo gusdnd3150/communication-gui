@@ -11,7 +11,6 @@ from src.protocols.sch.BzSchedule2 import BzSchedule2
 from src.protocols.BzActivator2 import BzActivator2
 import asyncio
 import websockets
-from aiohttp import web
 from concurrent.futures import ThreadPoolExecutor
 import weakref
 import time
