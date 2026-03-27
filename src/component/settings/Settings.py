@@ -560,7 +560,6 @@ class Settings(QMainWindow):
                     obj['MSG_ID'] = targetMsg
                     upd_rows.append(obj)
 
-                logger.info(f'ddddddd :: {upd_rows}')
                 queryExecute(f'DELETE FROM TB_SK_MSG_BODY_DT WHERE MSG_ID ="{targetMsg}"')
                 for ix, item in enumerate(upd_rows):
                     # DT 테이블에 새롭게 INSERT
@@ -569,15 +568,34 @@ class Settings(QMainWindow):
                         ,'MSG_DT_ORD':item['MSG_DT_ORD']
                         ,'MSG_DT_VAL_ID':item['MSG_DT_VAL_ID']
                     }
-                    queryExecute(insertMsgBodyDt(insertRow))
                     cnt = selectQueryAsInt(F'SELECT COUNT(1) FROM TB_SK_MSG_VAL WHERE VAL_ID = "{item["MSG_DT_VAL_ID"]}"')
-                    if cnt < 1:
+
+                    if cnt == 0: # 없으면 신규 VAL 저장
                         insertRow2 = {
                             'VAL_ID': item['MSG_DT_VAL_ID']
                             , 'VAL_TYPE': item['VAL_TYPE']
                             , 'VAL_LEN': item['VAL_LEN']
                         }
                         queryExecute(insertMsgVal(insertRow2))
+                    else: # 있으면 항목 길이 확인 후 다르게 저장
+                        chkVal = selectQueryAsInt(F'SELECT COUNT(1) FROM TB_SK_MSG_VAL WHERE VAL_ID = "{item["MSG_DT_VAL_ID"]}" and VAL_LEN = "{item["VAL_LEN"]}"')
+                        newVal = item['MSG_DT_VAL_ID']+f'_{item['VAL_LEN']}'
+                        chkVal2 = selectQueryAsInt(F'SELECT COUNT(1) FROM TB_SK_MSG_VAL WHERE VAL_ID = "{newVal}" and VAL_LEN = "{item["VAL_LEN"]}"')
+
+                        if chkVal == 0 and chkVal2 == 0:
+                            insertRow2 = {
+                                'VAL_ID': newVal
+                                , 'VAL_TYPE': item['VAL_TYPE']
+                                , 'VAL_LEN': item['VAL_LEN']
+                            }
+                            queryExecute(insertMsgVal(insertRow2))
+                            insertRow['MSG_DT_VAL_ID'] = newVal
+
+                        if chkVal == 0 and chkVal2 > 0:
+                            insertRow['MSG_DT_VAL_ID'] = newVal
+
+                    queryExecute(insertMsgBodyDt(insertRow))
+
                 self.createMsgDtGrid(targetMsg)
 
         except:
