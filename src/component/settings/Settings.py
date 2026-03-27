@@ -1,5 +1,6 @@
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QBrush, QColor
-from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView ,QMessageBox
+from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView, QMessageBox, QComboBox
 
 from conf.skModule import *
 from conf.sql.SystemQueryString import *
@@ -412,9 +413,14 @@ class Settings(QMainWindow):
                 row_count = self.ui.msg_list.rowCount()
                 self.ui.msg_list.insertRow(row_count)
                 for j, hd in enumerate(headers):
-
-                    if skItem.get(hd) is not None:
-                        self.ui.msg_list.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
+                    if hd == 'MSG_KEY_TYPE':
+                        combo = self._makeValTypeCombo(skItem.get(hd))
+                        combo.setEnabled(False)
+                        self.ui.msg_list.setCellWidget(row_count, j, combo)
+                    elif skItem.get(hd) is not None:
+                        item = QTableWidgetItem(str(skItem[hd]))
+                        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+                        self.ui.msg_list.setItem(row_count, j, item)
             self.ui.msg_list.cellClicked.connect(self.selectMsgRow)
             self.ui.msg_list.currentCellChanged.connect(self.selectMsgRow)
         except Exception as e:
@@ -443,8 +449,9 @@ class Settings(QMainWindow):
                 row_count = self.ui.msg_dt_list.rowCount()
                 self.ui.msg_dt_list.insertRow(row_count)
                 for j, hd in enumerate(headers):
-
-                    if skItem.get(hd) is not None:
+                    if hd == 'VAL_TYPE':
+                        self.ui.msg_dt_list.setCellWidget(row_count, j, self._makeValTypeCombo(skItem.get(hd)))
+                    elif skItem.get(hd) is not None:
                         self.ui.msg_dt_list.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
             # self.ui.msg_dt_list.cellClicked.connect(self.selectMsgRow)
         except Exception as e:
@@ -458,10 +465,14 @@ class Settings(QMainWindow):
             self.ui.msg_list.insertRow(row_count)
             headers = ['MSG_ID', 'MSG_KEY_TYPE', 'MSG_KEY_VAL', 'MSG_DESC']
             for j, hd in enumerate(headers):
-                item = QTableWidgetItem('')
-                item.setBackground(QBrush(QColor(247, 243, 243)))  # 노란색 배경 설정
-                item.setForeground(QBrush(QColor(0, 0, 0)))
-                self.ui.msg_list.setItem(row_count, j, item)
+
+                if hd == 'MSG_KEY_TYPE':
+                    self.ui.msg_list.setCellWidget(row_count, j, self._makeValTypeCombo('STRING'))
+                else:
+                    item = QTableWidgetItem('')
+                    item.setBackground(QBrush(QColor(247, 243, 243)))  # 노란색 배경 설정
+                    item.setForeground(QBrush(QColor(0, 0, 0)))
+                    self.ui.msg_list.setItem(row_count, j, item)
                 
             self.addMsgList.append(row_count)
         except:
@@ -512,8 +523,12 @@ class Settings(QMainWindow):
         try:
             for column in range(self.ui.msg_list.columnCount()):
                 header_item = self.ui.msg_list.horizontalHeaderItem(column)
-                item = self.ui.msg_list.item(rownum, column)
-                row_data[header_item.text()] = item.text() if item else ""
+                widget = self.ui.msg_list.cellWidget(rownum, column)
+                if widget is not None:
+                    row_data[header_item.text()] = widget.currentText()
+                else:
+                    item = self.ui.msg_list.item(rownum, column)
+                    row_data[header_item.text()] = item.text() if item else ""
         except:
             logger.error(f'getMsgByRownum exceptoon : {traceback.format_exc()}')
         return row_data
@@ -524,11 +539,22 @@ class Settings(QMainWindow):
         try:
             for column in range(self.ui.msg_dt_list.columnCount()):
                 header_item = self.ui.msg_dt_list.horizontalHeaderItem(column)
-                item = self.ui.msg_dt_list.item(rownum, column)
-                row_data[header_item.text()] = item.text() if item else ""
+                widget = self.ui.msg_dt_list.cellWidget(rownum, column)
+                if widget is not None:
+                    row_data[header_item.text()] = widget.currentText()
+                else:
+                    item = self.ui.msg_dt_list.item(rownum, column)
+                    row_data[header_item.text()] = item.text() if item else ""
         except:
             logger.error(f'getMsgDtByRownum exceptoon : {traceback.format_exc()}')
         return row_data
+
+    def _makeValTypeCombo(self, current_val=None):
+        combo = QComboBox()
+        combo.addItems(['STRING', 'INT', 'SHORT', 'DOUBLE', 'FLOAT', 'BYTE', 'BYTES'])
+        if current_val and combo.findText(current_val) >= 0:
+            combo.setCurrentText(current_val)
+        return combo
 
     def msgDtAddRow(self):
         try:
@@ -539,10 +565,13 @@ class Settings(QMainWindow):
                 self.ui.msg_dt_list.insertRow(row_count)
                 headers = ['MSG_DT_ORD','MSG_DT_VAL_ID','MSG_DT_DESC','VAL_TYPE','VAL_LEN' ]
                 for j, hd in enumerate(headers):
-                    item = QTableWidgetItem('')
-                    item.setBackground(QBrush(QColor(247, 243, 243)))  # 노란색 배경 설정
-                    item.setForeground(QBrush(QColor(0, 0, 0)))
-                    self.ui.msg_dt_list.setItem(row_count, j, item)
+                    if hd == 'VAL_TYPE':
+                        self.ui.msg_dt_list.setCellWidget(row_count, j, self._makeValTypeCombo())
+                    else:
+                        item = QTableWidgetItem('')
+                        item.setBackground(QBrush(QColor(247, 243, 243)))
+                        item.setForeground(QBrush(QColor(0, 0, 0)))
+                        self.ui.msg_dt_list.setItem(row_count, j, item)
 
                 # self.addMsgDtList.append(row_count)
         except:
