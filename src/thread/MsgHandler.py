@@ -1,19 +1,19 @@
 
-from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView
-from PySide6.QtGui import QColor, QBrush, QKeySequence, QShortcut
-import sys
-import os
-import src.protocols.SendHandler as SendHandler
-
 import base64
+import os
+import sys
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QColor, QBrush, QKeySequence, QShortcut
+from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView
+
+import src.protocols.SendHandler as SendHandler
 
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
 import traceback
 from conf.skModule import *
-# import conf.skModule as moduleData
 from conf.sql.SystemQueryString import *
-from ui.ui_handler import Ui_Handler
+
 
 class MsgHandler():
 
@@ -33,7 +33,13 @@ class MsgHandler():
         self.ui.main_btn_handle_send.clicked.connect(self.sendMsg)
         self.ui.main_btn_save_dt_val.clicked.connect(self.saveDefaultVal)
         self.ui.main_handle_search.textChanged.connect(self.searchMsg)
+
+        # self.ui.main_list_handle_msg.currentChanged.connect(self.selectMsgRow)
         QShortcut(QKeySequence("Ctrl+Return"), self.ui.centralwidget).activated.connect(self.sendMsg)
+        QShortcut(QKeySequence("Ctrl+1"), self.ui.centralwidget).activated.connect(self.ui.main_handle_search.setFocus)
+        QShortcut(QKeySequence("Ctrl+2"), self.ui.centralwidget).activated.connect(self.ui.main_list_handle_msg.setFocus)
+        QShortcut(QKeySequence("Ctrl+3"), self.ui.centralwidget).activated.connect(self.ui.main_list_handle_body.setFocus)
+        QShortcut(QKeySequence("Ctrl+N"), self.ui.centralwidget).activated.connect(self.comboNextItem)
 
 
 
@@ -42,6 +48,7 @@ class MsgHandler():
         try:
             headers = ['MSG_ID', 'MSG_KEY_TYPE', 'MSG_KEY_VAL', 'MSG_DESC']
             self.ui.main_list_handle_msg.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+            self.ui.main_list_handle_msg.setEditTriggers(self.ui.main_list_handle_msg.EditTrigger.NoEditTriggers)
             self.ui.main_list_handle_msg.setRowCount(0)  # Table의 행을 설정, list의 길이
             self.ui.main_list_handle_msg.setColumnCount(4)
             self.ui.main_list_handle_msg.setHorizontalHeaderLabels(headers)
@@ -51,8 +58,12 @@ class MsgHandler():
                 self.ui.main_list_handle_msg.insertRow(row_count)
                 for j, hd in enumerate(headers):
                     if skItem.get(hd) is not None:
-                        self.ui.main_list_handle_msg.setItem(row_count, j, QTableWidgetItem(str(skItem[hd])))
+                        item = QTableWidgetItem(str(skItem[hd]))
+                        item.setBackground(QBrush(QColor(247, 243, 243)))
+                        item.setForeground(QBrush(QColor(0, 0, 0)))
+                        self.ui.main_list_handle_msg.setItem(row_count, j,item )
             self.ui.main_list_handle_msg.cellClicked.connect(self.selectMsgRow)
+            self.ui.main_list_handle_msg.currentCellChanged.connect(lambda row, col, *_: self.selectMsgRow(row, col) if row >= 0 else None)
         except Exception as e:
             logger.error(f'createMsgGrid exception : {traceback.format_exc()}')
 
@@ -72,6 +83,14 @@ class MsgHandler():
             logger.error(f'selectMsgRow exception : {traceback.format_exc()} ')
 
 
+    def comboNextItem(self):
+        combo = self.ui.main_combo_sk_list
+        if combo.count() == 0:
+            return
+        next_idx = (combo.currentIndex() + 1) % combo.count()
+        combo.setCurrentIndex(next_idx)
+
+
     def searchMsg(self):
         try:
             self.createMsgGrid(self.ui.main_handle_search.text(),None)
@@ -89,18 +108,19 @@ class MsgHandler():
             self.ui.main_list_handle_body.verticalHeader().setVisible(False)  # 행 번호 헤더 숨기기
             self.ui.main_list_handle_body.setHorizontalHeaderLabels(headers)
             skList = selectQuery(selectSocketMSgDtList(msg))
-            print(skList)
             for i, skItem in enumerate(skList):
                 row_count = self.ui.main_list_handle_body.rowCount()
                 self.ui.main_list_handle_body.insertRow(row_count)
                 for j, hd in enumerate(headers):
                     if skItem.get(hd) is not None:
                         item = QTableWidgetItem(str(skItem[hd]))
-                        self.ui.main_list_handle_body.setItem(row_count, j, item)
-                    if hd =='VALUE':
-                        item = QTableWidgetItem(str(skItem['VAL_DESC']))
-                        item.setBackground(QBrush(QColor(247, 243, 243)))  # 노란색 배경 설정
+                        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+                        item.setBackground(QBrush(QColor(247, 243, 243)))
                         item.setForeground(QBrush(QColor(0, 0, 0)))
+                        self.ui.main_list_handle_body.setItem(row_count, j, item)
+                    if hd == 'VALUE':
+                        item = QTableWidgetItem(str(skItem['VAL_DESC']) if skItem.get('VAL_DESC') is not None else ' ')
+                        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable)
                         self.ui.main_list_handle_body.setItem(row_count, j, item)
 
         except Exception as e:
@@ -184,11 +204,9 @@ class MsgHandler():
                     #     row_data[headers[column]] = None  # 셀이 비어있는 경우 None으로 처리
                 data.append(row_data)
 
-            logger.info(f'data:{data}')
             for index, item in enumerate(data):
                 resultObj[item['MSG_DT_VAL_ID']] = str(item['VALUE'])
 
-            logger.info(f'{resultObj}')
             for key,val in enumerate(resultObj):
                 logger.info(f'{val},:{resultObj[val]}')
                 queryExecute(updateTbSkMsgVal(val, resultObj[val]))

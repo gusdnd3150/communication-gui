@@ -4,12 +4,13 @@ import traceback
 from PySide6.QtCore import Slot, Qt
 from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem
 from PySide6.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QMessageBox
-from src.utils.ExcelUtils import ExcelUtils
+
 from src.component.sql.SqlHandler import SqlHandler
 from src.protocols.plc.PlcLsThread import PlcLsThread
 from src.protocols.tcp.ClientThread import ClientThread
 from src.protocols.tcp.ServerThread import ServerThread
 from src.thread.MsgHandler import MsgHandler
+
 program_path = sys.argv[0]
 import logging
 program_directory = os.path.dirname(program_path)
