@@ -6,6 +6,7 @@ from PySide6.QtGui import QColor, QStandardItemModel, QStandardItem
 from PySide6.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QMessageBox
 
 from src.component.sql.SqlHandler import SqlHandler
+from src.component.ConnItemDelegate import ConnItemDelegate
 from src.protocols.plc.PlcLsThread import PlcLsThread
 from src.protocols.tcp.ClientThread import ClientThread
 from src.protocols.tcp.ServerThread import ServerThread
@@ -353,6 +354,10 @@ class InitClass(QMainWindow):
         # self.treeModel.setHorizontalHeaderLabels(["Item", "Description"])
         self.treeModel.setHorizontalHeaderLabels(["Item"])
         self.root_node = self.treeModel.invisibleRootItem()
+        self.ui.list_conn.setEditTriggers(self.ui.list_conn.EditTrigger.NoEditTriggers)
+        self.connDelegate = ConnItemDelegate(self.ui.list_conn)
+        self.ui.list_conn.setItemDelegate(self.connDelegate)
+        self.connDelegate.button_clicked.connect(self.onConnItemButtonClicked)
 
 
         # --- 테이블 설정 ---
@@ -538,6 +543,17 @@ class InitClass(QMainWindow):
             self.logPop.hide()
         else:
             self.logPop.show()
+
+
+    def onConnItemButtonClicked(self, index):
+        sk_id = index.data()
+        try:
+            for skId, socket,thr in moduleData.runChannels:
+                    if skId == sk_id:
+                        socket.close()
+        except:
+            logger.error(f'onConnItemButtonClicked exception: {traceback.format_exc()}')
+
 
 
     def closeMain(self):
