@@ -403,6 +403,7 @@ class Settings(QMainWindow):
 
     def createMsgGrid(self, msg, mid):
         try:
+            #headers = ['MSG_ID','MSG_KEY_TYPE','MSG_KEY_VAL','MSG_DESC','MSG_KEY_LENGTH' ]
             headers = ['MSG_ID','MSG_KEY_TYPE','MSG_KEY_VAL','MSG_DESC','MSG_KEY_LENGTH' ]
             self.ui.msg_list.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
             self.ui.msg_list.setRowCount(0)  # Table의 행을 설정, list의 길이
@@ -414,7 +415,7 @@ class Settings(QMainWindow):
                 self.ui.msg_list.insertRow(row_count)
                 for j, hd in enumerate(headers):
                     if hd == 'MSG_KEY_TYPE':
-                        combo = self._makeValTypeCombo(skItem.get(hd))
+                        combo = self._makeMsgKeyTypeCombo(skItem.get(hd))
                         combo.setEnabled(False)
                         self.ui.msg_list.setCellWidget(row_count, j, combo)
                     elif skItem.get(hd) is not None:
@@ -467,7 +468,7 @@ class Settings(QMainWindow):
             for j, hd in enumerate(headers):
 
                 if hd == 'MSG_KEY_TYPE':
-                    self.ui.msg_list.setCellWidget(row_count, j, self._makeValTypeCombo('STRING'))
+                    self.ui.msg_list.setCellWidget(row_count, j, self._makeMsgKeyTypeCombo('STRING'))
                 else:
                     item = QTableWidgetItem('')
                     item.setBackground(QBrush(QColor(247, 243, 243)))  # 노란색 배경 설정
@@ -548,6 +549,13 @@ class Settings(QMainWindow):
         except:
             logger.error(f'getMsgDtByRownum exceptoon : {traceback.format_exc()}')
         return row_data
+
+    def _makeMsgKeyTypeCombo(self, current_val=None):
+        combo = QComboBox()
+        combo.addItems(['STRING','BYTE', 'BYTES','LENGTH'])
+        if current_val and combo.findText(current_val) >= 0:
+            combo.setCurrentText(current_val)
+        return combo
 
     def _makeValTypeCombo(self, current_val=None):
         combo = QComboBox()

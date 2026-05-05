@@ -46,7 +46,12 @@ class LengthCodec():
                 if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
                     result = int(decodeBytesToType(read, hd['DT_TYPE']))
                 del copyBytes[0:hd['DT_LEN']]
-        copyBytes.clear()
+
+
+        # 인도,화성 h6 전용 별도처리
+        if result > 0 and self.hdId == 'LENGTH_20B':
+            result = result+1 # 추가 1바이트를 읽음
+            logger.info(f'LengthCodec LENGTH_20B : {result}')
 
         return result
 
@@ -190,6 +195,10 @@ class LengthCodec():
         # 딜리미터 세팅
         if (self.delimiter != b''):
             returnBytes.extend(self.delimiter)
+
+        # 인도,화성 h6 전용 별도처리
+        if self.hdId == 'LENGTH_20B':
+            returnBytes.extend(b'\x00')
 
         return returnBytes
 
