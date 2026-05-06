@@ -62,8 +62,7 @@ class LengthCodec():
         returnData = {}
         msgInfo = None
 
-        inMsgVal = None
-        lenRelYn = 0
+        inMsgVal = None 
         inMsgId = None
         bodyList = None
 
@@ -71,12 +70,8 @@ class LengthCodec():
             if (len(msgBytes) < hd['DT_LEN']):
                 raise Exception('LengthCodec convertRecieData : 해더 전문 파싱 오류')
             read = msgBytes[:hd['DT_LEN']]
-            # decimal_string = ' '.join(str(byte) for byte in read)
-            # logger.info(f'dddd  :{decimal_string}')
             hdval = decodeBytesToType(read, hd['DT_TYPE'])
             returnData[hd['DT_ID']] = hdval
-            if hd.get('MSG_LEN_REL_YN') is not None and hd.get('MSG_LEN_REL_YN') == 'Y':
-                lenRelYn = returnData[hd['DT_ID']]
             if hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
                 inMsgVal = returnData[hd['DT_ID']]
 
@@ -97,7 +92,7 @@ class LengthCodec():
                         inMid = len(msgBytes) - 1
                     else:
                         inMid = len(msgBytes)
-                else:
+                else: # 기타 string,int 등등
                    inMid = inMsgVal
 
                 msgKeyVal = decodeMsgKeyVal(inData['MSG_KEY_VAL'], inData['MSG_KEY_TYPE'])
@@ -134,10 +129,7 @@ class LengthCodec():
         return returnData
 
     def encodeSendData(self, msgObj):
-        returnBytes = bytearray()
         msgId = msgObj['MSG_ID']
-        msgKeyType = None
-        msgKeyLen = 0
         msgKeyVal = None
         msgBody = None
 
@@ -153,8 +145,6 @@ class LengthCodec():
                 # 'VAL_TYPE': 'STRING', 'VAL_LEN': 4, 'VAL_DESC': ''}, {'MSG_ID': 'LINE_SIGNAL', 'MSG_DT_ORD': '2',
                 # 'MSG_DT_DESC': 'VCC', 'VAL_ID': 'LINE_SIGN', 'VAL_TYPE': 'STRING', 'VAL_LEN': 1, 'VAL_DESC': ''}], 'MSG_LEN': 5}
                 msgBody = body[body['MSG_ID']]
-                msgKeyType = body['MSG_KEY_TYPE']
-                msgKeyLen = body['MSG_KEY_LENGTH']
                 msgKeyVal = body['MSG_KEY_VAL']
                 break
 
