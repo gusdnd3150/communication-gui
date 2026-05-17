@@ -7,7 +7,7 @@ from PySide6.QtGui import QColor, QBrush, QKeySequence, QShortcut
 from PySide6.QtWidgets import QTableWidgetItem, QMainWindow, QHeaderView
 
 import src.protocols.SendHandler as SendHandler
-
+import src.utils.Utilitys as Utilitys
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
 import traceback
@@ -151,6 +151,12 @@ class MsgHandler():
                         tempVal =  str('').rjust(int(item['VALUE_LEN']), ' ')
                     resultObj[item['MSG_DT_VAL_ID']] = tempVal
 
+                elif item['VAL_TYPE'] == 'VARIABLE_LENGTH':
+                    tempVal = str(item['VALUE'])
+                    if tempVal is None:
+                        tempVal = ''
+                    resultObj[item['MSG_DT_VAL_ID']] = tempVal
+
                 elif item['VAL_TYPE'] == 'INT' or item['VAL_TYPE'] == 'SHORT':
                     tempVal = int(item['VALUE'])
                     if tempVal is None:
@@ -166,8 +172,9 @@ class MsgHandler():
                 elif item['VAL_TYPE'] == 'BYTE' or item['VAL_TYPE'] == 'BYTES':
                     tempVal = item['VALUE']
                     if tempVal is None:
-                        tempVal = str('').rjust(int(item['VALUE_LEN']), ' ')
-                    resultObj[item['MSG_DT_VAL_ID']] = tempVal
+                        # tempVal = str('').rjust(int(item['VALUE_LEN']), ' ')
+                        tempVal = '0x00'
+                    resultObj[item['MSG_DT_VAL_ID']] = Utilitys.strHexToBytes(tempVal)
 
                 elif item['VAL_TYPE'] == 'BASE64_DECMALS':
                     test = item['VALUE']

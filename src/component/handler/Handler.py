@@ -7,6 +7,8 @@ import src.protocols.SendHandler as SendHandler
 
 import base64
 
+from src.protocols.tcp.ServerThread import ServerThread
+
 program_path = sys.argv[0]
 program_directory = os.path.dirname(program_path)
 import traceback
@@ -122,7 +124,6 @@ class Handler(QMainWindow):
             row_count = self.ui.list_handle_body.rowCount()
             column_count = self.ui.list_handle_body.columnCount()
             headers = [self.ui.list_handle_body.horizontalHeaderItem(i).text() for i in range(column_count)]
-
             data = []
             resultObj = {}
             for row in range(row_count):
@@ -134,12 +135,19 @@ class Handler(QMainWindow):
                     else:
                         row_data[headers[column]] = None  # 셀이 비어있는 경우 None으로 처리
                 data.append(row_data)
-
+            logger.info(f'data:{data}')
             for index, item in enumerate(data):
+
                 if item['VAL_TYPE'] == 'STRING':
                     tempVal = str(item['VALUE'])
                     if tempVal is None:
                         tempVal =  str('').rjust(int(item['VALUE_LEN']), ' ')
+                    resultObj[item['MSG_DT_VAL_ID']] = tempVal
+
+                elif item['VAL_TYPE'] == 'VARIABLE_LENGTH':
+                    tempVal = str(item['VALUE'])
+                    if tempVal is None:
+                        tempVal = ' '
                     resultObj[item['MSG_DT_VAL_ID']] = tempVal
 
                 elif item['VAL_TYPE'] == 'INT':

@@ -154,6 +154,7 @@ class FreeCodec():
             value = None
             if msgObj.get(body['VAL_ID']) is not None:
                 value = msgObj[body['VAL_ID']]
+            #print(f'value:{value} {body['VAL_TYPE']} :{body['VAL_LEN']}')
             bodyBytes.extend(encodeDataToBytes(value, body['VAL_TYPE'], body['VAL_LEN']))
 
         totalLen = len(bodyBytes) + self.hdLen
@@ -166,6 +167,9 @@ class FreeCodec():
                 headerBytes.extend(encodeDataToBytes(totalLen, hd['DT_TYPE'], hd['DT_LEN'],'0'))
             elif hd.get('MSG_ID_REL_YN') is not None and hd.get('MSG_ID_REL_YN') == 'Y':
                 headerBytes.extend(encodeDataToBytes(msgKeyVal, msgKeyType, msgKeyLen))
+                 # if hd['DT_TYPE'] == 'BYTE': # '0x00' 형식의 16진수 문자열
+                 #    msgKeyVal = int(msgKeyVal, 16).to_bytes(1, byteorder='big')
+                # headerBytes.extend(encodeDataToBytes(msgKeyVal, hd['DT_TYPE'], hd['DT_LEN']))
             else:
                 value = None
                 if msgObj.get(hd['DT_ID']) is not None and msgObj.get(hd['DT_ID']) != '':

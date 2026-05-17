@@ -63,13 +63,11 @@ def strHexToBytes(hexStrs):
 def encodeDataToBytes(data, type, length, pad=' '):
     try:
         if data is None:
-            if type == 'STRING':
+            if type == 'STRING' or type == 'VARIABLE_LENGTH' or type == 'BASE64_DECMALS':
                 data = ''
             elif type == 'INT' or type == 'SHORT' or type == 'DOUBLE' or type == 'FLOAT':
                 data = 0
-            elif type == 'BYTE':
-                data = bytearray([0x20] * length)
-            elif type == 'BYTES': # 공백으로 초기화
+            elif type == 'BYTE' or type == 'BYTES':
                 data = bytearray([0x20] * length)
 
         if length is None:
@@ -98,8 +96,11 @@ def encodeDataToBytes(data, type, length, pad=' '):
             shortValue = data & 0xffff
             return shortValue.to_bytes(2, byteorder='big', signed=True)
 
-        elif type == 'BYTE' or type == 'VARIABLE_LENGTH' or type == 'BYTES' or type == 'BASE64_DECMALS':
+        elif type == 'BYTE' or type == 'BYTES' :
            return data
+
+        elif type == 'VARIABLE_LENGTH' or type == 'BASE64_DECMALS':
+           return data.encode('utf-8')
 
         elif type == 'FLOAT':
             try:
