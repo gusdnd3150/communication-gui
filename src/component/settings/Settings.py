@@ -559,7 +559,7 @@ class Settings(QMainWindow):
 
     def _makeValTypeCombo(self, current_val=None):
         combo = QComboBox()
-        combo.addItems(['STRING', 'INT', 'SHORT', 'DOUBLE', 'FLOAT', 'BYTE', 'BYTES'])
+        combo.addItems(['STRING', 'INT', 'SHORT', 'DOUBLE', 'FLOAT', 'BYTE', 'BYTES','INT_LE','SHORT_LE','DOUBLE_LE','FLOAT_LE'])
         if current_val and combo.findText(current_val) >= 0:
             combo.setCurrentText(current_val)
         return combo

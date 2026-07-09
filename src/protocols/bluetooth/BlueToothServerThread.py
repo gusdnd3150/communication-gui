@@ -200,7 +200,7 @@ class BlueToothServerThread(threading.Thread, Server):
                             readByte = buffer[:readBytesCnt]
                             try:
                                 if self.skLogYn:
-                                    decimal_string = ' '.join(str(byte) for byte in readByte)
+                                    decimal_string = ' '.join(str(byte & 0xff) for byte in readByte)
                                     self.logger.info(
                                         f'SK_ID:{self.skId} read length : {len(readByte)} recive_string:[{readByte.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                                     # moduleData.mainInstance.insertLog(self.skId, readByte ,'IN')
@@ -223,7 +223,7 @@ class BlueToothServerThread(threading.Thread, Server):
                             self.threadPoolExcutor(BzActivator2(idle_dict), '[IDLE read]')
 
                     except Exception as e:
-                        decimal_string = ' '.join(str(byte) for byte in buffer)
+                        decimal_string = ' '.join(str(byte & 0xff) for byte in buffer)
                         self.logger.error(
                             f'SK_ID:{self.skId} handler Exception read length : {len(buffer)} decimal_string : [{decimal_string}]')
                         self.logger.error(f'SK_ID:{self.skId} handler Exception : {traceback.format_exc()}')
@@ -278,7 +278,7 @@ class BlueToothServerThread(threading.Thread, Server):
                 if skId == self.skId:
                     client.sendall(bytes)
                     if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in bytes)
+                        decimal_string = ' '.join(str(byte & 0xff) for byte in bytes)
                         self.logger.info(
                             f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{decimal_string}]')
 
@@ -290,7 +290,7 @@ class BlueToothServerThread(threading.Thread, Server):
     def sendBytesToChannel(self, channel, bytes):
         try:
             if self.skLogYn:
-                decimal_string = ' '.join(str(byte) for byte in bytes)
+                decimal_string = ' '.join(str(byte & 0xff) for byte in bytes)
                 self.logger.info(
                     f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{decimal_string}]')
             channel.sendall(bytes)
@@ -310,7 +310,7 @@ class BlueToothServerThread(threading.Thread, Server):
                 if skId == self.skId:
                     client.sendall(sendBytes)
                     if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                        decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                         self.logger.info(
                             f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                         # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
@@ -327,7 +327,7 @@ class BlueToothServerThread(threading.Thread, Server):
             sendBytes = self.codec.encodeSendData(obj)
             channel.sendall(sendBytes)
             if self.skLogYn:
-                decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                 self.logger.info(
                     f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
 

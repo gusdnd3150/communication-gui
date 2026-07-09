@@ -150,13 +150,13 @@ class Handler(QMainWindow):
                         tempVal = ' '
                     resultObj[item['MSG_DT_VAL_ID']] = tempVal
 
-                elif item['VAL_TYPE'] == 'INT':
+                elif item['VAL_TYPE'] == 'INT' or item['VAL_TYPE'] == 'INT_LE':
                     tempVal = int(item['VALUE'])
                     if tempVal is None:
                         tempVal = 0
                     resultObj[item['MSG_DT_VAL_ID']] = tempVal
 
-                elif item['VAL_TYPE'] == 'DOUBLE' or item['VAL_TYPE'] == 'FLOAT':
+                elif item['VAL_TYPE'] == 'DOUBLE' or item['VAL_TYPE'] == 'FLOAT' or item['VAL_TYPE'] == 'FLOAT_LE' or item['VAL_TYPE'] == 'DOUBLE_LE':
                     tempVal = float(item['VALUE'])
                     if tempVal is None:
                         tempVal = 0.0

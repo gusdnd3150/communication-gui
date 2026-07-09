@@ -1,7 +1,7 @@
 {
-  "DB_USER": "KH4SMTDBADM",
-  "DB_DSN": "KH4SMTDBADM",
-  "DB_PWD": "Rhdwjd!2xla",
-  "DB_URL": "jdbc:tibero:thin:@dev.teia.co.kr:8629:tibero",
-  "USE_YN": "N"
+  "DB_USER": "KMI",
+  "DB_DSN": "orcl",
+  "DB_PWD": "smartkmi1!",
+  "DB_URL": "dev.teia.co.kr",
+  "USE_YN": "Y"
 }

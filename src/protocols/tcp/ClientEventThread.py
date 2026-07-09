@@ -134,7 +134,7 @@ class ClientEventThread(threading.Thread):
             sockets.connect((self.skIp, int(self.skPort)))
             sockets.sendall(self.sendData)
             if self.skLogYn:
-                decimal_string = ' '.join(str(byte) for byte in self.sendData)
+                decimal_string = ' '.join(str(byte & 0xff) for byte in self.sendData)
                 logger.info(f'SK_ID:{self.skId} send length : {len(self.sendData)} send_string:[{str(self.sendData)}] decimal_string : [{decimal_string}]')
 
             isRun = True
@@ -190,7 +190,7 @@ class ClientEventThread(threading.Thread):
 
                             try:
                                 if self.skLogYn:
-                                    decimal_string = ' '.join(str(byte) for byte in readByte)
+                                    decimal_string = ' '.join(str(byte & 0xff) for byte in readByte)
                                     logger.info(
                                         f'SK_ID:{self.skId} read length : {len(readByte)} recive_string:[{readByte.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                                     # moduleData.mainInstance.insertLog(self.skId, readByte, 'IN')
@@ -254,7 +254,7 @@ class ClientEventThread(threading.Thread):
             sendBytes = bytes + self.delimiter
             channel.sendall(sendBytes)
             if self.skLogYn:
-                decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                 logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
         except:
             logger.error(f'SK_ID:{self.skId}- sendMsgToChannel Exception :: {traceback.format_exc()}')
@@ -274,7 +274,7 @@ class ClientEventThread(threading.Thread):
                 sendBytes = self.codec.encodeSendData(obj)
                 channel.sendall(sendBytes)
                 if self.skLogYn:
-                    decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                    decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                     logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                     # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
             else:

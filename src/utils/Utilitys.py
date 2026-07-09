@@ -12,16 +12,28 @@ def decodeBytesToType( bytes, type):
             returnData = bytes.decode('utf-8-sig').strip()
         elif type == 'INT':
             returnData = int.from_bytes(bytes, byteorder='big')
+        elif type == 'INT_LE':
+            returnData = int.from_bytes(bytes, byteorder='little')
         elif type == 'SHORT':
             returnData = int.from_bytes(bytes, byteorder='big', signed=True)
+        elif type == 'SHORT_LE':
+            returnData = int.from_bytes(bytes, byteorder='little', signed=True)
         elif type == 'FLOAT':
             if len(bytes) != 4:
                 raise ValueError("FLOAT type requires 4 bytes")
             returnData = struct.unpack('!f', bytes)[0]  # big-endian float
+        elif type == 'FLOAT_LE':
+            if len(bytes) != 4:
+                raise ValueError("FLOAT_LE type requires 4 bytes")
+            returnData = struct.unpack('<f', bytes)[0]  # little-endian float
         elif type == 'DOUBLE':
             if len(bytes) != 8:
                 raise ValueError("DOUBLE type requires 8 bytes")
             returnData = struct.unpack('!d', bytes)[0]  # big-endian double
+        elif type == 'DOUBLE_LE':
+            if len(bytes) != 8:
+                raise ValueError("DOUBLE_LE type requires 8 bytes")
+            returnData = struct.unpack('<d', bytes)[0]  # little-endian double
         elif type == 'BYTE' or type == 'BYTES' or type == 'VARIABLE_LENGTH':
             returnData = bytes
     except Exception as e:
@@ -34,7 +46,7 @@ def decodeMsgKeyVal(data, type):
     try:
         if type == 'STRING':
             return data
-        elif type == 'INT' or  type == 'SHORT' or type == 'LENGTH' :
+        elif type == 'INT' or  type == 'SHORT' or type == 'LENGTH' or type =='INT_LE' or type =='SHORT_LE' :
             int_data = int(data)
             return int_data
         elif type == 'BYTE':
@@ -67,19 +79,21 @@ def encodeDataToBytes(data, type, length, pad=' '):
                 data = ''
             elif type == 'INT' or type == 'SHORT' or type == 'DOUBLE' or type == 'FLOAT':
                 data = 0
+            elif type == 'INT_LE' or type == 'SHORT_LE' or type == 'DOUBLE_LE' or type == 'FLOAT_LE':
+                data = 0
             elif type == 'BYTE' or type == 'BYTES':
                 data = bytearray([0x20] * length)
 
         if length is None:
             if type == 'STRING':
                 length = len(data)
-            elif type == 'INT':
+            elif type == 'INT' or type == 'INT_LE':
                 length = 4
-            elif type == 'SHORT':
+            elif type == 'SHORT' or type == 'SHORT_LE':
                 length = 2
-            elif type == 'DOUBLE':
+            elif type == 'DOUBLE'or type == 'DOUBLE_LE':
                 length = 8
-            elif type == 'FLOAT':
+            elif type == 'FLOAT' or type == 'FLOAT_LE':
                 length = 4
 
         length = int(length)
@@ -92,9 +106,16 @@ def encodeDataToBytes(data, type, length, pad=' '):
         elif type == 'INT':
             return data.to_bytes(4, byteorder='big')
 
+        elif type == 'INT_LE':
+            return data.to_bytes(4, byteorder='little')
+
         elif type == 'SHORT':
             shortValue = data & 0xffff
             return shortValue.to_bytes(2, byteorder='big', signed=True)
+
+        elif type == 'SHORT_LE':
+            shortValue = data & 0xffff
+            return shortValue.to_bytes(2, byteorder='little', signed=True)
 
         elif type == 'BYTE' or type == 'BYTES' :
            return data
@@ -109,12 +130,26 @@ def encodeDataToBytes(data, type, length, pad=' '):
             except ValueError:
                 return struct.pack('!f', data)
 
+        elif type == 'FLOAT_LE':
+            try:
+                fval = float(data)
+                return struct.pack('<f', fval)
+            except ValueError:
+                return struct.pack('<f', data)
+
         elif type == 'DOUBLE':
             try:
                 fval = float(data)
                 return struct.pack('!d', fval)
             except ValueError:
                 return struct.pack('!d', data)
+
+        elif type == 'DOUBLE_LE':
+            try:
+                fval = float(data)
+                return struct.pack('<d', fval)
+            except ValueError:
+                return struct.pack('<d', data)
 
     except Exception as e:
         logger.error(f'Utilitys encodeDataToBytes Exception : {data}:{type}:{length}  {e}')

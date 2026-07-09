@@ -183,7 +183,7 @@ class ClientThread(threading.Thread, Client):
 
                                 try:
                                     if self.skLogYn:
-                                        decimal_string = ' '.join(str(byte) for byte in readByte)
+                                        decimal_string = ' '.join(str(byte & 0xff) for byte in readByte)
                                         logger.info(f'SK_ID:{self.skId} recive_string:[{readByte.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}] read length : {readBytesCnt} ')
 
                                     copybytes = readByte.copy()
@@ -248,7 +248,7 @@ class ClientThread(threading.Thread, Client):
             if self.socket is not None:
                 self.socket.sendall(msgBytes+self.delimiter)
                 if self.skLogYn:
-                    decimal_string = ' '.join(str(byte) for byte in msgBytes)
+                    decimal_string = ' '.join(str(byte & 0xff) for byte in msgBytes)
                     logger.info(f'SK_ID:{self.skId} send bytes length : {len(msgBytes)} send_string:[{str(msgBytes)}] decimal_string : [{decimal_string}]')
                     # moduleData.mainInstance.insertLog(self.skId, msgBytes, 'OUT')
             else:
@@ -263,7 +263,7 @@ class ClientThread(threading.Thread, Client):
             sendBytes = bytes + self.delimiter
             channel.sendall(sendBytes)
             if self.skLogYn:
-                decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                 logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
 
         except:
@@ -278,7 +278,7 @@ class ClientThread(threading.Thread, Client):
                 sendBytes = self.codec.encodeSendData(obj)
                 self.socket.sendall(sendBytes)
                 if self.skLogYn:
-                    decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                    decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                     logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                     # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
             else:
@@ -294,7 +294,7 @@ class ClientThread(threading.Thread, Client):
                 self.socket.sendall(sendBytes)
 
                 if self.skLogYn:
-                    decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                    decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                     logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                     # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
             else:

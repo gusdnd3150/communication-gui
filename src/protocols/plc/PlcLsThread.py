@@ -111,7 +111,7 @@ class PlcLsThread(threading.Thread, Client):
                             reciveBytes = self.socket.recv(9999)
                             try:
                                 if self.logYn:
-                                    decimal_string = ' '.join(str(byte) for byte in reciveBytes)
+                                    decimal_string = ' '.join(str(byte & 0xff) for byte in reciveBytes)
                                     logger.info(
                                         f'PLC_ID:{self.plcId} recive_string:[{reciveBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}] read length : {len(reciveBytes)} ')
 
@@ -278,7 +278,7 @@ class PlcLsThread(threading.Thread, Client):
                 sendBytes = b'test'
                 self.socket.sendall(sendBytes)
                 if self.logYn:
-                    decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                    decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                     logger.info(
                         f'PLC_ID:{self.plcId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                     # moduleData.mainInstance.insertLog(self.plcId, sendBytes, 'OUT')

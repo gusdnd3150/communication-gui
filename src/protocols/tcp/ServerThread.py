@@ -201,7 +201,7 @@ class ServerThread(threading.Thread, Server):
                             readByte = buffer[:readBytesCnt]
                             try:
                                 if self.skLogYn:
-                                    decimal_string = ' '.join(str(byte) for byte in readByte)
+                                    decimal_string = ' '.join(str(byte & 0xff) for byte in readByte)
                                     logger.info(f'SK_ID:{self.skId} read length : {len(readByte)} recive_string:[{readByte.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                                     # moduleData.mainInstance.insertLog(self.skId, readByte ,'IN')
 
@@ -224,7 +224,7 @@ class ServerThread(threading.Thread, Server):
                             self.threadPoolExcutor(BzActivator2(idle_dict))
 
                     except Exception as e:
-                        decimal_string = ' '.join(str(byte) for byte in buffer)
+                        decimal_string = ' '.join(str(byte & 0xff) for byte in buffer)
                         logger.error(f'SK_ID:{self.skId} handler Exception read length : {len(buffer)} decimal_string : [{decimal_string}]')
                         logger.error(f'SK_ID:{self.skId} handler Exception : {traceback.format_exc()}')
                         buffer.clear()
@@ -277,7 +277,7 @@ class ServerThread(threading.Thread, Server):
                 if skId == self.skId:
                     client.sendall(bytes+self.delimiter)
                     if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in bytes)
+                        decimal_string = ' '.join(str(byte & 0xff) for byte in bytes)
                         logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{decimal_string}]')
 
                         # moduleData.mainInstance.insertLog(self.skId, bytes, 'OUT')
@@ -291,7 +291,7 @@ class ServerThread(threading.Thread, Server):
             sendBytes = bytes + self.delimiter
             channel.sendall(sendBytes)
             if self.skLogYn:
-                decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                 logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
 
             # moduleData.mainInstance.insertLog(self.skId, bytes, 'OUT')
@@ -312,7 +312,7 @@ class ServerThread(threading.Thread, Server):
                 if skId == self.skId:
                     client.sendall(sendBytes)
                     if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                        decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                         logger.info(
                             f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                         # moduleData.mainInstance.insertLog(self.skId, sendBytes, 'OUT')
@@ -329,7 +329,7 @@ class ServerThread(threading.Thread, Server):
             sendBytes = self.codec.encodeSendData(obj)
             channel.sendall(sendBytes)
             if self.skLogYn:
-                decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                 logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
         except Exception as e:
             logger.info(f'SK_ID:{self.skId}- sendToAllChannels Exception :: {e}')

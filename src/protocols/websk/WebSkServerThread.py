@@ -219,7 +219,7 @@ class WebSkServerThread(threading.Thread):
     #                     continue
     #
     #                 if self.skLogYn:
-    #                     decimal_string = ' '.join(str(byte) for byte in reciveBytes)
+    #                     decimal_string = ' '.join(str(byte & 0xff) for byte in reciveBytes)
     #                     logger.info(f'SK_ID:{self.skId} read length : {readBytesCnt} decimal_string : [{decimal_string}]')
     #
     #                 data = self.codec.decodeRecieData(reciveBytes)
@@ -252,7 +252,7 @@ class WebSkServerThread(threading.Thread):
                 try:
                     await channel.send(bytes)  # await 키워드를 사용하여 비동기 호출
                     if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in bytes)
+                        decimal_string = ' '.join(str(byte & 0xff) for byte in bytes)
                         logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
                 except Exception:
                     logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
@@ -274,7 +274,7 @@ class WebSkServerThread(threading.Thread):
                 try:
                     await channel.send(sendBytes.decode('utf-8'))
                     if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                        decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                         logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                 except Exception:
                     logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
@@ -292,7 +292,7 @@ class WebSkServerThread(threading.Thread):
                     for skId, channel, thraed in self.client_list:
                         await channel.send(sendBytes.decode('utf-8'))
                         if self.skLogYn:
-                            decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                            decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                             logger.info(
                                 f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{sendBytes}]')
                 except Exception:

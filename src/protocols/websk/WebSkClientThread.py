@@ -219,7 +219,7 @@ class WebSkClientThread(threading.Thread):
                         continue
 
                     if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in reciveBytes)
+                        decimal_string = ' '.join(str(byte & 0xff) for byte in reciveBytes)
                         logger.info(
                             f'SK_ID:{self.skId} read length : {readBytesCnt} recive_string:[{str(reciveBytes)}] decimal_string : [{decimal_string}]')
 
@@ -289,7 +289,7 @@ class WebSkClientThread(threading.Thread):
                 try:
                     await channel.send(bytes)  # await 키워드를 사용하여 비동기 호출
                     if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in bytes)
+                        decimal_string = ' '.join(str(byte & 0xff) for byte in bytes)
                         logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
                 except Exception:
                     logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
@@ -303,7 +303,7 @@ class WebSkClientThread(threading.Thread):
                 try:
                     await self.socket.send(bytes)  # await 키워드를 사용하여 비동기 호출
                     if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in bytes)
+                        decimal_string = ' '.join(str(byte & 0xff) for byte in bytes)
                         logger.info(f'SK_ID:{self.skId} send bytes length : {len(bytes)} send_string:[{str(bytes)}] decimal_string : [{bytes}]')
                 except Exception:
                     logger.error(f'sendBytesToChannel send exception :: {traceback.format_exc()}')
@@ -320,7 +320,7 @@ class WebSkClientThread(threading.Thread):
                 try:
                     await channel.send(sendBytes.decode('utf-8'))
                     if self.skLogYn:
-                        decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                        decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                         logger.info(f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{decimal_string}]')
                 except Exception:
                     logger.error(f'sendMsgToAllChannels send exception :: {traceback.format_exc()}')
@@ -338,7 +338,7 @@ class WebSkClientThread(threading.Thread):
                     if self.socket is not None:
                         await self.socket.send(sendBytes.decode('utf-8'))
                         if self.skLogYn:
-                            decimal_string = ' '.join(str(byte) for byte in sendBytes)
+                            decimal_string = ' '.join(str(byte & 0xff) for byte in sendBytes)
                             logger.info(
                                 f'SK_ID:{self.skId} send bytes length : {len(sendBytes)} send_string:[{sendBytes.decode("utf-8", errors="replace")}] decimal_string : [{sendBytes}]')
                     else:
