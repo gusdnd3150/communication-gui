@@ -148,7 +148,7 @@ class MsgHandler():
                 if item['VAL_TYPE'] == 'STRING':
                     tempVal = str(item['VALUE'])
                     if tempVal is None:
-                        tempVal =  str('').rjust(int(item['VALUE_LEN']), ' ')
+                        tempVal =  str('').rjust(int(item['VAL_LEN']), ' ')
                     resultObj[item['MSG_DT_VAL_ID']] = tempVal
 
                 elif item['VAL_TYPE'] == 'VARIABLE_LENGTH':
@@ -171,15 +171,15 @@ class MsgHandler():
 
                 elif item['VAL_TYPE'] == 'BYTE':
                     tempVal = item['VALUE']
-                    if tempVal is None or tempVal == '':
-                        resultObj[item['MSG_DT_VAL_ID']] = Utilitys.strHexToBytes('0x00');
+                    if tempVal is None or tempVal.strip() == '':
+                        resultObj[item['MSG_DT_VAL_ID']] = Utilitys.strHexToByte('0x00');
                     else:
                         resultObj[item['MSG_DT_VAL_ID']] = Utilitys.strHexToBytes(tempVal);
 
                 elif item['VAL_TYPE'] == 'BYTES':
                     tempVal = item['VALUE']
-                    if tempVal is None or tempVal == '':
-                        resultObj[item['MSG_DT_VAL_ID']] = bytearray([0x20] * item['VALUE_LEN'])
+                    if tempVal is None or tempVal.strip() == '':
+                        resultObj[item['MSG_DT_VAL_ID']] = bytearray([0x20] * int(item['VAL_LEN']))
                     else:
                         resultObj[item['MSG_DT_VAL_ID']] = Utilitys.strHexToBytes(tempVal);
 
