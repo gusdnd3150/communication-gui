@@ -169,12 +169,19 @@ class MsgHandler():
                         tempVal = 0.0
                     resultObj[item['MSG_DT_VAL_ID']] = tempVal
 
-                elif item['VAL_TYPE'] == 'BYTE' or item['VAL_TYPE'] == 'BYTES':
+                elif item['VAL_TYPE'] == 'BYTE':
                     tempVal = item['VALUE']
-                    if tempVal is None:
-                        # tempVal = str('').rjust(int(item['VALUE_LEN']), ' ')
-                        tempVal = '0x00'
-                    resultObj[item['MSG_DT_VAL_ID']] = Utilitys.strHexToBytes(tempVal)
+                    if tempVal is None or tempVal == '':
+                        resultObj[item['MSG_DT_VAL_ID']] = Utilitys.strHexToBytes('0x00');
+                    else:
+                        resultObj[item['MSG_DT_VAL_ID']] = Utilitys.strHexToBytes(tempVal);
+
+                elif item['VAL_TYPE'] == 'BYTES':
+                    tempVal = item['VALUE']
+                    if tempVal is None or tempVal == '':
+                        resultObj[item['MSG_DT_VAL_ID']] = bytearray([0x20] * item['VALUE_LEN'])
+                    else:
+                        resultObj[item['MSG_DT_VAL_ID']] = Utilitys.strHexToBytes(tempVal);
 
                 elif item['VAL_TYPE'] == 'BASE64_DECMALS':
                     test = item['VALUE']

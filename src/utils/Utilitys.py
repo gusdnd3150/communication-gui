@@ -65,10 +65,11 @@ def decodeMsgKeyVal(data, type):
 def strHexToByte(hexStr):
     return int(hexStr, 16).to_bytes(1, byteorder='big')
 
-# 16진수 문자열을 바이트로 변환 '0x00 0x01 0x03' 등 hex문자열 공백기준 n개
+# 16진수 문자열을 바이트로 변환 ('0x00 0x01 0x03' 등 공백으로 구분된 Hex 문자열)
 def strHexToBytes(hexStrs):
-    return bytes.fromhex(hexStrs)
-
+    if not hexStrs:
+        return b''
+    return bytes(int(hex_str, 16) for hex_str in hexStrs.split())
 
 
 # SEND BODY 로 전송되는 타입/길이 바탕으로 전문 파싱
