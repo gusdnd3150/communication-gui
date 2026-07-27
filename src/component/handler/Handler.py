@@ -7,6 +7,7 @@ import src.protocols.SendHandler as SendHandler
 
 import base64
 
+from src.component.utility.Utility import Utility
 from src.protocols.tcp.ServerThread import ServerThread
 
 program_path = sys.argv[0]
@@ -15,6 +16,7 @@ import traceback
 from conf.skModule import *
 from conf.sql.SystemQueryString import *
 from ui.ui_handler import Ui_Handler
+import src.utils.Utilitys as Utilitys
 
 class Handler(QMainWindow):
 
@@ -162,11 +164,17 @@ class Handler(QMainWindow):
                         tempVal = 0.0
                     resultObj[item['MSG_DT_VAL_ID']] = tempVal
 
-                elif item['VAL_TYPE'] == 'BYTE' or item['VAL_TYPE'] == 'BYTES':
+                elif item['VAL_TYPE'] == 'BYTE':
                     tempVal = item['VALUE']
                     if tempVal is None:
-                        tempVal = str('').rjust(int(item['VALUE_LEN']), ' ')
-                    resultObj[item['MSG_DT_VAL_ID']] = tempVal
+                        tempVal = Utilitys.strHexToBytes('0x20');
+                    resultObj[item['MSG_DT_VAL_ID']] = Utilitys.strHexToBytes(tempVal);
+
+                elif item['VAL_TYPE'] == 'BYTES':
+                    tempVal = item['VALUE']
+                    if tempVal is None:
+                        tempVal = bytearray([0x20] * item['VALUE_LEN'])
+                    resultObj[item['MSG_DT_VAL_ID']] = Utilitys.strHexToBytes(tempVal);
 
                 elif item['VAL_TYPE'] == 'BASE64_DECMALS':
                     test = item['VALUE']
