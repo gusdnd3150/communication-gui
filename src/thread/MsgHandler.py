@@ -172,7 +172,7 @@ class MsgHandler():
                 elif item['VAL_TYPE'] == 'BYTE':
                     tempVal = item['VALUE']
                     if tempVal is None or tempVal.strip() == '':
-                        resultObj[item['MSG_DT_VAL_ID']] = Utilitys.strHexToByte('0x00');
+                        resultObj[item['MSG_DT_VAL_ID']] = Utilitys.strHexToByte('0x20');
                     else:
                         resultObj[item['MSG_DT_VAL_ID']] = Utilitys.strHexToBytes(tempVal);
 
